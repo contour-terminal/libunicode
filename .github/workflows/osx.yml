@@ -1,0 +1,34 @@
+name: MacOS
+
+on:
+  push:
+    branches:
+      - master
+      - wip
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Initialize sub modules"
+        run: git submodule update --init --recursive
+      - name: "Install dependencies"
+        run: |
+          set -ex
+          brew update
+          brew install pkg-config
+      - name: "Create build directory"
+        run: mkdir build
+      - name: "Generate build files"
+        run: |
+          cmake . \
+                -DCMAKE_BUILD_TYPE=Release \
+                -B build/
+      - name: "Build"
+        run: cmake --build build/
+      - name: "test: libunicode"
+        run: ./build/src/unicode/unicode_test

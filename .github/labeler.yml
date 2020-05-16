@@ -1,0 +1,6 @@
+ucd:
+  - src/unicode/ucd.cpp
+  - src/unicode/ucd.h
+  - src/unicode/mktables.py
+test:
+  - src/**/*_test.cpp
