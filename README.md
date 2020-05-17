@@ -11,7 +11,7 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 
 ### Feature Overview
 
-- [ ] API for accessing UCD properties
+- [x] API for accessing UCD properties
 - [x] UTF8 <-> UTF32 conversion
 - [x] grapheme segmentation (UTS algorithm)
 - [ ] word segmentation (UTS algorithm)
@@ -22,9 +22,26 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 - [ ] CLI tool: unicode-inspect for inspecting input files by code point, grapheme cluster, word, script, ...
 - [ ] unit tests for most parts (wcwidth / segmentation)
 
+### Integrate with your CMake project
+
+```sh
+git submodule add --name libunicode https://github.com/christianparpart/libunicode 3rdparty/libunicode
+```
+
+```cmake
+add_subdirectory(3rdparty/libunicode)
+
+add_executable(your_tool your_tool.cpp)
+target_link_libraries(your_tool PUBLIC unicode::core)
+```
+
 ### Contributing
 
-- For filing issues please visit: https://github.com/christianparpart/libunicode/issues
+- for filing issues please visit: https://github.com/christianparpart/libunicode/issues
+- fork and create pull requests:  https://github.com/christianparpart/libunicode/pulls
+- I am also happy to just receive code reviews, of
+- your can help with documentation, or
+- general feedback is also very welcome
 
 ### Users of this library
 
