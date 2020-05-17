@@ -16,6 +16,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <string>
+#include <string_view>
 #include <variant>
 
 namespace unicode {
@@ -54,6 +55,31 @@ constexpr inline unsigned to_utf8(char32_t _character, uint8_t* _result)
         _result[3] = static_cast<uint8_t>(((_character >>  0) & 0b0011'1111) | 0b1000'0000);
         return 4;
     }
+}
+
+/// Converts a UTF-32 string into an UTF-8 sring.
+inline std::string to_utf8(char32_t const* _characters, size_t n)
+{
+    std::string s;
+    s.reserve(n);
+    for (size_t i = 0; i < n; ++i)
+    {
+        uint8_t bytes[4];
+        unsigned const len = to_utf8(_characters[i], bytes);
+        s.append((char const*) bytes, len);
+    }
+
+    return s;
+}
+
+inline std::string to_utf8(std::u32string const& _characters)
+{
+    return to_utf8(_characters.data(), _characters.size());
+}
+
+inline std::string to_utf8(std::u32string_view const& _characters)
+{
+    return to_utf8(_characters.data(), _characters.size());
 }
 
 struct utf8_decoder_state {
