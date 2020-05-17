@@ -1,7 +1,21 @@
+/**
+ * This file is part of the "libunicode" project
+ *   Copyright (c) 2019 Christian Parpart <christian@parpart.family>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #pragma once
 
 #include <cstdint>
 #include <cstddef>
+#include <string>
 #include <variant>
 
 namespace unicode {
@@ -98,7 +112,6 @@ constexpr ConvertResult from_utf8(utf8_decoder_state& _state, char _byte)
 
     auto const result = _state.character;
     _state.expectedLength = 0;
-    _state.currentLength = 0;
     return Success{result};
 }
 
@@ -135,6 +148,21 @@ constexpr ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
 inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 {
     return from_utf8((uint8_t const*)(_bytes), _size);
+}
+
+inline std::u32string from_utf8(std::string const& _bytes)
+{
+    std::u32string s;
+    size_t offset = 0;
+    while (offset < _bytes.size())
+    {
+        size_t i{};
+        ConvertResult const result = from_utf8(_bytes.data() + offset, &i);
+        if (std::holds_alternative<Success>(result))
+            s += (std::get<Success>(result).value);
+        offset += i;
+    }
+    return s;
 }
 
 } // end namespace

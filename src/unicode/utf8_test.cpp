@@ -115,3 +115,14 @@ TEST_CASE("bytes_3_dash", "[utf8]")
     INFO(fmt::format("{:02X} {:02X} {:02X}", d3[0], d3[1], d3[2]));
     INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
 }
+
+TEST_CASE("from_utf8", "[utf8]")
+{
+    auto const a8 = string{"Hello, World!"};
+    auto const a32 = from_utf8(a8);
+    CHECK(a32 == U"Hello, World!");
+
+    auto const b8 = string{"😖:-)"};
+    auto const b32 = from_utf8(b8);
+    CHECK(b32 == U"😖:-)");
+}
