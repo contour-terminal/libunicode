@@ -140,6 +140,7 @@ class UCDGenerator:
 #include <array>
 #include <optional>
 #include <utility>
+#include <string>
 
 namespace unicode {
 
