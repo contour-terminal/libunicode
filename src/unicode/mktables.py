@@ -21,9 +21,6 @@ PROJECT_ROOT = '/home/trapni/projects/libunicode'
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
 UCD_DIR = PROJECT_ROOT + '/docs/ucd'
 
-DERIVED_GENERAL_CATEGORY_FILE = UCD_DIR + '/extracted/DerivedGeneralCategory.txt'
-EXTENDED_PICTOGRAPHIC_FILE = UCD_DIR + '/emoji/emoji-data.txt'
-
 FOLD_OPEN = '{{{'
 FOLD_CLOSE = '}}}'
 
@@ -48,13 +45,15 @@ class UCDGenerator:
         self.file_header()
         self.write_properties()
         self.write_core_properties()
-        self.write_derived_general_category()
+        self.write_general_categories()
+
         self.process_grapheme_break_props()
         self.process_east_asian_width()
         self.process_emoji_props()
+
         self.file_footer()
 
-    def load_property_value_aliases(self):
+    def load_property_value_aliases(self): # {{{
         with open(self.ucd_dir + '/PropertyValueAliases.txt') as f:
             # gc ; C   ; Other    # Cc | Cf | Cn | Co | Cs
             headerRE = re.compile('^#\s*(\w+) \((\w+)\)$')
@@ -80,8 +79,10 @@ class UCDGenerator:
                     property_values[name][value_abbrev] = value
 
             self.property_values = property_values
+        # }}}
 
-    def write_properties(self):
+    def write_properties(self): # {{{
+        self.header.write('// {} General property enum classes\n'.format(FOLD_OPEN))
         for name in sorted(self.property_values.keys()):
             if len(self.property_values[name].keys()) == 0:
                 continue
@@ -89,15 +90,17 @@ class UCDGenerator:
                     and ('Yes' in self.property_values[name].values())
                     and ('No'  in self.property_values[name].values())):
                 continue
-            if 'General_Category' in self.property_values.keys():
-                # XXX is being written specifically
+            if name in ['General_Category', 'Grapheme_Cluster_Break']:
+                # XXX those properties are generated specifically
                 continue
             self.header.write('enum class {} {{\n'.format(name))
             for value in sorted(self.property_values[name].keys()):
                 self.header.write('    {},\n'.format(self.property_values[name][value]))
             self.header.write('};\n\n')
+        self.header.write("// {}\n\n".format(FOLD_CLOSE))
+        # }}}
 
-    def load_general_category(self):
+    def load_general_category(self): # {{{
         with open(self.ucd_dir + '/extracted/DerivedGeneralCategory.txt', 'r') as f:
             headerRE = re.compile('^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
@@ -119,15 +122,16 @@ class UCDGenerator:
                     code = int(m.group(1), 16)
                     prop = property_values[m.group(2)]
                     comment = m.group(3)
-                    cats[cat_name].append({'start': code, 'end': code, 'comment': comment})
+                    cats[cat_name].append({'start': code, 'end': code, 'property': prop, 'comment': comment})
                 m = self.rangeValueRE.match(line)
                 if m:
                     start = int(m.group(1), 16)
                     end = int(m.group(2), 16)
                     prop = property_values[m.group(3)]
                     comment = m.group(4)
-                    cats[cat_name].append({'start': start, 'end': end, 'comment': comment})
+                    cats[cat_name].append({'start': start, 'end': end, 'property': prop, 'comment': comment})
             self.general_categories = cats
+        # }}}
 
     def file_header(self): # {{{
         self.header.write(globals()['__doc__'])
@@ -159,7 +163,7 @@ namespace unicode {
         self.impl.write("} // end namespace\n")
 # }}}
 
-    def load_core_properties(self):
+    def load_core_properties(self): # {{{
         with open(self.ucd_dir + '/DerivedCoreProperties.txt', 'r') as f:
             # collect
             props = dict()
@@ -190,8 +194,9 @@ namespace unicode {
             for prop_key in props.keys():
                 props[prop_key].sort(key = lambda a: a['start'])
         self.core_properties = props
+        # }}}
 
-    def write_core_properties(self):
+    def write_core_properties(self): # {{{
         props = self.core_properties
 
         # write range tables
@@ -218,8 +223,9 @@ namespace unicode {
             self.header.write("    {},\n".format(name))
         self.header.write("};\n\n")
         self.header.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept;\n\n")
+        # }}}
 
-    def process_props(self, filename, prop_key):
+    def process_props(self, filename, prop_key): # {{{
         with open(filename, 'r') as f:
             headerRE = re.compile('^#\s*{}:\s*(\w+)$'.format(prop_key))
 
@@ -271,20 +277,20 @@ namespace unicode {
             # write enums / signature
             for name in sorted(props.keys()):
                 self.header.write('enum class {} {{\n'.format(name))
-                enums = set()
+                enum_set = set()
                 for enum in props[name]:
-                    enums.add(enum['property'])
-                for enum in sorted(enums):
+                    enum_set.add(enum['property'])
+                for enum in sorted(enum_set):
                     self.header.write("    {},\n".format(enum))
                 self.header.write("};\n\n")
 
             for name in sorted(props.keys()):
                 self.impl.write('namespace {} {{\n'.format(name.lower()))
                 self.header.write('namespace {} {{\n'.format(name.lower()))
-                enums = set()
+                enum_set = set()
                 for enum in props[name]:
-                    enums.add(enum['property'])
-                for enum in sorted(enums):
+                    enum_set.add(enum['property'])
+                for enum in sorted(enum_set):
                     self.header.write('    bool {}(char32_t _codepoint) noexcept;\n'.format(enum.lower()))
                     self.impl.write('    bool {}(char32_t _codepoint) noexcept {{\n'.format(enum.lower()))
                     self.impl.write("        if (auto p = search(tables::{}, _codepoint); p.has_value())\n".format(name))
@@ -295,11 +301,12 @@ namespace unicode {
                 self.impl.write('}\n')
             self.header.write('\n')
             self.impl.write('\n')
+        # }}}
 
     def process_grapheme_break_props(self):
         self.process_props(self.ucd_dir + '/auxiliary/GraphemeBreakProperty.txt', 'Property')
 
-    def parse_range(self, line):
+    def parse_range(self, line): # {{{
         m = self.singleValueRE.match(line)
         if m:
             code = int(m.group(1), 16)
@@ -314,9 +321,10 @@ namespace unicode {
             comment = m.group(4)
             return {'start': start, 'end': end, 'property': prop, 'comment': comment}
         return None
+        # }}}
 
-    def process_emoji_props(self):
-        with open(EXTENDED_PICTOGRAPHIC_FILE, 'r') as f:
+    def process_emoji_props(self): # {{{
+        with open(self.ucd_dir + '/emoji/emoji-data.txt', 'r') as f:
             # collect
             props_name = ''
             props = dict()
@@ -357,45 +365,45 @@ namespace unicode {
             for name in sorted(props.keys()):
                 self.header.write('bool {}(char32_t _codepoint) noexcept;\n'.format(name.lower()))
             self.header.write('\n')
+        # }}}
 
-    def write_derived_general_category(self):
-        with open(DERIVED_GENERAL_CATEGORY_FILE, 'r') as f:
-            cats = self.general_categories
+    def write_general_categories(self): # {{{
+        cats = self.general_categories
 
-            # write range tables
-            self.impl.write("namespace tables {\n")
-            for name in sorted(cats.keys()):
-                self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
-                for propRange in cats[name]:
-                    self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }}, // {}\n".format(propRange['start'], propRange['end'], propRange['comment']))
-                self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
-            self.impl.write("} // end namespace tables\n\n")
+        # write range tables
+        self.impl.write("namespace tables {\n")
+        for name in sorted(cats.keys()):
+            self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
+            for propRange in cats[name]:
+                self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }}, // {}\n".format(propRange['start'], propRange['end'], propRange['comment']))
+            self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
 
-            # write out test function
-            self.impl.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept {\n")
-            self.impl.write("    switch (_cat) {\n")
-            for name in sorted(cats.keys()):
-                self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
-            self.impl.write("    }\n")
-            self.impl.write("    return false;\n")
-            self.impl.write("}\n\n")
+        # write out test function
+        self.impl.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept {\n")
+        self.impl.write("    switch (_cat) {\n")
+        for name in sorted(cats.keys()):
+            self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
+        self.impl.write("    }\n")
+        self.impl.write("    return false;\n")
+        self.impl.write("}\n\n")
 
-            # write enums / signature
-            self.header.write("enum class General_Category {\n")
-            for name in sorted(cats.keys()):
-                self.header.write("    {},\n".format(name))
-            self.header.write("};\n\n")
+        # write enums / signature
+        self.header.write("enum class General_Category {\n")
+        for name in sorted(cats.keys()):
+            self.header.write("    {},\n".format(name))
+        self.header.write("};\n\n")
 
-            self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
+        self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
 
-            self.header.write('namespace general_category {\n')
-            for name in sorted(cats.keys()):
-                self.header.write(
-                        '    inline bool {}(char32_t _codepoint) {{ return contains(General_Category::{}, _codepoint); }}\n'.
-                        format(name.lower(), name))
-            self.header.write('}\n\n')
+        self.header.write('namespace general_category {\n')
+        for name in sorted(cats.keys()):
+            self.header.write(
+                    '    inline bool {}(char32_t _codepoint) {{ return contains(General_Category::{}, _codepoint); }}\n'.
+                    format(name.lower(), name))
+        self.header.write('}\n\n') # }}}
 
-    def collect_range_table_with_prop(self, f):
+    def collect_range_table_with_prop(self, f): # {{{
         table = []
         while True:
             line = f.readline()
@@ -415,9 +423,9 @@ namespace unicode {
                 comment = m.group(4)
                 table.append({'start': start, 'end': end, 'property': prop, 'comment': comment})
         table.sort(key = lambda a: a['start'])
-        return table
+        return table # }}}
 
-    def process_east_asian_width(self):
+    def process_east_asian_width(self): # {{{
         WIDTH_NAMES = {
             'A': "Ambiguous",
             'F': "FullWidth",
@@ -474,6 +482,7 @@ namespace unicode {
                 '    return EastAsianWidth::Unspecified;\n' +
                 '}\n\n'
             )
+            # }}}
 
 def main():
     header_file = PROJECT_ROOT + '/src/unicode/ucd.h'
