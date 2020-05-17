@@ -1134,13 +1134,13 @@ enum class EastAsianWidth {
 
 inline std::string to_string(EastAsianWidth _value) {
     switch (_value) {
-        case ::unicode::EastAsianWidth::Ambiguous: return "Ambiguous";
-        case ::unicode::EastAsianWidth::FullWidth: return "FullWidth";
-        case ::unicode::EastAsianWidth::HalfWidth: return "HalfWidth";
-        case ::unicode::EastAsianWidth::Neutral: return "Neutral";
-        case ::unicode::EastAsianWidth::Narrow: return "Narrow";
-        case ::unicode::EastAsianWidth::Wide: return "Wide";
-        case ::unicode::EastAsianWidth::Unspecified: return "Unspecified";
+        case EastAsianWidth::Ambiguous: return "Ambiguous";
+        case EastAsianWidth::FullWidth: return "FullWidth";
+        case EastAsianWidth::HalfWidth: return "HalfWidth";
+        case EastAsianWidth::Neutral: return "Neutral";
+        case EastAsianWidth::Narrow: return "Narrow";
+        case EastAsianWidth::Wide: return "Wide";
+        case EastAsianWidth::Unspecified: return "Unspecified";
     }
     return "Unknown";
 };

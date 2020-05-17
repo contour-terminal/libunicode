@@ -139,8 +139,8 @@ class UCDGenerator:
 
 #include <array>
 #include <optional>
-#include <utility>
 #include <string>
+#include <utility>
 
 namespace unicode {
 
@@ -453,7 +453,7 @@ namespace unicode {
             self.header.write('inline std::string to_string({} _value) {{\n'.format(type_name))
             self.header.write('    switch (_value) {\n')
             for v in WIDTH_NAMES.values():
-                self.header.write('        case {}::{}: return "{}";\n'.format(prop_type, v, v))
+                self.header.write('        case {}::{}: return "{}";\n'.format(type_name, v, v))
             self.header.write('    }\n');
             self.header.write('    return "Unknown";\n');
             self.header.write('};\n\n')
