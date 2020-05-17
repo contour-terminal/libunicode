@@ -11959,6 +11959,3895 @@ bool contains(Core_Property _prop, char32_t _codepoint) noexcept {
 }
 
 namespace tables {
+auto const General_Category = std::array{
+    Prop<::unicode::General_Category>{ { 0x0000, 0x001F }, ::unicode::General_Category::Control }, // [32] <control-0000>..<control-001F>
+    Prop<::unicode::General_Category>{ { 0x0020, 0x0020 }, ::unicode::General_Category::Space_Separator }, // SPACE
+    Prop<::unicode::General_Category>{ { 0x0021, 0x0023 }, ::unicode::General_Category::Other_Punctuation }, // [3] EXCLAMATION MARK..NUMBER SIGN
+    Prop<::unicode::General_Category>{ { 0x0024, 0x0024 }, ::unicode::General_Category::Currency_Symbol }, // DOLLAR SIGN
+    Prop<::unicode::General_Category>{ { 0x0025, 0x0027 }, ::unicode::General_Category::Other_Punctuation }, // [3] PERCENT SIGN..APOSTROPHE
+    Prop<::unicode::General_Category>{ { 0x0028, 0x0028 }, ::unicode::General_Category::Open_Punctuation }, // LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x0029, 0x0029 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x002A, 0x002A }, ::unicode::General_Category::Other_Punctuation }, // ASTERISK
+    Prop<::unicode::General_Category>{ { 0x002B, 0x002B }, ::unicode::General_Category::Math_Symbol }, // PLUS SIGN
+    Prop<::unicode::General_Category>{ { 0x002C, 0x002C }, ::unicode::General_Category::Other_Punctuation }, // COMMA
+    Prop<::unicode::General_Category>{ { 0x002D, 0x002D }, ::unicode::General_Category::Dash_Punctuation }, // HYPHEN-MINUS
+    Prop<::unicode::General_Category>{ { 0x002E, 0x002F }, ::unicode::General_Category::Other_Punctuation }, // [2] FULL STOP..SOLIDUS
+    Prop<::unicode::General_Category>{ { 0x0030, 0x0039 }, ::unicode::General_Category::Decimal_Number }, // [10] DIGIT ZERO..DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x003A, 0x003B }, ::unicode::General_Category::Other_Punctuation }, // [2] COLON..SEMICOLON
+    Prop<::unicode::General_Category>{ { 0x003C, 0x003E }, ::unicode::General_Category::Math_Symbol }, // [3] LESS-THAN SIGN..GREATER-THAN SIGN
+    Prop<::unicode::General_Category>{ { 0x003F, 0x0040 }, ::unicode::General_Category::Other_Punctuation }, // [2] QUESTION MARK..COMMERCIAL AT
+    Prop<::unicode::General_Category>{ { 0x0041, 0x005A }, ::unicode::General_Category::Uppercase_Letter }, // [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
+    Prop<::unicode::General_Category>{ { 0x005B, 0x005B }, ::unicode::General_Category::Open_Punctuation }, // LEFT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x005C, 0x005C }, ::unicode::General_Category::Other_Punctuation }, // REVERSE SOLIDUS
+    Prop<::unicode::General_Category>{ { 0x005D, 0x005D }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x005E, 0x005E }, ::unicode::General_Category::Modifier_Symbol }, // CIRCUMFLEX ACCENT
+    Prop<::unicode::General_Category>{ { 0x005F, 0x005F }, ::unicode::General_Category::Connector_Punctuation }, // LOW LINE
+    Prop<::unicode::General_Category>{ { 0x0060, 0x0060 }, ::unicode::General_Category::Modifier_Symbol }, // GRAVE ACCENT
+    Prop<::unicode::General_Category>{ { 0x0061, 0x007A }, ::unicode::General_Category::Lowercase_Letter }, // [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
+    Prop<::unicode::General_Category>{ { 0x007B, 0x007B }, ::unicode::General_Category::Open_Punctuation }, // LEFT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0x007C, 0x007C }, ::unicode::General_Category::Math_Symbol }, // VERTICAL LINE
+    Prop<::unicode::General_Category>{ { 0x007D, 0x007D }, ::unicode::General_Category::Close_Punctuation }, // RIGHT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0x007E, 0x007E }, ::unicode::General_Category::Math_Symbol }, // TILDE
+    Prop<::unicode::General_Category>{ { 0x007F, 0x009F }, ::unicode::General_Category::Control }, // [33] <control-007F>..<control-009F>
+    Prop<::unicode::General_Category>{ { 0x00A0, 0x00A0 }, ::unicode::General_Category::Space_Separator }, // NO-BREAK SPACE
+    Prop<::unicode::General_Category>{ { 0x00A1, 0x00A1 }, ::unicode::General_Category::Other_Punctuation }, // INVERTED EXCLAMATION MARK
+    Prop<::unicode::General_Category>{ { 0x00A2, 0x00A5 }, ::unicode::General_Category::Currency_Symbol }, // [4] CENT SIGN..YEN SIGN
+    Prop<::unicode::General_Category>{ { 0x00A6, 0x00A6 }, ::unicode::General_Category::Other_Symbol }, // BROKEN BAR
+    Prop<::unicode::General_Category>{ { 0x00A7, 0x00A7 }, ::unicode::General_Category::Other_Punctuation }, // SECTION SIGN
+    Prop<::unicode::General_Category>{ { 0x00A8, 0x00A8 }, ::unicode::General_Category::Modifier_Symbol }, // DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x00A9, 0x00A9 }, ::unicode::General_Category::Other_Symbol }, // COPYRIGHT SIGN
+    Prop<::unicode::General_Category>{ { 0x00AA, 0x00AA }, ::unicode::General_Category::Other_Letter }, // FEMININE ORDINAL INDICATOR
+    Prop<::unicode::General_Category>{ { 0x00AB, 0x00AB }, ::unicode::General_Category::Initial_Punctuation }, // LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x00AC, 0x00AC }, ::unicode::General_Category::Math_Symbol }, // NOT SIGN
+    Prop<::unicode::General_Category>{ { 0x00AD, 0x00AD }, ::unicode::General_Category::Format }, // SOFT HYPHEN
+    Prop<::unicode::General_Category>{ { 0x00AE, 0x00AE }, ::unicode::General_Category::Other_Symbol }, // REGISTERED SIGN
+    Prop<::unicode::General_Category>{ { 0x00AF, 0x00AF }, ::unicode::General_Category::Modifier_Symbol }, // MACRON
+    Prop<::unicode::General_Category>{ { 0x00B0, 0x00B0 }, ::unicode::General_Category::Other_Symbol }, // DEGREE SIGN
+    Prop<::unicode::General_Category>{ { 0x00B1, 0x00B1 }, ::unicode::General_Category::Math_Symbol }, // PLUS-MINUS SIGN
+    Prop<::unicode::General_Category>{ { 0x00B2, 0x00B3 }, ::unicode::General_Category::Other_Number }, // [2] SUPERSCRIPT TWO..SUPERSCRIPT THREE
+    Prop<::unicode::General_Category>{ { 0x00B4, 0x00B4 }, ::unicode::General_Category::Modifier_Symbol }, // ACUTE ACCENT
+    Prop<::unicode::General_Category>{ { 0x00B5, 0x00B5 }, ::unicode::General_Category::Lowercase_Letter }, // MICRO SIGN
+    Prop<::unicode::General_Category>{ { 0x00B6, 0x00B7 }, ::unicode::General_Category::Other_Punctuation }, // [2] PILCROW SIGN..MIDDLE DOT
+    Prop<::unicode::General_Category>{ { 0x00B8, 0x00B8 }, ::unicode::General_Category::Modifier_Symbol }, // CEDILLA
+    Prop<::unicode::General_Category>{ { 0x00B9, 0x00B9 }, ::unicode::General_Category::Other_Number }, // SUPERSCRIPT ONE
+    Prop<::unicode::General_Category>{ { 0x00BA, 0x00BA }, ::unicode::General_Category::Other_Letter }, // MASCULINE ORDINAL INDICATOR
+    Prop<::unicode::General_Category>{ { 0x00BB, 0x00BB }, ::unicode::General_Category::Final_Punctuation }, // RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x00BC, 0x00BE }, ::unicode::General_Category::Other_Number }, // [3] VULGAR FRACTION ONE QUARTER..VULGAR FRACTION THREE QUARTERS
+    Prop<::unicode::General_Category>{ { 0x00BF, 0x00BF }, ::unicode::General_Category::Other_Punctuation }, // INVERTED QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x00C0, 0x00D6 }, ::unicode::General_Category::Uppercase_Letter }, // [23] LATIN CAPITAL LETTER A WITH GRAVE..LATIN CAPITAL LETTER O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x00D7, 0x00D7 }, ::unicode::General_Category::Math_Symbol }, // MULTIPLICATION SIGN
+    Prop<::unicode::General_Category>{ { 0x00D8, 0x00DE }, ::unicode::General_Category::Uppercase_Letter }, // [7] LATIN CAPITAL LETTER O WITH STROKE..LATIN CAPITAL LETTER THORN
+    Prop<::unicode::General_Category>{ { 0x00DF, 0x00F6 }, ::unicode::General_Category::Lowercase_Letter }, // [24] LATIN SMALL LETTER SHARP S..LATIN SMALL LETTER O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x00F7, 0x00F7 }, ::unicode::General_Category::Math_Symbol }, // DIVISION SIGN
+    Prop<::unicode::General_Category>{ { 0x00F8, 0x00FF }, ::unicode::General_Category::Lowercase_Letter }, // [8] LATIN SMALL LETTER O WITH STROKE..LATIN SMALL LETTER Y WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x0100, 0x0100 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x0101, 0x0101 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x0102, 0x0102 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0103, 0x0103 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0104, 0x0104 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0105, 0x0105 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0106, 0x0106 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0107, 0x0107 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0108, 0x0108 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0109, 0x0109 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x010A, 0x010A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x010B, 0x010B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x010C, 0x010C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH CARON
+    Prop<::unicode::General_Category>{ { 0x010D, 0x010D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH CARON
+    Prop<::unicode::General_Category>{ { 0x010E, 0x010E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH CARON
+    Prop<::unicode::General_Category>{ { 0x010F, 0x010F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0110, 0x0110 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0111, 0x0111 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0112, 0x0112 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x0113, 0x0113 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x0114, 0x0114 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0115, 0x0115 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0116, 0x0116 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0117, 0x0117 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0118, 0x0118 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0119, 0x0119 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x011A, 0x011A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CARON
+    Prop<::unicode::General_Category>{ { 0x011B, 0x011B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CARON
+    Prop<::unicode::General_Category>{ { 0x011C, 0x011C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x011D, 0x011D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x011E, 0x011E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x011F, 0x011F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0120, 0x0120 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0121, 0x0121 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0122, 0x0122 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0123, 0x0123 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0124, 0x0124 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0125, 0x0125 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0126, 0x0126 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0127, 0x0127 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0128, 0x0128 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x0129, 0x0129 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x012A, 0x012A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x012B, 0x012B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x012C, 0x012C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x012D, 0x012D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x012E, 0x012E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x012F, 0x012F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0130, 0x0130 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0131, 0x0131 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER DOTLESS I
+    Prop<::unicode::General_Category>{ { 0x0132, 0x0132 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LIGATURE IJ
+    Prop<::unicode::General_Category>{ { 0x0133, 0x0133 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LIGATURE IJ
+    Prop<::unicode::General_Category>{ { 0x0134, 0x0134 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER J WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0135, 0x0135 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER J WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0136, 0x0136 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0137, 0x0138 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER K WITH CEDILLA..LATIN SMALL LETTER KRA
+    Prop<::unicode::General_Category>{ { 0x0139, 0x0139 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x013A, 0x013A }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x013B, 0x013B }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x013C, 0x013C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x013D, 0x013D }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH CARON
+    Prop<::unicode::General_Category>{ { 0x013E, 0x013E }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH CARON
+    Prop<::unicode::General_Category>{ { 0x013F, 0x013F }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH MIDDLE DOT
+    Prop<::unicode::General_Category>{ { 0x0140, 0x0140 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH MIDDLE DOT
+    Prop<::unicode::General_Category>{ { 0x0141, 0x0141 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0142, 0x0142 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0143, 0x0143 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0144, 0x0144 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0145, 0x0145 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0146, 0x0146 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0147, 0x0147 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0148, 0x0149 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER N WITH CARON..LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
+    Prop<::unicode::General_Category>{ { 0x014A, 0x014A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER ENG
+    Prop<::unicode::General_Category>{ { 0x014B, 0x014B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER ENG
+    Prop<::unicode::General_Category>{ { 0x014C, 0x014C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x014D, 0x014D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x014E, 0x014E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x014F, 0x014F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x0150, 0x0150 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x0151, 0x0151 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x0152, 0x0152 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LIGATURE OE
+    Prop<::unicode::General_Category>{ { 0x0153, 0x0153 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LIGATURE OE
+    Prop<::unicode::General_Category>{ { 0x0154, 0x0154 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0155, 0x0155 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x0156, 0x0156 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0157, 0x0157 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0158, 0x0158 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0159, 0x0159 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH CARON
+    Prop<::unicode::General_Category>{ { 0x015A, 0x015A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x015B, 0x015B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x015C, 0x015C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x015D, 0x015D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x015E, 0x015E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x015F, 0x015F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0160, 0x0160 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0161, 0x0161 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0162, 0x0162 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0163, 0x0163 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0164, 0x0164 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0165, 0x0165 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0166, 0x0166 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0167, 0x0167 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0168, 0x0168 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x0169, 0x0169 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x016A, 0x016A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x016B, 0x016B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x016C, 0x016C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x016D, 0x016D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x016E, 0x016E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH RING ABOVE
+    Prop<::unicode::General_Category>{ { 0x016F, 0x016F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH RING ABOVE
+    Prop<::unicode::General_Category>{ { 0x0170, 0x0170 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x0171, 0x0171 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x0172, 0x0172 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0173, 0x0173 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x0174, 0x0174 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0175, 0x0175 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0176, 0x0176 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0177, 0x0177 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x0178, 0x0179 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER Y WITH DIAERESIS..LATIN CAPITAL LETTER Z WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x017A, 0x017A }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x017B, 0x017B }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x017C, 0x017C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x017D, 0x017D }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH CARON
+    Prop<::unicode::General_Category>{ { 0x017E, 0x0180 }, ::unicode::General_Category::Lowercase_Letter }, // [3] LATIN SMALL LETTER Z WITH CARON..LATIN SMALL LETTER B WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0181, 0x0182 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER B WITH HOOK..LATIN CAPITAL LETTER B WITH TOPBAR
+    Prop<::unicode::General_Category>{ { 0x0183, 0x0183 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER B WITH TOPBAR
+    Prop<::unicode::General_Category>{ { 0x0184, 0x0184 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TONE SIX
+    Prop<::unicode::General_Category>{ { 0x0185, 0x0185 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TONE SIX
+    Prop<::unicode::General_Category>{ { 0x0186, 0x0187 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER OPEN O..LATIN CAPITAL LETTER C WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0188, 0x0188 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0189, 0x018B }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER AFRICAN D..LATIN CAPITAL LETTER D WITH TOPBAR
+    Prop<::unicode::General_Category>{ { 0x018C, 0x018D }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER D WITH TOPBAR..LATIN SMALL LETTER TURNED DELTA
+    Prop<::unicode::General_Category>{ { 0x018E, 0x0191 }, ::unicode::General_Category::Uppercase_Letter }, // [4] LATIN CAPITAL LETTER REVERSED E..LATIN CAPITAL LETTER F WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0192, 0x0192 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER F WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0193, 0x0194 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER G WITH HOOK..LATIN CAPITAL LETTER GAMMA
+    Prop<::unicode::General_Category>{ { 0x0195, 0x0195 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER HV
+    Prop<::unicode::General_Category>{ { 0x0196, 0x0198 }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER IOTA..LATIN CAPITAL LETTER K WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0199, 0x019B }, ::unicode::General_Category::Lowercase_Letter }, // [3] LATIN SMALL LETTER K WITH HOOK..LATIN SMALL LETTER LAMBDA WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x019C, 0x019D }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER TURNED M..LATIN CAPITAL LETTER N WITH LEFT HOOK
+    Prop<::unicode::General_Category>{ { 0x019E, 0x019E }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH LONG RIGHT LEG
+    Prop<::unicode::General_Category>{ { 0x019F, 0x01A0 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER O WITH MIDDLE TILDE..LATIN CAPITAL LETTER O WITH HORN
+    Prop<::unicode::General_Category>{ { 0x01A1, 0x01A1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN
+    Prop<::unicode::General_Category>{ { 0x01A2, 0x01A2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER OI
+    Prop<::unicode::General_Category>{ { 0x01A3, 0x01A3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER OI
+    Prop<::unicode::General_Category>{ { 0x01A4, 0x01A4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01A5, 0x01A5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01A6, 0x01A7 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN LETTER YR..LATIN CAPITAL LETTER TONE TWO
+    Prop<::unicode::General_Category>{ { 0x01A8, 0x01A8 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TONE TWO
+    Prop<::unicode::General_Category>{ { 0x01A9, 0x01A9 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER ESH
+    Prop<::unicode::General_Category>{ { 0x01AA, 0x01AB }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN LETTER REVERSED ESH LOOP..LATIN SMALL LETTER T WITH PALATAL HOOK
+    Prop<::unicode::General_Category>{ { 0x01AC, 0x01AC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01AD, 0x01AD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01AE, 0x01AF }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER T WITH RETROFLEX HOOK..LATIN CAPITAL LETTER U WITH HORN
+    Prop<::unicode::General_Category>{ { 0x01B0, 0x01B0 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN
+    Prop<::unicode::General_Category>{ { 0x01B1, 0x01B3 }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER UPSILON..LATIN CAPITAL LETTER Y WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01B4, 0x01B4 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x01B5, 0x01B5 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x01B6, 0x01B6 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x01B7, 0x01B8 }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER EZH..LATIN CAPITAL LETTER EZH REVERSED
+    Prop<::unicode::General_Category>{ { 0x01B9, 0x01BA }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER EZH REVERSED..LATIN SMALL LETTER EZH WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x01BB, 0x01BB }, ::unicode::General_Category::Other_Letter }, // LATIN LETTER TWO WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x01BC, 0x01BC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TONE FIVE
+    Prop<::unicode::General_Category>{ { 0x01BD, 0x01BF }, ::unicode::General_Category::Lowercase_Letter }, // [3] LATIN SMALL LETTER TONE FIVE..LATIN LETTER WYNN
+    Prop<::unicode::General_Category>{ { 0x01C0, 0x01C3 }, ::unicode::General_Category::Other_Letter }, // [4] LATIN LETTER DENTAL CLICK..LATIN LETTER RETROFLEX CLICK
+    Prop<::unicode::General_Category>{ { 0x01C4, 0x01C4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER DZ WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01C5, 0x01C5 }, ::unicode::General_Category::Titlecase_Letter }, // LATIN CAPITAL LETTER D WITH SMALL LETTER Z WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01C6, 0x01C6 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER DZ WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01C7, 0x01C7 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER LJ
+    Prop<::unicode::General_Category>{ { 0x01C8, 0x01C8 }, ::unicode::General_Category::Titlecase_Letter }, // LATIN CAPITAL LETTER L WITH SMALL LETTER J
+    Prop<::unicode::General_Category>{ { 0x01C9, 0x01C9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER LJ
+    Prop<::unicode::General_Category>{ { 0x01CA, 0x01CA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER NJ
+    Prop<::unicode::General_Category>{ { 0x01CB, 0x01CB }, ::unicode::General_Category::Titlecase_Letter }, // LATIN CAPITAL LETTER N WITH SMALL LETTER J
+    Prop<::unicode::General_Category>{ { 0x01CC, 0x01CC }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER NJ
+    Prop<::unicode::General_Category>{ { 0x01CD, 0x01CD }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01CE, 0x01CE }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01CF, 0x01CF }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D0, 0x01D0 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D1, 0x01D1 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D2, 0x01D2 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D3, 0x01D3 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D4, 0x01D4 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01D5, 0x01D5 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01D6, 0x01D6 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01D7, 0x01D7 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DIAERESIS AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x01D8, 0x01D8 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DIAERESIS AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x01D9, 0x01D9 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DIAERESIS AND CARON
+    Prop<::unicode::General_Category>{ { 0x01DA, 0x01DA }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DIAERESIS AND CARON
+    Prop<::unicode::General_Category>{ { 0x01DB, 0x01DB }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DIAERESIS AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x01DC, 0x01DD }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER U WITH DIAERESIS AND GRAVE..LATIN SMALL LETTER TURNED E
+    Prop<::unicode::General_Category>{ { 0x01DE, 0x01DE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01DF, 0x01DF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01E0, 0x01E0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH DOT ABOVE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01E1, 0x01E1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH DOT ABOVE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01E2, 0x01E2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AE WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x01E3, 0x01E3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AE WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x01E4, 0x01E4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x01E5, 0x01E5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x01E6, 0x01E6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01E7, 0x01E7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01E8, 0x01E8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01E9, 0x01E9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01EA, 0x01EA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x01EB, 0x01EB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH OGONEK
+    Prop<::unicode::General_Category>{ { 0x01EC, 0x01EC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH OGONEK AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01ED, 0x01ED }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH OGONEK AND MACRON
+    Prop<::unicode::General_Category>{ { 0x01EE, 0x01EE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER EZH WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01EF, 0x01F0 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER EZH WITH CARON..LATIN SMALL LETTER J WITH CARON
+    Prop<::unicode::General_Category>{ { 0x01F1, 0x01F1 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER DZ
+    Prop<::unicode::General_Category>{ { 0x01F2, 0x01F2 }, ::unicode::General_Category::Titlecase_Letter }, // LATIN CAPITAL LETTER D WITH SMALL LETTER Z
+    Prop<::unicode::General_Category>{ { 0x01F3, 0x01F3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER DZ
+    Prop<::unicode::General_Category>{ { 0x01F4, 0x01F4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x01F5, 0x01F5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x01F6, 0x01F8 }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER HWAIR..LATIN CAPITAL LETTER N WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x01F9, 0x01F9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x01FA, 0x01FA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH RING ABOVE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x01FB, 0x01FB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH RING ABOVE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x01FC, 0x01FC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AE WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x01FD, 0x01FD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AE WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x01FE, 0x01FE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH STROKE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x01FF, 0x01FF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH STROKE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x0200, 0x0200 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0201, 0x0201 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0202, 0x0202 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0203, 0x0203 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0204, 0x0204 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0205, 0x0205 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0206, 0x0206 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0207, 0x0207 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0208, 0x0208 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0209, 0x0209 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x020A, 0x020A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x020B, 0x020B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x020C, 0x020C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x020D, 0x020D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x020E, 0x020E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x020F, 0x020F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0210, 0x0210 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0211, 0x0211 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0212, 0x0212 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0213, 0x0213 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0214, 0x0214 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0215, 0x0215 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DOUBLE GRAVE
+    Prop<::unicode::General_Category>{ { 0x0216, 0x0216 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0217, 0x0217 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0x0218, 0x0218 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH COMMA BELOW
+    Prop<::unicode::General_Category>{ { 0x0219, 0x0219 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH COMMA BELOW
+    Prop<::unicode::General_Category>{ { 0x021A, 0x021A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH COMMA BELOW
+    Prop<::unicode::General_Category>{ { 0x021B, 0x021B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH COMMA BELOW
+    Prop<::unicode::General_Category>{ { 0x021C, 0x021C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER YOGH
+    Prop<::unicode::General_Category>{ { 0x021D, 0x021D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER YOGH
+    Prop<::unicode::General_Category>{ { 0x021E, 0x021E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH CARON
+    Prop<::unicode::General_Category>{ { 0x021F, 0x021F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH CARON
+    Prop<::unicode::General_Category>{ { 0x0220, 0x0220 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH LONG RIGHT LEG
+    Prop<::unicode::General_Category>{ { 0x0221, 0x0221 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH CURL
+    Prop<::unicode::General_Category>{ { 0x0222, 0x0222 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER OU
+    Prop<::unicode::General_Category>{ { 0x0223, 0x0223 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER OU
+    Prop<::unicode::General_Category>{ { 0x0224, 0x0224 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0225, 0x0225 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0226, 0x0226 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0227, 0x0227 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0228, 0x0228 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x0229, 0x0229 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x022A, 0x022A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x022B, 0x022B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DIAERESIS AND MACRON
+    Prop<::unicode::General_Category>{ { 0x022C, 0x022C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH TILDE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x022D, 0x022D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH TILDE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x022E, 0x022E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x022F, 0x022F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x0230, 0x0230 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DOT ABOVE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x0231, 0x0231 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DOT ABOVE AND MACRON
+    Prop<::unicode::General_Category>{ { 0x0232, 0x0232 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x0233, 0x0239 }, ::unicode::General_Category::Lowercase_Letter }, // [7] LATIN SMALL LETTER Y WITH MACRON..LATIN SMALL LETTER QP DIGRAPH
+    Prop<::unicode::General_Category>{ { 0x023A, 0x023B }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER A WITH STROKE..LATIN CAPITAL LETTER C WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x023C, 0x023C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x023D, 0x023E }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER L WITH BAR..LATIN CAPITAL LETTER T WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0x023F, 0x0240 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER S WITH SWASH TAIL..LATIN SMALL LETTER Z WITH SWASH TAIL
+    Prop<::unicode::General_Category>{ { 0x0241, 0x0241 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER GLOTTAL STOP
+    Prop<::unicode::General_Category>{ { 0x0242, 0x0242 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER GLOTTAL STOP
+    Prop<::unicode::General_Category>{ { 0x0243, 0x0246 }, ::unicode::General_Category::Uppercase_Letter }, // [4] LATIN CAPITAL LETTER B WITH STROKE..LATIN CAPITAL LETTER E WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0247, 0x0247 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0248, 0x0248 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER J WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0249, 0x0249 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER J WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x024A, 0x024A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER SMALL Q WITH HOOK TAIL
+    Prop<::unicode::General_Category>{ { 0x024B, 0x024B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Q WITH HOOK TAIL
+    Prop<::unicode::General_Category>{ { 0x024C, 0x024C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x024D, 0x024D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x024E, 0x024E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x024F, 0x0293 }, ::unicode::General_Category::Lowercase_Letter }, // [69] LATIN SMALL LETTER Y WITH STROKE..LATIN SMALL LETTER EZH WITH CURL
+    Prop<::unicode::General_Category>{ { 0x0294, 0x0294 }, ::unicode::General_Category::Other_Letter }, // LATIN LETTER GLOTTAL STOP
+    Prop<::unicode::General_Category>{ { 0x0295, 0x02AF }, ::unicode::General_Category::Lowercase_Letter }, // [27] LATIN LETTER PHARYNGEAL VOICED FRICATIVE..LATIN SMALL LETTER TURNED H WITH FISHHOOK AND TAIL
+    Prop<::unicode::General_Category>{ { 0x02B0, 0x02C1 }, ::unicode::General_Category::Modifier_Letter }, // [18] MODIFIER LETTER SMALL H..MODIFIER LETTER REVERSED GLOTTAL STOP
+    Prop<::unicode::General_Category>{ { 0x02C2, 0x02C5 }, ::unicode::General_Category::Modifier_Symbol }, // [4] MODIFIER LETTER LEFT ARROWHEAD..MODIFIER LETTER DOWN ARROWHEAD
+    Prop<::unicode::General_Category>{ { 0x02C6, 0x02D1 }, ::unicode::General_Category::Modifier_Letter }, // [12] MODIFIER LETTER CIRCUMFLEX ACCENT..MODIFIER LETTER HALF TRIANGULAR COLON
+    Prop<::unicode::General_Category>{ { 0x02D2, 0x02DF }, ::unicode::General_Category::Modifier_Symbol }, // [14] MODIFIER LETTER CENTRED RIGHT HALF RING..MODIFIER LETTER CROSS ACCENT
+    Prop<::unicode::General_Category>{ { 0x02E0, 0x02E4 }, ::unicode::General_Category::Modifier_Letter }, // [5] MODIFIER LETTER SMALL GAMMA..MODIFIER LETTER SMALL REVERSED GLOTTAL STOP
+    Prop<::unicode::General_Category>{ { 0x02E5, 0x02EB }, ::unicode::General_Category::Modifier_Symbol }, // [7] MODIFIER LETTER EXTRA-HIGH TONE BAR..MODIFIER LETTER YANG DEPARTING TONE MARK
+    Prop<::unicode::General_Category>{ { 0x02EC, 0x02EC }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER VOICING
+    Prop<::unicode::General_Category>{ { 0x02ED, 0x02ED }, ::unicode::General_Category::Modifier_Symbol }, // MODIFIER LETTER UNASPIRATED
+    Prop<::unicode::General_Category>{ { 0x02EE, 0x02EE }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER DOUBLE APOSTROPHE
+    Prop<::unicode::General_Category>{ { 0x02EF, 0x02FF }, ::unicode::General_Category::Modifier_Symbol }, // [17] MODIFIER LETTER LOW DOWN ARROWHEAD..MODIFIER LETTER LOW LEFT ARROW
+    Prop<::unicode::General_Category>{ { 0x0300, 0x036F }, ::unicode::General_Category::Nonspacing_Mark }, // [112] COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
+    Prop<::unicode::General_Category>{ { 0x0370, 0x0370 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER HETA
+    Prop<::unicode::General_Category>{ { 0x0371, 0x0371 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER HETA
+    Prop<::unicode::General_Category>{ { 0x0372, 0x0372 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER ARCHAIC SAMPI
+    Prop<::unicode::General_Category>{ { 0x0373, 0x0373 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER ARCHAIC SAMPI
+    Prop<::unicode::General_Category>{ { 0x0374, 0x0374 }, ::unicode::General_Category::Modifier_Letter }, // GREEK NUMERAL SIGN
+    Prop<::unicode::General_Category>{ { 0x0375, 0x0375 }, ::unicode::General_Category::Modifier_Symbol }, // GREEK LOWER NUMERAL SIGN
+    Prop<::unicode::General_Category>{ { 0x0376, 0x0376 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER PAMPHYLIAN DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x0377, 0x0377 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER PAMPHYLIAN DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x0378, 0x0379 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0378>..<reserved-0379>
+    Prop<::unicode::General_Category>{ { 0x037A, 0x037A }, ::unicode::General_Category::Modifier_Letter }, // GREEK YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x037B, 0x037D }, ::unicode::General_Category::Lowercase_Letter }, // [3] GREEK SMALL REVERSED LUNATE SIGMA SYMBOL..GREEK SMALL REVERSED DOTTED LUNATE SIGMA SYMBOL
+    Prop<::unicode::General_Category>{ { 0x037E, 0x037E }, ::unicode::General_Category::Other_Punctuation }, // GREEK QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x037F, 0x037F }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER YOT
+    Prop<::unicode::General_Category>{ { 0x0380, 0x0383 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0380>..<reserved-0383>
+    Prop<::unicode::General_Category>{ { 0x0384, 0x0385 }, ::unicode::General_Category::Modifier_Symbol }, // [2] GREEK TONOS..GREEK DIALYTIKA TONOS
+    Prop<::unicode::General_Category>{ { 0x0386, 0x0386 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER ALPHA WITH TONOS
+    Prop<::unicode::General_Category>{ { 0x0387, 0x0387 }, ::unicode::General_Category::Other_Punctuation }, // GREEK ANO TELEIA
+    Prop<::unicode::General_Category>{ { 0x0388, 0x038A }, ::unicode::General_Category::Uppercase_Letter }, // [3] GREEK CAPITAL LETTER EPSILON WITH TONOS..GREEK CAPITAL LETTER IOTA WITH TONOS
+    Prop<::unicode::General_Category>{ { 0x038B, 0x038B }, ::unicode::General_Category::Unassigned }, // <reserved-038B>
+    Prop<::unicode::General_Category>{ { 0x038C, 0x038C }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER OMICRON WITH TONOS
+    Prop<::unicode::General_Category>{ { 0x038D, 0x038D }, ::unicode::General_Category::Unassigned }, // <reserved-038D>
+    Prop<::unicode::General_Category>{ { 0x038E, 0x038F }, ::unicode::General_Category::Uppercase_Letter }, // [2] GREEK CAPITAL LETTER UPSILON WITH TONOS..GREEK CAPITAL LETTER OMEGA WITH TONOS
+    Prop<::unicode::General_Category>{ { 0x0390, 0x0390 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
+    Prop<::unicode::General_Category>{ { 0x0391, 0x03A1 }, ::unicode::General_Category::Uppercase_Letter }, // [17] GREEK CAPITAL LETTER ALPHA..GREEK CAPITAL LETTER RHO
+    Prop<::unicode::General_Category>{ { 0x03A2, 0x03A2 }, ::unicode::General_Category::Unassigned }, // <reserved-03A2>
+    Prop<::unicode::General_Category>{ { 0x03A3, 0x03AB }, ::unicode::General_Category::Uppercase_Letter }, // [9] GREEK CAPITAL LETTER SIGMA..GREEK CAPITAL LETTER UPSILON WITH DIALYTIKA
+    Prop<::unicode::General_Category>{ { 0x03AC, 0x03CE }, ::unicode::General_Category::Lowercase_Letter }, // [35] GREEK SMALL LETTER ALPHA WITH TONOS..GREEK SMALL LETTER OMEGA WITH TONOS
+    Prop<::unicode::General_Category>{ { 0x03CF, 0x03CF }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL KAI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03D0, 0x03D1 }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK BETA SYMBOL..GREEK THETA SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03D2, 0x03D4 }, ::unicode::General_Category::Uppercase_Letter }, // [3] GREEK UPSILON WITH HOOK SYMBOL..GREEK UPSILON WITH DIAERESIS AND HOOK SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03D5, 0x03D7 }, ::unicode::General_Category::Lowercase_Letter }, // [3] GREEK PHI SYMBOL..GREEK KAI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03D8, 0x03D8 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK LETTER ARCHAIC KOPPA
+    Prop<::unicode::General_Category>{ { 0x03D9, 0x03D9 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER ARCHAIC KOPPA
+    Prop<::unicode::General_Category>{ { 0x03DA, 0x03DA }, ::unicode::General_Category::Uppercase_Letter }, // GREEK LETTER STIGMA
+    Prop<::unicode::General_Category>{ { 0x03DB, 0x03DB }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER STIGMA
+    Prop<::unicode::General_Category>{ { 0x03DC, 0x03DC }, ::unicode::General_Category::Uppercase_Letter }, // GREEK LETTER DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x03DD, 0x03DD }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x03DE, 0x03DE }, ::unicode::General_Category::Uppercase_Letter }, // GREEK LETTER KOPPA
+    Prop<::unicode::General_Category>{ { 0x03DF, 0x03DF }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER KOPPA
+    Prop<::unicode::General_Category>{ { 0x03E0, 0x03E0 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK LETTER SAMPI
+    Prop<::unicode::General_Category>{ { 0x03E1, 0x03E1 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER SAMPI
+    Prop<::unicode::General_Category>{ { 0x03E2, 0x03E2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER SHEI
+    Prop<::unicode::General_Category>{ { 0x03E3, 0x03E3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER SHEI
+    Prop<::unicode::General_Category>{ { 0x03E4, 0x03E4 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER FEI
+    Prop<::unicode::General_Category>{ { 0x03E5, 0x03E5 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER FEI
+    Prop<::unicode::General_Category>{ { 0x03E6, 0x03E6 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER KHEI
+    Prop<::unicode::General_Category>{ { 0x03E7, 0x03E7 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER KHEI
+    Prop<::unicode::General_Category>{ { 0x03E8, 0x03E8 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER HORI
+    Prop<::unicode::General_Category>{ { 0x03E9, 0x03E9 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER HORI
+    Prop<::unicode::General_Category>{ { 0x03EA, 0x03EA }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER GANGIA
+    Prop<::unicode::General_Category>{ { 0x03EB, 0x03EB }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER GANGIA
+    Prop<::unicode::General_Category>{ { 0x03EC, 0x03EC }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER SHIMA
+    Prop<::unicode::General_Category>{ { 0x03ED, 0x03ED }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER SHIMA
+    Prop<::unicode::General_Category>{ { 0x03EE, 0x03EE }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DEI
+    Prop<::unicode::General_Category>{ { 0x03EF, 0x03F3 }, ::unicode::General_Category::Lowercase_Letter }, // [5] COPTIC SMALL LETTER DEI..GREEK LETTER YOT
+    Prop<::unicode::General_Category>{ { 0x03F4, 0x03F4 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL THETA SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03F5, 0x03F5 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK LUNATE EPSILON SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03F6, 0x03F6 }, ::unicode::General_Category::Math_Symbol }, // GREEK REVERSED LUNATE EPSILON SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03F7, 0x03F7 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER SHO
+    Prop<::unicode::General_Category>{ { 0x03F8, 0x03F8 }, ::unicode::General_Category::Lowercase_Letter }, // GREEK SMALL LETTER SHO
+    Prop<::unicode::General_Category>{ { 0x03F9, 0x03FA }, ::unicode::General_Category::Uppercase_Letter }, // [2] GREEK CAPITAL LUNATE SIGMA SYMBOL..GREEK CAPITAL LETTER SAN
+    Prop<::unicode::General_Category>{ { 0x03FB, 0x03FC }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK SMALL LETTER SAN..GREEK RHO WITH STROKE SYMBOL
+    Prop<::unicode::General_Category>{ { 0x03FD, 0x042F }, ::unicode::General_Category::Uppercase_Letter }, // [51] GREEK CAPITAL REVERSED LUNATE SIGMA SYMBOL..CYRILLIC CAPITAL LETTER YA
+    Prop<::unicode::General_Category>{ { 0x0430, 0x045F }, ::unicode::General_Category::Lowercase_Letter }, // [48] CYRILLIC SMALL LETTER A..CYRILLIC SMALL LETTER DZHE
+    Prop<::unicode::General_Category>{ { 0x0460, 0x0460 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER OMEGA
+    Prop<::unicode::General_Category>{ { 0x0461, 0x0461 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER OMEGA
+    Prop<::unicode::General_Category>{ { 0x0462, 0x0462 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER YAT
+    Prop<::unicode::General_Category>{ { 0x0463, 0x0463 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER YAT
+    Prop<::unicode::General_Category>{ { 0x0464, 0x0464 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED E
+    Prop<::unicode::General_Category>{ { 0x0465, 0x0465 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED E
+    Prop<::unicode::General_Category>{ { 0x0466, 0x0466 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0x0467, 0x0467 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0x0468, 0x0468 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0x0469, 0x0469 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0x046A, 0x046A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BIG YUS
+    Prop<::unicode::General_Category>{ { 0x046B, 0x046B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BIG YUS
+    Prop<::unicode::General_Category>{ { 0x046C, 0x046C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED BIG YUS
+    Prop<::unicode::General_Category>{ { 0x046D, 0x046D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED BIG YUS
+    Prop<::unicode::General_Category>{ { 0x046E, 0x046E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KSI
+    Prop<::unicode::General_Category>{ { 0x046F, 0x046F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KSI
+    Prop<::unicode::General_Category>{ { 0x0470, 0x0470 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER PSI
+    Prop<::unicode::General_Category>{ { 0x0471, 0x0471 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER PSI
+    Prop<::unicode::General_Category>{ { 0x0472, 0x0472 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER FITA
+    Prop<::unicode::General_Category>{ { 0x0473, 0x0473 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER FITA
+    Prop<::unicode::General_Category>{ { 0x0474, 0x0474 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IZHITSA
+    Prop<::unicode::General_Category>{ { 0x0475, 0x0475 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IZHITSA
+    Prop<::unicode::General_Category>{ { 0x0476, 0x0476 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IZHITSA WITH DOUBLE GRAVE ACCENT
+    Prop<::unicode::General_Category>{ { 0x0477, 0x0477 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IZHITSA WITH DOUBLE GRAVE ACCENT
+    Prop<::unicode::General_Category>{ { 0x0478, 0x0478 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER UK
+    Prop<::unicode::General_Category>{ { 0x0479, 0x0479 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER UK
+    Prop<::unicode::General_Category>{ { 0x047A, 0x047A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ROUND OMEGA
+    Prop<::unicode::General_Category>{ { 0x047B, 0x047B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ROUND OMEGA
+    Prop<::unicode::General_Category>{ { 0x047C, 0x047C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER OMEGA WITH TITLO
+    Prop<::unicode::General_Category>{ { 0x047D, 0x047D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER OMEGA WITH TITLO
+    Prop<::unicode::General_Category>{ { 0x047E, 0x047E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER OT
+    Prop<::unicode::General_Category>{ { 0x047F, 0x047F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER OT
+    Prop<::unicode::General_Category>{ { 0x0480, 0x0480 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOPPA
+    Prop<::unicode::General_Category>{ { 0x0481, 0x0481 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOPPA
+    Prop<::unicode::General_Category>{ { 0x0482, 0x0482 }, ::unicode::General_Category::Other_Symbol }, // CYRILLIC THOUSANDS SIGN
+    Prop<::unicode::General_Category>{ { 0x0483, 0x0487 }, ::unicode::General_Category::Nonspacing_Mark }, // [5] COMBINING CYRILLIC TITLO..COMBINING CYRILLIC POKRYTIE
+    Prop<::unicode::General_Category>{ { 0x0488, 0x0489 }, ::unicode::General_Category::Enclosing_Mark }, // [2] COMBINING CYRILLIC HUNDRED THOUSANDS SIGN..COMBINING CYRILLIC MILLIONS SIGN
+    Prop<::unicode::General_Category>{ { 0x048A, 0x048A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SHORT I WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x048B, 0x048B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SHORT I WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x048C, 0x048C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SEMISOFT SIGN
+    Prop<::unicode::General_Category>{ { 0x048D, 0x048D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SEMISOFT SIGN
+    Prop<::unicode::General_Category>{ { 0x048E, 0x048E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ER WITH TICK
+    Prop<::unicode::General_Category>{ { 0x048F, 0x048F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ER WITH TICK
+    Prop<::unicode::General_Category>{ { 0x0490, 0x0490 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER GHE WITH UPTURN
+    Prop<::unicode::General_Category>{ { 0x0491, 0x0491 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER GHE WITH UPTURN
+    Prop<::unicode::General_Category>{ { 0x0492, 0x0492 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER GHE WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0493, 0x0493 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER GHE WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0494, 0x0494 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER GHE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0495, 0x0495 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER GHE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0496, 0x0496 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0497, 0x0497 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0498, 0x0498 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0499, 0x0499 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x049A, 0x049A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x049B, 0x049B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x049C, 0x049C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KA WITH VERTICAL STROKE
+    Prop<::unicode::General_Category>{ { 0x049D, 0x049D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KA WITH VERTICAL STROKE
+    Prop<::unicode::General_Category>{ { 0x049E, 0x049E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KA WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x049F, 0x049F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KA WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x04A0, 0x04A0 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BASHKIR KA
+    Prop<::unicode::General_Category>{ { 0x04A1, 0x04A1 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BASHKIR KA
+    Prop<::unicode::General_Category>{ { 0x04A2, 0x04A2 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EN WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04A3, 0x04A3 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EN WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04A4, 0x04A4 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LIGATURE EN GHE
+    Prop<::unicode::General_Category>{ { 0x04A5, 0x04A5 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LIGATURE EN GHE
+    Prop<::unicode::General_Category>{ { 0x04A6, 0x04A6 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER PE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x04A7, 0x04A7 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER PE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x04A8, 0x04A8 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ABKHASIAN HA
+    Prop<::unicode::General_Category>{ { 0x04A9, 0x04A9 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ABKHASIAN HA
+    Prop<::unicode::General_Category>{ { 0x04AA, 0x04AA }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ES WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04AB, 0x04AB }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ES WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04AC, 0x04AC }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04AD, 0x04AD }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04AE, 0x04AE }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER STRAIGHT U
+    Prop<::unicode::General_Category>{ { 0x04AF, 0x04AF }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER STRAIGHT U
+    Prop<::unicode::General_Category>{ { 0x04B0, 0x04B0 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER STRAIGHT U WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x04B1, 0x04B1 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER STRAIGHT U WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x04B2, 0x04B2 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER HA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04B3, 0x04B3 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER HA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04B4, 0x04B4 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LIGATURE TE TSE
+    Prop<::unicode::General_Category>{ { 0x04B5, 0x04B5 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LIGATURE TE TSE
+    Prop<::unicode::General_Category>{ { 0x04B6, 0x04B6 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04B7, 0x04B7 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04B8, 0x04B8 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CHE WITH VERTICAL STROKE
+    Prop<::unicode::General_Category>{ { 0x04B9, 0x04B9 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CHE WITH VERTICAL STROKE
+    Prop<::unicode::General_Category>{ { 0x04BA, 0x04BA }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SHHA
+    Prop<::unicode::General_Category>{ { 0x04BB, 0x04BB }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SHHA
+    Prop<::unicode::General_Category>{ { 0x04BC, 0x04BC }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ABKHASIAN CHE
+    Prop<::unicode::General_Category>{ { 0x04BD, 0x04BD }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ABKHASIAN CHE
+    Prop<::unicode::General_Category>{ { 0x04BE, 0x04BE }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ABKHASIAN CHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04BF, 0x04BF }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ABKHASIAN CHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04C0, 0x04C1 }, ::unicode::General_Category::Uppercase_Letter }, // [2] CYRILLIC LETTER PALOCHKA..CYRILLIC CAPITAL LETTER ZHE WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04C2, 0x04C2 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZHE WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04C3, 0x04C3 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KA WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04C4, 0x04C4 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KA WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04C5, 0x04C5 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EL WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x04C6, 0x04C6 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EL WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x04C7, 0x04C7 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EN WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04C8, 0x04C8 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EN WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04C9, 0x04C9 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EN WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x04CA, 0x04CA }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EN WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x04CB, 0x04CB }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KHAKASSIAN CHE
+    Prop<::unicode::General_Category>{ { 0x04CC, 0x04CC }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KHAKASSIAN CHE
+    Prop<::unicode::General_Category>{ { 0x04CD, 0x04CD }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EM WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x04CE, 0x04CF }, ::unicode::General_Category::Lowercase_Letter }, // [2] CYRILLIC SMALL LETTER EM WITH TAIL..CYRILLIC SMALL LETTER PALOCHKA
+    Prop<::unicode::General_Category>{ { 0x04D0, 0x04D0 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER A WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04D1, 0x04D1 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER A WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04D2, 0x04D2 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER A WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04D3, 0x04D3 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER A WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04D4, 0x04D4 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LIGATURE A IE
+    Prop<::unicode::General_Category>{ { 0x04D5, 0x04D5 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LIGATURE A IE
+    Prop<::unicode::General_Category>{ { 0x04D6, 0x04D6 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IE WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04D7, 0x04D7 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IE WITH BREVE
+    Prop<::unicode::General_Category>{ { 0x04D8, 0x04D8 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SCHWA
+    Prop<::unicode::General_Category>{ { 0x04D9, 0x04D9 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SCHWA
+    Prop<::unicode::General_Category>{ { 0x04DA, 0x04DA }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SCHWA WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04DB, 0x04DB }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SCHWA WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04DC, 0x04DC }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZHE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04DD, 0x04DD }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZHE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04DE, 0x04DE }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04DF, 0x04DF }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04E0, 0x04E0 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ABKHASIAN DZE
+    Prop<::unicode::General_Category>{ { 0x04E1, 0x04E1 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ABKHASIAN DZE
+    Prop<::unicode::General_Category>{ { 0x04E2, 0x04E2 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER I WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x04E3, 0x04E3 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER I WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x04E4, 0x04E4 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER I WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04E5, 0x04E5 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER I WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04E6, 0x04E6 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04E7, 0x04E7 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04E8, 0x04E8 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BARRED O
+    Prop<::unicode::General_Category>{ { 0x04E9, 0x04E9 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BARRED O
+    Prop<::unicode::General_Category>{ { 0x04EA, 0x04EA }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BARRED O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04EB, 0x04EB }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BARRED O WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04EC, 0x04EC }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER E WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04ED, 0x04ED }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER E WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04EE, 0x04EE }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER U WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x04EF, 0x04EF }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER U WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x04F0, 0x04F0 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER U WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04F1, 0x04F1 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER U WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04F2, 0x04F2 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER U WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x04F3, 0x04F3 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER U WITH DOUBLE ACUTE
+    Prop<::unicode::General_Category>{ { 0x04F4, 0x04F4 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CHE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04F5, 0x04F5 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CHE WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04F6, 0x04F6 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER GHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04F7, 0x04F7 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER GHE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x04F8, 0x04F8 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER YERU WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04F9, 0x04F9 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER YERU WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x04FA, 0x04FA }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER GHE WITH STROKE AND HOOK
+    Prop<::unicode::General_Category>{ { 0x04FB, 0x04FB }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER GHE WITH STROKE AND HOOK
+    Prop<::unicode::General_Category>{ { 0x04FC, 0x04FC }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER HA WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04FD, 0x04FD }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER HA WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x04FE, 0x04FE }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER HA WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x04FF, 0x04FF }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER HA WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0500, 0x0500 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI DE
+    Prop<::unicode::General_Category>{ { 0x0501, 0x0501 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI DE
+    Prop<::unicode::General_Category>{ { 0x0502, 0x0502 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI DJE
+    Prop<::unicode::General_Category>{ { 0x0503, 0x0503 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI DJE
+    Prop<::unicode::General_Category>{ { 0x0504, 0x0504 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI ZJE
+    Prop<::unicode::General_Category>{ { 0x0505, 0x0505 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI ZJE
+    Prop<::unicode::General_Category>{ { 0x0506, 0x0506 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI DZJE
+    Prop<::unicode::General_Category>{ { 0x0507, 0x0507 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI DZJE
+    Prop<::unicode::General_Category>{ { 0x0508, 0x0508 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI LJE
+    Prop<::unicode::General_Category>{ { 0x0509, 0x0509 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI LJE
+    Prop<::unicode::General_Category>{ { 0x050A, 0x050A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI NJE
+    Prop<::unicode::General_Category>{ { 0x050B, 0x050B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI NJE
+    Prop<::unicode::General_Category>{ { 0x050C, 0x050C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI SJE
+    Prop<::unicode::General_Category>{ { 0x050D, 0x050D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI SJE
+    Prop<::unicode::General_Category>{ { 0x050E, 0x050E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER KOMI TJE
+    Prop<::unicode::General_Category>{ { 0x050F, 0x050F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER KOMI TJE
+    Prop<::unicode::General_Category>{ { 0x0510, 0x0510 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER REVERSED ZE
+    Prop<::unicode::General_Category>{ { 0x0511, 0x0511 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER REVERSED ZE
+    Prop<::unicode::General_Category>{ { 0x0512, 0x0512 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EL WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0513, 0x0513 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EL WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x0514, 0x0514 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER LHA
+    Prop<::unicode::General_Category>{ { 0x0515, 0x0515 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER LHA
+    Prop<::unicode::General_Category>{ { 0x0516, 0x0516 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER RHA
+    Prop<::unicode::General_Category>{ { 0x0517, 0x0517 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER RHA
+    Prop<::unicode::General_Category>{ { 0x0518, 0x0518 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER YAE
+    Prop<::unicode::General_Category>{ { 0x0519, 0x0519 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER YAE
+    Prop<::unicode::General_Category>{ { 0x051A, 0x051A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER QA
+    Prop<::unicode::General_Category>{ { 0x051B, 0x051B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER QA
+    Prop<::unicode::General_Category>{ { 0x051C, 0x051C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER WE
+    Prop<::unicode::General_Category>{ { 0x051D, 0x051D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER WE
+    Prop<::unicode::General_Category>{ { 0x051E, 0x051E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ALEUT KA
+    Prop<::unicode::General_Category>{ { 0x051F, 0x051F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ALEUT KA
+    Prop<::unicode::General_Category>{ { 0x0520, 0x0520 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EL WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0521, 0x0521 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EL WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0522, 0x0522 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EN WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0523, 0x0523 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EN WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0x0524, 0x0524 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER PE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0525, 0x0525 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER PE WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0526, 0x0526 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SHHA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0527, 0x0527 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SHHA WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0528, 0x0528 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EN WITH LEFT HOOK
+    Prop<::unicode::General_Category>{ { 0x0529, 0x0529 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EN WITH LEFT HOOK
+    Prop<::unicode::General_Category>{ { 0x052A, 0x052A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DZZHE
+    Prop<::unicode::General_Category>{ { 0x052B, 0x052B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DZZHE
+    Prop<::unicode::General_Category>{ { 0x052C, 0x052C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DCHE
+    Prop<::unicode::General_Category>{ { 0x052D, 0x052D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DCHE
+    Prop<::unicode::General_Category>{ { 0x052E, 0x052E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER EL WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x052F, 0x052F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER EL WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x0530, 0x0530 }, ::unicode::General_Category::Unassigned }, // <reserved-0530>
+    Prop<::unicode::General_Category>{ { 0x0531, 0x0556 }, ::unicode::General_Category::Uppercase_Letter }, // [38] ARMENIAN CAPITAL LETTER AYB..ARMENIAN CAPITAL LETTER FEH
+    Prop<::unicode::General_Category>{ { 0x0557, 0x0558 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0557>..<reserved-0558>
+    Prop<::unicode::General_Category>{ { 0x0559, 0x0559 }, ::unicode::General_Category::Modifier_Letter }, // ARMENIAN MODIFIER LETTER LEFT HALF RING
+    Prop<::unicode::General_Category>{ { 0x055A, 0x055F }, ::unicode::General_Category::Other_Punctuation }, // [6] ARMENIAN APOSTROPHE..ARMENIAN ABBREVIATION MARK
+    Prop<::unicode::General_Category>{ { 0x0560, 0x0588 }, ::unicode::General_Category::Lowercase_Letter }, // [41] ARMENIAN SMALL LETTER TURNED AYB..ARMENIAN SMALL LETTER YI WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x0589, 0x0589 }, ::unicode::General_Category::Other_Punctuation }, // ARMENIAN FULL STOP
+    Prop<::unicode::General_Category>{ { 0x058A, 0x058A }, ::unicode::General_Category::Dash_Punctuation }, // ARMENIAN HYPHEN
+    Prop<::unicode::General_Category>{ { 0x058B, 0x058C }, ::unicode::General_Category::Unassigned }, // [2] <reserved-058B>..<reserved-058C>
+    Prop<::unicode::General_Category>{ { 0x058D, 0x058E }, ::unicode::General_Category::Other_Symbol }, // [2] RIGHT-FACING ARMENIAN ETERNITY SIGN..LEFT-FACING ARMENIAN ETERNITY SIGN
+    Prop<::unicode::General_Category>{ { 0x058F, 0x058F }, ::unicode::General_Category::Currency_Symbol }, // ARMENIAN DRAM SIGN
+    Prop<::unicode::General_Category>{ { 0x0590, 0x0590 }, ::unicode::General_Category::Unassigned }, // <reserved-0590>
+    Prop<::unicode::General_Category>{ { 0x0591, 0x05BD }, ::unicode::General_Category::Nonspacing_Mark }, // [45] HEBREW ACCENT ETNAHTA..HEBREW POINT METEG
+    Prop<::unicode::General_Category>{ { 0x05BE, 0x05BE }, ::unicode::General_Category::Dash_Punctuation }, // HEBREW PUNCTUATION MAQAF
+    Prop<::unicode::General_Category>{ { 0x05BF, 0x05BF }, ::unicode::General_Category::Nonspacing_Mark }, // HEBREW POINT RAFE
+    Prop<::unicode::General_Category>{ { 0x05C0, 0x05C0 }, ::unicode::General_Category::Other_Punctuation }, // HEBREW PUNCTUATION PASEQ
+    Prop<::unicode::General_Category>{ { 0x05C1, 0x05C2 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] HEBREW POINT SHIN DOT..HEBREW POINT SIN DOT
+    Prop<::unicode::General_Category>{ { 0x05C3, 0x05C3 }, ::unicode::General_Category::Other_Punctuation }, // HEBREW PUNCTUATION SOF PASUQ
+    Prop<::unicode::General_Category>{ { 0x05C4, 0x05C5 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] HEBREW MARK UPPER DOT..HEBREW MARK LOWER DOT
+    Prop<::unicode::General_Category>{ { 0x05C6, 0x05C6 }, ::unicode::General_Category::Other_Punctuation }, // HEBREW PUNCTUATION NUN HAFUKHA
+    Prop<::unicode::General_Category>{ { 0x05C7, 0x05C7 }, ::unicode::General_Category::Nonspacing_Mark }, // HEBREW POINT QAMATS QATAN
+    Prop<::unicode::General_Category>{ { 0x05C8, 0x05CF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-05C8>..<reserved-05CF>
+    Prop<::unicode::General_Category>{ { 0x05D0, 0x05EA }, ::unicode::General_Category::Other_Letter }, // [27] HEBREW LETTER ALEF..HEBREW LETTER TAV
+    Prop<::unicode::General_Category>{ { 0x05EB, 0x05EE }, ::unicode::General_Category::Unassigned }, // [4] <reserved-05EB>..<reserved-05EE>
+    Prop<::unicode::General_Category>{ { 0x05EF, 0x05F2 }, ::unicode::General_Category::Other_Letter }, // [4] HEBREW YOD TRIANGLE..HEBREW LIGATURE YIDDISH DOUBLE YOD
+    Prop<::unicode::General_Category>{ { 0x05F3, 0x05F4 }, ::unicode::General_Category::Other_Punctuation }, // [2] HEBREW PUNCTUATION GERESH..HEBREW PUNCTUATION GERSHAYIM
+    Prop<::unicode::General_Category>{ { 0x05F5, 0x05FF }, ::unicode::General_Category::Unassigned }, // [11] <reserved-05F5>..<reserved-05FF>
+    Prop<::unicode::General_Category>{ { 0x0600, 0x0605 }, ::unicode::General_Category::Format }, // [6] ARABIC NUMBER SIGN..ARABIC NUMBER MARK ABOVE
+    Prop<::unicode::General_Category>{ { 0x0606, 0x0608 }, ::unicode::General_Category::Math_Symbol }, // [3] ARABIC-INDIC CUBE ROOT..ARABIC RAY
+    Prop<::unicode::General_Category>{ { 0x0609, 0x060A }, ::unicode::General_Category::Other_Punctuation }, // [2] ARABIC-INDIC PER MILLE SIGN..ARABIC-INDIC PER TEN THOUSAND SIGN
+    Prop<::unicode::General_Category>{ { 0x060B, 0x060B }, ::unicode::General_Category::Currency_Symbol }, // AFGHANI SIGN
+    Prop<::unicode::General_Category>{ { 0x060C, 0x060D }, ::unicode::General_Category::Other_Punctuation }, // [2] ARABIC COMMA..ARABIC DATE SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x060E, 0x060F }, ::unicode::General_Category::Other_Symbol }, // [2] ARABIC POETIC VERSE SIGN..ARABIC SIGN MISRA
+    Prop<::unicode::General_Category>{ { 0x0610, 0x061A }, ::unicode::General_Category::Nonspacing_Mark }, // [11] ARABIC SIGN SALLALLAHOU ALAYHE WASSALLAM..ARABIC SMALL KASRA
+    Prop<::unicode::General_Category>{ { 0x061B, 0x061B }, ::unicode::General_Category::Other_Punctuation }, // ARABIC SEMICOLON
+    Prop<::unicode::General_Category>{ { 0x061C, 0x061C }, ::unicode::General_Category::Format }, // ARABIC LETTER MARK
+    Prop<::unicode::General_Category>{ { 0x061D, 0x061D }, ::unicode::General_Category::Unassigned }, // <reserved-061D>
+    Prop<::unicode::General_Category>{ { 0x061E, 0x061F }, ::unicode::General_Category::Other_Punctuation }, // [2] ARABIC TRIPLE DOT PUNCTUATION MARK..ARABIC QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x0620, 0x063F }, ::unicode::General_Category::Other_Letter }, // [32] ARABIC LETTER KASHMIRI YEH..ARABIC LETTER FARSI YEH WITH THREE DOTS ABOVE
+    Prop<::unicode::General_Category>{ { 0x0640, 0x0640 }, ::unicode::General_Category::Modifier_Letter }, // ARABIC TATWEEL
+    Prop<::unicode::General_Category>{ { 0x0641, 0x064A }, ::unicode::General_Category::Other_Letter }, // [10] ARABIC LETTER FEH..ARABIC LETTER YEH
+    Prop<::unicode::General_Category>{ { 0x064B, 0x065F }, ::unicode::General_Category::Nonspacing_Mark }, // [21] ARABIC FATHATAN..ARABIC WAVY HAMZA BELOW
+    Prop<::unicode::General_Category>{ { 0x0660, 0x0669 }, ::unicode::General_Category::Decimal_Number }, // [10] ARABIC-INDIC DIGIT ZERO..ARABIC-INDIC DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x066A, 0x066D }, ::unicode::General_Category::Other_Punctuation }, // [4] ARABIC PERCENT SIGN..ARABIC FIVE POINTED STAR
+    Prop<::unicode::General_Category>{ { 0x066E, 0x066F }, ::unicode::General_Category::Other_Letter }, // [2] ARABIC LETTER DOTLESS BEH..ARABIC LETTER DOTLESS QAF
+    Prop<::unicode::General_Category>{ { 0x0670, 0x0670 }, ::unicode::General_Category::Nonspacing_Mark }, // ARABIC LETTER SUPERSCRIPT ALEF
+    Prop<::unicode::General_Category>{ { 0x0671, 0x06D3 }, ::unicode::General_Category::Other_Letter }, // [99] ARABIC LETTER ALEF WASLA..ARABIC LETTER YEH BARREE WITH HAMZA ABOVE
+    Prop<::unicode::General_Category>{ { 0x06D4, 0x06D4 }, ::unicode::General_Category::Other_Punctuation }, // ARABIC FULL STOP
+    Prop<::unicode::General_Category>{ { 0x06D5, 0x06D5 }, ::unicode::General_Category::Other_Letter }, // ARABIC LETTER AE
+    Prop<::unicode::General_Category>{ { 0x06D6, 0x06DC }, ::unicode::General_Category::Nonspacing_Mark }, // [7] ARABIC SMALL HIGH LIGATURE SAD WITH LAM WITH ALEF MAKSURA..ARABIC SMALL HIGH SEEN
+    Prop<::unicode::General_Category>{ { 0x06DD, 0x06DD }, ::unicode::General_Category::Format }, // ARABIC END OF AYAH
+    Prop<::unicode::General_Category>{ { 0x06DE, 0x06DE }, ::unicode::General_Category::Other_Symbol }, // ARABIC START OF RUB EL HIZB
+    Prop<::unicode::General_Category>{ { 0x06DF, 0x06E4 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] ARABIC SMALL HIGH ROUNDED ZERO..ARABIC SMALL HIGH MADDA
+    Prop<::unicode::General_Category>{ { 0x06E5, 0x06E6 }, ::unicode::General_Category::Modifier_Letter }, // [2] ARABIC SMALL WAW..ARABIC SMALL YEH
+    Prop<::unicode::General_Category>{ { 0x06E7, 0x06E8 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] ARABIC SMALL HIGH YEH..ARABIC SMALL HIGH NOON
+    Prop<::unicode::General_Category>{ { 0x06E9, 0x06E9 }, ::unicode::General_Category::Other_Symbol }, // ARABIC PLACE OF SAJDAH
+    Prop<::unicode::General_Category>{ { 0x06EA, 0x06ED }, ::unicode::General_Category::Nonspacing_Mark }, // [4] ARABIC EMPTY CENTRE LOW STOP..ARABIC SMALL LOW MEEM
+    Prop<::unicode::General_Category>{ { 0x06EE, 0x06EF }, ::unicode::General_Category::Other_Letter }, // [2] ARABIC LETTER DAL WITH INVERTED V..ARABIC LETTER REH WITH INVERTED V
+    Prop<::unicode::General_Category>{ { 0x06F0, 0x06F9 }, ::unicode::General_Category::Decimal_Number }, // [10] EXTENDED ARABIC-INDIC DIGIT ZERO..EXTENDED ARABIC-INDIC DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x06FA, 0x06FC }, ::unicode::General_Category::Other_Letter }, // [3] ARABIC LETTER SHEEN WITH DOT BELOW..ARABIC LETTER GHAIN WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x06FD, 0x06FE }, ::unicode::General_Category::Other_Symbol }, // [2] ARABIC SIGN SINDHI AMPERSAND..ARABIC SIGN SINDHI POSTPOSITION MEN
+    Prop<::unicode::General_Category>{ { 0x06FF, 0x06FF }, ::unicode::General_Category::Other_Letter }, // ARABIC LETTER HEH WITH INVERTED V
+    Prop<::unicode::General_Category>{ { 0x0700, 0x070D }, ::unicode::General_Category::Other_Punctuation }, // [14] SYRIAC END OF PARAGRAPH..SYRIAC HARKLEAN ASTERISCUS
+    Prop<::unicode::General_Category>{ { 0x070E, 0x070E }, ::unicode::General_Category::Unassigned }, // <reserved-070E>
+    Prop<::unicode::General_Category>{ { 0x070F, 0x070F }, ::unicode::General_Category::Format }, // SYRIAC ABBREVIATION MARK
+    Prop<::unicode::General_Category>{ { 0x0710, 0x0710 }, ::unicode::General_Category::Other_Letter }, // SYRIAC LETTER ALAPH
+    Prop<::unicode::General_Category>{ { 0x0711, 0x0711 }, ::unicode::General_Category::Nonspacing_Mark }, // SYRIAC LETTER SUPERSCRIPT ALAPH
+    Prop<::unicode::General_Category>{ { 0x0712, 0x072F }, ::unicode::General_Category::Other_Letter }, // [30] SYRIAC LETTER BETH..SYRIAC LETTER PERSIAN DHALATH
+    Prop<::unicode::General_Category>{ { 0x0730, 0x074A }, ::unicode::General_Category::Nonspacing_Mark }, // [27] SYRIAC PTHAHA ABOVE..SYRIAC BARREKH
+    Prop<::unicode::General_Category>{ { 0x074B, 0x074C }, ::unicode::General_Category::Unassigned }, // [2] <reserved-074B>..<reserved-074C>
+    Prop<::unicode::General_Category>{ { 0x074D, 0x07A5 }, ::unicode::General_Category::Other_Letter }, // [89] SYRIAC LETTER SOGDIAN ZHAIN..THAANA LETTER WAAVU
+    Prop<::unicode::General_Category>{ { 0x07A6, 0x07B0 }, ::unicode::General_Category::Nonspacing_Mark }, // [11] THAANA ABAFILI..THAANA SUKUN
+    Prop<::unicode::General_Category>{ { 0x07B1, 0x07B1 }, ::unicode::General_Category::Other_Letter }, // THAANA LETTER NAA
+    Prop<::unicode::General_Category>{ { 0x07B2, 0x07BF }, ::unicode::General_Category::Unassigned }, // [14] <reserved-07B2>..<reserved-07BF>
+    Prop<::unicode::General_Category>{ { 0x07C0, 0x07C9 }, ::unicode::General_Category::Decimal_Number }, // [10] NKO DIGIT ZERO..NKO DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x07CA, 0x07EA }, ::unicode::General_Category::Other_Letter }, // [33] NKO LETTER A..NKO LETTER JONA RA
+    Prop<::unicode::General_Category>{ { 0x07EB, 0x07F3 }, ::unicode::General_Category::Nonspacing_Mark }, // [9] NKO COMBINING SHORT HIGH TONE..NKO COMBINING DOUBLE DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x07F4, 0x07F5 }, ::unicode::General_Category::Modifier_Letter }, // [2] NKO HIGH TONE APOSTROPHE..NKO LOW TONE APOSTROPHE
+    Prop<::unicode::General_Category>{ { 0x07F6, 0x07F6 }, ::unicode::General_Category::Other_Symbol }, // NKO SYMBOL OO DENNEN
+    Prop<::unicode::General_Category>{ { 0x07F7, 0x07F9 }, ::unicode::General_Category::Other_Punctuation }, // [3] NKO SYMBOL GBAKURUNEN..NKO EXCLAMATION MARK
+    Prop<::unicode::General_Category>{ { 0x07FA, 0x07FA }, ::unicode::General_Category::Modifier_Letter }, // NKO LAJANYALAN
+    Prop<::unicode::General_Category>{ { 0x07FB, 0x07FC }, ::unicode::General_Category::Unassigned }, // [2] <reserved-07FB>..<reserved-07FC>
+    Prop<::unicode::General_Category>{ { 0x07FD, 0x07FD }, ::unicode::General_Category::Nonspacing_Mark }, // NKO DANTAYALAN
+    Prop<::unicode::General_Category>{ { 0x07FE, 0x07FF }, ::unicode::General_Category::Currency_Symbol }, // [2] NKO DOROME SIGN..NKO TAMAN SIGN
+    Prop<::unicode::General_Category>{ { 0x0800, 0x0815 }, ::unicode::General_Category::Other_Letter }, // [22] SAMARITAN LETTER ALAF..SAMARITAN LETTER TAAF
+    Prop<::unicode::General_Category>{ { 0x0816, 0x0819 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] SAMARITAN MARK IN..SAMARITAN MARK DAGESH
+    Prop<::unicode::General_Category>{ { 0x081A, 0x081A }, ::unicode::General_Category::Modifier_Letter }, // SAMARITAN MODIFIER LETTER EPENTHETIC YUT
+    Prop<::unicode::General_Category>{ { 0x081B, 0x0823 }, ::unicode::General_Category::Nonspacing_Mark }, // [9] SAMARITAN MARK EPENTHETIC YUT..SAMARITAN VOWEL SIGN A
+    Prop<::unicode::General_Category>{ { 0x0824, 0x0824 }, ::unicode::General_Category::Modifier_Letter }, // SAMARITAN MODIFIER LETTER SHORT A
+    Prop<::unicode::General_Category>{ { 0x0825, 0x0827 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] SAMARITAN VOWEL SIGN SHORT A..SAMARITAN VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x0828, 0x0828 }, ::unicode::General_Category::Modifier_Letter }, // SAMARITAN MODIFIER LETTER I
+    Prop<::unicode::General_Category>{ { 0x0829, 0x082D }, ::unicode::General_Category::Nonspacing_Mark }, // [5] SAMARITAN VOWEL SIGN LONG I..SAMARITAN MARK NEQUDAA
+    Prop<::unicode::General_Category>{ { 0x082E, 0x082F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-082E>..<reserved-082F>
+    Prop<::unicode::General_Category>{ { 0x0830, 0x083E }, ::unicode::General_Category::Other_Punctuation }, // [15] SAMARITAN PUNCTUATION NEQUDAA..SAMARITAN PUNCTUATION ANNAAU
+    Prop<::unicode::General_Category>{ { 0x083F, 0x083F }, ::unicode::General_Category::Unassigned }, // <reserved-083F>
+    Prop<::unicode::General_Category>{ { 0x0840, 0x0858 }, ::unicode::General_Category::Other_Letter }, // [25] MANDAIC LETTER HALQA..MANDAIC LETTER AIN
+    Prop<::unicode::General_Category>{ { 0x0859, 0x085B }, ::unicode::General_Category::Nonspacing_Mark }, // [3] MANDAIC AFFRICATION MARK..MANDAIC GEMINATION MARK
+    Prop<::unicode::General_Category>{ { 0x085C, 0x085D }, ::unicode::General_Category::Unassigned }, // [2] <reserved-085C>..<reserved-085D>
+    Prop<::unicode::General_Category>{ { 0x085E, 0x085E }, ::unicode::General_Category::Other_Punctuation }, // MANDAIC PUNCTUATION
+    Prop<::unicode::General_Category>{ { 0x085F, 0x085F }, ::unicode::General_Category::Unassigned }, // <reserved-085F>
+    Prop<::unicode::General_Category>{ { 0x0860, 0x086A }, ::unicode::General_Category::Other_Letter }, // [11] SYRIAC LETTER MALAYALAM NGA..SYRIAC LETTER MALAYALAM SSA
+    Prop<::unicode::General_Category>{ { 0x086B, 0x089F }, ::unicode::General_Category::Unassigned }, // [53] <reserved-086B>..<reserved-089F>
+    Prop<::unicode::General_Category>{ { 0x08A0, 0x08B4 }, ::unicode::General_Category::Other_Letter }, // [21] ARABIC LETTER BEH WITH SMALL V BELOW..ARABIC LETTER KAF WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x08B5, 0x08B5 }, ::unicode::General_Category::Unassigned }, // <reserved-08B5>
+    Prop<::unicode::General_Category>{ { 0x08B6, 0x08C7 }, ::unicode::General_Category::Other_Letter }, // [18] ARABIC LETTER BEH WITH SMALL MEEM ABOVE..ARABIC LETTER LAM WITH SMALL ARABIC LETTER TAH ABOVE
+    Prop<::unicode::General_Category>{ { 0x08C8, 0x08D2 }, ::unicode::General_Category::Unassigned }, // [11] <reserved-08C8>..<reserved-08D2>
+    Prop<::unicode::General_Category>{ { 0x08D3, 0x08E1 }, ::unicode::General_Category::Nonspacing_Mark }, // [15] ARABIC SMALL LOW WAW..ARABIC SMALL HIGH SIGN SAFHA
+    Prop<::unicode::General_Category>{ { 0x08E2, 0x08E2 }, ::unicode::General_Category::Format }, // ARABIC DISPUTED END OF AYAH
+    Prop<::unicode::General_Category>{ { 0x08E3, 0x0902 }, ::unicode::General_Category::Nonspacing_Mark }, // [32] ARABIC TURNED DAMMA BELOW..DEVANAGARI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x0903, 0x0903 }, ::unicode::General_Category::Spacing_Mark }, // DEVANAGARI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0904, 0x0939 }, ::unicode::General_Category::Other_Letter }, // [54] DEVANAGARI LETTER SHORT A..DEVANAGARI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x093A, 0x093A }, ::unicode::General_Category::Nonspacing_Mark }, // DEVANAGARI VOWEL SIGN OE
+    Prop<::unicode::General_Category>{ { 0x093B, 0x093B }, ::unicode::General_Category::Spacing_Mark }, // DEVANAGARI VOWEL SIGN OOE
+    Prop<::unicode::General_Category>{ { 0x093C, 0x093C }, ::unicode::General_Category::Nonspacing_Mark }, // DEVANAGARI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x093D, 0x093D }, ::unicode::General_Category::Other_Letter }, // DEVANAGARI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x093E, 0x0940 }, ::unicode::General_Category::Spacing_Mark }, // [3] DEVANAGARI VOWEL SIGN AA..DEVANAGARI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0941, 0x0948 }, ::unicode::General_Category::Nonspacing_Mark }, // [8] DEVANAGARI VOWEL SIGN U..DEVANAGARI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0949, 0x094C }, ::unicode::General_Category::Spacing_Mark }, // [4] DEVANAGARI VOWEL SIGN CANDRA O..DEVANAGARI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x094D, 0x094D }, ::unicode::General_Category::Nonspacing_Mark }, // DEVANAGARI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x094E, 0x094F }, ::unicode::General_Category::Spacing_Mark }, // [2] DEVANAGARI VOWEL SIGN PRISHTHAMATRA E..DEVANAGARI VOWEL SIGN AW
+    Prop<::unicode::General_Category>{ { 0x0950, 0x0950 }, ::unicode::General_Category::Other_Letter }, // DEVANAGARI OM
+    Prop<::unicode::General_Category>{ { 0x0951, 0x0957 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] DEVANAGARI STRESS SIGN UDATTA..DEVANAGARI VOWEL SIGN UUE
+    Prop<::unicode::General_Category>{ { 0x0958, 0x0961 }, ::unicode::General_Category::Other_Letter }, // [10] DEVANAGARI LETTER QA..DEVANAGARI LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0962, 0x0963 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] DEVANAGARI VOWEL SIGN VOCALIC L..DEVANAGARI VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0964, 0x0965 }, ::unicode::General_Category::Other_Punctuation }, // [2] DEVANAGARI DANDA..DEVANAGARI DOUBLE DANDA
+    Prop<::unicode::General_Category>{ { 0x0966, 0x096F }, ::unicode::General_Category::Decimal_Number }, // [10] DEVANAGARI DIGIT ZERO..DEVANAGARI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0970, 0x0970 }, ::unicode::General_Category::Other_Punctuation }, // DEVANAGARI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x0971, 0x0971 }, ::unicode::General_Category::Modifier_Letter }, // DEVANAGARI SIGN HIGH SPACING DOT
+    Prop<::unicode::General_Category>{ { 0x0972, 0x0980 }, ::unicode::General_Category::Other_Letter }, // [15] DEVANAGARI LETTER CANDRA A..BENGALI ANJI
+    Prop<::unicode::General_Category>{ { 0x0981, 0x0981 }, ::unicode::General_Category::Nonspacing_Mark }, // BENGALI SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0982, 0x0983 }, ::unicode::General_Category::Spacing_Mark }, // [2] BENGALI SIGN ANUSVARA..BENGALI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0984, 0x0984 }, ::unicode::General_Category::Unassigned }, // <reserved-0984>
+    Prop<::unicode::General_Category>{ { 0x0985, 0x098C }, ::unicode::General_Category::Other_Letter }, // [8] BENGALI LETTER A..BENGALI LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x098D, 0x098E }, ::unicode::General_Category::Unassigned }, // [2] <reserved-098D>..<reserved-098E>
+    Prop<::unicode::General_Category>{ { 0x098F, 0x0990 }, ::unicode::General_Category::Other_Letter }, // [2] BENGALI LETTER E..BENGALI LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0991, 0x0992 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0991>..<reserved-0992>
+    Prop<::unicode::General_Category>{ { 0x0993, 0x09A8 }, ::unicode::General_Category::Other_Letter }, // [22] BENGALI LETTER O..BENGALI LETTER NA
+    Prop<::unicode::General_Category>{ { 0x09A9, 0x09A9 }, ::unicode::General_Category::Unassigned }, // <reserved-09A9>
+    Prop<::unicode::General_Category>{ { 0x09AA, 0x09B0 }, ::unicode::General_Category::Other_Letter }, // [7] BENGALI LETTER PA..BENGALI LETTER RA
+    Prop<::unicode::General_Category>{ { 0x09B1, 0x09B1 }, ::unicode::General_Category::Unassigned }, // <reserved-09B1>
+    Prop<::unicode::General_Category>{ { 0x09B2, 0x09B2 }, ::unicode::General_Category::Other_Letter }, // BENGALI LETTER LA
+    Prop<::unicode::General_Category>{ { 0x09B3, 0x09B5 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-09B3>..<reserved-09B5>
+    Prop<::unicode::General_Category>{ { 0x09B6, 0x09B9 }, ::unicode::General_Category::Other_Letter }, // [4] BENGALI LETTER SHA..BENGALI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x09BA, 0x09BB }, ::unicode::General_Category::Unassigned }, // [2] <reserved-09BA>..<reserved-09BB>
+    Prop<::unicode::General_Category>{ { 0x09BC, 0x09BC }, ::unicode::General_Category::Nonspacing_Mark }, // BENGALI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x09BD, 0x09BD }, ::unicode::General_Category::Other_Letter }, // BENGALI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x09BE, 0x09C0 }, ::unicode::General_Category::Spacing_Mark }, // [3] BENGALI VOWEL SIGN AA..BENGALI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x09C1, 0x09C4 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] BENGALI VOWEL SIGN U..BENGALI VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x09C5, 0x09C6 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-09C5>..<reserved-09C6>
+    Prop<::unicode::General_Category>{ { 0x09C7, 0x09C8 }, ::unicode::General_Category::Spacing_Mark }, // [2] BENGALI VOWEL SIGN E..BENGALI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x09C9, 0x09CA }, ::unicode::General_Category::Unassigned }, // [2] <reserved-09C9>..<reserved-09CA>
+    Prop<::unicode::General_Category>{ { 0x09CB, 0x09CC }, ::unicode::General_Category::Spacing_Mark }, // [2] BENGALI VOWEL SIGN O..BENGALI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x09CD, 0x09CD }, ::unicode::General_Category::Nonspacing_Mark }, // BENGALI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x09CE, 0x09CE }, ::unicode::General_Category::Other_Letter }, // BENGALI LETTER KHANDA TA
+    Prop<::unicode::General_Category>{ { 0x09CF, 0x09D6 }, ::unicode::General_Category::Unassigned }, // [8] <reserved-09CF>..<reserved-09D6>
+    Prop<::unicode::General_Category>{ { 0x09D7, 0x09D7 }, ::unicode::General_Category::Spacing_Mark }, // BENGALI AU LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x09D8, 0x09DB }, ::unicode::General_Category::Unassigned }, // [4] <reserved-09D8>..<reserved-09DB>
+    Prop<::unicode::General_Category>{ { 0x09DC, 0x09DD }, ::unicode::General_Category::Other_Letter }, // [2] BENGALI LETTER RRA..BENGALI LETTER RHA
+    Prop<::unicode::General_Category>{ { 0x09DE, 0x09DE }, ::unicode::General_Category::Unassigned }, // <reserved-09DE>
+    Prop<::unicode::General_Category>{ { 0x09DF, 0x09E1 }, ::unicode::General_Category::Other_Letter }, // [3] BENGALI LETTER YYA..BENGALI LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x09E2, 0x09E3 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] BENGALI VOWEL SIGN VOCALIC L..BENGALI VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x09E4, 0x09E5 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-09E4>..<reserved-09E5>
+    Prop<::unicode::General_Category>{ { 0x09E6, 0x09EF }, ::unicode::General_Category::Decimal_Number }, // [10] BENGALI DIGIT ZERO..BENGALI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x09F0, 0x09F1 }, ::unicode::General_Category::Other_Letter }, // [2] BENGALI LETTER RA WITH MIDDLE DIAGONAL..BENGALI LETTER RA WITH LOWER DIAGONAL
+    Prop<::unicode::General_Category>{ { 0x09F2, 0x09F3 }, ::unicode::General_Category::Currency_Symbol }, // [2] BENGALI RUPEE MARK..BENGALI RUPEE SIGN
+    Prop<::unicode::General_Category>{ { 0x09F4, 0x09F9 }, ::unicode::General_Category::Other_Number }, // [6] BENGALI CURRENCY NUMERATOR ONE..BENGALI CURRENCY DENOMINATOR SIXTEEN
+    Prop<::unicode::General_Category>{ { 0x09FA, 0x09FA }, ::unicode::General_Category::Other_Symbol }, // BENGALI ISSHAR
+    Prop<::unicode::General_Category>{ { 0x09FB, 0x09FB }, ::unicode::General_Category::Currency_Symbol }, // BENGALI GANDA MARK
+    Prop<::unicode::General_Category>{ { 0x09FC, 0x09FC }, ::unicode::General_Category::Other_Letter }, // BENGALI LETTER VEDIC ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x09FD, 0x09FD }, ::unicode::General_Category::Other_Punctuation }, // BENGALI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x09FE, 0x09FE }, ::unicode::General_Category::Nonspacing_Mark }, // BENGALI SANDHI MARK
+    Prop<::unicode::General_Category>{ { 0x09FF, 0x0A00 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-09FF>..<reserved-0A00>
+    Prop<::unicode::General_Category>{ { 0x0A01, 0x0A02 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GURMUKHI SIGN ADAK BINDI..GURMUKHI SIGN BINDI
+    Prop<::unicode::General_Category>{ { 0x0A03, 0x0A03 }, ::unicode::General_Category::Spacing_Mark }, // GURMUKHI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0A04, 0x0A04 }, ::unicode::General_Category::Unassigned }, // <reserved-0A04>
+    Prop<::unicode::General_Category>{ { 0x0A05, 0x0A0A }, ::unicode::General_Category::Other_Letter }, // [6] GURMUKHI LETTER A..GURMUKHI LETTER UU
+    Prop<::unicode::General_Category>{ { 0x0A0B, 0x0A0E }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0A0B>..<reserved-0A0E>
+    Prop<::unicode::General_Category>{ { 0x0A0F, 0x0A10 }, ::unicode::General_Category::Other_Letter }, // [2] GURMUKHI LETTER EE..GURMUKHI LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0A11, 0x0A12 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0A11>..<reserved-0A12>
+    Prop<::unicode::General_Category>{ { 0x0A13, 0x0A28 }, ::unicode::General_Category::Other_Letter }, // [22] GURMUKHI LETTER OO..GURMUKHI LETTER NA
+    Prop<::unicode::General_Category>{ { 0x0A29, 0x0A29 }, ::unicode::General_Category::Unassigned }, // <reserved-0A29>
+    Prop<::unicode::General_Category>{ { 0x0A2A, 0x0A30 }, ::unicode::General_Category::Other_Letter }, // [7] GURMUKHI LETTER PA..GURMUKHI LETTER RA
+    Prop<::unicode::General_Category>{ { 0x0A31, 0x0A31 }, ::unicode::General_Category::Unassigned }, // <reserved-0A31>
+    Prop<::unicode::General_Category>{ { 0x0A32, 0x0A33 }, ::unicode::General_Category::Other_Letter }, // [2] GURMUKHI LETTER LA..GURMUKHI LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x0A34, 0x0A34 }, ::unicode::General_Category::Unassigned }, // <reserved-0A34>
+    Prop<::unicode::General_Category>{ { 0x0A35, 0x0A36 }, ::unicode::General_Category::Other_Letter }, // [2] GURMUKHI LETTER VA..GURMUKHI LETTER SHA
+    Prop<::unicode::General_Category>{ { 0x0A37, 0x0A37 }, ::unicode::General_Category::Unassigned }, // <reserved-0A37>
+    Prop<::unicode::General_Category>{ { 0x0A38, 0x0A39 }, ::unicode::General_Category::Other_Letter }, // [2] GURMUKHI LETTER SA..GURMUKHI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0A3A, 0x0A3B }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0A3A>..<reserved-0A3B>
+    Prop<::unicode::General_Category>{ { 0x0A3C, 0x0A3C }, ::unicode::General_Category::Nonspacing_Mark }, // GURMUKHI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x0A3D, 0x0A3D }, ::unicode::General_Category::Unassigned }, // <reserved-0A3D>
+    Prop<::unicode::General_Category>{ { 0x0A3E, 0x0A40 }, ::unicode::General_Category::Spacing_Mark }, // [3] GURMUKHI VOWEL SIGN AA..GURMUKHI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0A41, 0x0A42 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GURMUKHI VOWEL SIGN U..GURMUKHI VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x0A43, 0x0A46 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0A43>..<reserved-0A46>
+    Prop<::unicode::General_Category>{ { 0x0A47, 0x0A48 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GURMUKHI VOWEL SIGN EE..GURMUKHI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0A49, 0x0A4A }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0A49>..<reserved-0A4A>
+    Prop<::unicode::General_Category>{ { 0x0A4B, 0x0A4D }, ::unicode::General_Category::Nonspacing_Mark }, // [3] GURMUKHI VOWEL SIGN OO..GURMUKHI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0A4E, 0x0A50 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0A4E>..<reserved-0A50>
+    Prop<::unicode::General_Category>{ { 0x0A51, 0x0A51 }, ::unicode::General_Category::Nonspacing_Mark }, // GURMUKHI SIGN UDAAT
+    Prop<::unicode::General_Category>{ { 0x0A52, 0x0A58 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0A52>..<reserved-0A58>
+    Prop<::unicode::General_Category>{ { 0x0A59, 0x0A5C }, ::unicode::General_Category::Other_Letter }, // [4] GURMUKHI LETTER KHHA..GURMUKHI LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x0A5D, 0x0A5D }, ::unicode::General_Category::Unassigned }, // <reserved-0A5D>
+    Prop<::unicode::General_Category>{ { 0x0A5E, 0x0A5E }, ::unicode::General_Category::Other_Letter }, // GURMUKHI LETTER FA
+    Prop<::unicode::General_Category>{ { 0x0A5F, 0x0A65 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0A5F>..<reserved-0A65>
+    Prop<::unicode::General_Category>{ { 0x0A66, 0x0A6F }, ::unicode::General_Category::Decimal_Number }, // [10] GURMUKHI DIGIT ZERO..GURMUKHI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0A70, 0x0A71 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GURMUKHI TIPPI..GURMUKHI ADDAK
+    Prop<::unicode::General_Category>{ { 0x0A72, 0x0A74 }, ::unicode::General_Category::Other_Letter }, // [3] GURMUKHI IRI..GURMUKHI EK ONKAR
+    Prop<::unicode::General_Category>{ { 0x0A75, 0x0A75 }, ::unicode::General_Category::Nonspacing_Mark }, // GURMUKHI SIGN YAKASH
+    Prop<::unicode::General_Category>{ { 0x0A76, 0x0A76 }, ::unicode::General_Category::Other_Punctuation }, // GURMUKHI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x0A77, 0x0A80 }, ::unicode::General_Category::Unassigned }, // [10] <reserved-0A77>..<reserved-0A80>
+    Prop<::unicode::General_Category>{ { 0x0A81, 0x0A82 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GUJARATI SIGN CANDRABINDU..GUJARATI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x0A83, 0x0A83 }, ::unicode::General_Category::Spacing_Mark }, // GUJARATI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0A84, 0x0A84 }, ::unicode::General_Category::Unassigned }, // <reserved-0A84>
+    Prop<::unicode::General_Category>{ { 0x0A85, 0x0A8D }, ::unicode::General_Category::Other_Letter }, // [9] GUJARATI LETTER A..GUJARATI VOWEL CANDRA E
+    Prop<::unicode::General_Category>{ { 0x0A8E, 0x0A8E }, ::unicode::General_Category::Unassigned }, // <reserved-0A8E>
+    Prop<::unicode::General_Category>{ { 0x0A8F, 0x0A91 }, ::unicode::General_Category::Other_Letter }, // [3] GUJARATI LETTER E..GUJARATI VOWEL CANDRA O
+    Prop<::unicode::General_Category>{ { 0x0A92, 0x0A92 }, ::unicode::General_Category::Unassigned }, // <reserved-0A92>
+    Prop<::unicode::General_Category>{ { 0x0A93, 0x0AA8 }, ::unicode::General_Category::Other_Letter }, // [22] GUJARATI LETTER O..GUJARATI LETTER NA
+    Prop<::unicode::General_Category>{ { 0x0AA9, 0x0AA9 }, ::unicode::General_Category::Unassigned }, // <reserved-0AA9>
+    Prop<::unicode::General_Category>{ { 0x0AAA, 0x0AB0 }, ::unicode::General_Category::Other_Letter }, // [7] GUJARATI LETTER PA..GUJARATI LETTER RA
+    Prop<::unicode::General_Category>{ { 0x0AB1, 0x0AB1 }, ::unicode::General_Category::Unassigned }, // <reserved-0AB1>
+    Prop<::unicode::General_Category>{ { 0x0AB2, 0x0AB3 }, ::unicode::General_Category::Other_Letter }, // [2] GUJARATI LETTER LA..GUJARATI LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x0AB4, 0x0AB4 }, ::unicode::General_Category::Unassigned }, // <reserved-0AB4>
+    Prop<::unicode::General_Category>{ { 0x0AB5, 0x0AB9 }, ::unicode::General_Category::Other_Letter }, // [5] GUJARATI LETTER VA..GUJARATI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0ABA, 0x0ABB }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0ABA>..<reserved-0ABB>
+    Prop<::unicode::General_Category>{ { 0x0ABC, 0x0ABC }, ::unicode::General_Category::Nonspacing_Mark }, // GUJARATI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x0ABD, 0x0ABD }, ::unicode::General_Category::Other_Letter }, // GUJARATI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x0ABE, 0x0AC0 }, ::unicode::General_Category::Spacing_Mark }, // [3] GUJARATI VOWEL SIGN AA..GUJARATI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0AC1, 0x0AC5 }, ::unicode::General_Category::Nonspacing_Mark }, // [5] GUJARATI VOWEL SIGN U..GUJARATI VOWEL SIGN CANDRA E
+    Prop<::unicode::General_Category>{ { 0x0AC6, 0x0AC6 }, ::unicode::General_Category::Unassigned }, // <reserved-0AC6>
+    Prop<::unicode::General_Category>{ { 0x0AC7, 0x0AC8 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GUJARATI VOWEL SIGN E..GUJARATI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0AC9, 0x0AC9 }, ::unicode::General_Category::Spacing_Mark }, // GUJARATI VOWEL SIGN CANDRA O
+    Prop<::unicode::General_Category>{ { 0x0ACA, 0x0ACA }, ::unicode::General_Category::Unassigned }, // <reserved-0ACA>
+    Prop<::unicode::General_Category>{ { 0x0ACB, 0x0ACC }, ::unicode::General_Category::Spacing_Mark }, // [2] GUJARATI VOWEL SIGN O..GUJARATI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x0ACD, 0x0ACD }, ::unicode::General_Category::Nonspacing_Mark }, // GUJARATI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0ACE, 0x0ACF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0ACE>..<reserved-0ACF>
+    Prop<::unicode::General_Category>{ { 0x0AD0, 0x0AD0 }, ::unicode::General_Category::Other_Letter }, // GUJARATI OM
+    Prop<::unicode::General_Category>{ { 0x0AD1, 0x0ADF }, ::unicode::General_Category::Unassigned }, // [15] <reserved-0AD1>..<reserved-0ADF>
+    Prop<::unicode::General_Category>{ { 0x0AE0, 0x0AE1 }, ::unicode::General_Category::Other_Letter }, // [2] GUJARATI LETTER VOCALIC RR..GUJARATI LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0AE2, 0x0AE3 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GUJARATI VOWEL SIGN VOCALIC L..GUJARATI VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0AE4, 0x0AE5 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0AE4>..<reserved-0AE5>
+    Prop<::unicode::General_Category>{ { 0x0AE6, 0x0AEF }, ::unicode::General_Category::Decimal_Number }, // [10] GUJARATI DIGIT ZERO..GUJARATI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0AF0, 0x0AF0 }, ::unicode::General_Category::Other_Punctuation }, // GUJARATI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x0AF1, 0x0AF1 }, ::unicode::General_Category::Currency_Symbol }, // GUJARATI RUPEE SIGN
+    Prop<::unicode::General_Category>{ { 0x0AF2, 0x0AF8 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0AF2>..<reserved-0AF8>
+    Prop<::unicode::General_Category>{ { 0x0AF9, 0x0AF9 }, ::unicode::General_Category::Other_Letter }, // GUJARATI LETTER ZHA
+    Prop<::unicode::General_Category>{ { 0x0AFA, 0x0AFF }, ::unicode::General_Category::Nonspacing_Mark }, // [6] GUJARATI SIGN SUKUN..GUJARATI SIGN TWO-CIRCLE NUKTA ABOVE
+    Prop<::unicode::General_Category>{ { 0x0B00, 0x0B00 }, ::unicode::General_Category::Unassigned }, // <reserved-0B00>
+    Prop<::unicode::General_Category>{ { 0x0B01, 0x0B01 }, ::unicode::General_Category::Nonspacing_Mark }, // ORIYA SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0B02, 0x0B03 }, ::unicode::General_Category::Spacing_Mark }, // [2] ORIYA SIGN ANUSVARA..ORIYA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0B04, 0x0B04 }, ::unicode::General_Category::Unassigned }, // <reserved-0B04>
+    Prop<::unicode::General_Category>{ { 0x0B05, 0x0B0C }, ::unicode::General_Category::Other_Letter }, // [8] ORIYA LETTER A..ORIYA LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x0B0D, 0x0B0E }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B0D>..<reserved-0B0E>
+    Prop<::unicode::General_Category>{ { 0x0B0F, 0x0B10 }, ::unicode::General_Category::Other_Letter }, // [2] ORIYA LETTER E..ORIYA LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0B11, 0x0B12 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B11>..<reserved-0B12>
+    Prop<::unicode::General_Category>{ { 0x0B13, 0x0B28 }, ::unicode::General_Category::Other_Letter }, // [22] ORIYA LETTER O..ORIYA LETTER NA
+    Prop<::unicode::General_Category>{ { 0x0B29, 0x0B29 }, ::unicode::General_Category::Unassigned }, // <reserved-0B29>
+    Prop<::unicode::General_Category>{ { 0x0B2A, 0x0B30 }, ::unicode::General_Category::Other_Letter }, // [7] ORIYA LETTER PA..ORIYA LETTER RA
+    Prop<::unicode::General_Category>{ { 0x0B31, 0x0B31 }, ::unicode::General_Category::Unassigned }, // <reserved-0B31>
+    Prop<::unicode::General_Category>{ { 0x0B32, 0x0B33 }, ::unicode::General_Category::Other_Letter }, // [2] ORIYA LETTER LA..ORIYA LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x0B34, 0x0B34 }, ::unicode::General_Category::Unassigned }, // <reserved-0B34>
+    Prop<::unicode::General_Category>{ { 0x0B35, 0x0B39 }, ::unicode::General_Category::Other_Letter }, // [5] ORIYA LETTER VA..ORIYA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0B3A, 0x0B3B }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B3A>..<reserved-0B3B>
+    Prop<::unicode::General_Category>{ { 0x0B3C, 0x0B3C }, ::unicode::General_Category::Nonspacing_Mark }, // ORIYA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x0B3D, 0x0B3D }, ::unicode::General_Category::Other_Letter }, // ORIYA SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x0B3E, 0x0B3E }, ::unicode::General_Category::Spacing_Mark }, // ORIYA VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x0B3F, 0x0B3F }, ::unicode::General_Category::Nonspacing_Mark }, // ORIYA VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0x0B40, 0x0B40 }, ::unicode::General_Category::Spacing_Mark }, // ORIYA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0B41, 0x0B44 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] ORIYA VOWEL SIGN U..ORIYA VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x0B45, 0x0B46 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B45>..<reserved-0B46>
+    Prop<::unicode::General_Category>{ { 0x0B47, 0x0B48 }, ::unicode::General_Category::Spacing_Mark }, // [2] ORIYA VOWEL SIGN E..ORIYA VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0B49, 0x0B4A }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B49>..<reserved-0B4A>
+    Prop<::unicode::General_Category>{ { 0x0B4B, 0x0B4C }, ::unicode::General_Category::Spacing_Mark }, // [2] ORIYA VOWEL SIGN O..ORIYA VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x0B4D, 0x0B4D }, ::unicode::General_Category::Nonspacing_Mark }, // ORIYA SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0B4E, 0x0B54 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0B4E>..<reserved-0B54>
+    Prop<::unicode::General_Category>{ { 0x0B55, 0x0B56 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] ORIYA SIGN OVERLINE..ORIYA AI LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0B57, 0x0B57 }, ::unicode::General_Category::Spacing_Mark }, // ORIYA AU LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0B58, 0x0B5B }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0B58>..<reserved-0B5B>
+    Prop<::unicode::General_Category>{ { 0x0B5C, 0x0B5D }, ::unicode::General_Category::Other_Letter }, // [2] ORIYA LETTER RRA..ORIYA LETTER RHA
+    Prop<::unicode::General_Category>{ { 0x0B5E, 0x0B5E }, ::unicode::General_Category::Unassigned }, // <reserved-0B5E>
+    Prop<::unicode::General_Category>{ { 0x0B5F, 0x0B61 }, ::unicode::General_Category::Other_Letter }, // [3] ORIYA LETTER YYA..ORIYA LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0B62, 0x0B63 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] ORIYA VOWEL SIGN VOCALIC L..ORIYA VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0B64, 0x0B65 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0B64>..<reserved-0B65>
+    Prop<::unicode::General_Category>{ { 0x0B66, 0x0B6F }, ::unicode::General_Category::Decimal_Number }, // [10] ORIYA DIGIT ZERO..ORIYA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0B70, 0x0B70 }, ::unicode::General_Category::Other_Symbol }, // ORIYA ISSHAR
+    Prop<::unicode::General_Category>{ { 0x0B71, 0x0B71 }, ::unicode::General_Category::Other_Letter }, // ORIYA LETTER WA
+    Prop<::unicode::General_Category>{ { 0x0B72, 0x0B77 }, ::unicode::General_Category::Other_Number }, // [6] ORIYA FRACTION ONE QUARTER..ORIYA FRACTION THREE SIXTEENTHS
+    Prop<::unicode::General_Category>{ { 0x0B78, 0x0B81 }, ::unicode::General_Category::Unassigned }, // [10] <reserved-0B78>..<reserved-0B81>
+    Prop<::unicode::General_Category>{ { 0x0B82, 0x0B82 }, ::unicode::General_Category::Nonspacing_Mark }, // TAMIL SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x0B83, 0x0B83 }, ::unicode::General_Category::Other_Letter }, // TAMIL SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0B84, 0x0B84 }, ::unicode::General_Category::Unassigned }, // <reserved-0B84>
+    Prop<::unicode::General_Category>{ { 0x0B85, 0x0B8A }, ::unicode::General_Category::Other_Letter }, // [6] TAMIL LETTER A..TAMIL LETTER UU
+    Prop<::unicode::General_Category>{ { 0x0B8B, 0x0B8D }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0B8B>..<reserved-0B8D>
+    Prop<::unicode::General_Category>{ { 0x0B8E, 0x0B90 }, ::unicode::General_Category::Other_Letter }, // [3] TAMIL LETTER E..TAMIL LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0B91, 0x0B91 }, ::unicode::General_Category::Unassigned }, // <reserved-0B91>
+    Prop<::unicode::General_Category>{ { 0x0B92, 0x0B95 }, ::unicode::General_Category::Other_Letter }, // [4] TAMIL LETTER O..TAMIL LETTER KA
+    Prop<::unicode::General_Category>{ { 0x0B96, 0x0B98 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0B96>..<reserved-0B98>
+    Prop<::unicode::General_Category>{ { 0x0B99, 0x0B9A }, ::unicode::General_Category::Other_Letter }, // [2] TAMIL LETTER NGA..TAMIL LETTER CA
+    Prop<::unicode::General_Category>{ { 0x0B9B, 0x0B9B }, ::unicode::General_Category::Unassigned }, // <reserved-0B9B>
+    Prop<::unicode::General_Category>{ { 0x0B9C, 0x0B9C }, ::unicode::General_Category::Other_Letter }, // TAMIL LETTER JA
+    Prop<::unicode::General_Category>{ { 0x0B9D, 0x0B9D }, ::unicode::General_Category::Unassigned }, // <reserved-0B9D>
+    Prop<::unicode::General_Category>{ { 0x0B9E, 0x0B9F }, ::unicode::General_Category::Other_Letter }, // [2] TAMIL LETTER NYA..TAMIL LETTER TTA
+    Prop<::unicode::General_Category>{ { 0x0BA0, 0x0BA2 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0BA0>..<reserved-0BA2>
+    Prop<::unicode::General_Category>{ { 0x0BA3, 0x0BA4 }, ::unicode::General_Category::Other_Letter }, // [2] TAMIL LETTER NNA..TAMIL LETTER TA
+    Prop<::unicode::General_Category>{ { 0x0BA5, 0x0BA7 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0BA5>..<reserved-0BA7>
+    Prop<::unicode::General_Category>{ { 0x0BA8, 0x0BAA }, ::unicode::General_Category::Other_Letter }, // [3] TAMIL LETTER NA..TAMIL LETTER PA
+    Prop<::unicode::General_Category>{ { 0x0BAB, 0x0BAD }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0BAB>..<reserved-0BAD>
+    Prop<::unicode::General_Category>{ { 0x0BAE, 0x0BB9 }, ::unicode::General_Category::Other_Letter }, // [12] TAMIL LETTER MA..TAMIL LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0BBA, 0x0BBD }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0BBA>..<reserved-0BBD>
+    Prop<::unicode::General_Category>{ { 0x0BBE, 0x0BBF }, ::unicode::General_Category::Spacing_Mark }, // [2] TAMIL VOWEL SIGN AA..TAMIL VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0x0BC0, 0x0BC0 }, ::unicode::General_Category::Nonspacing_Mark }, // TAMIL VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0BC1, 0x0BC2 }, ::unicode::General_Category::Spacing_Mark }, // [2] TAMIL VOWEL SIGN U..TAMIL VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x0BC3, 0x0BC5 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0BC3>..<reserved-0BC5>
+    Prop<::unicode::General_Category>{ { 0x0BC6, 0x0BC8 }, ::unicode::General_Category::Spacing_Mark }, // [3] TAMIL VOWEL SIGN E..TAMIL VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0BC9, 0x0BC9 }, ::unicode::General_Category::Unassigned }, // <reserved-0BC9>
+    Prop<::unicode::General_Category>{ { 0x0BCA, 0x0BCC }, ::unicode::General_Category::Spacing_Mark }, // [3] TAMIL VOWEL SIGN O..TAMIL VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x0BCD, 0x0BCD }, ::unicode::General_Category::Nonspacing_Mark }, // TAMIL SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0BCE, 0x0BCF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0BCE>..<reserved-0BCF>
+    Prop<::unicode::General_Category>{ { 0x0BD0, 0x0BD0 }, ::unicode::General_Category::Other_Letter }, // TAMIL OM
+    Prop<::unicode::General_Category>{ { 0x0BD1, 0x0BD6 }, ::unicode::General_Category::Unassigned }, // [6] <reserved-0BD1>..<reserved-0BD6>
+    Prop<::unicode::General_Category>{ { 0x0BD7, 0x0BD7 }, ::unicode::General_Category::Spacing_Mark }, // TAMIL AU LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0BD8, 0x0BE5 }, ::unicode::General_Category::Unassigned }, // [14] <reserved-0BD8>..<reserved-0BE5>
+    Prop<::unicode::General_Category>{ { 0x0BE6, 0x0BEF }, ::unicode::General_Category::Decimal_Number }, // [10] TAMIL DIGIT ZERO..TAMIL DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0BF0, 0x0BF2 }, ::unicode::General_Category::Other_Number }, // [3] TAMIL NUMBER TEN..TAMIL NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x0BF3, 0x0BF8 }, ::unicode::General_Category::Other_Symbol }, // [6] TAMIL DAY SIGN..TAMIL AS ABOVE SIGN
+    Prop<::unicode::General_Category>{ { 0x0BF9, 0x0BF9 }, ::unicode::General_Category::Currency_Symbol }, // TAMIL RUPEE SIGN
+    Prop<::unicode::General_Category>{ { 0x0BFA, 0x0BFA }, ::unicode::General_Category::Other_Symbol }, // TAMIL NUMBER SIGN
+    Prop<::unicode::General_Category>{ { 0x0BFB, 0x0BFF }, ::unicode::General_Category::Unassigned }, // [5] <reserved-0BFB>..<reserved-0BFF>
+    Prop<::unicode::General_Category>{ { 0x0C00, 0x0C00 }, ::unicode::General_Category::Nonspacing_Mark }, // TELUGU SIGN COMBINING CANDRABINDU ABOVE
+    Prop<::unicode::General_Category>{ { 0x0C01, 0x0C03 }, ::unicode::General_Category::Spacing_Mark }, // [3] TELUGU SIGN CANDRABINDU..TELUGU SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0C04, 0x0C04 }, ::unicode::General_Category::Nonspacing_Mark }, // TELUGU SIGN COMBINING ANUSVARA ABOVE
+    Prop<::unicode::General_Category>{ { 0x0C05, 0x0C0C }, ::unicode::General_Category::Other_Letter }, // [8] TELUGU LETTER A..TELUGU LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x0C0D, 0x0C0D }, ::unicode::General_Category::Unassigned }, // <reserved-0C0D>
+    Prop<::unicode::General_Category>{ { 0x0C0E, 0x0C10 }, ::unicode::General_Category::Other_Letter }, // [3] TELUGU LETTER E..TELUGU LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0C11, 0x0C11 }, ::unicode::General_Category::Unassigned }, // <reserved-0C11>
+    Prop<::unicode::General_Category>{ { 0x0C12, 0x0C28 }, ::unicode::General_Category::Other_Letter }, // [23] TELUGU LETTER O..TELUGU LETTER NA
+    Prop<::unicode::General_Category>{ { 0x0C29, 0x0C29 }, ::unicode::General_Category::Unassigned }, // <reserved-0C29>
+    Prop<::unicode::General_Category>{ { 0x0C2A, 0x0C39 }, ::unicode::General_Category::Other_Letter }, // [16] TELUGU LETTER PA..TELUGU LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0C3A, 0x0C3C }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0C3A>..<reserved-0C3C>
+    Prop<::unicode::General_Category>{ { 0x0C3D, 0x0C3D }, ::unicode::General_Category::Other_Letter }, // TELUGU SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x0C3E, 0x0C40 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] TELUGU VOWEL SIGN AA..TELUGU VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0C41, 0x0C44 }, ::unicode::General_Category::Spacing_Mark }, // [4] TELUGU VOWEL SIGN U..TELUGU VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x0C45, 0x0C45 }, ::unicode::General_Category::Unassigned }, // <reserved-0C45>
+    Prop<::unicode::General_Category>{ { 0x0C46, 0x0C48 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] TELUGU VOWEL SIGN E..TELUGU VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0C49, 0x0C49 }, ::unicode::General_Category::Unassigned }, // <reserved-0C49>
+    Prop<::unicode::General_Category>{ { 0x0C4A, 0x0C4D }, ::unicode::General_Category::Nonspacing_Mark }, // [4] TELUGU VOWEL SIGN O..TELUGU SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0C4E, 0x0C54 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0C4E>..<reserved-0C54>
+    Prop<::unicode::General_Category>{ { 0x0C55, 0x0C56 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TELUGU LENGTH MARK..TELUGU AI LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0C57, 0x0C57 }, ::unicode::General_Category::Unassigned }, // <reserved-0C57>
+    Prop<::unicode::General_Category>{ { 0x0C58, 0x0C5A }, ::unicode::General_Category::Other_Letter }, // [3] TELUGU LETTER TSA..TELUGU LETTER RRRA
+    Prop<::unicode::General_Category>{ { 0x0C5B, 0x0C5F }, ::unicode::General_Category::Unassigned }, // [5] <reserved-0C5B>..<reserved-0C5F>
+    Prop<::unicode::General_Category>{ { 0x0C60, 0x0C61 }, ::unicode::General_Category::Other_Letter }, // [2] TELUGU LETTER VOCALIC RR..TELUGU LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0C62, 0x0C63 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TELUGU VOWEL SIGN VOCALIC L..TELUGU VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0C64, 0x0C65 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0C64>..<reserved-0C65>
+    Prop<::unicode::General_Category>{ { 0x0C66, 0x0C6F }, ::unicode::General_Category::Decimal_Number }, // [10] TELUGU DIGIT ZERO..TELUGU DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0C70, 0x0C76 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0C70>..<reserved-0C76>
+    Prop<::unicode::General_Category>{ { 0x0C77, 0x0C77 }, ::unicode::General_Category::Other_Punctuation }, // TELUGU SIGN SIDDHAM
+    Prop<::unicode::General_Category>{ { 0x0C78, 0x0C7E }, ::unicode::General_Category::Other_Number }, // [7] TELUGU FRACTION DIGIT ZERO FOR ODD POWERS OF FOUR..TELUGU FRACTION DIGIT THREE FOR EVEN POWERS OF FOUR
+    Prop<::unicode::General_Category>{ { 0x0C7F, 0x0C7F }, ::unicode::General_Category::Other_Symbol }, // TELUGU SIGN TUUMU
+    Prop<::unicode::General_Category>{ { 0x0C80, 0x0C80 }, ::unicode::General_Category::Other_Letter }, // KANNADA SIGN SPACING CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0C81, 0x0C81 }, ::unicode::General_Category::Nonspacing_Mark }, // KANNADA SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0C82, 0x0C83 }, ::unicode::General_Category::Spacing_Mark }, // [2] KANNADA SIGN ANUSVARA..KANNADA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0C84, 0x0C84 }, ::unicode::General_Category::Other_Punctuation }, // KANNADA SIGN SIDDHAM
+    Prop<::unicode::General_Category>{ { 0x0C85, 0x0C8C }, ::unicode::General_Category::Other_Letter }, // [8] KANNADA LETTER A..KANNADA LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x0C8D, 0x0C8D }, ::unicode::General_Category::Unassigned }, // <reserved-0C8D>
+    Prop<::unicode::General_Category>{ { 0x0C8E, 0x0C90 }, ::unicode::General_Category::Other_Letter }, // [3] KANNADA LETTER E..KANNADA LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0C91, 0x0C91 }, ::unicode::General_Category::Unassigned }, // <reserved-0C91>
+    Prop<::unicode::General_Category>{ { 0x0C92, 0x0CA8 }, ::unicode::General_Category::Other_Letter }, // [23] KANNADA LETTER O..KANNADA LETTER NA
+    Prop<::unicode::General_Category>{ { 0x0CA9, 0x0CA9 }, ::unicode::General_Category::Unassigned }, // <reserved-0CA9>
+    Prop<::unicode::General_Category>{ { 0x0CAA, 0x0CB3 }, ::unicode::General_Category::Other_Letter }, // [10] KANNADA LETTER PA..KANNADA LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x0CB4, 0x0CB4 }, ::unicode::General_Category::Unassigned }, // <reserved-0CB4>
+    Prop<::unicode::General_Category>{ { 0x0CB5, 0x0CB9 }, ::unicode::General_Category::Other_Letter }, // [5] KANNADA LETTER VA..KANNADA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x0CBA, 0x0CBB }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0CBA>..<reserved-0CBB>
+    Prop<::unicode::General_Category>{ { 0x0CBC, 0x0CBC }, ::unicode::General_Category::Nonspacing_Mark }, // KANNADA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x0CBD, 0x0CBD }, ::unicode::General_Category::Other_Letter }, // KANNADA SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x0CBE, 0x0CBE }, ::unicode::General_Category::Spacing_Mark }, // KANNADA VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x0CBF, 0x0CBF }, ::unicode::General_Category::Nonspacing_Mark }, // KANNADA VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0x0CC0, 0x0CC4 }, ::unicode::General_Category::Spacing_Mark }, // [5] KANNADA VOWEL SIGN II..KANNADA VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x0CC5, 0x0CC5 }, ::unicode::General_Category::Unassigned }, // <reserved-0CC5>
+    Prop<::unicode::General_Category>{ { 0x0CC6, 0x0CC6 }, ::unicode::General_Category::Nonspacing_Mark }, // KANNADA VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x0CC7, 0x0CC8 }, ::unicode::General_Category::Spacing_Mark }, // [2] KANNADA VOWEL SIGN EE..KANNADA VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0CC9, 0x0CC9 }, ::unicode::General_Category::Unassigned }, // <reserved-0CC9>
+    Prop<::unicode::General_Category>{ { 0x0CCA, 0x0CCB }, ::unicode::General_Category::Spacing_Mark }, // [2] KANNADA VOWEL SIGN O..KANNADA VOWEL SIGN OO
+    Prop<::unicode::General_Category>{ { 0x0CCC, 0x0CCD }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KANNADA VOWEL SIGN AU..KANNADA SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0CCE, 0x0CD4 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0CCE>..<reserved-0CD4>
+    Prop<::unicode::General_Category>{ { 0x0CD5, 0x0CD6 }, ::unicode::General_Category::Spacing_Mark }, // [2] KANNADA LENGTH MARK..KANNADA AI LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0CD7, 0x0CDD }, ::unicode::General_Category::Unassigned }, // [7] <reserved-0CD7>..<reserved-0CDD>
+    Prop<::unicode::General_Category>{ { 0x0CDE, 0x0CDE }, ::unicode::General_Category::Other_Letter }, // KANNADA LETTER FA
+    Prop<::unicode::General_Category>{ { 0x0CDF, 0x0CDF }, ::unicode::General_Category::Unassigned }, // <reserved-0CDF>
+    Prop<::unicode::General_Category>{ { 0x0CE0, 0x0CE1 }, ::unicode::General_Category::Other_Letter }, // [2] KANNADA LETTER VOCALIC RR..KANNADA LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0CE2, 0x0CE3 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KANNADA VOWEL SIGN VOCALIC L..KANNADA VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0CE4, 0x0CE5 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0CE4>..<reserved-0CE5>
+    Prop<::unicode::General_Category>{ { 0x0CE6, 0x0CEF }, ::unicode::General_Category::Decimal_Number }, // [10] KANNADA DIGIT ZERO..KANNADA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0CF0, 0x0CF0 }, ::unicode::General_Category::Unassigned }, // <reserved-0CF0>
+    Prop<::unicode::General_Category>{ { 0x0CF1, 0x0CF2 }, ::unicode::General_Category::Other_Letter }, // [2] KANNADA SIGN JIHVAMULIYA..KANNADA SIGN UPADHMANIYA
+    Prop<::unicode::General_Category>{ { 0x0CF3, 0x0CFF }, ::unicode::General_Category::Unassigned }, // [13] <reserved-0CF3>..<reserved-0CFF>
+    Prop<::unicode::General_Category>{ { 0x0D00, 0x0D01 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MALAYALAM SIGN COMBINING ANUSVARA ABOVE..MALAYALAM SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0D02, 0x0D03 }, ::unicode::General_Category::Spacing_Mark }, // [2] MALAYALAM SIGN ANUSVARA..MALAYALAM SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x0D04, 0x0D0C }, ::unicode::General_Category::Other_Letter }, // [9] MALAYALAM LETTER VEDIC ANUSVARA..MALAYALAM LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x0D0D, 0x0D0D }, ::unicode::General_Category::Unassigned }, // <reserved-0D0D>
+    Prop<::unicode::General_Category>{ { 0x0D0E, 0x0D10 }, ::unicode::General_Category::Other_Letter }, // [3] MALAYALAM LETTER E..MALAYALAM LETTER AI
+    Prop<::unicode::General_Category>{ { 0x0D11, 0x0D11 }, ::unicode::General_Category::Unassigned }, // <reserved-0D11>
+    Prop<::unicode::General_Category>{ { 0x0D12, 0x0D3A }, ::unicode::General_Category::Other_Letter }, // [41] MALAYALAM LETTER O..MALAYALAM LETTER TTTA
+    Prop<::unicode::General_Category>{ { 0x0D3B, 0x0D3C }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MALAYALAM SIGN VERTICAL BAR VIRAMA..MALAYALAM SIGN CIRCULAR VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0D3D, 0x0D3D }, ::unicode::General_Category::Other_Letter }, // MALAYALAM SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x0D3E, 0x0D40 }, ::unicode::General_Category::Spacing_Mark }, // [3] MALAYALAM VOWEL SIGN AA..MALAYALAM VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x0D41, 0x0D44 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] MALAYALAM VOWEL SIGN U..MALAYALAM VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x0D45, 0x0D45 }, ::unicode::General_Category::Unassigned }, // <reserved-0D45>
+    Prop<::unicode::General_Category>{ { 0x0D46, 0x0D48 }, ::unicode::General_Category::Spacing_Mark }, // [3] MALAYALAM VOWEL SIGN E..MALAYALAM VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0D49, 0x0D49 }, ::unicode::General_Category::Unassigned }, // <reserved-0D49>
+    Prop<::unicode::General_Category>{ { 0x0D4A, 0x0D4C }, ::unicode::General_Category::Spacing_Mark }, // [3] MALAYALAM VOWEL SIGN O..MALAYALAM VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x0D4D, 0x0D4D }, ::unicode::General_Category::Nonspacing_Mark }, // MALAYALAM SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x0D4E, 0x0D4E }, ::unicode::General_Category::Other_Letter }, // MALAYALAM LETTER DOT REPH
+    Prop<::unicode::General_Category>{ { 0x0D4F, 0x0D4F }, ::unicode::General_Category::Other_Symbol }, // MALAYALAM SIGN PARA
+    Prop<::unicode::General_Category>{ { 0x0D50, 0x0D53 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0D50>..<reserved-0D53>
+    Prop<::unicode::General_Category>{ { 0x0D54, 0x0D56 }, ::unicode::General_Category::Other_Letter }, // [3] MALAYALAM LETTER CHILLU M..MALAYALAM LETTER CHILLU LLL
+    Prop<::unicode::General_Category>{ { 0x0D57, 0x0D57 }, ::unicode::General_Category::Spacing_Mark }, // MALAYALAM AU LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x0D58, 0x0D5E }, ::unicode::General_Category::Other_Number }, // [7] MALAYALAM FRACTION ONE ONE-HUNDRED-AND-SIXTIETH..MALAYALAM FRACTION ONE FIFTH
+    Prop<::unicode::General_Category>{ { 0x0D5F, 0x0D61 }, ::unicode::General_Category::Other_Letter }, // [3] MALAYALAM LETTER ARCHAIC II..MALAYALAM LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0D62, 0x0D63 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MALAYALAM VOWEL SIGN VOCALIC L..MALAYALAM VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x0D64, 0x0D65 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0D64>..<reserved-0D65>
+    Prop<::unicode::General_Category>{ { 0x0D66, 0x0D6F }, ::unicode::General_Category::Decimal_Number }, // [10] MALAYALAM DIGIT ZERO..MALAYALAM DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0D70, 0x0D78 }, ::unicode::General_Category::Other_Number }, // [9] MALAYALAM NUMBER TEN..MALAYALAM FRACTION THREE SIXTEENTHS
+    Prop<::unicode::General_Category>{ { 0x0D79, 0x0D79 }, ::unicode::General_Category::Other_Symbol }, // MALAYALAM DATE MARK
+    Prop<::unicode::General_Category>{ { 0x0D7A, 0x0D7F }, ::unicode::General_Category::Other_Letter }, // [6] MALAYALAM LETTER CHILLU NN..MALAYALAM LETTER CHILLU K
+    Prop<::unicode::General_Category>{ { 0x0D80, 0x0D80 }, ::unicode::General_Category::Unassigned }, // <reserved-0D80>
+    Prop<::unicode::General_Category>{ { 0x0D81, 0x0D81 }, ::unicode::General_Category::Nonspacing_Mark }, // SINHALA SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x0D82, 0x0D83 }, ::unicode::General_Category::Spacing_Mark }, // [2] SINHALA SIGN ANUSVARAYA..SINHALA SIGN VISARGAYA
+    Prop<::unicode::General_Category>{ { 0x0D84, 0x0D84 }, ::unicode::General_Category::Unassigned }, // <reserved-0D84>
+    Prop<::unicode::General_Category>{ { 0x0D85, 0x0D96 }, ::unicode::General_Category::Other_Letter }, // [18] SINHALA LETTER AYANNA..SINHALA LETTER AUYANNA
+    Prop<::unicode::General_Category>{ { 0x0D97, 0x0D99 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0D97>..<reserved-0D99>
+    Prop<::unicode::General_Category>{ { 0x0D9A, 0x0DB1 }, ::unicode::General_Category::Other_Letter }, // [24] SINHALA LETTER ALPAPRAANA KAYANNA..SINHALA LETTER DANTAJA NAYANNA
+    Prop<::unicode::General_Category>{ { 0x0DB2, 0x0DB2 }, ::unicode::General_Category::Unassigned }, // <reserved-0DB2>
+    Prop<::unicode::General_Category>{ { 0x0DB3, 0x0DBB }, ::unicode::General_Category::Other_Letter }, // [9] SINHALA LETTER SANYAKA DAYANNA..SINHALA LETTER RAYANNA
+    Prop<::unicode::General_Category>{ { 0x0DBC, 0x0DBC }, ::unicode::General_Category::Unassigned }, // <reserved-0DBC>
+    Prop<::unicode::General_Category>{ { 0x0DBD, 0x0DBD }, ::unicode::General_Category::Other_Letter }, // SINHALA LETTER DANTAJA LAYANNA
+    Prop<::unicode::General_Category>{ { 0x0DBE, 0x0DBF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0DBE>..<reserved-0DBF>
+    Prop<::unicode::General_Category>{ { 0x0DC0, 0x0DC6 }, ::unicode::General_Category::Other_Letter }, // [7] SINHALA LETTER VAYANNA..SINHALA LETTER FAYANNA
+    Prop<::unicode::General_Category>{ { 0x0DC7, 0x0DC9 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-0DC7>..<reserved-0DC9>
+    Prop<::unicode::General_Category>{ { 0x0DCA, 0x0DCA }, ::unicode::General_Category::Nonspacing_Mark }, // SINHALA SIGN AL-LAKUNA
+    Prop<::unicode::General_Category>{ { 0x0DCB, 0x0DCE }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0DCB>..<reserved-0DCE>
+    Prop<::unicode::General_Category>{ { 0x0DCF, 0x0DD1 }, ::unicode::General_Category::Spacing_Mark }, // [3] SINHALA VOWEL SIGN AELA-PILLA..SINHALA VOWEL SIGN DIGA AEDA-PILLA
+    Prop<::unicode::General_Category>{ { 0x0DD2, 0x0DD4 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] SINHALA VOWEL SIGN KETTI IS-PILLA..SINHALA VOWEL SIGN KETTI PAA-PILLA
+    Prop<::unicode::General_Category>{ { 0x0DD5, 0x0DD5 }, ::unicode::General_Category::Unassigned }, // <reserved-0DD5>
+    Prop<::unicode::General_Category>{ { 0x0DD6, 0x0DD6 }, ::unicode::General_Category::Nonspacing_Mark }, // SINHALA VOWEL SIGN DIGA PAA-PILLA
+    Prop<::unicode::General_Category>{ { 0x0DD7, 0x0DD7 }, ::unicode::General_Category::Unassigned }, // <reserved-0DD7>
+    Prop<::unicode::General_Category>{ { 0x0DD8, 0x0DDF }, ::unicode::General_Category::Spacing_Mark }, // [8] SINHALA VOWEL SIGN GAETTA-PILLA..SINHALA VOWEL SIGN GAYANUKITTA
+    Prop<::unicode::General_Category>{ { 0x0DE0, 0x0DE5 }, ::unicode::General_Category::Unassigned }, // [6] <reserved-0DE0>..<reserved-0DE5>
+    Prop<::unicode::General_Category>{ { 0x0DE6, 0x0DEF }, ::unicode::General_Category::Decimal_Number }, // [10] SINHALA LITH DIGIT ZERO..SINHALA LITH DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0DF0, 0x0DF1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0DF0>..<reserved-0DF1>
+    Prop<::unicode::General_Category>{ { 0x0DF2, 0x0DF3 }, ::unicode::General_Category::Spacing_Mark }, // [2] SINHALA VOWEL SIGN DIGA GAETTA-PILLA..SINHALA VOWEL SIGN DIGA GAYANUKITTA
+    Prop<::unicode::General_Category>{ { 0x0DF4, 0x0DF4 }, ::unicode::General_Category::Other_Punctuation }, // SINHALA PUNCTUATION KUNDDALIYA
+    Prop<::unicode::General_Category>{ { 0x0DF5, 0x0E00 }, ::unicode::General_Category::Unassigned }, // [12] <reserved-0DF5>..<reserved-0E00>
+    Prop<::unicode::General_Category>{ { 0x0E01, 0x0E30 }, ::unicode::General_Category::Other_Letter }, // [48] THAI CHARACTER KO KAI..THAI CHARACTER SARA A
+    Prop<::unicode::General_Category>{ { 0x0E31, 0x0E31 }, ::unicode::General_Category::Nonspacing_Mark }, // THAI CHARACTER MAI HAN-AKAT
+    Prop<::unicode::General_Category>{ { 0x0E32, 0x0E33 }, ::unicode::General_Category::Other_Letter }, // [2] THAI CHARACTER SARA AA..THAI CHARACTER SARA AM
+    Prop<::unicode::General_Category>{ { 0x0E34, 0x0E3A }, ::unicode::General_Category::Nonspacing_Mark }, // [7] THAI CHARACTER SARA I..THAI CHARACTER PHINTHU
+    Prop<::unicode::General_Category>{ { 0x0E3B, 0x0E3E }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0E3B>..<reserved-0E3E>
+    Prop<::unicode::General_Category>{ { 0x0E3F, 0x0E3F }, ::unicode::General_Category::Currency_Symbol }, // THAI CURRENCY SYMBOL BAHT
+    Prop<::unicode::General_Category>{ { 0x0E40, 0x0E45 }, ::unicode::General_Category::Other_Letter }, // [6] THAI CHARACTER SARA E..THAI CHARACTER LAKKHANGYAO
+    Prop<::unicode::General_Category>{ { 0x0E46, 0x0E46 }, ::unicode::General_Category::Modifier_Letter }, // THAI CHARACTER MAIYAMOK
+    Prop<::unicode::General_Category>{ { 0x0E47, 0x0E4E }, ::unicode::General_Category::Nonspacing_Mark }, // [8] THAI CHARACTER MAITAIKHU..THAI CHARACTER YAMAKKAN
+    Prop<::unicode::General_Category>{ { 0x0E4F, 0x0E4F }, ::unicode::General_Category::Other_Punctuation }, // THAI CHARACTER FONGMAN
+    Prop<::unicode::General_Category>{ { 0x0E50, 0x0E59 }, ::unicode::General_Category::Decimal_Number }, // [10] THAI DIGIT ZERO..THAI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0E5A, 0x0E5B }, ::unicode::General_Category::Other_Punctuation }, // [2] THAI CHARACTER ANGKHANKHU..THAI CHARACTER KHOMUT
+    Prop<::unicode::General_Category>{ { 0x0E5C, 0x0E80 }, ::unicode::General_Category::Unassigned }, // [37] <reserved-0E5C>..<reserved-0E80>
+    Prop<::unicode::General_Category>{ { 0x0E81, 0x0E82 }, ::unicode::General_Category::Other_Letter }, // [2] LAO LETTER KO..LAO LETTER KHO SUNG
+    Prop<::unicode::General_Category>{ { 0x0E83, 0x0E83 }, ::unicode::General_Category::Unassigned }, // <reserved-0E83>
+    Prop<::unicode::General_Category>{ { 0x0E84, 0x0E84 }, ::unicode::General_Category::Other_Letter }, // LAO LETTER KHO TAM
+    Prop<::unicode::General_Category>{ { 0x0E85, 0x0E85 }, ::unicode::General_Category::Unassigned }, // <reserved-0E85>
+    Prop<::unicode::General_Category>{ { 0x0E86, 0x0E8A }, ::unicode::General_Category::Other_Letter }, // [5] LAO LETTER PALI GHA..LAO LETTER SO TAM
+    Prop<::unicode::General_Category>{ { 0x0E8B, 0x0E8B }, ::unicode::General_Category::Unassigned }, // <reserved-0E8B>
+    Prop<::unicode::General_Category>{ { 0x0E8C, 0x0EA3 }, ::unicode::General_Category::Other_Letter }, // [24] LAO LETTER PALI JHA..LAO LETTER LO LING
+    Prop<::unicode::General_Category>{ { 0x0EA4, 0x0EA4 }, ::unicode::General_Category::Unassigned }, // <reserved-0EA4>
+    Prop<::unicode::General_Category>{ { 0x0EA5, 0x0EA5 }, ::unicode::General_Category::Other_Letter }, // LAO LETTER LO LOOT
+    Prop<::unicode::General_Category>{ { 0x0EA6, 0x0EA6 }, ::unicode::General_Category::Unassigned }, // <reserved-0EA6>
+    Prop<::unicode::General_Category>{ { 0x0EA7, 0x0EB0 }, ::unicode::General_Category::Other_Letter }, // [10] LAO LETTER WO..LAO VOWEL SIGN A
+    Prop<::unicode::General_Category>{ { 0x0EB1, 0x0EB1 }, ::unicode::General_Category::Nonspacing_Mark }, // LAO VOWEL SIGN MAI KAN
+    Prop<::unicode::General_Category>{ { 0x0EB2, 0x0EB3 }, ::unicode::General_Category::Other_Letter }, // [2] LAO VOWEL SIGN AA..LAO VOWEL SIGN AM
+    Prop<::unicode::General_Category>{ { 0x0EB4, 0x0EBC }, ::unicode::General_Category::Nonspacing_Mark }, // [9] LAO VOWEL SIGN I..LAO SEMIVOWEL SIGN LO
+    Prop<::unicode::General_Category>{ { 0x0EBD, 0x0EBD }, ::unicode::General_Category::Other_Letter }, // LAO SEMIVOWEL SIGN NYO
+    Prop<::unicode::General_Category>{ { 0x0EBE, 0x0EBF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0EBE>..<reserved-0EBF>
+    Prop<::unicode::General_Category>{ { 0x0EC0, 0x0EC4 }, ::unicode::General_Category::Other_Letter }, // [5] LAO VOWEL SIGN E..LAO VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x0EC5, 0x0EC5 }, ::unicode::General_Category::Unassigned }, // <reserved-0EC5>
+    Prop<::unicode::General_Category>{ { 0x0EC6, 0x0EC6 }, ::unicode::General_Category::Modifier_Letter }, // LAO KO LA
+    Prop<::unicode::General_Category>{ { 0x0EC7, 0x0EC7 }, ::unicode::General_Category::Unassigned }, // <reserved-0EC7>
+    Prop<::unicode::General_Category>{ { 0x0EC8, 0x0ECD }, ::unicode::General_Category::Nonspacing_Mark }, // [6] LAO TONE MAI EK..LAO NIGGAHITA
+    Prop<::unicode::General_Category>{ { 0x0ECE, 0x0ECF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0ECE>..<reserved-0ECF>
+    Prop<::unicode::General_Category>{ { 0x0ED0, 0x0ED9 }, ::unicode::General_Category::Decimal_Number }, // [10] LAO DIGIT ZERO..LAO DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0EDA, 0x0EDB }, ::unicode::General_Category::Unassigned }, // [2] <reserved-0EDA>..<reserved-0EDB>
+    Prop<::unicode::General_Category>{ { 0x0EDC, 0x0EDF }, ::unicode::General_Category::Other_Letter }, // [4] LAO HO NO..LAO LETTER KHMU NYO
+    Prop<::unicode::General_Category>{ { 0x0EE0, 0x0EFF }, ::unicode::General_Category::Unassigned }, // [32] <reserved-0EE0>..<reserved-0EFF>
+    Prop<::unicode::General_Category>{ { 0x0F00, 0x0F00 }, ::unicode::General_Category::Other_Letter }, // TIBETAN SYLLABLE OM
+    Prop<::unicode::General_Category>{ { 0x0F01, 0x0F03 }, ::unicode::General_Category::Other_Symbol }, // [3] TIBETAN MARK GTER YIG MGO TRUNCATED A..TIBETAN MARK GTER YIG MGO -UM GTER TSHEG MA
+    Prop<::unicode::General_Category>{ { 0x0F04, 0x0F12 }, ::unicode::General_Category::Other_Punctuation }, // [15] TIBETAN MARK INITIAL YIG MGO MDUN MA..TIBETAN MARK RGYA GRAM SHAD
+    Prop<::unicode::General_Category>{ { 0x0F13, 0x0F13 }, ::unicode::General_Category::Other_Symbol }, // TIBETAN MARK CARET -DZUD RTAGS ME LONG CAN
+    Prop<::unicode::General_Category>{ { 0x0F14, 0x0F14 }, ::unicode::General_Category::Other_Punctuation }, // TIBETAN MARK GTER TSHEG
+    Prop<::unicode::General_Category>{ { 0x0F15, 0x0F17 }, ::unicode::General_Category::Other_Symbol }, // [3] TIBETAN LOGOTYPE SIGN CHAD RTAGS..TIBETAN ASTROLOGICAL SIGN SGRA GCAN -CHAR RTAGS
+    Prop<::unicode::General_Category>{ { 0x0F18, 0x0F19 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TIBETAN ASTROLOGICAL SIGN -KHYUD PA..TIBETAN ASTROLOGICAL SIGN SDONG TSHUGS
+    Prop<::unicode::General_Category>{ { 0x0F1A, 0x0F1F }, ::unicode::General_Category::Other_Symbol }, // [6] TIBETAN SIGN RDEL DKAR GCIG..TIBETAN SIGN RDEL DKAR RDEL NAG
+    Prop<::unicode::General_Category>{ { 0x0F20, 0x0F29 }, ::unicode::General_Category::Decimal_Number }, // [10] TIBETAN DIGIT ZERO..TIBETAN DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x0F2A, 0x0F33 }, ::unicode::General_Category::Other_Number }, // [10] TIBETAN DIGIT HALF ONE..TIBETAN DIGIT HALF ZERO
+    Prop<::unicode::General_Category>{ { 0x0F34, 0x0F34 }, ::unicode::General_Category::Other_Symbol }, // TIBETAN MARK BSDUS RTAGS
+    Prop<::unicode::General_Category>{ { 0x0F35, 0x0F35 }, ::unicode::General_Category::Nonspacing_Mark }, // TIBETAN MARK NGAS BZUNG NYI ZLA
+    Prop<::unicode::General_Category>{ { 0x0F36, 0x0F36 }, ::unicode::General_Category::Other_Symbol }, // TIBETAN MARK CARET -DZUD RTAGS BZHI MIG CAN
+    Prop<::unicode::General_Category>{ { 0x0F37, 0x0F37 }, ::unicode::General_Category::Nonspacing_Mark }, // TIBETAN MARK NGAS BZUNG SGOR RTAGS
+    Prop<::unicode::General_Category>{ { 0x0F38, 0x0F38 }, ::unicode::General_Category::Other_Symbol }, // TIBETAN MARK CHE MGO
+    Prop<::unicode::General_Category>{ { 0x0F39, 0x0F39 }, ::unicode::General_Category::Nonspacing_Mark }, // TIBETAN MARK TSA -PHRU
+    Prop<::unicode::General_Category>{ { 0x0F3A, 0x0F3A }, ::unicode::General_Category::Open_Punctuation }, // TIBETAN MARK GUG RTAGS GYON
+    Prop<::unicode::General_Category>{ { 0x0F3B, 0x0F3B }, ::unicode::General_Category::Close_Punctuation }, // TIBETAN MARK GUG RTAGS GYAS
+    Prop<::unicode::General_Category>{ { 0x0F3C, 0x0F3C }, ::unicode::General_Category::Open_Punctuation }, // TIBETAN MARK ANG KHANG GYON
+    Prop<::unicode::General_Category>{ { 0x0F3D, 0x0F3D }, ::unicode::General_Category::Close_Punctuation }, // TIBETAN MARK ANG KHANG GYAS
+    Prop<::unicode::General_Category>{ { 0x0F3E, 0x0F3F }, ::unicode::General_Category::Spacing_Mark }, // [2] TIBETAN SIGN YAR TSHES..TIBETAN SIGN MAR TSHES
+    Prop<::unicode::General_Category>{ { 0x0F40, 0x0F47 }, ::unicode::General_Category::Other_Letter }, // [8] TIBETAN LETTER KA..TIBETAN LETTER JA
+    Prop<::unicode::General_Category>{ { 0x0F48, 0x0F48 }, ::unicode::General_Category::Unassigned }, // <reserved-0F48>
+    Prop<::unicode::General_Category>{ { 0x0F49, 0x0F6C }, ::unicode::General_Category::Other_Letter }, // [36] TIBETAN LETTER NYA..TIBETAN LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x0F6D, 0x0F70 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-0F6D>..<reserved-0F70>
+    Prop<::unicode::General_Category>{ { 0x0F71, 0x0F7E }, ::unicode::General_Category::Nonspacing_Mark }, // [14] TIBETAN VOWEL SIGN AA..TIBETAN SIGN RJES SU NGA RO
+    Prop<::unicode::General_Category>{ { 0x0F7F, 0x0F7F }, ::unicode::General_Category::Spacing_Mark }, // TIBETAN SIGN RNAM BCAD
+    Prop<::unicode::General_Category>{ { 0x0F80, 0x0F84 }, ::unicode::General_Category::Nonspacing_Mark }, // [5] TIBETAN VOWEL SIGN REVERSED I..TIBETAN MARK HALANTA
+    Prop<::unicode::General_Category>{ { 0x0F85, 0x0F85 }, ::unicode::General_Category::Other_Punctuation }, // TIBETAN MARK PALUTA
+    Prop<::unicode::General_Category>{ { 0x0F86, 0x0F87 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TIBETAN SIGN LCI RTAGS..TIBETAN SIGN YANG RTAGS
+    Prop<::unicode::General_Category>{ { 0x0F88, 0x0F8C }, ::unicode::General_Category::Other_Letter }, // [5] TIBETAN SIGN LCE TSA CAN..TIBETAN SIGN INVERTED MCHU CAN
+    Prop<::unicode::General_Category>{ { 0x0F8D, 0x0F97 }, ::unicode::General_Category::Nonspacing_Mark }, // [11] TIBETAN SUBJOINED SIGN LCE TSA CAN..TIBETAN SUBJOINED LETTER JA
+    Prop<::unicode::General_Category>{ { 0x0F98, 0x0F98 }, ::unicode::General_Category::Unassigned }, // <reserved-0F98>
+    Prop<::unicode::General_Category>{ { 0x0F99, 0x0FBC }, ::unicode::General_Category::Nonspacing_Mark }, // [36] TIBETAN SUBJOINED LETTER NYA..TIBETAN SUBJOINED LETTER FIXED-FORM RA
+    Prop<::unicode::General_Category>{ { 0x0FBD, 0x0FBD }, ::unicode::General_Category::Unassigned }, // <reserved-0FBD>
+    Prop<::unicode::General_Category>{ { 0x0FBE, 0x0FC5 }, ::unicode::General_Category::Other_Symbol }, // [8] TIBETAN KU RU KHA..TIBETAN SYMBOL RDO RJE
+    Prop<::unicode::General_Category>{ { 0x0FC6, 0x0FC6 }, ::unicode::General_Category::Nonspacing_Mark }, // TIBETAN SYMBOL PADMA GDAN
+    Prop<::unicode::General_Category>{ { 0x0FC7, 0x0FCC }, ::unicode::General_Category::Other_Symbol }, // [6] TIBETAN SYMBOL RDO RJE RGYA GRAM..TIBETAN SYMBOL NOR BU BZHI -KHYIL
+    Prop<::unicode::General_Category>{ { 0x0FCD, 0x0FCD }, ::unicode::General_Category::Unassigned }, // <reserved-0FCD>
+    Prop<::unicode::General_Category>{ { 0x0FCE, 0x0FCF }, ::unicode::General_Category::Other_Symbol }, // [2] TIBETAN SIGN RDEL NAG RDEL DKAR..TIBETAN SIGN RDEL NAG GSUM
+    Prop<::unicode::General_Category>{ { 0x0FD0, 0x0FD4 }, ::unicode::General_Category::Other_Punctuation }, // [5] TIBETAN MARK BSKA- SHOG GI MGO RGYAN..TIBETAN MARK CLOSING BRDA RNYING YIG MGO SGAB MA
+    Prop<::unicode::General_Category>{ { 0x0FD5, 0x0FD8 }, ::unicode::General_Category::Other_Symbol }, // [4] RIGHT-FACING SVASTI SIGN..LEFT-FACING SVASTI SIGN WITH DOTS
+    Prop<::unicode::General_Category>{ { 0x0FD9, 0x0FDA }, ::unicode::General_Category::Other_Punctuation }, // [2] TIBETAN MARK LEADING MCHAN RTAGS..TIBETAN MARK TRAILING MCHAN RTAGS
+    Prop<::unicode::General_Category>{ { 0x0FDB, 0x0FFF }, ::unicode::General_Category::Unassigned }, // [37] <reserved-0FDB>..<reserved-0FFF>
+    Prop<::unicode::General_Category>{ { 0x1000, 0x102A }, ::unicode::General_Category::Other_Letter }, // [43] MYANMAR LETTER KA..MYANMAR LETTER AU
+    Prop<::unicode::General_Category>{ { 0x102B, 0x102C }, ::unicode::General_Category::Spacing_Mark }, // [2] MYANMAR VOWEL SIGN TALL AA..MYANMAR VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x102D, 0x1030 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] MYANMAR VOWEL SIGN I..MYANMAR VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x1031, 0x1031 }, ::unicode::General_Category::Spacing_Mark }, // MYANMAR VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x1032, 0x1037 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] MYANMAR VOWEL SIGN AI..MYANMAR SIGN DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1038, 0x1038 }, ::unicode::General_Category::Spacing_Mark }, // MYANMAR SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x1039, 0x103A }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MYANMAR SIGN VIRAMA..MYANMAR SIGN ASAT
+    Prop<::unicode::General_Category>{ { 0x103B, 0x103C }, ::unicode::General_Category::Spacing_Mark }, // [2] MYANMAR CONSONANT SIGN MEDIAL YA..MYANMAR CONSONANT SIGN MEDIAL RA
+    Prop<::unicode::General_Category>{ { 0x103D, 0x103E }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MYANMAR CONSONANT SIGN MEDIAL WA..MYANMAR CONSONANT SIGN MEDIAL HA
+    Prop<::unicode::General_Category>{ { 0x103F, 0x103F }, ::unicode::General_Category::Other_Letter }, // MYANMAR LETTER GREAT SA
+    Prop<::unicode::General_Category>{ { 0x1040, 0x1049 }, ::unicode::General_Category::Decimal_Number }, // [10] MYANMAR DIGIT ZERO..MYANMAR DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x104A, 0x104F }, ::unicode::General_Category::Other_Punctuation }, // [6] MYANMAR SIGN LITTLE SECTION..MYANMAR SYMBOL GENITIVE
+    Prop<::unicode::General_Category>{ { 0x1050, 0x1055 }, ::unicode::General_Category::Other_Letter }, // [6] MYANMAR LETTER SHA..MYANMAR LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x1056, 0x1057 }, ::unicode::General_Category::Spacing_Mark }, // [2] MYANMAR VOWEL SIGN VOCALIC R..MYANMAR VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x1058, 0x1059 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MYANMAR VOWEL SIGN VOCALIC L..MYANMAR VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x105A, 0x105D }, ::unicode::General_Category::Other_Letter }, // [4] MYANMAR LETTER MON NGA..MYANMAR LETTER MON BBE
+    Prop<::unicode::General_Category>{ { 0x105E, 0x1060 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] MYANMAR CONSONANT SIGN MON MEDIAL NA..MYANMAR CONSONANT SIGN MON MEDIAL LA
+    Prop<::unicode::General_Category>{ { 0x1061, 0x1061 }, ::unicode::General_Category::Other_Letter }, // MYANMAR LETTER SGAW KAREN SHA
+    Prop<::unicode::General_Category>{ { 0x1062, 0x1064 }, ::unicode::General_Category::Spacing_Mark }, // [3] MYANMAR VOWEL SIGN SGAW KAREN EU..MYANMAR TONE MARK SGAW KAREN KE PHO
+    Prop<::unicode::General_Category>{ { 0x1065, 0x1066 }, ::unicode::General_Category::Other_Letter }, // [2] MYANMAR LETTER WESTERN PWO KAREN THA..MYANMAR LETTER WESTERN PWO KAREN PWA
+    Prop<::unicode::General_Category>{ { 0x1067, 0x106D }, ::unicode::General_Category::Spacing_Mark }, // [7] MYANMAR VOWEL SIGN WESTERN PWO KAREN EU..MYANMAR SIGN WESTERN PWO KAREN TONE-5
+    Prop<::unicode::General_Category>{ { 0x106E, 0x1070 }, ::unicode::General_Category::Other_Letter }, // [3] MYANMAR LETTER EASTERN PWO KAREN NNA..MYANMAR LETTER EASTERN PWO KAREN GHWA
+    Prop<::unicode::General_Category>{ { 0x1071, 0x1074 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] MYANMAR VOWEL SIGN GEBA KAREN I..MYANMAR VOWEL SIGN KAYAH EE
+    Prop<::unicode::General_Category>{ { 0x1075, 0x1081 }, ::unicode::General_Category::Other_Letter }, // [13] MYANMAR LETTER SHAN KA..MYANMAR LETTER SHAN HA
+    Prop<::unicode::General_Category>{ { 0x1082, 0x1082 }, ::unicode::General_Category::Nonspacing_Mark }, // MYANMAR CONSONANT SIGN SHAN MEDIAL WA
+    Prop<::unicode::General_Category>{ { 0x1083, 0x1084 }, ::unicode::General_Category::Spacing_Mark }, // [2] MYANMAR VOWEL SIGN SHAN AA..MYANMAR VOWEL SIGN SHAN E
+    Prop<::unicode::General_Category>{ { 0x1085, 0x1086 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MYANMAR VOWEL SIGN SHAN E ABOVE..MYANMAR VOWEL SIGN SHAN FINAL Y
+    Prop<::unicode::General_Category>{ { 0x1087, 0x108C }, ::unicode::General_Category::Spacing_Mark }, // [6] MYANMAR SIGN SHAN TONE-2..MYANMAR SIGN SHAN COUNCIL TONE-3
+    Prop<::unicode::General_Category>{ { 0x108D, 0x108D }, ::unicode::General_Category::Nonspacing_Mark }, // MYANMAR SIGN SHAN COUNCIL EMPHATIC TONE
+    Prop<::unicode::General_Category>{ { 0x108E, 0x108E }, ::unicode::General_Category::Other_Letter }, // MYANMAR LETTER RUMAI PALAUNG FA
+    Prop<::unicode::General_Category>{ { 0x108F, 0x108F }, ::unicode::General_Category::Spacing_Mark }, // MYANMAR SIGN RUMAI PALAUNG TONE-5
+    Prop<::unicode::General_Category>{ { 0x1090, 0x1099 }, ::unicode::General_Category::Decimal_Number }, // [10] MYANMAR SHAN DIGIT ZERO..MYANMAR SHAN DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x109A, 0x109C }, ::unicode::General_Category::Spacing_Mark }, // [3] MYANMAR SIGN KHAMTI TONE-1..MYANMAR VOWEL SIGN AITON A
+    Prop<::unicode::General_Category>{ { 0x109D, 0x109D }, ::unicode::General_Category::Nonspacing_Mark }, // MYANMAR VOWEL SIGN AITON AI
+    Prop<::unicode::General_Category>{ { 0x109E, 0x109F }, ::unicode::General_Category::Other_Symbol }, // [2] MYANMAR SYMBOL SHAN ONE..MYANMAR SYMBOL SHAN EXCLAMATION
+    Prop<::unicode::General_Category>{ { 0x10A0, 0x10C5 }, ::unicode::General_Category::Uppercase_Letter }, // [38] GEORGIAN CAPITAL LETTER AN..GEORGIAN CAPITAL LETTER HOE
+    Prop<::unicode::General_Category>{ { 0x10C6, 0x10C6 }, ::unicode::General_Category::Unassigned }, // <reserved-10C6>
+    Prop<::unicode::General_Category>{ { 0x10C7, 0x10C7 }, ::unicode::General_Category::Uppercase_Letter }, // GEORGIAN CAPITAL LETTER YN
+    Prop<::unicode::General_Category>{ { 0x10C8, 0x10CC }, ::unicode::General_Category::Unassigned }, // [5] <reserved-10C8>..<reserved-10CC>
+    Prop<::unicode::General_Category>{ { 0x10CD, 0x10CD }, ::unicode::General_Category::Uppercase_Letter }, // GEORGIAN CAPITAL LETTER AEN
+    Prop<::unicode::General_Category>{ { 0x10CE, 0x10CF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-10CE>..<reserved-10CF>
+    Prop<::unicode::General_Category>{ { 0x10D0, 0x10FA }, ::unicode::General_Category::Lowercase_Letter }, // [43] GEORGIAN LETTER AN..GEORGIAN LETTER AIN
+    Prop<::unicode::General_Category>{ { 0x10FB, 0x10FB }, ::unicode::General_Category::Other_Punctuation }, // GEORGIAN PARAGRAPH SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x10FC, 0x10FC }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER GEORGIAN NAR
+    Prop<::unicode::General_Category>{ { 0x10FD, 0x10FF }, ::unicode::General_Category::Lowercase_Letter }, // [3] GEORGIAN LETTER AEN..GEORGIAN LETTER LABIAL SIGN
+    Prop<::unicode::General_Category>{ { 0x1100, 0x1248 }, ::unicode::General_Category::Other_Letter }, // [329] HANGUL CHOSEONG KIYEOK..ETHIOPIC SYLLABLE QWA
+    Prop<::unicode::General_Category>{ { 0x1249, 0x1249 }, ::unicode::General_Category::Unassigned }, // <reserved-1249>
+    Prop<::unicode::General_Category>{ { 0x124A, 0x124D }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE QWI..ETHIOPIC SYLLABLE QWE
+    Prop<::unicode::General_Category>{ { 0x124E, 0x124F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-124E>..<reserved-124F>
+    Prop<::unicode::General_Category>{ { 0x1250, 0x1256 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE QHA..ETHIOPIC SYLLABLE QHO
+    Prop<::unicode::General_Category>{ { 0x1257, 0x1257 }, ::unicode::General_Category::Unassigned }, // <reserved-1257>
+    Prop<::unicode::General_Category>{ { 0x1258, 0x1258 }, ::unicode::General_Category::Other_Letter }, // ETHIOPIC SYLLABLE QHWA
+    Prop<::unicode::General_Category>{ { 0x1259, 0x1259 }, ::unicode::General_Category::Unassigned }, // <reserved-1259>
+    Prop<::unicode::General_Category>{ { 0x125A, 0x125D }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE QHWI..ETHIOPIC SYLLABLE QHWE
+    Prop<::unicode::General_Category>{ { 0x125E, 0x125F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-125E>..<reserved-125F>
+    Prop<::unicode::General_Category>{ { 0x1260, 0x1288 }, ::unicode::General_Category::Other_Letter }, // [41] ETHIOPIC SYLLABLE BA..ETHIOPIC SYLLABLE XWA
+    Prop<::unicode::General_Category>{ { 0x1289, 0x1289 }, ::unicode::General_Category::Unassigned }, // <reserved-1289>
+    Prop<::unicode::General_Category>{ { 0x128A, 0x128D }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE XWI..ETHIOPIC SYLLABLE XWE
+    Prop<::unicode::General_Category>{ { 0x128E, 0x128F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-128E>..<reserved-128F>
+    Prop<::unicode::General_Category>{ { 0x1290, 0x12B0 }, ::unicode::General_Category::Other_Letter }, // [33] ETHIOPIC SYLLABLE NA..ETHIOPIC SYLLABLE KWA
+    Prop<::unicode::General_Category>{ { 0x12B1, 0x12B1 }, ::unicode::General_Category::Unassigned }, // <reserved-12B1>
+    Prop<::unicode::General_Category>{ { 0x12B2, 0x12B5 }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE KWI..ETHIOPIC SYLLABLE KWE
+    Prop<::unicode::General_Category>{ { 0x12B6, 0x12B7 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-12B6>..<reserved-12B7>
+    Prop<::unicode::General_Category>{ { 0x12B8, 0x12BE }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE KXA..ETHIOPIC SYLLABLE KXO
+    Prop<::unicode::General_Category>{ { 0x12BF, 0x12BF }, ::unicode::General_Category::Unassigned }, // <reserved-12BF>
+    Prop<::unicode::General_Category>{ { 0x12C0, 0x12C0 }, ::unicode::General_Category::Other_Letter }, // ETHIOPIC SYLLABLE KXWA
+    Prop<::unicode::General_Category>{ { 0x12C1, 0x12C1 }, ::unicode::General_Category::Unassigned }, // <reserved-12C1>
+    Prop<::unicode::General_Category>{ { 0x12C2, 0x12C5 }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE KXWI..ETHIOPIC SYLLABLE KXWE
+    Prop<::unicode::General_Category>{ { 0x12C6, 0x12C7 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-12C6>..<reserved-12C7>
+    Prop<::unicode::General_Category>{ { 0x12C8, 0x12D6 }, ::unicode::General_Category::Other_Letter }, // [15] ETHIOPIC SYLLABLE WA..ETHIOPIC SYLLABLE PHARYNGEAL O
+    Prop<::unicode::General_Category>{ { 0x12D7, 0x12D7 }, ::unicode::General_Category::Unassigned }, // <reserved-12D7>
+    Prop<::unicode::General_Category>{ { 0x12D8, 0x1310 }, ::unicode::General_Category::Other_Letter }, // [57] ETHIOPIC SYLLABLE ZA..ETHIOPIC SYLLABLE GWA
+    Prop<::unicode::General_Category>{ { 0x1311, 0x1311 }, ::unicode::General_Category::Unassigned }, // <reserved-1311>
+    Prop<::unicode::General_Category>{ { 0x1312, 0x1315 }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE GWI..ETHIOPIC SYLLABLE GWE
+    Prop<::unicode::General_Category>{ { 0x1316, 0x1317 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1316>..<reserved-1317>
+    Prop<::unicode::General_Category>{ { 0x1318, 0x135A }, ::unicode::General_Category::Other_Letter }, // [67] ETHIOPIC SYLLABLE GGA..ETHIOPIC SYLLABLE FYA
+    Prop<::unicode::General_Category>{ { 0x135B, 0x135C }, ::unicode::General_Category::Unassigned }, // [2] <reserved-135B>..<reserved-135C>
+    Prop<::unicode::General_Category>{ { 0x135D, 0x135F }, ::unicode::General_Category::Nonspacing_Mark }, // [3] ETHIOPIC COMBINING GEMINATION AND VOWEL LENGTH MARK..ETHIOPIC COMBINING GEMINATION MARK
+    Prop<::unicode::General_Category>{ { 0x1360, 0x1368 }, ::unicode::General_Category::Other_Punctuation }, // [9] ETHIOPIC SECTION MARK..ETHIOPIC PARAGRAPH SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x1369, 0x137C }, ::unicode::General_Category::Other_Number }, // [20] ETHIOPIC DIGIT ONE..ETHIOPIC NUMBER TEN THOUSAND
+    Prop<::unicode::General_Category>{ { 0x137D, 0x137F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-137D>..<reserved-137F>
+    Prop<::unicode::General_Category>{ { 0x1380, 0x138F }, ::unicode::General_Category::Other_Letter }, // [16] ETHIOPIC SYLLABLE SEBATBEIT MWA..ETHIOPIC SYLLABLE PWE
+    Prop<::unicode::General_Category>{ { 0x1390, 0x1399 }, ::unicode::General_Category::Other_Symbol }, // [10] ETHIOPIC TONAL MARK YIZET..ETHIOPIC TONAL MARK KURT
+    Prop<::unicode::General_Category>{ { 0x139A, 0x139F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-139A>..<reserved-139F>
+    Prop<::unicode::General_Category>{ { 0x13A0, 0x13F5 }, ::unicode::General_Category::Uppercase_Letter }, // [86] CHEROKEE LETTER A..CHEROKEE LETTER MV
+    Prop<::unicode::General_Category>{ { 0x13F6, 0x13F7 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-13F6>..<reserved-13F7>
+    Prop<::unicode::General_Category>{ { 0x13F8, 0x13FD }, ::unicode::General_Category::Lowercase_Letter }, // [6] CHEROKEE SMALL LETTER YE..CHEROKEE SMALL LETTER MV
+    Prop<::unicode::General_Category>{ { 0x13FE, 0x13FF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-13FE>..<reserved-13FF>
+    Prop<::unicode::General_Category>{ { 0x1400, 0x1400 }, ::unicode::General_Category::Dash_Punctuation }, // CANADIAN SYLLABICS HYPHEN
+    Prop<::unicode::General_Category>{ { 0x1401, 0x166C }, ::unicode::General_Category::Other_Letter }, // [620] CANADIAN SYLLABICS E..CANADIAN SYLLABICS CARRIER TTSA
+    Prop<::unicode::General_Category>{ { 0x166D, 0x166D }, ::unicode::General_Category::Other_Symbol }, // CANADIAN SYLLABICS CHI SIGN
+    Prop<::unicode::General_Category>{ { 0x166E, 0x166E }, ::unicode::General_Category::Other_Punctuation }, // CANADIAN SYLLABICS FULL STOP
+    Prop<::unicode::General_Category>{ { 0x166F, 0x167F }, ::unicode::General_Category::Other_Letter }, // [17] CANADIAN SYLLABICS QAI..CANADIAN SYLLABICS BLACKFOOT W
+    Prop<::unicode::General_Category>{ { 0x1680, 0x1680 }, ::unicode::General_Category::Space_Separator }, // OGHAM SPACE MARK
+    Prop<::unicode::General_Category>{ { 0x1681, 0x169A }, ::unicode::General_Category::Other_Letter }, // [26] OGHAM LETTER BEITH..OGHAM LETTER PEITH
+    Prop<::unicode::General_Category>{ { 0x169B, 0x169B }, ::unicode::General_Category::Open_Punctuation }, // OGHAM FEATHER MARK
+    Prop<::unicode::General_Category>{ { 0x169C, 0x169C }, ::unicode::General_Category::Close_Punctuation }, // OGHAM REVERSED FEATHER MARK
+    Prop<::unicode::General_Category>{ { 0x169D, 0x169F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-169D>..<reserved-169F>
+    Prop<::unicode::General_Category>{ { 0x16A0, 0x16EA }, ::unicode::General_Category::Other_Letter }, // [75] RUNIC LETTER FEHU FEOH FE F..RUNIC LETTER X
+    Prop<::unicode::General_Category>{ { 0x16EB, 0x16ED }, ::unicode::General_Category::Other_Punctuation }, // [3] RUNIC SINGLE PUNCTUATION..RUNIC CROSS PUNCTUATION
+    Prop<::unicode::General_Category>{ { 0x16EE, 0x16F0 }, ::unicode::General_Category::Letter_Number }, // [3] RUNIC ARLAUG SYMBOL..RUNIC BELGTHOR SYMBOL
+    Prop<::unicode::General_Category>{ { 0x16F1, 0x16F8 }, ::unicode::General_Category::Other_Letter }, // [8] RUNIC LETTER K..RUNIC LETTER FRANKS CASKET AESC
+    Prop<::unicode::General_Category>{ { 0x16F9, 0x16FF }, ::unicode::General_Category::Unassigned }, // [7] <reserved-16F9>..<reserved-16FF>
+    Prop<::unicode::General_Category>{ { 0x1700, 0x170C }, ::unicode::General_Category::Other_Letter }, // [13] TAGALOG LETTER A..TAGALOG LETTER YA
+    Prop<::unicode::General_Category>{ { 0x170D, 0x170D }, ::unicode::General_Category::Unassigned }, // <reserved-170D>
+    Prop<::unicode::General_Category>{ { 0x170E, 0x1711 }, ::unicode::General_Category::Other_Letter }, // [4] TAGALOG LETTER LA..TAGALOG LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1712, 0x1714 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] TAGALOG VOWEL SIGN I..TAGALOG SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x1715, 0x171F }, ::unicode::General_Category::Unassigned }, // [11] <reserved-1715>..<reserved-171F>
+    Prop<::unicode::General_Category>{ { 0x1720, 0x1731 }, ::unicode::General_Category::Other_Letter }, // [18] HANUNOO LETTER A..HANUNOO LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1732, 0x1734 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] HANUNOO VOWEL SIGN I..HANUNOO SIGN PAMUDPOD
+    Prop<::unicode::General_Category>{ { 0x1735, 0x1736 }, ::unicode::General_Category::Other_Punctuation }, // [2] PHILIPPINE SINGLE PUNCTUATION..PHILIPPINE DOUBLE PUNCTUATION
+    Prop<::unicode::General_Category>{ { 0x1737, 0x173F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-1737>..<reserved-173F>
+    Prop<::unicode::General_Category>{ { 0x1740, 0x1751 }, ::unicode::General_Category::Other_Letter }, // [18] BUHID LETTER A..BUHID LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1752, 0x1753 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] BUHID VOWEL SIGN I..BUHID VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x1754, 0x175F }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1754>..<reserved-175F>
+    Prop<::unicode::General_Category>{ { 0x1760, 0x176C }, ::unicode::General_Category::Other_Letter }, // [13] TAGBANWA LETTER A..TAGBANWA LETTER YA
+    Prop<::unicode::General_Category>{ { 0x176D, 0x176D }, ::unicode::General_Category::Unassigned }, // <reserved-176D>
+    Prop<::unicode::General_Category>{ { 0x176E, 0x1770 }, ::unicode::General_Category::Other_Letter }, // [3] TAGBANWA LETTER LA..TAGBANWA LETTER SA
+    Prop<::unicode::General_Category>{ { 0x1771, 0x1771 }, ::unicode::General_Category::Unassigned }, // <reserved-1771>
+    Prop<::unicode::General_Category>{ { 0x1772, 0x1773 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TAGBANWA VOWEL SIGN I..TAGBANWA VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x1774, 0x177F }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1774>..<reserved-177F>
+    Prop<::unicode::General_Category>{ { 0x1780, 0x17B3 }, ::unicode::General_Category::Other_Letter }, // [52] KHMER LETTER KA..KHMER INDEPENDENT VOWEL QAU
+    Prop<::unicode::General_Category>{ { 0x17B4, 0x17B5 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KHMER VOWEL INHERENT AQ..KHMER VOWEL INHERENT AA
+    Prop<::unicode::General_Category>{ { 0x17B6, 0x17B6 }, ::unicode::General_Category::Spacing_Mark }, // KHMER VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x17B7, 0x17BD }, ::unicode::General_Category::Nonspacing_Mark }, // [7] KHMER VOWEL SIGN I..KHMER VOWEL SIGN UA
+    Prop<::unicode::General_Category>{ { 0x17BE, 0x17C5 }, ::unicode::General_Category::Spacing_Mark }, // [8] KHMER VOWEL SIGN OE..KHMER VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x17C6, 0x17C6 }, ::unicode::General_Category::Nonspacing_Mark }, // KHMER SIGN NIKAHIT
+    Prop<::unicode::General_Category>{ { 0x17C7, 0x17C8 }, ::unicode::General_Category::Spacing_Mark }, // [2] KHMER SIGN REAHMUK..KHMER SIGN YUUKALEAPINTU
+    Prop<::unicode::General_Category>{ { 0x17C9, 0x17D3 }, ::unicode::General_Category::Nonspacing_Mark }, // [11] KHMER SIGN MUUSIKATOAN..KHMER SIGN BATHAMASAT
+    Prop<::unicode::General_Category>{ { 0x17D4, 0x17D6 }, ::unicode::General_Category::Other_Punctuation }, // [3] KHMER SIGN KHAN..KHMER SIGN CAMNUC PII KUUH
+    Prop<::unicode::General_Category>{ { 0x17D7, 0x17D7 }, ::unicode::General_Category::Modifier_Letter }, // KHMER SIGN LEK TOO
+    Prop<::unicode::General_Category>{ { 0x17D8, 0x17DA }, ::unicode::General_Category::Other_Punctuation }, // [3] KHMER SIGN BEYYAL..KHMER SIGN KOOMUUT
+    Prop<::unicode::General_Category>{ { 0x17DB, 0x17DB }, ::unicode::General_Category::Currency_Symbol }, // KHMER CURRENCY SYMBOL RIEL
+    Prop<::unicode::General_Category>{ { 0x17DC, 0x17DC }, ::unicode::General_Category::Other_Letter }, // KHMER SIGN AVAKRAHASANYA
+    Prop<::unicode::General_Category>{ { 0x17DD, 0x17DD }, ::unicode::General_Category::Nonspacing_Mark }, // KHMER SIGN ATTHACAN
+    Prop<::unicode::General_Category>{ { 0x17DE, 0x17DF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-17DE>..<reserved-17DF>
+    Prop<::unicode::General_Category>{ { 0x17E0, 0x17E9 }, ::unicode::General_Category::Decimal_Number }, // [10] KHMER DIGIT ZERO..KHMER DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x17EA, 0x17EF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-17EA>..<reserved-17EF>
+    Prop<::unicode::General_Category>{ { 0x17F0, 0x17F9 }, ::unicode::General_Category::Other_Number }, // [10] KHMER SYMBOL LEK ATTAK SON..KHMER SYMBOL LEK ATTAK PRAM-BUON
+    Prop<::unicode::General_Category>{ { 0x17FA, 0x17FF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-17FA>..<reserved-17FF>
+    Prop<::unicode::General_Category>{ { 0x1800, 0x1805 }, ::unicode::General_Category::Other_Punctuation }, // [6] MONGOLIAN BIRGA..MONGOLIAN FOUR DOTS
+    Prop<::unicode::General_Category>{ { 0x1806, 0x1806 }, ::unicode::General_Category::Dash_Punctuation }, // MONGOLIAN TODO SOFT HYPHEN
+    Prop<::unicode::General_Category>{ { 0x1807, 0x180A }, ::unicode::General_Category::Other_Punctuation }, // [4] MONGOLIAN SIBE SYLLABLE BOUNDARY MARKER..MONGOLIAN NIRUGU
+    Prop<::unicode::General_Category>{ { 0x180B, 0x180D }, ::unicode::General_Category::Nonspacing_Mark }, // [3] MONGOLIAN FREE VARIATION SELECTOR ONE..MONGOLIAN FREE VARIATION SELECTOR THREE
+    Prop<::unicode::General_Category>{ { 0x180E, 0x180E }, ::unicode::General_Category::Format }, // MONGOLIAN VOWEL SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x180F, 0x180F }, ::unicode::General_Category::Unassigned }, // <reserved-180F>
+    Prop<::unicode::General_Category>{ { 0x1810, 0x1819 }, ::unicode::General_Category::Decimal_Number }, // [10] MONGOLIAN DIGIT ZERO..MONGOLIAN DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x181A, 0x181F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-181A>..<reserved-181F>
+    Prop<::unicode::General_Category>{ { 0x1820, 0x1842 }, ::unicode::General_Category::Other_Letter }, // [35] MONGOLIAN LETTER A..MONGOLIAN LETTER CHI
+    Prop<::unicode::General_Category>{ { 0x1843, 0x1843 }, ::unicode::General_Category::Modifier_Letter }, // MONGOLIAN LETTER TODO LONG VOWEL SIGN
+    Prop<::unicode::General_Category>{ { 0x1844, 0x1878 }, ::unicode::General_Category::Other_Letter }, // [53] MONGOLIAN LETTER TODO E..MONGOLIAN LETTER CHA WITH TWO DOTS
+    Prop<::unicode::General_Category>{ { 0x1879, 0x187F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1879>..<reserved-187F>
+    Prop<::unicode::General_Category>{ { 0x1880, 0x1884 }, ::unicode::General_Category::Other_Letter }, // [5] MONGOLIAN LETTER ALI GALI ANUSVARA ONE..MONGOLIAN LETTER ALI GALI INVERTED UBADAMA
+    Prop<::unicode::General_Category>{ { 0x1885, 0x1886 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MONGOLIAN LETTER ALI GALI BALUDA..MONGOLIAN LETTER ALI GALI THREE BALUDA
+    Prop<::unicode::General_Category>{ { 0x1887, 0x18A8 }, ::unicode::General_Category::Other_Letter }, // [34] MONGOLIAN LETTER ALI GALI A..MONGOLIAN LETTER MANCHU ALI GALI BHA
+    Prop<::unicode::General_Category>{ { 0x18A9, 0x18A9 }, ::unicode::General_Category::Nonspacing_Mark }, // MONGOLIAN LETTER ALI GALI DAGALGA
+    Prop<::unicode::General_Category>{ { 0x18AA, 0x18AA }, ::unicode::General_Category::Other_Letter }, // MONGOLIAN LETTER MANCHU ALI GALI LHA
+    Prop<::unicode::General_Category>{ { 0x18AB, 0x18AF }, ::unicode::General_Category::Unassigned }, // [5] <reserved-18AB>..<reserved-18AF>
+    Prop<::unicode::General_Category>{ { 0x18B0, 0x18F5 }, ::unicode::General_Category::Other_Letter }, // [70] CANADIAN SYLLABICS OY..CANADIAN SYLLABICS CARRIER DENTAL S
+    Prop<::unicode::General_Category>{ { 0x18F6, 0x18FF }, ::unicode::General_Category::Unassigned }, // [10] <reserved-18F6>..<reserved-18FF>
+    Prop<::unicode::General_Category>{ { 0x1900, 0x191E }, ::unicode::General_Category::Other_Letter }, // [31] LIMBU VOWEL-CARRIER LETTER..LIMBU LETTER TRA
+    Prop<::unicode::General_Category>{ { 0x191F, 0x191F }, ::unicode::General_Category::Unassigned }, // <reserved-191F>
+    Prop<::unicode::General_Category>{ { 0x1920, 0x1922 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] LIMBU VOWEL SIGN A..LIMBU VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x1923, 0x1926 }, ::unicode::General_Category::Spacing_Mark }, // [4] LIMBU VOWEL SIGN EE..LIMBU VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x1927, 0x1928 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] LIMBU VOWEL SIGN E..LIMBU VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x1929, 0x192B }, ::unicode::General_Category::Spacing_Mark }, // [3] LIMBU SUBJOINED LETTER YA..LIMBU SUBJOINED LETTER WA
+    Prop<::unicode::General_Category>{ { 0x192C, 0x192F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-192C>..<reserved-192F>
+    Prop<::unicode::General_Category>{ { 0x1930, 0x1931 }, ::unicode::General_Category::Spacing_Mark }, // [2] LIMBU SMALL LETTER KA..LIMBU SMALL LETTER NGA
+    Prop<::unicode::General_Category>{ { 0x1932, 0x1932 }, ::unicode::General_Category::Nonspacing_Mark }, // LIMBU SMALL LETTER ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x1933, 0x1938 }, ::unicode::General_Category::Spacing_Mark }, // [6] LIMBU SMALL LETTER TA..LIMBU SMALL LETTER LA
+    Prop<::unicode::General_Category>{ { 0x1939, 0x193B }, ::unicode::General_Category::Nonspacing_Mark }, // [3] LIMBU SIGN MUKPHRENG..LIMBU SIGN SA-I
+    Prop<::unicode::General_Category>{ { 0x193C, 0x193F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-193C>..<reserved-193F>
+    Prop<::unicode::General_Category>{ { 0x1940, 0x1940 }, ::unicode::General_Category::Other_Symbol }, // LIMBU SIGN LOO
+    Prop<::unicode::General_Category>{ { 0x1941, 0x1943 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1941>..<reserved-1943>
+    Prop<::unicode::General_Category>{ { 0x1944, 0x1945 }, ::unicode::General_Category::Other_Punctuation }, // [2] LIMBU EXCLAMATION MARK..LIMBU QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x1946, 0x194F }, ::unicode::General_Category::Decimal_Number }, // [10] LIMBU DIGIT ZERO..LIMBU DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1950, 0x196D }, ::unicode::General_Category::Other_Letter }, // [30] TAI LE LETTER KA..TAI LE LETTER AI
+    Prop<::unicode::General_Category>{ { 0x196E, 0x196F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-196E>..<reserved-196F>
+    Prop<::unicode::General_Category>{ { 0x1970, 0x1974 }, ::unicode::General_Category::Other_Letter }, // [5] TAI LE LETTER TONE-2..TAI LE LETTER TONE-6
+    Prop<::unicode::General_Category>{ { 0x1975, 0x197F }, ::unicode::General_Category::Unassigned }, // [11] <reserved-1975>..<reserved-197F>
+    Prop<::unicode::General_Category>{ { 0x1980, 0x19AB }, ::unicode::General_Category::Other_Letter }, // [44] NEW TAI LUE LETTER HIGH QA..NEW TAI LUE LETTER LOW SUA
+    Prop<::unicode::General_Category>{ { 0x19AC, 0x19AF }, ::unicode::General_Category::Unassigned }, // [4] <reserved-19AC>..<reserved-19AF>
+    Prop<::unicode::General_Category>{ { 0x19B0, 0x19C9 }, ::unicode::General_Category::Other_Letter }, // [26] NEW TAI LUE VOWEL SIGN VOWEL SHORTENER..NEW TAI LUE TONE MARK-2
+    Prop<::unicode::General_Category>{ { 0x19CA, 0x19CF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-19CA>..<reserved-19CF>
+    Prop<::unicode::General_Category>{ { 0x19D0, 0x19D9 }, ::unicode::General_Category::Decimal_Number }, // [10] NEW TAI LUE DIGIT ZERO..NEW TAI LUE DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x19DA, 0x19DA }, ::unicode::General_Category::Other_Number }, // NEW TAI LUE THAM DIGIT ONE
+    Prop<::unicode::General_Category>{ { 0x19DB, 0x19DD }, ::unicode::General_Category::Unassigned }, // [3] <reserved-19DB>..<reserved-19DD>
+    Prop<::unicode::General_Category>{ { 0x19DE, 0x19FF }, ::unicode::General_Category::Other_Symbol }, // [34] NEW TAI LUE SIGN LAE..KHMER SYMBOL DAP-PRAM ROC
+    Prop<::unicode::General_Category>{ { 0x1A00, 0x1A16 }, ::unicode::General_Category::Other_Letter }, // [23] BUGINESE LETTER KA..BUGINESE LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1A17, 0x1A18 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] BUGINESE VOWEL SIGN I..BUGINESE VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x1A19, 0x1A1A }, ::unicode::General_Category::Spacing_Mark }, // [2] BUGINESE VOWEL SIGN E..BUGINESE VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x1A1B, 0x1A1B }, ::unicode::General_Category::Nonspacing_Mark }, // BUGINESE VOWEL SIGN AE
+    Prop<::unicode::General_Category>{ { 0x1A1C, 0x1A1D }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1A1C>..<reserved-1A1D>
+    Prop<::unicode::General_Category>{ { 0x1A1E, 0x1A1F }, ::unicode::General_Category::Other_Punctuation }, // [2] BUGINESE PALLAWA..BUGINESE END OF SECTION
+    Prop<::unicode::General_Category>{ { 0x1A20, 0x1A54 }, ::unicode::General_Category::Other_Letter }, // [53] TAI THAM LETTER HIGH KA..TAI THAM LETTER GREAT SA
+    Prop<::unicode::General_Category>{ { 0x1A55, 0x1A55 }, ::unicode::General_Category::Spacing_Mark }, // TAI THAM CONSONANT SIGN MEDIAL RA
+    Prop<::unicode::General_Category>{ { 0x1A56, 0x1A56 }, ::unicode::General_Category::Nonspacing_Mark }, // TAI THAM CONSONANT SIGN MEDIAL LA
+    Prop<::unicode::General_Category>{ { 0x1A57, 0x1A57 }, ::unicode::General_Category::Spacing_Mark }, // TAI THAM CONSONANT SIGN LA TANG LAI
+    Prop<::unicode::General_Category>{ { 0x1A58, 0x1A5E }, ::unicode::General_Category::Nonspacing_Mark }, // [7] TAI THAM SIGN MAI KANG LAI..TAI THAM CONSONANT SIGN SA
+    Prop<::unicode::General_Category>{ { 0x1A5F, 0x1A5F }, ::unicode::General_Category::Unassigned }, // <reserved-1A5F>
+    Prop<::unicode::General_Category>{ { 0x1A60, 0x1A60 }, ::unicode::General_Category::Nonspacing_Mark }, // TAI THAM SIGN SAKOT
+    Prop<::unicode::General_Category>{ { 0x1A61, 0x1A61 }, ::unicode::General_Category::Spacing_Mark }, // TAI THAM VOWEL SIGN A
+    Prop<::unicode::General_Category>{ { 0x1A62, 0x1A62 }, ::unicode::General_Category::Nonspacing_Mark }, // TAI THAM VOWEL SIGN MAI SAT
+    Prop<::unicode::General_Category>{ { 0x1A63, 0x1A64 }, ::unicode::General_Category::Spacing_Mark }, // [2] TAI THAM VOWEL SIGN AA..TAI THAM VOWEL SIGN TALL AA
+    Prop<::unicode::General_Category>{ { 0x1A65, 0x1A6C }, ::unicode::General_Category::Nonspacing_Mark }, // [8] TAI THAM VOWEL SIGN I..TAI THAM VOWEL SIGN OA BELOW
+    Prop<::unicode::General_Category>{ { 0x1A6D, 0x1A72 }, ::unicode::General_Category::Spacing_Mark }, // [6] TAI THAM VOWEL SIGN OY..TAI THAM VOWEL SIGN THAM AI
+    Prop<::unicode::General_Category>{ { 0x1A73, 0x1A7C }, ::unicode::General_Category::Nonspacing_Mark }, // [10] TAI THAM VOWEL SIGN OA ABOVE..TAI THAM SIGN KHUEN-LUE KARAN
+    Prop<::unicode::General_Category>{ { 0x1A7D, 0x1A7E }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1A7D>..<reserved-1A7E>
+    Prop<::unicode::General_Category>{ { 0x1A7F, 0x1A7F }, ::unicode::General_Category::Nonspacing_Mark }, // TAI THAM COMBINING CRYPTOGRAMMIC DOT
+    Prop<::unicode::General_Category>{ { 0x1A80, 0x1A89 }, ::unicode::General_Category::Decimal_Number }, // [10] TAI THAM HORA DIGIT ZERO..TAI THAM HORA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1A8A, 0x1A8F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-1A8A>..<reserved-1A8F>
+    Prop<::unicode::General_Category>{ { 0x1A90, 0x1A99 }, ::unicode::General_Category::Decimal_Number }, // [10] TAI THAM THAM DIGIT ZERO..TAI THAM THAM DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1A9A, 0x1A9F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-1A9A>..<reserved-1A9F>
+    Prop<::unicode::General_Category>{ { 0x1AA0, 0x1AA6 }, ::unicode::General_Category::Other_Punctuation }, // [7] TAI THAM SIGN WIANG..TAI THAM SIGN REVERSED ROTATED RANA
+    Prop<::unicode::General_Category>{ { 0x1AA7, 0x1AA7 }, ::unicode::General_Category::Modifier_Letter }, // TAI THAM SIGN MAI YAMOK
+    Prop<::unicode::General_Category>{ { 0x1AA8, 0x1AAD }, ::unicode::General_Category::Other_Punctuation }, // [6] TAI THAM SIGN KAAN..TAI THAM SIGN CAANG
+    Prop<::unicode::General_Category>{ { 0x1AAE, 0x1AAF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1AAE>..<reserved-1AAF>
+    Prop<::unicode::General_Category>{ { 0x1AB0, 0x1ABD }, ::unicode::General_Category::Nonspacing_Mark }, // [14] COMBINING DOUBLED CIRCUMFLEX ACCENT..COMBINING PARENTHESES BELOW
+    Prop<::unicode::General_Category>{ { 0x1ABE, 0x1ABE }, ::unicode::General_Category::Enclosing_Mark }, // COMBINING PARENTHESES OVERLAY
+    Prop<::unicode::General_Category>{ { 0x1ABF, 0x1AC0 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] COMBINING LATIN SMALL LETTER W BELOW..COMBINING LATIN SMALL LETTER TURNED W BELOW
+    Prop<::unicode::General_Category>{ { 0x1AC1, 0x1AFF }, ::unicode::General_Category::Unassigned }, // [63] <reserved-1AC1>..<reserved-1AFF>
+    Prop<::unicode::General_Category>{ { 0x1B00, 0x1B03 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] BALINESE SIGN ULU RICEM..BALINESE SIGN SURANG
+    Prop<::unicode::General_Category>{ { 0x1B04, 0x1B04 }, ::unicode::General_Category::Spacing_Mark }, // BALINESE SIGN BISAH
+    Prop<::unicode::General_Category>{ { 0x1B05, 0x1B33 }, ::unicode::General_Category::Other_Letter }, // [47] BALINESE LETTER AKARA..BALINESE LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1B34, 0x1B34 }, ::unicode::General_Category::Nonspacing_Mark }, // BALINESE SIGN REREKAN
+    Prop<::unicode::General_Category>{ { 0x1B35, 0x1B35 }, ::unicode::General_Category::Spacing_Mark }, // BALINESE VOWEL SIGN TEDUNG
+    Prop<::unicode::General_Category>{ { 0x1B36, 0x1B3A }, ::unicode::General_Category::Nonspacing_Mark }, // [5] BALINESE VOWEL SIGN ULU..BALINESE VOWEL SIGN RA REPA
+    Prop<::unicode::General_Category>{ { 0x1B3B, 0x1B3B }, ::unicode::General_Category::Spacing_Mark }, // BALINESE VOWEL SIGN RA REPA TEDUNG
+    Prop<::unicode::General_Category>{ { 0x1B3C, 0x1B3C }, ::unicode::General_Category::Nonspacing_Mark }, // BALINESE VOWEL SIGN LA LENGA
+    Prop<::unicode::General_Category>{ { 0x1B3D, 0x1B41 }, ::unicode::General_Category::Spacing_Mark }, // [5] BALINESE VOWEL SIGN LA LENGA TEDUNG..BALINESE VOWEL SIGN TALING REPA TEDUNG
+    Prop<::unicode::General_Category>{ { 0x1B42, 0x1B42 }, ::unicode::General_Category::Nonspacing_Mark }, // BALINESE VOWEL SIGN PEPET
+    Prop<::unicode::General_Category>{ { 0x1B43, 0x1B44 }, ::unicode::General_Category::Spacing_Mark }, // [2] BALINESE VOWEL SIGN PEPET TEDUNG..BALINESE ADEG ADEG
+    Prop<::unicode::General_Category>{ { 0x1B45, 0x1B4B }, ::unicode::General_Category::Other_Letter }, // [7] BALINESE LETTER KAF SASAK..BALINESE LETTER ASYURA SASAK
+    Prop<::unicode::General_Category>{ { 0x1B4C, 0x1B4F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1B4C>..<reserved-1B4F>
+    Prop<::unicode::General_Category>{ { 0x1B50, 0x1B59 }, ::unicode::General_Category::Decimal_Number }, // [10] BALINESE DIGIT ZERO..BALINESE DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1B5A, 0x1B60 }, ::unicode::General_Category::Other_Punctuation }, // [7] BALINESE PANTI..BALINESE PAMENENG
+    Prop<::unicode::General_Category>{ { 0x1B61, 0x1B6A }, ::unicode::General_Category::Other_Symbol }, // [10] BALINESE MUSICAL SYMBOL DONG..BALINESE MUSICAL SYMBOL DANG GEDE
+    Prop<::unicode::General_Category>{ { 0x1B6B, 0x1B73 }, ::unicode::General_Category::Nonspacing_Mark }, // [9] BALINESE MUSICAL SYMBOL COMBINING TEGEH..BALINESE MUSICAL SYMBOL COMBINING GONG
+    Prop<::unicode::General_Category>{ { 0x1B74, 0x1B7C }, ::unicode::General_Category::Other_Symbol }, // [9] BALINESE MUSICAL SYMBOL RIGHT-HAND OPEN DUG..BALINESE MUSICAL SYMBOL LEFT-HAND OPEN PING
+    Prop<::unicode::General_Category>{ { 0x1B7D, 0x1B7F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1B7D>..<reserved-1B7F>
+    Prop<::unicode::General_Category>{ { 0x1B80, 0x1B81 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SUNDANESE SIGN PANYECEK..SUNDANESE SIGN PANGLAYAR
+    Prop<::unicode::General_Category>{ { 0x1B82, 0x1B82 }, ::unicode::General_Category::Spacing_Mark }, // SUNDANESE SIGN PANGWISAD
+    Prop<::unicode::General_Category>{ { 0x1B83, 0x1BA0 }, ::unicode::General_Category::Other_Letter }, // [30] SUNDANESE LETTER A..SUNDANESE LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1BA1, 0x1BA1 }, ::unicode::General_Category::Spacing_Mark }, // SUNDANESE CONSONANT SIGN PAMINGKAL
+    Prop<::unicode::General_Category>{ { 0x1BA2, 0x1BA5 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] SUNDANESE CONSONANT SIGN PANYAKRA..SUNDANESE VOWEL SIGN PANYUKU
+    Prop<::unicode::General_Category>{ { 0x1BA6, 0x1BA7 }, ::unicode::General_Category::Spacing_Mark }, // [2] SUNDANESE VOWEL SIGN PANAELAENG..SUNDANESE VOWEL SIGN PANOLONG
+    Prop<::unicode::General_Category>{ { 0x1BA8, 0x1BA9 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SUNDANESE VOWEL SIGN PAMEPET..SUNDANESE VOWEL SIGN PANEULEUNG
+    Prop<::unicode::General_Category>{ { 0x1BAA, 0x1BAA }, ::unicode::General_Category::Spacing_Mark }, // SUNDANESE SIGN PAMAAEH
+    Prop<::unicode::General_Category>{ { 0x1BAB, 0x1BAD }, ::unicode::General_Category::Nonspacing_Mark }, // [3] SUNDANESE SIGN VIRAMA..SUNDANESE CONSONANT SIGN PASANGAN WA
+    Prop<::unicode::General_Category>{ { 0x1BAE, 0x1BAF }, ::unicode::General_Category::Other_Letter }, // [2] SUNDANESE LETTER KHA..SUNDANESE LETTER SYA
+    Prop<::unicode::General_Category>{ { 0x1BB0, 0x1BB9 }, ::unicode::General_Category::Decimal_Number }, // [10] SUNDANESE DIGIT ZERO..SUNDANESE DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1BBA, 0x1BE5 }, ::unicode::General_Category::Other_Letter }, // [44] SUNDANESE AVAGRAHA..BATAK LETTER U
+    Prop<::unicode::General_Category>{ { 0x1BE6, 0x1BE6 }, ::unicode::General_Category::Nonspacing_Mark }, // BATAK SIGN TOMPI
+    Prop<::unicode::General_Category>{ { 0x1BE7, 0x1BE7 }, ::unicode::General_Category::Spacing_Mark }, // BATAK VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x1BE8, 0x1BE9 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] BATAK VOWEL SIGN PAKPAK E..BATAK VOWEL SIGN EE
+    Prop<::unicode::General_Category>{ { 0x1BEA, 0x1BEC }, ::unicode::General_Category::Spacing_Mark }, // [3] BATAK VOWEL SIGN I..BATAK VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x1BED, 0x1BED }, ::unicode::General_Category::Nonspacing_Mark }, // BATAK VOWEL SIGN KARO O
+    Prop<::unicode::General_Category>{ { 0x1BEE, 0x1BEE }, ::unicode::General_Category::Spacing_Mark }, // BATAK VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x1BEF, 0x1BF1 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] BATAK VOWEL SIGN U FOR SIMALUNGUN SA..BATAK CONSONANT SIGN H
+    Prop<::unicode::General_Category>{ { 0x1BF2, 0x1BF3 }, ::unicode::General_Category::Spacing_Mark }, // [2] BATAK PANGOLAT..BATAK PANONGONAN
+    Prop<::unicode::General_Category>{ { 0x1BF4, 0x1BFB }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1BF4>..<reserved-1BFB>
+    Prop<::unicode::General_Category>{ { 0x1BFC, 0x1BFF }, ::unicode::General_Category::Other_Punctuation }, // [4] BATAK SYMBOL BINDU NA METEK..BATAK SYMBOL BINDU PANGOLAT
+    Prop<::unicode::General_Category>{ { 0x1C00, 0x1C23 }, ::unicode::General_Category::Other_Letter }, // [36] LEPCHA LETTER KA..LEPCHA LETTER A
+    Prop<::unicode::General_Category>{ { 0x1C24, 0x1C2B }, ::unicode::General_Category::Spacing_Mark }, // [8] LEPCHA SUBJOINED LETTER YA..LEPCHA VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x1C2C, 0x1C33 }, ::unicode::General_Category::Nonspacing_Mark }, // [8] LEPCHA VOWEL SIGN E..LEPCHA CONSONANT SIGN T
+    Prop<::unicode::General_Category>{ { 0x1C34, 0x1C35 }, ::unicode::General_Category::Spacing_Mark }, // [2] LEPCHA CONSONANT SIGN NYIN-DO..LEPCHA CONSONANT SIGN KANG
+    Prop<::unicode::General_Category>{ { 0x1C36, 0x1C37 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] LEPCHA SIGN RAN..LEPCHA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x1C38, 0x1C3A }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1C38>..<reserved-1C3A>
+    Prop<::unicode::General_Category>{ { 0x1C3B, 0x1C3F }, ::unicode::General_Category::Other_Punctuation }, // [5] LEPCHA PUNCTUATION TA-ROL..LEPCHA PUNCTUATION TSHOOK
+    Prop<::unicode::General_Category>{ { 0x1C40, 0x1C49 }, ::unicode::General_Category::Decimal_Number }, // [10] LEPCHA DIGIT ZERO..LEPCHA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1C4A, 0x1C4C }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1C4A>..<reserved-1C4C>
+    Prop<::unicode::General_Category>{ { 0x1C4D, 0x1C4F }, ::unicode::General_Category::Other_Letter }, // [3] LEPCHA LETTER TTA..LEPCHA LETTER DDA
+    Prop<::unicode::General_Category>{ { 0x1C50, 0x1C59 }, ::unicode::General_Category::Decimal_Number }, // [10] OL CHIKI DIGIT ZERO..OL CHIKI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1C5A, 0x1C77 }, ::unicode::General_Category::Other_Letter }, // [30] OL CHIKI LETTER LA..OL CHIKI LETTER OH
+    Prop<::unicode::General_Category>{ { 0x1C78, 0x1C7D }, ::unicode::General_Category::Modifier_Letter }, // [6] OL CHIKI MU TTUDDAG..OL CHIKI AHAD
+    Prop<::unicode::General_Category>{ { 0x1C7E, 0x1C7F }, ::unicode::General_Category::Other_Punctuation }, // [2] OL CHIKI PUNCTUATION MUCAAD..OL CHIKI PUNCTUATION DOUBLE MUCAAD
+    Prop<::unicode::General_Category>{ { 0x1C80, 0x1C88 }, ::unicode::General_Category::Lowercase_Letter }, // [9] CYRILLIC SMALL LETTER ROUNDED VE..CYRILLIC SMALL LETTER UNBLENDED UK
+    Prop<::unicode::General_Category>{ { 0x1C89, 0x1C8F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1C89>..<reserved-1C8F>
+    Prop<::unicode::General_Category>{ { 0x1C90, 0x1CBA }, ::unicode::General_Category::Uppercase_Letter }, // [43] GEORGIAN MTAVRULI CAPITAL LETTER AN..GEORGIAN MTAVRULI CAPITAL LETTER AIN
+    Prop<::unicode::General_Category>{ { 0x1CBB, 0x1CBC }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1CBB>..<reserved-1CBC>
+    Prop<::unicode::General_Category>{ { 0x1CBD, 0x1CBF }, ::unicode::General_Category::Uppercase_Letter }, // [3] GEORGIAN MTAVRULI CAPITAL LETTER AEN..GEORGIAN MTAVRULI CAPITAL LETTER LABIAL SIGN
+    Prop<::unicode::General_Category>{ { 0x1CC0, 0x1CC7 }, ::unicode::General_Category::Other_Punctuation }, // [8] SUNDANESE PUNCTUATION BINDU SURYA..SUNDANESE PUNCTUATION BINDU BA SATANGA
+    Prop<::unicode::General_Category>{ { 0x1CC8, 0x1CCF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1CC8>..<reserved-1CCF>
+    Prop<::unicode::General_Category>{ { 0x1CD0, 0x1CD2 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] VEDIC TONE KARSHANA..VEDIC TONE PRENKHA
+    Prop<::unicode::General_Category>{ { 0x1CD3, 0x1CD3 }, ::unicode::General_Category::Other_Punctuation }, // VEDIC SIGN NIHSHVASA
+    Prop<::unicode::General_Category>{ { 0x1CD4, 0x1CE0 }, ::unicode::General_Category::Nonspacing_Mark }, // [13] VEDIC SIGN YAJURVEDIC MIDLINE SVARITA..VEDIC TONE RIGVEDIC KASHMIRI INDEPENDENT SVARITA
+    Prop<::unicode::General_Category>{ { 0x1CE1, 0x1CE1 }, ::unicode::General_Category::Spacing_Mark }, // VEDIC TONE ATHARVAVEDIC INDEPENDENT SVARITA
+    Prop<::unicode::General_Category>{ { 0x1CE2, 0x1CE8 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] VEDIC SIGN VISARGA SVARITA..VEDIC SIGN VISARGA ANUDATTA WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x1CE9, 0x1CEC }, ::unicode::General_Category::Other_Letter }, // [4] VEDIC SIGN ANUSVARA ANTARGOMUKHA..VEDIC SIGN ANUSVARA VAMAGOMUKHA WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x1CED, 0x1CED }, ::unicode::General_Category::Nonspacing_Mark }, // VEDIC SIGN TIRYAK
+    Prop<::unicode::General_Category>{ { 0x1CEE, 0x1CF3 }, ::unicode::General_Category::Other_Letter }, // [6] VEDIC SIGN HEXIFORM LONG ANUSVARA..VEDIC SIGN ROTATED ARDHAVISARGA
+    Prop<::unicode::General_Category>{ { 0x1CF4, 0x1CF4 }, ::unicode::General_Category::Nonspacing_Mark }, // VEDIC TONE CANDRA ABOVE
+    Prop<::unicode::General_Category>{ { 0x1CF5, 0x1CF6 }, ::unicode::General_Category::Other_Letter }, // [2] VEDIC SIGN JIHVAMULIYA..VEDIC SIGN UPADHMANIYA
+    Prop<::unicode::General_Category>{ { 0x1CF7, 0x1CF7 }, ::unicode::General_Category::Spacing_Mark }, // VEDIC SIGN ATIKRAMA
+    Prop<::unicode::General_Category>{ { 0x1CF8, 0x1CF9 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] VEDIC TONE RING ABOVE..VEDIC TONE DOUBLE RING ABOVE
+    Prop<::unicode::General_Category>{ { 0x1CFA, 0x1CFA }, ::unicode::General_Category::Other_Letter }, // VEDIC SIGN DOUBLE ANUSVARA ANTARGOMUKHA
+    Prop<::unicode::General_Category>{ { 0x1CFB, 0x1CFF }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1CFB>..<reserved-1CFF>
+    Prop<::unicode::General_Category>{ { 0x1D00, 0x1D2B }, ::unicode::General_Category::Lowercase_Letter }, // [44] LATIN LETTER SMALL CAPITAL A..CYRILLIC LETTER SMALL CAPITAL EL
+    Prop<::unicode::General_Category>{ { 0x1D2C, 0x1D6A }, ::unicode::General_Category::Modifier_Letter }, // [63] MODIFIER LETTER CAPITAL A..GREEK SUBSCRIPT SMALL LETTER CHI
+    Prop<::unicode::General_Category>{ { 0x1D6B, 0x1D77 }, ::unicode::General_Category::Lowercase_Letter }, // [13] LATIN SMALL LETTER UE..LATIN SMALL LETTER TURNED G
+    Prop<::unicode::General_Category>{ { 0x1D78, 0x1D78 }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER CYRILLIC EN
+    Prop<::unicode::General_Category>{ { 0x1D79, 0x1D9A }, ::unicode::General_Category::Lowercase_Letter }, // [34] LATIN SMALL LETTER INSULAR G..LATIN SMALL LETTER EZH WITH RETROFLEX HOOK
+    Prop<::unicode::General_Category>{ { 0x1D9B, 0x1DBF }, ::unicode::General_Category::Modifier_Letter }, // [37] MODIFIER LETTER SMALL TURNED ALPHA..MODIFIER LETTER SMALL THETA
+    Prop<::unicode::General_Category>{ { 0x1DC0, 0x1DF9 }, ::unicode::General_Category::Nonspacing_Mark }, // [58] COMBINING DOTTED GRAVE ACCENT..COMBINING WIDE INVERTED BRIDGE BELOW
+    Prop<::unicode::General_Category>{ { 0x1DFA, 0x1DFA }, ::unicode::General_Category::Unassigned }, // <reserved-1DFA>
+    Prop<::unicode::General_Category>{ { 0x1DFB, 0x1DFF }, ::unicode::General_Category::Nonspacing_Mark }, // [5] COMBINING DELETION MARK..COMBINING RIGHT ARROWHEAD AND DOWN ARROWHEAD BELOW
+    Prop<::unicode::General_Category>{ { 0x1E00, 0x1E00 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH RING BELOW
+    Prop<::unicode::General_Category>{ { 0x1E01, 0x1E01 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH RING BELOW
+    Prop<::unicode::General_Category>{ { 0x1E02, 0x1E02 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER B WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E03, 0x1E03 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER B WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E04, 0x1E04 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER B WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E05, 0x1E05 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER B WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E06, 0x1E06 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER B WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E07, 0x1E07 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER B WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E08, 0x1E08 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH CEDILLA AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E09, 0x1E09 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER C WITH CEDILLA AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E0A, 0x1E0A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E0B, 0x1E0B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E0C, 0x1E0C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E0D, 0x1E0D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E0E, 0x1E0E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E0F, 0x1E0F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E10, 0x1E10 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x1E11, 0x1E11 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x1E12, 0x1E12 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER D WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E13, 0x1E13 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E14, 0x1E14 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH MACRON AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E15, 0x1E15 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH MACRON AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E16, 0x1E16 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH MACRON AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E17, 0x1E17 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH MACRON AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E18, 0x1E18 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E19, 0x1E19 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E1A, 0x1E1A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E1B, 0x1E1B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E1C, 0x1E1C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CEDILLA AND BREVE
+    Prop<::unicode::General_Category>{ { 0x1E1D, 0x1E1D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CEDILLA AND BREVE
+    Prop<::unicode::General_Category>{ { 0x1E1E, 0x1E1E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER F WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E1F, 0x1E1F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER F WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E20, 0x1E20 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x1E21, 0x1E21 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH MACRON
+    Prop<::unicode::General_Category>{ { 0x1E22, 0x1E22 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E23, 0x1E23 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E24, 0x1E24 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E25, 0x1E25 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E26, 0x1E26 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E27, 0x1E27 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E28, 0x1E28 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x1E29, 0x1E29 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH CEDILLA
+    Prop<::unicode::General_Category>{ { 0x1E2A, 0x1E2A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH BREVE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E2B, 0x1E2B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH BREVE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E2C, 0x1E2C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E2D, 0x1E2D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E2E, 0x1E2E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH DIAERESIS AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E2F, 0x1E2F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH DIAERESIS AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E30, 0x1E30 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E31, 0x1E31 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E32, 0x1E32 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E33, 0x1E33 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E34, 0x1E34 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E35, 0x1E35 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E36, 0x1E36 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E37, 0x1E37 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E38, 0x1E38 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH DOT BELOW AND MACRON
+    Prop<::unicode::General_Category>{ { 0x1E39, 0x1E39 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH DOT BELOW AND MACRON
+    Prop<::unicode::General_Category>{ { 0x1E3A, 0x1E3A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E3B, 0x1E3B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E3C, 0x1E3C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E3D, 0x1E3D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E3E, 0x1E3E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER M WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E3F, 0x1E3F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER M WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E40, 0x1E40 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER M WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E41, 0x1E41 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER M WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E42, 0x1E42 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER M WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E43, 0x1E43 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER M WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E44, 0x1E44 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E45, 0x1E45 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E46, 0x1E46 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E47, 0x1E47 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E48, 0x1E48 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E49, 0x1E49 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E4A, 0x1E4A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E4B, 0x1E4B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E4C, 0x1E4C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH TILDE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E4D, 0x1E4D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH TILDE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E4E, 0x1E4E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH TILDE AND DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E4F, 0x1E4F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH TILDE AND DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E50, 0x1E50 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH MACRON AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E51, 0x1E51 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH MACRON AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E52, 0x1E52 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH MACRON AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E53, 0x1E53 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH MACRON AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E54, 0x1E54 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E55, 0x1E55 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E56, 0x1E56 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E57, 0x1E57 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E58, 0x1E58 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E59, 0x1E59 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E5A, 0x1E5A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E5B, 0x1E5B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E5C, 0x1E5C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH DOT BELOW AND MACRON
+    Prop<::unicode::General_Category>{ { 0x1E5D, 0x1E5D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH DOT BELOW AND MACRON
+    Prop<::unicode::General_Category>{ { 0x1E5E, 0x1E5E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E5F, 0x1E5F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E60, 0x1E60 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E61, 0x1E61 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E62, 0x1E62 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E63, 0x1E63 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E64, 0x1E64 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH ACUTE AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E65, 0x1E65 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH ACUTE AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E66, 0x1E66 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH CARON AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E67, 0x1E67 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH CARON AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E68, 0x1E68 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH DOT BELOW AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E69, 0x1E69 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH DOT BELOW AND DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E6A, 0x1E6A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E6B, 0x1E6B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E6C, 0x1E6C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E6D, 0x1E6D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E6E, 0x1E6E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E6F, 0x1E6F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E70, 0x1E70 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER T WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E71, 0x1E71 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER T WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E72, 0x1E72 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DIAERESIS BELOW
+    Prop<::unicode::General_Category>{ { 0x1E73, 0x1E73 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DIAERESIS BELOW
+    Prop<::unicode::General_Category>{ { 0x1E74, 0x1E74 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E75, 0x1E75 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH TILDE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E76, 0x1E76 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E77, 0x1E77 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH CIRCUMFLEX BELOW
+    Prop<::unicode::General_Category>{ { 0x1E78, 0x1E78 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH TILDE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E79, 0x1E79 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH TILDE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E7A, 0x1E7A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH MACRON AND DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E7B, 0x1E7B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH MACRON AND DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E7C, 0x1E7C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER V WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1E7D, 0x1E7D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER V WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1E7E, 0x1E7E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER V WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E7F, 0x1E7F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER V WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E80, 0x1E80 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E81, 0x1E81 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x1E82, 0x1E82 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E83, 0x1E83 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH ACUTE
+    Prop<::unicode::General_Category>{ { 0x1E84, 0x1E84 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E85, 0x1E85 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E86, 0x1E86 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E87, 0x1E87 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E88, 0x1E88 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E89, 0x1E89 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER W WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E8A, 0x1E8A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER X WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E8B, 0x1E8B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER X WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E8C, 0x1E8C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER X WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E8D, 0x1E8D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER X WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x1E8E, 0x1E8E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E8F, 0x1E8F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH DOT ABOVE
+    Prop<::unicode::General_Category>{ { 0x1E90, 0x1E90 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x1E91, 0x1E91 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH CIRCUMFLEX
+    Prop<::unicode::General_Category>{ { 0x1E92, 0x1E92 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E93, 0x1E93 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1E94, 0x1E94 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH LINE BELOW
+    Prop<::unicode::General_Category>{ { 0x1E95, 0x1E9D }, ::unicode::General_Category::Lowercase_Letter }, // [9] LATIN SMALL LETTER Z WITH LINE BELOW..LATIN SMALL LETTER LONG S WITH HIGH STROKE
+    Prop<::unicode::General_Category>{ { 0x1E9E, 0x1E9E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER SHARP S
+    Prop<::unicode::General_Category>{ { 0x1E9F, 0x1E9F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER DELTA
+    Prop<::unicode::General_Category>{ { 0x1EA0, 0x1EA0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EA1, 0x1EA1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EA2, 0x1EA2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EA3, 0x1EA3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EA4, 0x1EA4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EA5, 0x1EA5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EA6, 0x1EA6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EA7, 0x1EA7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EA8, 0x1EA8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EA9, 0x1EA9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EAA, 0x1EAA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EAB, 0x1EAB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EAC, 0x1EAC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EAD, 0x1EAD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EAE, 0x1EAE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EAF, 0x1EAF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EB0, 0x1EB0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EB1, 0x1EB1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EB2, 0x1EB2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EB3, 0x1EB3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EB4, 0x1EB4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EB5, 0x1EB5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EB6, 0x1EB6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER A WITH BREVE AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EB7, 0x1EB7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER A WITH BREVE AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EB8, 0x1EB8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EB9, 0x1EB9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EBA, 0x1EBA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EBB, 0x1EBB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EBC, 0x1EBC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1EBD, 0x1EBD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1EBE, 0x1EBE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EBF, 0x1EBF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EC0, 0x1EC0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EC1, 0x1EC1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EC2, 0x1EC2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EC3, 0x1EC3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EC4, 0x1EC4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EC5, 0x1EC5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EC6, 0x1EC6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EC7, 0x1EC7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER E WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EC8, 0x1EC8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EC9, 0x1EC9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1ECA, 0x1ECA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER I WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1ECB, 0x1ECB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER I WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1ECC, 0x1ECC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1ECD, 0x1ECD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1ECE, 0x1ECE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1ECF, 0x1ECF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1ED0, 0x1ED0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1ED1, 0x1ED1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CIRCUMFLEX AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1ED2, 0x1ED2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1ED3, 0x1ED3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CIRCUMFLEX AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1ED4, 0x1ED4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1ED5, 0x1ED5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CIRCUMFLEX AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1ED6, 0x1ED6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1ED7, 0x1ED7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CIRCUMFLEX AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1ED8, 0x1ED8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1ED9, 0x1ED9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH CIRCUMFLEX AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EDA, 0x1EDA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HORN AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EDB, 0x1EDB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EDC, 0x1EDC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HORN AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EDD, 0x1EDD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EDE, 0x1EDE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HORN AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EDF, 0x1EDF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EE0, 0x1EE0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HORN AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EE1, 0x1EE1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EE2, 0x1EE2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH HORN AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EE3, 0x1EE3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH HORN AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EE4, 0x1EE4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EE5, 0x1EE5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EE6, 0x1EE6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EE7, 0x1EE7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EE8, 0x1EE8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HORN AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EE9, 0x1EE9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN AND ACUTE
+    Prop<::unicode::General_Category>{ { 0x1EEA, 0x1EEA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HORN AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EEB, 0x1EEB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN AND GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EEC, 0x1EEC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HORN AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EED, 0x1EED }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN AND HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EEE, 0x1EEE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HORN AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EEF, 0x1EEF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN AND TILDE
+    Prop<::unicode::General_Category>{ { 0x1EF0, 0x1EF0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH HORN AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EF1, 0x1EF1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH HORN AND DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EF2, 0x1EF2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EF3, 0x1EF3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH GRAVE
+    Prop<::unicode::General_Category>{ { 0x1EF4, 0x1EF4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EF5, 0x1EF5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x1EF6, 0x1EF6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EF7, 0x1EF7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH HOOK ABOVE
+    Prop<::unicode::General_Category>{ { 0x1EF8, 0x1EF8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1EF9, 0x1EF9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Y WITH TILDE
+    Prop<::unicode::General_Category>{ { 0x1EFA, 0x1EFA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER MIDDLE-WELSH LL
+    Prop<::unicode::General_Category>{ { 0x1EFB, 0x1EFB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER MIDDLE-WELSH LL
+    Prop<::unicode::General_Category>{ { 0x1EFC, 0x1EFC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER MIDDLE-WELSH V
+    Prop<::unicode::General_Category>{ { 0x1EFD, 0x1EFD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER MIDDLE-WELSH V
+    Prop<::unicode::General_Category>{ { 0x1EFE, 0x1EFE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Y WITH LOOP
+    Prop<::unicode::General_Category>{ { 0x1EFF, 0x1F07 }, ::unicode::General_Category::Lowercase_Letter }, // [9] LATIN SMALL LETTER Y WITH LOOP..GREEK SMALL LETTER ALPHA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F08, 0x1F0F }, ::unicode::General_Category::Uppercase_Letter }, // [8] GREEK CAPITAL LETTER ALPHA WITH PSILI..GREEK CAPITAL LETTER ALPHA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F10, 0x1F15 }, ::unicode::General_Category::Lowercase_Letter }, // [6] GREEK SMALL LETTER EPSILON WITH PSILI..GREEK SMALL LETTER EPSILON WITH DASIA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1F16, 0x1F17 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F16>..<reserved-1F17>
+    Prop<::unicode::General_Category>{ { 0x1F18, 0x1F1D }, ::unicode::General_Category::Uppercase_Letter }, // [6] GREEK CAPITAL LETTER EPSILON WITH PSILI..GREEK CAPITAL LETTER EPSILON WITH DASIA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1F1E, 0x1F1F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F1E>..<reserved-1F1F>
+    Prop<::unicode::General_Category>{ { 0x1F20, 0x1F27 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER ETA WITH PSILI..GREEK SMALL LETTER ETA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F28, 0x1F2F }, ::unicode::General_Category::Uppercase_Letter }, // [8] GREEK CAPITAL LETTER ETA WITH PSILI..GREEK CAPITAL LETTER ETA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F30, 0x1F37 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER IOTA WITH PSILI..GREEK SMALL LETTER IOTA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F38, 0x1F3F }, ::unicode::General_Category::Uppercase_Letter }, // [8] GREEK CAPITAL LETTER IOTA WITH PSILI..GREEK CAPITAL LETTER IOTA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F40, 0x1F45 }, ::unicode::General_Category::Lowercase_Letter }, // [6] GREEK SMALL LETTER OMICRON WITH PSILI..GREEK SMALL LETTER OMICRON WITH DASIA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1F46, 0x1F47 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F46>..<reserved-1F47>
+    Prop<::unicode::General_Category>{ { 0x1F48, 0x1F4D }, ::unicode::General_Category::Uppercase_Letter }, // [6] GREEK CAPITAL LETTER OMICRON WITH PSILI..GREEK CAPITAL LETTER OMICRON WITH DASIA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1F4E, 0x1F4F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F4E>..<reserved-1F4F>
+    Prop<::unicode::General_Category>{ { 0x1F50, 0x1F57 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER UPSILON WITH PSILI..GREEK SMALL LETTER UPSILON WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F58, 0x1F58 }, ::unicode::General_Category::Unassigned }, // <reserved-1F58>
+    Prop<::unicode::General_Category>{ { 0x1F59, 0x1F59 }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER UPSILON WITH DASIA
+    Prop<::unicode::General_Category>{ { 0x1F5A, 0x1F5A }, ::unicode::General_Category::Unassigned }, // <reserved-1F5A>
+    Prop<::unicode::General_Category>{ { 0x1F5B, 0x1F5B }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER UPSILON WITH DASIA AND VARIA
+    Prop<::unicode::General_Category>{ { 0x1F5C, 0x1F5C }, ::unicode::General_Category::Unassigned }, // <reserved-1F5C>
+    Prop<::unicode::General_Category>{ { 0x1F5D, 0x1F5D }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER UPSILON WITH DASIA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1F5E, 0x1F5E }, ::unicode::General_Category::Unassigned }, // <reserved-1F5E>
+    Prop<::unicode::General_Category>{ { 0x1F5F, 0x1F5F }, ::unicode::General_Category::Uppercase_Letter }, // GREEK CAPITAL LETTER UPSILON WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F60, 0x1F67 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER OMEGA WITH PSILI..GREEK SMALL LETTER OMEGA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F68, 0x1F6F }, ::unicode::General_Category::Uppercase_Letter }, // [8] GREEK CAPITAL LETTER OMEGA WITH PSILI..GREEK CAPITAL LETTER OMEGA WITH DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1F70, 0x1F7D }, ::unicode::General_Category::Lowercase_Letter }, // [14] GREEK SMALL LETTER ALPHA WITH VARIA..GREEK SMALL LETTER OMEGA WITH OXIA
+    Prop<::unicode::General_Category>{ { 0x1F7E, 0x1F7F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F7E>..<reserved-1F7F>
+    Prop<::unicode::General_Category>{ { 0x1F80, 0x1F87 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER ALPHA WITH PSILI AND YPOGEGRAMMENI..GREEK SMALL LETTER ALPHA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1F88, 0x1F8F }, ::unicode::General_Category::Titlecase_Letter }, // [8] GREEK CAPITAL LETTER ALPHA WITH PSILI AND PROSGEGRAMMENI..GREEK CAPITAL LETTER ALPHA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1F90, 0x1F97 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER ETA WITH PSILI AND YPOGEGRAMMENI..GREEK SMALL LETTER ETA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1F98, 0x1F9F }, ::unicode::General_Category::Titlecase_Letter }, // [8] GREEK CAPITAL LETTER ETA WITH PSILI AND PROSGEGRAMMENI..GREEK CAPITAL LETTER ETA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FA0, 0x1FA7 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER OMEGA WITH PSILI AND YPOGEGRAMMENI..GREEK SMALL LETTER OMEGA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FA8, 0x1FAF }, ::unicode::General_Category::Titlecase_Letter }, // [8] GREEK CAPITAL LETTER OMEGA WITH PSILI AND PROSGEGRAMMENI..GREEK CAPITAL LETTER OMEGA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FB0, 0x1FB4 }, ::unicode::General_Category::Lowercase_Letter }, // [5] GREEK SMALL LETTER ALPHA WITH VRACHY..GREEK SMALL LETTER ALPHA WITH OXIA AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FB5, 0x1FB5 }, ::unicode::General_Category::Unassigned }, // <reserved-1FB5>
+    Prop<::unicode::General_Category>{ { 0x1FB6, 0x1FB7 }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK SMALL LETTER ALPHA WITH PERISPOMENI..GREEK SMALL LETTER ALPHA WITH PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FB8, 0x1FBB }, ::unicode::General_Category::Uppercase_Letter }, // [4] GREEK CAPITAL LETTER ALPHA WITH VRACHY..GREEK CAPITAL LETTER ALPHA WITH OXIA
+    Prop<::unicode::General_Category>{ { 0x1FBC, 0x1FBC }, ::unicode::General_Category::Titlecase_Letter }, // GREEK CAPITAL LETTER ALPHA WITH PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FBD, 0x1FBD }, ::unicode::General_Category::Modifier_Symbol }, // GREEK KORONIS
+    Prop<::unicode::General_Category>{ { 0x1FBE, 0x1FBE }, ::unicode::General_Category::Lowercase_Letter }, // GREEK PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FBF, 0x1FC1 }, ::unicode::General_Category::Modifier_Symbol }, // [3] GREEK PSILI..GREEK DIALYTIKA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1FC2, 0x1FC4 }, ::unicode::General_Category::Lowercase_Letter }, // [3] GREEK SMALL LETTER ETA WITH VARIA AND YPOGEGRAMMENI..GREEK SMALL LETTER ETA WITH OXIA AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FC5, 0x1FC5 }, ::unicode::General_Category::Unassigned }, // <reserved-1FC5>
+    Prop<::unicode::General_Category>{ { 0x1FC6, 0x1FC7 }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK SMALL LETTER ETA WITH PERISPOMENI..GREEK SMALL LETTER ETA WITH PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FC8, 0x1FCB }, ::unicode::General_Category::Uppercase_Letter }, // [4] GREEK CAPITAL LETTER EPSILON WITH VARIA..GREEK CAPITAL LETTER ETA WITH OXIA
+    Prop<::unicode::General_Category>{ { 0x1FCC, 0x1FCC }, ::unicode::General_Category::Titlecase_Letter }, // GREEK CAPITAL LETTER ETA WITH PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FCD, 0x1FCF }, ::unicode::General_Category::Modifier_Symbol }, // [3] GREEK PSILI AND VARIA..GREEK PSILI AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1FD0, 0x1FD3 }, ::unicode::General_Category::Lowercase_Letter }, // [4] GREEK SMALL LETTER IOTA WITH VRACHY..GREEK SMALL LETTER IOTA WITH DIALYTIKA AND OXIA
+    Prop<::unicode::General_Category>{ { 0x1FD4, 0x1FD5 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1FD4>..<reserved-1FD5>
+    Prop<::unicode::General_Category>{ { 0x1FD6, 0x1FD7 }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK SMALL LETTER IOTA WITH PERISPOMENI..GREEK SMALL LETTER IOTA WITH DIALYTIKA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1FD8, 0x1FDB }, ::unicode::General_Category::Uppercase_Letter }, // [4] GREEK CAPITAL LETTER IOTA WITH VRACHY..GREEK CAPITAL LETTER IOTA WITH OXIA
+    Prop<::unicode::General_Category>{ { 0x1FDC, 0x1FDC }, ::unicode::General_Category::Unassigned }, // <reserved-1FDC>
+    Prop<::unicode::General_Category>{ { 0x1FDD, 0x1FDF }, ::unicode::General_Category::Modifier_Symbol }, // [3] GREEK DASIA AND VARIA..GREEK DASIA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1FE0, 0x1FE7 }, ::unicode::General_Category::Lowercase_Letter }, // [8] GREEK SMALL LETTER UPSILON WITH VRACHY..GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND PERISPOMENI
+    Prop<::unicode::General_Category>{ { 0x1FE8, 0x1FEC }, ::unicode::General_Category::Uppercase_Letter }, // [5] GREEK CAPITAL LETTER UPSILON WITH VRACHY..GREEK CAPITAL LETTER RHO WITH DASIA
+    Prop<::unicode::General_Category>{ { 0x1FED, 0x1FEF }, ::unicode::General_Category::Modifier_Symbol }, // [3] GREEK DIALYTIKA AND VARIA..GREEK VARIA
+    Prop<::unicode::General_Category>{ { 0x1FF0, 0x1FF1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1FF0>..<reserved-1FF1>
+    Prop<::unicode::General_Category>{ { 0x1FF2, 0x1FF4 }, ::unicode::General_Category::Lowercase_Letter }, // [3] GREEK SMALL LETTER OMEGA WITH VARIA AND YPOGEGRAMMENI..GREEK SMALL LETTER OMEGA WITH OXIA AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FF5, 0x1FF5 }, ::unicode::General_Category::Unassigned }, // <reserved-1FF5>
+    Prop<::unicode::General_Category>{ { 0x1FF6, 0x1FF7 }, ::unicode::General_Category::Lowercase_Letter }, // [2] GREEK SMALL LETTER OMEGA WITH PERISPOMENI..GREEK SMALL LETTER OMEGA WITH PERISPOMENI AND YPOGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FF8, 0x1FFB }, ::unicode::General_Category::Uppercase_Letter }, // [4] GREEK CAPITAL LETTER OMICRON WITH VARIA..GREEK CAPITAL LETTER OMEGA WITH OXIA
+    Prop<::unicode::General_Category>{ { 0x1FFC, 0x1FFC }, ::unicode::General_Category::Titlecase_Letter }, // GREEK CAPITAL LETTER OMEGA WITH PROSGEGRAMMENI
+    Prop<::unicode::General_Category>{ { 0x1FFD, 0x1FFE }, ::unicode::General_Category::Modifier_Symbol }, // [2] GREEK OXIA..GREEK DASIA
+    Prop<::unicode::General_Category>{ { 0x1FFF, 0x1FFF }, ::unicode::General_Category::Unassigned }, // <reserved-1FFF>
+    Prop<::unicode::General_Category>{ { 0x2000, 0x200A }, ::unicode::General_Category::Space_Separator }, // [11] EN QUAD..HAIR SPACE
+    Prop<::unicode::General_Category>{ { 0x200B, 0x200F }, ::unicode::General_Category::Format }, // [5] ZERO WIDTH SPACE..RIGHT-TO-LEFT MARK
+    Prop<::unicode::General_Category>{ { 0x2010, 0x2015 }, ::unicode::General_Category::Dash_Punctuation }, // [6] HYPHEN..HORIZONTAL BAR
+    Prop<::unicode::General_Category>{ { 0x2016, 0x2017 }, ::unicode::General_Category::Other_Punctuation }, // [2] DOUBLE VERTICAL LINE..DOUBLE LOW LINE
+    Prop<::unicode::General_Category>{ { 0x2018, 0x2018 }, ::unicode::General_Category::Initial_Punctuation }, // LEFT SINGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x2019, 0x2019 }, ::unicode::General_Category::Final_Punctuation }, // RIGHT SINGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x201A, 0x201A }, ::unicode::General_Category::Open_Punctuation }, // SINGLE LOW-9 QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x201B, 0x201C }, ::unicode::General_Category::Initial_Punctuation }, // [2] SINGLE HIGH-REVERSED-9 QUOTATION MARK..LEFT DOUBLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x201D, 0x201D }, ::unicode::General_Category::Final_Punctuation }, // RIGHT DOUBLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x201E, 0x201E }, ::unicode::General_Category::Open_Punctuation }, // DOUBLE LOW-9 QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x201F, 0x201F }, ::unicode::General_Category::Initial_Punctuation }, // DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x2020, 0x2027 }, ::unicode::General_Category::Other_Punctuation }, // [8] DAGGER..HYPHENATION POINT
+    Prop<::unicode::General_Category>{ { 0x2028, 0x2028 }, ::unicode::General_Category::Line_Separator }, // LINE SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x2029, 0x2029 }, ::unicode::General_Category::Paragraph_Separator }, // PARAGRAPH SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x202A, 0x202E }, ::unicode::General_Category::Format }, // [5] LEFT-TO-RIGHT EMBEDDING..RIGHT-TO-LEFT OVERRIDE
+    Prop<::unicode::General_Category>{ { 0x202F, 0x202F }, ::unicode::General_Category::Space_Separator }, // NARROW NO-BREAK SPACE
+    Prop<::unicode::General_Category>{ { 0x2030, 0x2038 }, ::unicode::General_Category::Other_Punctuation }, // [9] PER MILLE SIGN..CARET
+    Prop<::unicode::General_Category>{ { 0x2039, 0x2039 }, ::unicode::General_Category::Initial_Punctuation }, // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x203A, 0x203A }, ::unicode::General_Category::Final_Punctuation }, // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x203B, 0x203E }, ::unicode::General_Category::Other_Punctuation }, // [4] REFERENCE MARK..OVERLINE
+    Prop<::unicode::General_Category>{ { 0x203F, 0x2040 }, ::unicode::General_Category::Connector_Punctuation }, // [2] UNDERTIE..CHARACTER TIE
+    Prop<::unicode::General_Category>{ { 0x2041, 0x2043 }, ::unicode::General_Category::Other_Punctuation }, // [3] CARET INSERTION POINT..HYPHEN BULLET
+    Prop<::unicode::General_Category>{ { 0x2044, 0x2044 }, ::unicode::General_Category::Math_Symbol }, // FRACTION SLASH
+    Prop<::unicode::General_Category>{ { 0x2045, 0x2045 }, ::unicode::General_Category::Open_Punctuation }, // LEFT SQUARE BRACKET WITH QUILL
+    Prop<::unicode::General_Category>{ { 0x2046, 0x2046 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SQUARE BRACKET WITH QUILL
+    Prop<::unicode::General_Category>{ { 0x2047, 0x2051 }, ::unicode::General_Category::Other_Punctuation }, // [11] DOUBLE QUESTION MARK..TWO ASTERISKS ALIGNED VERTICALLY
+    Prop<::unicode::General_Category>{ { 0x2052, 0x2052 }, ::unicode::General_Category::Math_Symbol }, // COMMERCIAL MINUS SIGN
+    Prop<::unicode::General_Category>{ { 0x2053, 0x2053 }, ::unicode::General_Category::Other_Punctuation }, // SWUNG DASH
+    Prop<::unicode::General_Category>{ { 0x2054, 0x2054 }, ::unicode::General_Category::Connector_Punctuation }, // INVERTED UNDERTIE
+    Prop<::unicode::General_Category>{ { 0x2055, 0x205E }, ::unicode::General_Category::Other_Punctuation }, // [10] FLOWER PUNCTUATION MARK..VERTICAL FOUR DOTS
+    Prop<::unicode::General_Category>{ { 0x205F, 0x205F }, ::unicode::General_Category::Space_Separator }, // MEDIUM MATHEMATICAL SPACE
+    Prop<::unicode::General_Category>{ { 0x2060, 0x2064 }, ::unicode::General_Category::Format }, // [5] WORD JOINER..INVISIBLE PLUS
+    Prop<::unicode::General_Category>{ { 0x2065, 0x2065 }, ::unicode::General_Category::Unassigned }, // <reserved-2065>
+    Prop<::unicode::General_Category>{ { 0x2066, 0x206F }, ::unicode::General_Category::Format }, // [10] LEFT-TO-RIGHT ISOLATE..NOMINAL DIGIT SHAPES
+    Prop<::unicode::General_Category>{ { 0x2070, 0x2070 }, ::unicode::General_Category::Other_Number }, // SUPERSCRIPT ZERO
+    Prop<::unicode::General_Category>{ { 0x2071, 0x2071 }, ::unicode::General_Category::Modifier_Letter }, // SUPERSCRIPT LATIN SMALL LETTER I
+    Prop<::unicode::General_Category>{ { 0x2072, 0x2073 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-2072>..<reserved-2073>
+    Prop<::unicode::General_Category>{ { 0x2074, 0x2079 }, ::unicode::General_Category::Other_Number }, // [6] SUPERSCRIPT FOUR..SUPERSCRIPT NINE
+    Prop<::unicode::General_Category>{ { 0x207A, 0x207C }, ::unicode::General_Category::Math_Symbol }, // [3] SUPERSCRIPT PLUS SIGN..SUPERSCRIPT EQUALS SIGN
+    Prop<::unicode::General_Category>{ { 0x207D, 0x207D }, ::unicode::General_Category::Open_Punctuation }, // SUPERSCRIPT LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x207E, 0x207E }, ::unicode::General_Category::Close_Punctuation }, // SUPERSCRIPT RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x207F, 0x207F }, ::unicode::General_Category::Modifier_Letter }, // SUPERSCRIPT LATIN SMALL LETTER N
+    Prop<::unicode::General_Category>{ { 0x2080, 0x2089 }, ::unicode::General_Category::Other_Number }, // [10] SUBSCRIPT ZERO..SUBSCRIPT NINE
+    Prop<::unicode::General_Category>{ { 0x208A, 0x208C }, ::unicode::General_Category::Math_Symbol }, // [3] SUBSCRIPT PLUS SIGN..SUBSCRIPT EQUALS SIGN
+    Prop<::unicode::General_Category>{ { 0x208D, 0x208D }, ::unicode::General_Category::Open_Punctuation }, // SUBSCRIPT LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x208E, 0x208E }, ::unicode::General_Category::Close_Punctuation }, // SUBSCRIPT RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x208F, 0x208F }, ::unicode::General_Category::Unassigned }, // <reserved-208F>
+    Prop<::unicode::General_Category>{ { 0x2090, 0x209C }, ::unicode::General_Category::Modifier_Letter }, // [13] LATIN SUBSCRIPT SMALL LETTER A..LATIN SUBSCRIPT SMALL LETTER T
+    Prop<::unicode::General_Category>{ { 0x209D, 0x209F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-209D>..<reserved-209F>
+    Prop<::unicode::General_Category>{ { 0x20A0, 0x20BF }, ::unicode::General_Category::Currency_Symbol }, // [32] EURO-CURRENCY SIGN..BITCOIN SIGN
+    Prop<::unicode::General_Category>{ { 0x20C0, 0x20CF }, ::unicode::General_Category::Unassigned }, // [16] <reserved-20C0>..<reserved-20CF>
+    Prop<::unicode::General_Category>{ { 0x20D0, 0x20DC }, ::unicode::General_Category::Nonspacing_Mark }, // [13] COMBINING LEFT HARPOON ABOVE..COMBINING FOUR DOTS ABOVE
+    Prop<::unicode::General_Category>{ { 0x20DD, 0x20E0 }, ::unicode::General_Category::Enclosing_Mark }, // [4] COMBINING ENCLOSING CIRCLE..COMBINING ENCLOSING CIRCLE BACKSLASH
+    Prop<::unicode::General_Category>{ { 0x20E1, 0x20E1 }, ::unicode::General_Category::Nonspacing_Mark }, // COMBINING LEFT RIGHT ARROW ABOVE
+    Prop<::unicode::General_Category>{ { 0x20E2, 0x20E4 }, ::unicode::General_Category::Enclosing_Mark }, // [3] COMBINING ENCLOSING SCREEN..COMBINING ENCLOSING UPWARD POINTING TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x20E5, 0x20F0 }, ::unicode::General_Category::Nonspacing_Mark }, // [12] COMBINING REVERSE SOLIDUS OVERLAY..COMBINING ASTERISK ABOVE
+    Prop<::unicode::General_Category>{ { 0x20F1, 0x20FF }, ::unicode::General_Category::Unassigned }, // [15] <reserved-20F1>..<reserved-20FF>
+    Prop<::unicode::General_Category>{ { 0x2100, 0x2101 }, ::unicode::General_Category::Other_Symbol }, // [2] ACCOUNT OF..ADDRESSED TO THE SUBJECT
+    Prop<::unicode::General_Category>{ { 0x2102, 0x2102 }, ::unicode::General_Category::Uppercase_Letter }, // DOUBLE-STRUCK CAPITAL C
+    Prop<::unicode::General_Category>{ { 0x2103, 0x2106 }, ::unicode::General_Category::Other_Symbol }, // [4] DEGREE CELSIUS..CADA UNA
+    Prop<::unicode::General_Category>{ { 0x2107, 0x2107 }, ::unicode::General_Category::Uppercase_Letter }, // EULER CONSTANT
+    Prop<::unicode::General_Category>{ { 0x2108, 0x2109 }, ::unicode::General_Category::Other_Symbol }, // [2] SCRUPLE..DEGREE FAHRENHEIT
+    Prop<::unicode::General_Category>{ { 0x210A, 0x210A }, ::unicode::General_Category::Lowercase_Letter }, // SCRIPT SMALL G
+    Prop<::unicode::General_Category>{ { 0x210B, 0x210D }, ::unicode::General_Category::Uppercase_Letter }, // [3] SCRIPT CAPITAL H..DOUBLE-STRUCK CAPITAL H
+    Prop<::unicode::General_Category>{ { 0x210E, 0x210F }, ::unicode::General_Category::Lowercase_Letter }, // [2] PLANCK CONSTANT..PLANCK CONSTANT OVER TWO PI
+    Prop<::unicode::General_Category>{ { 0x2110, 0x2112 }, ::unicode::General_Category::Uppercase_Letter }, // [3] SCRIPT CAPITAL I..SCRIPT CAPITAL L
+    Prop<::unicode::General_Category>{ { 0x2113, 0x2113 }, ::unicode::General_Category::Lowercase_Letter }, // SCRIPT SMALL L
+    Prop<::unicode::General_Category>{ { 0x2114, 0x2114 }, ::unicode::General_Category::Other_Symbol }, // L B BAR SYMBOL
+    Prop<::unicode::General_Category>{ { 0x2115, 0x2115 }, ::unicode::General_Category::Uppercase_Letter }, // DOUBLE-STRUCK CAPITAL N
+    Prop<::unicode::General_Category>{ { 0x2116, 0x2117 }, ::unicode::General_Category::Other_Symbol }, // [2] NUMERO SIGN..SOUND RECORDING COPYRIGHT
+    Prop<::unicode::General_Category>{ { 0x2118, 0x2118 }, ::unicode::General_Category::Math_Symbol }, // SCRIPT CAPITAL P
+    Prop<::unicode::General_Category>{ { 0x2119, 0x211D }, ::unicode::General_Category::Uppercase_Letter }, // [5] DOUBLE-STRUCK CAPITAL P..DOUBLE-STRUCK CAPITAL R
+    Prop<::unicode::General_Category>{ { 0x211E, 0x2123 }, ::unicode::General_Category::Other_Symbol }, // [6] PRESCRIPTION TAKE..VERSICLE
+    Prop<::unicode::General_Category>{ { 0x2124, 0x2124 }, ::unicode::General_Category::Uppercase_Letter }, // DOUBLE-STRUCK CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x2125, 0x2125 }, ::unicode::General_Category::Other_Symbol }, // OUNCE SIGN
+    Prop<::unicode::General_Category>{ { 0x2126, 0x2126 }, ::unicode::General_Category::Uppercase_Letter }, // OHM SIGN
+    Prop<::unicode::General_Category>{ { 0x2127, 0x2127 }, ::unicode::General_Category::Other_Symbol }, // INVERTED OHM SIGN
+    Prop<::unicode::General_Category>{ { 0x2128, 0x2128 }, ::unicode::General_Category::Uppercase_Letter }, // BLACK-LETTER CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x2129, 0x2129 }, ::unicode::General_Category::Other_Symbol }, // TURNED GREEK SMALL LETTER IOTA
+    Prop<::unicode::General_Category>{ { 0x212A, 0x212D }, ::unicode::General_Category::Uppercase_Letter }, // [4] KELVIN SIGN..BLACK-LETTER CAPITAL C
+    Prop<::unicode::General_Category>{ { 0x212E, 0x212E }, ::unicode::General_Category::Other_Symbol }, // ESTIMATED SYMBOL
+    Prop<::unicode::General_Category>{ { 0x212F, 0x212F }, ::unicode::General_Category::Lowercase_Letter }, // SCRIPT SMALL E
+    Prop<::unicode::General_Category>{ { 0x2130, 0x2133 }, ::unicode::General_Category::Uppercase_Letter }, // [4] SCRIPT CAPITAL E..SCRIPT CAPITAL M
+    Prop<::unicode::General_Category>{ { 0x2134, 0x2134 }, ::unicode::General_Category::Lowercase_Letter }, // SCRIPT SMALL O
+    Prop<::unicode::General_Category>{ { 0x2135, 0x2138 }, ::unicode::General_Category::Other_Letter }, // [4] ALEF SYMBOL..DALET SYMBOL
+    Prop<::unicode::General_Category>{ { 0x2139, 0x2139 }, ::unicode::General_Category::Lowercase_Letter }, // INFORMATION SOURCE
+    Prop<::unicode::General_Category>{ { 0x213A, 0x213B }, ::unicode::General_Category::Other_Symbol }, // [2] ROTATED CAPITAL Q..FACSIMILE SIGN
+    Prop<::unicode::General_Category>{ { 0x213C, 0x213D }, ::unicode::General_Category::Lowercase_Letter }, // [2] DOUBLE-STRUCK SMALL PI..DOUBLE-STRUCK SMALL GAMMA
+    Prop<::unicode::General_Category>{ { 0x213E, 0x213F }, ::unicode::General_Category::Uppercase_Letter }, // [2] DOUBLE-STRUCK CAPITAL GAMMA..DOUBLE-STRUCK CAPITAL PI
+    Prop<::unicode::General_Category>{ { 0x2140, 0x2144 }, ::unicode::General_Category::Math_Symbol }, // [5] DOUBLE-STRUCK N-ARY SUMMATION..TURNED SANS-SERIF CAPITAL Y
+    Prop<::unicode::General_Category>{ { 0x2145, 0x2145 }, ::unicode::General_Category::Uppercase_Letter }, // DOUBLE-STRUCK ITALIC CAPITAL D
+    Prop<::unicode::General_Category>{ { 0x2146, 0x2149 }, ::unicode::General_Category::Lowercase_Letter }, // [4] DOUBLE-STRUCK ITALIC SMALL D..DOUBLE-STRUCK ITALIC SMALL J
+    Prop<::unicode::General_Category>{ { 0x214A, 0x214A }, ::unicode::General_Category::Other_Symbol }, // PROPERTY LINE
+    Prop<::unicode::General_Category>{ { 0x214B, 0x214B }, ::unicode::General_Category::Math_Symbol }, // TURNED AMPERSAND
+    Prop<::unicode::General_Category>{ { 0x214C, 0x214D }, ::unicode::General_Category::Other_Symbol }, // [2] PER SIGN..AKTIESELSKAB
+    Prop<::unicode::General_Category>{ { 0x214E, 0x214E }, ::unicode::General_Category::Lowercase_Letter }, // TURNED SMALL F
+    Prop<::unicode::General_Category>{ { 0x214F, 0x214F }, ::unicode::General_Category::Other_Symbol }, // SYMBOL FOR SAMARITAN SOURCE
+    Prop<::unicode::General_Category>{ { 0x2150, 0x215F }, ::unicode::General_Category::Other_Number }, // [16] VULGAR FRACTION ONE SEVENTH..FRACTION NUMERATOR ONE
+    Prop<::unicode::General_Category>{ { 0x2160, 0x2182 }, ::unicode::General_Category::Letter_Number }, // [35] ROMAN NUMERAL ONE..ROMAN NUMERAL TEN THOUSAND
+    Prop<::unicode::General_Category>{ { 0x2183, 0x2183 }, ::unicode::General_Category::Uppercase_Letter }, // ROMAN NUMERAL REVERSED ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x2184, 0x2184 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER REVERSED C
+    Prop<::unicode::General_Category>{ { 0x2185, 0x2188 }, ::unicode::General_Category::Letter_Number }, // [4] ROMAN NUMERAL SIX LATE FORM..ROMAN NUMERAL ONE HUNDRED THOUSAND
+    Prop<::unicode::General_Category>{ { 0x2189, 0x2189 }, ::unicode::General_Category::Other_Number }, // VULGAR FRACTION ZERO THIRDS
+    Prop<::unicode::General_Category>{ { 0x218A, 0x218B }, ::unicode::General_Category::Other_Symbol }, // [2] TURNED DIGIT TWO..TURNED DIGIT THREE
+    Prop<::unicode::General_Category>{ { 0x218C, 0x218F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-218C>..<reserved-218F>
+    Prop<::unicode::General_Category>{ { 0x2190, 0x2194 }, ::unicode::General_Category::Math_Symbol }, // [5] LEFTWARDS ARROW..LEFT RIGHT ARROW
+    Prop<::unicode::General_Category>{ { 0x2195, 0x2199 }, ::unicode::General_Category::Other_Symbol }, // [5] UP DOWN ARROW..SOUTH WEST ARROW
+    Prop<::unicode::General_Category>{ { 0x219A, 0x219B }, ::unicode::General_Category::Math_Symbol }, // [2] LEFTWARDS ARROW WITH STROKE..RIGHTWARDS ARROW WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x219C, 0x219F }, ::unicode::General_Category::Other_Symbol }, // [4] LEFTWARDS WAVE ARROW..UPWARDS TWO HEADED ARROW
+    Prop<::unicode::General_Category>{ { 0x21A0, 0x21A0 }, ::unicode::General_Category::Math_Symbol }, // RIGHTWARDS TWO HEADED ARROW
+    Prop<::unicode::General_Category>{ { 0x21A1, 0x21A2 }, ::unicode::General_Category::Other_Symbol }, // [2] DOWNWARDS TWO HEADED ARROW..LEFTWARDS ARROW WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x21A3, 0x21A3 }, ::unicode::General_Category::Math_Symbol }, // RIGHTWARDS ARROW WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x21A4, 0x21A5 }, ::unicode::General_Category::Other_Symbol }, // [2] LEFTWARDS ARROW FROM BAR..UPWARDS ARROW FROM BAR
+    Prop<::unicode::General_Category>{ { 0x21A6, 0x21A6 }, ::unicode::General_Category::Math_Symbol }, // RIGHTWARDS ARROW FROM BAR
+    Prop<::unicode::General_Category>{ { 0x21A7, 0x21AD }, ::unicode::General_Category::Other_Symbol }, // [7] DOWNWARDS ARROW FROM BAR..LEFT RIGHT WAVE ARROW
+    Prop<::unicode::General_Category>{ { 0x21AE, 0x21AE }, ::unicode::General_Category::Math_Symbol }, // LEFT RIGHT ARROW WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x21AF, 0x21CD }, ::unicode::General_Category::Other_Symbol }, // [31] DOWNWARDS ZIGZAG ARROW..LEFTWARDS DOUBLE ARROW WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x21CE, 0x21CF }, ::unicode::General_Category::Math_Symbol }, // [2] LEFT RIGHT DOUBLE ARROW WITH STROKE..RIGHTWARDS DOUBLE ARROW WITH STROKE
+    Prop<::unicode::General_Category>{ { 0x21D0, 0x21D1 }, ::unicode::General_Category::Other_Symbol }, // [2] LEFTWARDS DOUBLE ARROW..UPWARDS DOUBLE ARROW
+    Prop<::unicode::General_Category>{ { 0x21D2, 0x21D2 }, ::unicode::General_Category::Math_Symbol }, // RIGHTWARDS DOUBLE ARROW
+    Prop<::unicode::General_Category>{ { 0x21D3, 0x21D3 }, ::unicode::General_Category::Other_Symbol }, // DOWNWARDS DOUBLE ARROW
+    Prop<::unicode::General_Category>{ { 0x21D4, 0x21D4 }, ::unicode::General_Category::Math_Symbol }, // LEFT RIGHT DOUBLE ARROW
+    Prop<::unicode::General_Category>{ { 0x21D5, 0x21F3 }, ::unicode::General_Category::Other_Symbol }, // [31] UP DOWN DOUBLE ARROW..UP DOWN WHITE ARROW
+    Prop<::unicode::General_Category>{ { 0x21F4, 0x22FF }, ::unicode::General_Category::Math_Symbol }, // [268] RIGHT ARROW WITH SMALL CIRCLE..Z NOTATION BAG MEMBERSHIP
+    Prop<::unicode::General_Category>{ { 0x2300, 0x2307 }, ::unicode::General_Category::Other_Symbol }, // [8] DIAMETER SIGN..WAVY LINE
+    Prop<::unicode::General_Category>{ { 0x2308, 0x2308 }, ::unicode::General_Category::Open_Punctuation }, // LEFT CEILING
+    Prop<::unicode::General_Category>{ { 0x2309, 0x2309 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT CEILING
+    Prop<::unicode::General_Category>{ { 0x230A, 0x230A }, ::unicode::General_Category::Open_Punctuation }, // LEFT FLOOR
+    Prop<::unicode::General_Category>{ { 0x230B, 0x230B }, ::unicode::General_Category::Close_Punctuation }, // RIGHT FLOOR
+    Prop<::unicode::General_Category>{ { 0x230C, 0x231F }, ::unicode::General_Category::Other_Symbol }, // [20] BOTTOM RIGHT CROP..BOTTOM RIGHT CORNER
+    Prop<::unicode::General_Category>{ { 0x2320, 0x2321 }, ::unicode::General_Category::Math_Symbol }, // [2] TOP HALF INTEGRAL..BOTTOM HALF INTEGRAL
+    Prop<::unicode::General_Category>{ { 0x2322, 0x2328 }, ::unicode::General_Category::Other_Symbol }, // [7] FROWN..KEYBOARD
+    Prop<::unicode::General_Category>{ { 0x2329, 0x2329 }, ::unicode::General_Category::Open_Punctuation }, // LEFT-POINTING ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x232A, 0x232A }, ::unicode::General_Category::Close_Punctuation }, // RIGHT-POINTING ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x232B, 0x237B }, ::unicode::General_Category::Other_Symbol }, // [81] ERASE TO THE LEFT..NOT CHECK MARK
+    Prop<::unicode::General_Category>{ { 0x237C, 0x237C }, ::unicode::General_Category::Math_Symbol }, // RIGHT ANGLE WITH DOWNWARDS ZIGZAG ARROW
+    Prop<::unicode::General_Category>{ { 0x237D, 0x239A }, ::unicode::General_Category::Other_Symbol }, // [30] SHOULDERED OPEN BOX..CLEAR SCREEN SYMBOL
+    Prop<::unicode::General_Category>{ { 0x239B, 0x23B3 }, ::unicode::General_Category::Math_Symbol }, // [25] LEFT PARENTHESIS UPPER HOOK..SUMMATION BOTTOM
+    Prop<::unicode::General_Category>{ { 0x23B4, 0x23DB }, ::unicode::General_Category::Other_Symbol }, // [40] TOP SQUARE BRACKET..FUSE
+    Prop<::unicode::General_Category>{ { 0x23DC, 0x23E1 }, ::unicode::General_Category::Math_Symbol }, // [6] TOP PARENTHESIS..BOTTOM TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x23E2, 0x2426 }, ::unicode::General_Category::Other_Symbol }, // [69] WHITE TRAPEZIUM..SYMBOL FOR SUBSTITUTE FORM TWO
+    Prop<::unicode::General_Category>{ { 0x2427, 0x243F }, ::unicode::General_Category::Unassigned }, // [25] <reserved-2427>..<reserved-243F>
+    Prop<::unicode::General_Category>{ { 0x2440, 0x244A }, ::unicode::General_Category::Other_Symbol }, // [11] OCR HOOK..OCR DOUBLE BACKSLASH
+    Prop<::unicode::General_Category>{ { 0x244B, 0x245F }, ::unicode::General_Category::Unassigned }, // [21] <reserved-244B>..<reserved-245F>
+    Prop<::unicode::General_Category>{ { 0x2460, 0x249B }, ::unicode::General_Category::Other_Number }, // [60] CIRCLED DIGIT ONE..NUMBER TWENTY FULL STOP
+    Prop<::unicode::General_Category>{ { 0x249C, 0x24E9 }, ::unicode::General_Category::Other_Symbol }, // [78] PARENTHESIZED LATIN SMALL LETTER A..CIRCLED LATIN SMALL LETTER Z
+    Prop<::unicode::General_Category>{ { 0x24EA, 0x24FF }, ::unicode::General_Category::Other_Number }, // [22] CIRCLED DIGIT ZERO..NEGATIVE CIRCLED DIGIT ZERO
+    Prop<::unicode::General_Category>{ { 0x2500, 0x25B6 }, ::unicode::General_Category::Other_Symbol }, // [183] BOX DRAWINGS LIGHT HORIZONTAL..BLACK RIGHT-POINTING TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x25B7, 0x25B7 }, ::unicode::General_Category::Math_Symbol }, // WHITE RIGHT-POINTING TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x25B8, 0x25C0 }, ::unicode::General_Category::Other_Symbol }, // [9] BLACK RIGHT-POINTING SMALL TRIANGLE..BLACK LEFT-POINTING TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x25C1, 0x25C1 }, ::unicode::General_Category::Math_Symbol }, // WHITE LEFT-POINTING TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x25C2, 0x25F7 }, ::unicode::General_Category::Other_Symbol }, // [54] BLACK LEFT-POINTING SMALL TRIANGLE..WHITE CIRCLE WITH UPPER RIGHT QUADRANT
+    Prop<::unicode::General_Category>{ { 0x25F8, 0x25FF }, ::unicode::General_Category::Math_Symbol }, // [8] UPPER LEFT TRIANGLE..LOWER RIGHT TRIANGLE
+    Prop<::unicode::General_Category>{ { 0x2600, 0x266E }, ::unicode::General_Category::Other_Symbol }, // [111] BLACK SUN WITH RAYS..MUSIC NATURAL SIGN
+    Prop<::unicode::General_Category>{ { 0x266F, 0x266F }, ::unicode::General_Category::Math_Symbol }, // MUSIC SHARP SIGN
+    Prop<::unicode::General_Category>{ { 0x2670, 0x2767 }, ::unicode::General_Category::Other_Symbol }, // [248] WEST SYRIAC CROSS..ROTATED FLORAL HEART BULLET
+    Prop<::unicode::General_Category>{ { 0x2768, 0x2768 }, ::unicode::General_Category::Open_Punctuation }, // MEDIUM LEFT PARENTHESIS ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2769, 0x2769 }, ::unicode::General_Category::Close_Punctuation }, // MEDIUM RIGHT PARENTHESIS ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276A, 0x276A }, ::unicode::General_Category::Open_Punctuation }, // MEDIUM FLATTENED LEFT PARENTHESIS ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276B, 0x276B }, ::unicode::General_Category::Close_Punctuation }, // MEDIUM FLATTENED RIGHT PARENTHESIS ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276C, 0x276C }, ::unicode::General_Category::Open_Punctuation }, // MEDIUM LEFT-POINTING ANGLE BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276D, 0x276D }, ::unicode::General_Category::Close_Punctuation }, // MEDIUM RIGHT-POINTING ANGLE BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276E, 0x276E }, ::unicode::General_Category::Open_Punctuation }, // HEAVY LEFT-POINTING ANGLE QUOTATION MARK ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x276F, 0x276F }, ::unicode::General_Category::Close_Punctuation }, // HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2770, 0x2770 }, ::unicode::General_Category::Open_Punctuation }, // HEAVY LEFT-POINTING ANGLE BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2771, 0x2771 }, ::unicode::General_Category::Close_Punctuation }, // HEAVY RIGHT-POINTING ANGLE BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2772, 0x2772 }, ::unicode::General_Category::Open_Punctuation }, // LIGHT LEFT TORTOISE SHELL BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2773, 0x2773 }, ::unicode::General_Category::Close_Punctuation }, // LIGHT RIGHT TORTOISE SHELL BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2774, 0x2774 }, ::unicode::General_Category::Open_Punctuation }, // MEDIUM LEFT CURLY BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2775, 0x2775 }, ::unicode::General_Category::Close_Punctuation }, // MEDIUM RIGHT CURLY BRACKET ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x2776, 0x2793 }, ::unicode::General_Category::Other_Number }, // [30] DINGBAT NEGATIVE CIRCLED DIGIT ONE..DINGBAT NEGATIVE CIRCLED SANS-SERIF NUMBER TEN
+    Prop<::unicode::General_Category>{ { 0x2794, 0x27BF }, ::unicode::General_Category::Other_Symbol }, // [44] HEAVY WIDE-HEADED RIGHTWARDS ARROW..DOUBLE CURLY LOOP
+    Prop<::unicode::General_Category>{ { 0x27C0, 0x27C4 }, ::unicode::General_Category::Math_Symbol }, // [5] THREE DIMENSIONAL ANGLE..OPEN SUPERSET
+    Prop<::unicode::General_Category>{ { 0x27C5, 0x27C5 }, ::unicode::General_Category::Open_Punctuation }, // LEFT S-SHAPED BAG DELIMITER
+    Prop<::unicode::General_Category>{ { 0x27C6, 0x27C6 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT S-SHAPED BAG DELIMITER
+    Prop<::unicode::General_Category>{ { 0x27C7, 0x27E5 }, ::unicode::General_Category::Math_Symbol }, // [31] OR WITH DOT INSIDE..WHITE SQUARE WITH RIGHTWARDS TICK
+    Prop<::unicode::General_Category>{ { 0x27E6, 0x27E6 }, ::unicode::General_Category::Open_Punctuation }, // MATHEMATICAL LEFT WHITE SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27E7, 0x27E7 }, ::unicode::General_Category::Close_Punctuation }, // MATHEMATICAL RIGHT WHITE SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27E8, 0x27E8 }, ::unicode::General_Category::Open_Punctuation }, // MATHEMATICAL LEFT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27E9, 0x27E9 }, ::unicode::General_Category::Close_Punctuation }, // MATHEMATICAL RIGHT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27EA, 0x27EA }, ::unicode::General_Category::Open_Punctuation }, // MATHEMATICAL LEFT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27EB, 0x27EB }, ::unicode::General_Category::Close_Punctuation }, // MATHEMATICAL RIGHT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x27EC, 0x27EC }, ::unicode::General_Category::Open_Punctuation }, // MATHEMATICAL LEFT WHITE TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x27ED, 0x27ED }, ::unicode::General_Category::Close_Punctuation }, // MATHEMATICAL RIGHT WHITE TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x27EE, 0x27EE }, ::unicode::General_Category::Open_Punctuation }, // MATHEMATICAL LEFT FLATTENED PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x27EF, 0x27EF }, ::unicode::General_Category::Close_Punctuation }, // MATHEMATICAL RIGHT FLATTENED PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x27F0, 0x27FF }, ::unicode::General_Category::Math_Symbol }, // [16] UPWARDS QUADRUPLE ARROW..LONG RIGHTWARDS SQUIGGLE ARROW
+    Prop<::unicode::General_Category>{ { 0x2800, 0x28FF }, ::unicode::General_Category::Other_Symbol }, // [256] BRAILLE PATTERN BLANK..BRAILLE PATTERN DOTS-12345678
+    Prop<::unicode::General_Category>{ { 0x2900, 0x2982 }, ::unicode::General_Category::Math_Symbol }, // [131] RIGHTWARDS TWO-HEADED ARROW WITH VERTICAL STROKE..Z NOTATION TYPE COLON
+    Prop<::unicode::General_Category>{ { 0x2983, 0x2983 }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0x2984, 0x2984 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0x2985, 0x2985 }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x2986, 0x2986 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x2987, 0x2987 }, ::unicode::General_Category::Open_Punctuation }, // Z NOTATION LEFT IMAGE BRACKET
+    Prop<::unicode::General_Category>{ { 0x2988, 0x2988 }, ::unicode::General_Category::Close_Punctuation }, // Z NOTATION RIGHT IMAGE BRACKET
+    Prop<::unicode::General_Category>{ { 0x2989, 0x2989 }, ::unicode::General_Category::Open_Punctuation }, // Z NOTATION LEFT BINDING BRACKET
+    Prop<::unicode::General_Category>{ { 0x298A, 0x298A }, ::unicode::General_Category::Close_Punctuation }, // Z NOTATION RIGHT BINDING BRACKET
+    Prop<::unicode::General_Category>{ { 0x298B, 0x298B }, ::unicode::General_Category::Open_Punctuation }, // LEFT SQUARE BRACKET WITH UNDERBAR
+    Prop<::unicode::General_Category>{ { 0x298C, 0x298C }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SQUARE BRACKET WITH UNDERBAR
+    Prop<::unicode::General_Category>{ { 0x298D, 0x298D }, ::unicode::General_Category::Open_Punctuation }, // LEFT SQUARE BRACKET WITH TICK IN TOP CORNER
+    Prop<::unicode::General_Category>{ { 0x298E, 0x298E }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SQUARE BRACKET WITH TICK IN BOTTOM CORNER
+    Prop<::unicode::General_Category>{ { 0x298F, 0x298F }, ::unicode::General_Category::Open_Punctuation }, // LEFT SQUARE BRACKET WITH TICK IN BOTTOM CORNER
+    Prop<::unicode::General_Category>{ { 0x2990, 0x2990 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SQUARE BRACKET WITH TICK IN TOP CORNER
+    Prop<::unicode::General_Category>{ { 0x2991, 0x2991 }, ::unicode::General_Category::Open_Punctuation }, // LEFT ANGLE BRACKET WITH DOT
+    Prop<::unicode::General_Category>{ { 0x2992, 0x2992 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT ANGLE BRACKET WITH DOT
+    Prop<::unicode::General_Category>{ { 0x2993, 0x2993 }, ::unicode::General_Category::Open_Punctuation }, // LEFT ARC LESS-THAN BRACKET
+    Prop<::unicode::General_Category>{ { 0x2994, 0x2994 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT ARC GREATER-THAN BRACKET
+    Prop<::unicode::General_Category>{ { 0x2995, 0x2995 }, ::unicode::General_Category::Open_Punctuation }, // DOUBLE LEFT ARC GREATER-THAN BRACKET
+    Prop<::unicode::General_Category>{ { 0x2996, 0x2996 }, ::unicode::General_Category::Close_Punctuation }, // DOUBLE RIGHT ARC LESS-THAN BRACKET
+    Prop<::unicode::General_Category>{ { 0x2997, 0x2997 }, ::unicode::General_Category::Open_Punctuation }, // LEFT BLACK TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x2998, 0x2998 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT BLACK TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x2999, 0x29D7 }, ::unicode::General_Category::Math_Symbol }, // [63] DOTTED FENCE..BLACK HOURGLASS
+    Prop<::unicode::General_Category>{ { 0x29D8, 0x29D8 }, ::unicode::General_Category::Open_Punctuation }, // LEFT WIGGLY FENCE
+    Prop<::unicode::General_Category>{ { 0x29D9, 0x29D9 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WIGGLY FENCE
+    Prop<::unicode::General_Category>{ { 0x29DA, 0x29DA }, ::unicode::General_Category::Open_Punctuation }, // LEFT DOUBLE WIGGLY FENCE
+    Prop<::unicode::General_Category>{ { 0x29DB, 0x29DB }, ::unicode::General_Category::Close_Punctuation }, // RIGHT DOUBLE WIGGLY FENCE
+    Prop<::unicode::General_Category>{ { 0x29DC, 0x29FB }, ::unicode::General_Category::Math_Symbol }, // [32] INCOMPLETE INFINITY..TRIPLE PLUS
+    Prop<::unicode::General_Category>{ { 0x29FC, 0x29FC }, ::unicode::General_Category::Open_Punctuation }, // LEFT-POINTING CURVED ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x29FD, 0x29FD }, ::unicode::General_Category::Close_Punctuation }, // RIGHT-POINTING CURVED ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x29FE, 0x2AFF }, ::unicode::General_Category::Math_Symbol }, // [258] TINY..N-ARY WHITE VERTICAL BAR
+    Prop<::unicode::General_Category>{ { 0x2B00, 0x2B2F }, ::unicode::General_Category::Other_Symbol }, // [48] NORTH EAST WHITE ARROW..WHITE VERTICAL ELLIPSE
+    Prop<::unicode::General_Category>{ { 0x2B30, 0x2B44 }, ::unicode::General_Category::Math_Symbol }, // [21] LEFT ARROW WITH SMALL CIRCLE..RIGHTWARDS ARROW THROUGH SUPERSET
+    Prop<::unicode::General_Category>{ { 0x2B45, 0x2B46 }, ::unicode::General_Category::Other_Symbol }, // [2] LEFTWARDS QUADRUPLE ARROW..RIGHTWARDS QUADRUPLE ARROW
+    Prop<::unicode::General_Category>{ { 0x2B47, 0x2B4C }, ::unicode::General_Category::Math_Symbol }, // [6] REVERSE TILDE OPERATOR ABOVE RIGHTWARDS ARROW..RIGHTWARDS ARROW ABOVE REVERSE TILDE OPERATOR
+    Prop<::unicode::General_Category>{ { 0x2B4D, 0x2B73 }, ::unicode::General_Category::Other_Symbol }, // [39] DOWNWARDS TRIANGLE-HEADED ZIGZAG ARROW..DOWNWARDS TRIANGLE-HEADED ARROW TO BAR
+    Prop<::unicode::General_Category>{ { 0x2B74, 0x2B75 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-2B74>..<reserved-2B75>
+    Prop<::unicode::General_Category>{ { 0x2B76, 0x2B95 }, ::unicode::General_Category::Other_Symbol }, // [32] NORTH WEST TRIANGLE-HEADED ARROW TO BAR..RIGHTWARDS BLACK ARROW
+    Prop<::unicode::General_Category>{ { 0x2B96, 0x2B96 }, ::unicode::General_Category::Unassigned }, // <reserved-2B96>
+    Prop<::unicode::General_Category>{ { 0x2B97, 0x2BFF }, ::unicode::General_Category::Other_Symbol }, // [105] SYMBOL FOR TYPE A ELECTRONICS..HELLSCHREIBER PAUSE SYMBOL
+    Prop<::unicode::General_Category>{ { 0x2C00, 0x2C2E }, ::unicode::General_Category::Uppercase_Letter }, // [47] GLAGOLITIC CAPITAL LETTER AZU..GLAGOLITIC CAPITAL LETTER LATINATE MYSLITE
+    Prop<::unicode::General_Category>{ { 0x2C2F, 0x2C2F }, ::unicode::General_Category::Unassigned }, // <reserved-2C2F>
+    Prop<::unicode::General_Category>{ { 0x2C30, 0x2C5E }, ::unicode::General_Category::Lowercase_Letter }, // [47] GLAGOLITIC SMALL LETTER AZU..GLAGOLITIC SMALL LETTER LATINATE MYSLITE
+    Prop<::unicode::General_Category>{ { 0x2C5F, 0x2C5F }, ::unicode::General_Category::Unassigned }, // <reserved-2C5F>
+    Prop<::unicode::General_Category>{ { 0x2C60, 0x2C60 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH DOUBLE BAR
+    Prop<::unicode::General_Category>{ { 0x2C61, 0x2C61 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH DOUBLE BAR
+    Prop<::unicode::General_Category>{ { 0x2C62, 0x2C64 }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER L WITH MIDDLE TILDE..LATIN CAPITAL LETTER R WITH TAIL
+    Prop<::unicode::General_Category>{ { 0x2C65, 0x2C66 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER A WITH STROKE..LATIN SMALL LETTER T WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0x2C67, 0x2C67 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER H WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C68, 0x2C68 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER H WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C69, 0x2C69 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C6A, 0x2C6A }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C6B, 0x2C6B }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Z WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C6C, 0x2C6C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Z WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0x2C6D, 0x2C70 }, ::unicode::General_Category::Uppercase_Letter }, // [4] LATIN CAPITAL LETTER ALPHA..LATIN CAPITAL LETTER TURNED ALPHA
+    Prop<::unicode::General_Category>{ { 0x2C71, 0x2C71 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER V WITH RIGHT HOOK
+    Prop<::unicode::General_Category>{ { 0x2C72, 0x2C72 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER W WITH HOOK
+    Prop<::unicode::General_Category>{ { 0x2C73, 0x2C74 }, ::unicode::General_Category::Lowercase_Letter }, // [2] LATIN SMALL LETTER W WITH HOOK..LATIN SMALL LETTER V WITH CURL
+    Prop<::unicode::General_Category>{ { 0x2C75, 0x2C75 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER HALF H
+    Prop<::unicode::General_Category>{ { 0x2C76, 0x2C7B }, ::unicode::General_Category::Lowercase_Letter }, // [6] LATIN SMALL LETTER HALF H..LATIN LETTER SMALL CAPITAL TURNED E
+    Prop<::unicode::General_Category>{ { 0x2C7C, 0x2C7D }, ::unicode::General_Category::Modifier_Letter }, // [2] LATIN SUBSCRIPT SMALL LETTER J..MODIFIER LETTER CAPITAL V
+    Prop<::unicode::General_Category>{ { 0x2C7E, 0x2C80 }, ::unicode::General_Category::Uppercase_Letter }, // [3] LATIN CAPITAL LETTER S WITH SWASH TAIL..COPTIC CAPITAL LETTER ALFA
+    Prop<::unicode::General_Category>{ { 0x2C81, 0x2C81 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER ALFA
+    Prop<::unicode::General_Category>{ { 0x2C82, 0x2C82 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER VIDA
+    Prop<::unicode::General_Category>{ { 0x2C83, 0x2C83 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER VIDA
+    Prop<::unicode::General_Category>{ { 0x2C84, 0x2C84 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER GAMMA
+    Prop<::unicode::General_Category>{ { 0x2C85, 0x2C85 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER GAMMA
+    Prop<::unicode::General_Category>{ { 0x2C86, 0x2C86 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DALDA
+    Prop<::unicode::General_Category>{ { 0x2C87, 0x2C87 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER DALDA
+    Prop<::unicode::General_Category>{ { 0x2C88, 0x2C88 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER EIE
+    Prop<::unicode::General_Category>{ { 0x2C89, 0x2C89 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER EIE
+    Prop<::unicode::General_Category>{ { 0x2C8A, 0x2C8A }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER SOU
+    Prop<::unicode::General_Category>{ { 0x2C8B, 0x2C8B }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER SOU
+    Prop<::unicode::General_Category>{ { 0x2C8C, 0x2C8C }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER ZATA
+    Prop<::unicode::General_Category>{ { 0x2C8D, 0x2C8D }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER ZATA
+    Prop<::unicode::General_Category>{ { 0x2C8E, 0x2C8E }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER HATE
+    Prop<::unicode::General_Category>{ { 0x2C8F, 0x2C8F }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER HATE
+    Prop<::unicode::General_Category>{ { 0x2C90, 0x2C90 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER THETHE
+    Prop<::unicode::General_Category>{ { 0x2C91, 0x2C91 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER THETHE
+    Prop<::unicode::General_Category>{ { 0x2C92, 0x2C92 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER IAUDA
+    Prop<::unicode::General_Category>{ { 0x2C93, 0x2C93 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER IAUDA
+    Prop<::unicode::General_Category>{ { 0x2C94, 0x2C94 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER KAPA
+    Prop<::unicode::General_Category>{ { 0x2C95, 0x2C95 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER KAPA
+    Prop<::unicode::General_Category>{ { 0x2C96, 0x2C96 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER LAULA
+    Prop<::unicode::General_Category>{ { 0x2C97, 0x2C97 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER LAULA
+    Prop<::unicode::General_Category>{ { 0x2C98, 0x2C98 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER MI
+    Prop<::unicode::General_Category>{ { 0x2C99, 0x2C99 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER MI
+    Prop<::unicode::General_Category>{ { 0x2C9A, 0x2C9A }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER NI
+    Prop<::unicode::General_Category>{ { 0x2C9B, 0x2C9B }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER NI
+    Prop<::unicode::General_Category>{ { 0x2C9C, 0x2C9C }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER KSI
+    Prop<::unicode::General_Category>{ { 0x2C9D, 0x2C9D }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER KSI
+    Prop<::unicode::General_Category>{ { 0x2C9E, 0x2C9E }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER O
+    Prop<::unicode::General_Category>{ { 0x2C9F, 0x2C9F }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER O
+    Prop<::unicode::General_Category>{ { 0x2CA0, 0x2CA0 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER PI
+    Prop<::unicode::General_Category>{ { 0x2CA1, 0x2CA1 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER PI
+    Prop<::unicode::General_Category>{ { 0x2CA2, 0x2CA2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER RO
+    Prop<::unicode::General_Category>{ { 0x2CA3, 0x2CA3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER RO
+    Prop<::unicode::General_Category>{ { 0x2CA4, 0x2CA4 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER SIMA
+    Prop<::unicode::General_Category>{ { 0x2CA5, 0x2CA5 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER SIMA
+    Prop<::unicode::General_Category>{ { 0x2CA6, 0x2CA6 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER TAU
+    Prop<::unicode::General_Category>{ { 0x2CA7, 0x2CA7 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER TAU
+    Prop<::unicode::General_Category>{ { 0x2CA8, 0x2CA8 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER UA
+    Prop<::unicode::General_Category>{ { 0x2CA9, 0x2CA9 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER UA
+    Prop<::unicode::General_Category>{ { 0x2CAA, 0x2CAA }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER FI
+    Prop<::unicode::General_Category>{ { 0x2CAB, 0x2CAB }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER FI
+    Prop<::unicode::General_Category>{ { 0x2CAC, 0x2CAC }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER KHI
+    Prop<::unicode::General_Category>{ { 0x2CAD, 0x2CAD }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER KHI
+    Prop<::unicode::General_Category>{ { 0x2CAE, 0x2CAE }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER PSI
+    Prop<::unicode::General_Category>{ { 0x2CAF, 0x2CAF }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER PSI
+    Prop<::unicode::General_Category>{ { 0x2CB0, 0x2CB0 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OOU
+    Prop<::unicode::General_Category>{ { 0x2CB1, 0x2CB1 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OOU
+    Prop<::unicode::General_Category>{ { 0x2CB2, 0x2CB2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DIALECT-P ALEF
+    Prop<::unicode::General_Category>{ { 0x2CB3, 0x2CB3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER DIALECT-P ALEF
+    Prop<::unicode::General_Category>{ { 0x2CB4, 0x2CB4 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC AIN
+    Prop<::unicode::General_Category>{ { 0x2CB5, 0x2CB5 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC AIN
+    Prop<::unicode::General_Category>{ { 0x2CB6, 0x2CB6 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER CRYPTOGRAMMIC EIE
+    Prop<::unicode::General_Category>{ { 0x2CB7, 0x2CB7 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER CRYPTOGRAMMIC EIE
+    Prop<::unicode::General_Category>{ { 0x2CB8, 0x2CB8 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DIALECT-P KAPA
+    Prop<::unicode::General_Category>{ { 0x2CB9, 0x2CB9 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER DIALECT-P KAPA
+    Prop<::unicode::General_Category>{ { 0x2CBA, 0x2CBA }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DIALECT-P NI
+    Prop<::unicode::General_Category>{ { 0x2CBB, 0x2CBB }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER DIALECT-P NI
+    Prop<::unicode::General_Category>{ { 0x2CBC, 0x2CBC }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER CRYPTOGRAMMIC NI
+    Prop<::unicode::General_Category>{ { 0x2CBD, 0x2CBD }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER CRYPTOGRAMMIC NI
+    Prop<::unicode::General_Category>{ { 0x2CBE, 0x2CBE }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC OOU
+    Prop<::unicode::General_Category>{ { 0x2CBF, 0x2CBF }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC OOU
+    Prop<::unicode::General_Category>{ { 0x2CC0, 0x2CC0 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER SAMPI
+    Prop<::unicode::General_Category>{ { 0x2CC1, 0x2CC1 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER SAMPI
+    Prop<::unicode::General_Category>{ { 0x2CC2, 0x2CC2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER CROSSED SHEI
+    Prop<::unicode::General_Category>{ { 0x2CC3, 0x2CC3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER CROSSED SHEI
+    Prop<::unicode::General_Category>{ { 0x2CC4, 0x2CC4 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC SHEI
+    Prop<::unicode::General_Category>{ { 0x2CC5, 0x2CC5 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC SHEI
+    Prop<::unicode::General_Category>{ { 0x2CC6, 0x2CC6 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC ESH
+    Prop<::unicode::General_Category>{ { 0x2CC7, 0x2CC7 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC ESH
+    Prop<::unicode::General_Category>{ { 0x2CC8, 0x2CC8 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER AKHMIMIC KHEI
+    Prop<::unicode::General_Category>{ { 0x2CC9, 0x2CC9 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER AKHMIMIC KHEI
+    Prop<::unicode::General_Category>{ { 0x2CCA, 0x2CCA }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER DIALECT-P HORI
+    Prop<::unicode::General_Category>{ { 0x2CCB, 0x2CCB }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER DIALECT-P HORI
+    Prop<::unicode::General_Category>{ { 0x2CCC, 0x2CCC }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC HORI
+    Prop<::unicode::General_Category>{ { 0x2CCD, 0x2CCD }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC HORI
+    Prop<::unicode::General_Category>{ { 0x2CCE, 0x2CCE }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC HA
+    Prop<::unicode::General_Category>{ { 0x2CCF, 0x2CCF }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC HA
+    Prop<::unicode::General_Category>{ { 0x2CD0, 0x2CD0 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER L-SHAPED HA
+    Prop<::unicode::General_Category>{ { 0x2CD1, 0x2CD1 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER L-SHAPED HA
+    Prop<::unicode::General_Category>{ { 0x2CD2, 0x2CD2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC HEI
+    Prop<::unicode::General_Category>{ { 0x2CD3, 0x2CD3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC HEI
+    Prop<::unicode::General_Category>{ { 0x2CD4, 0x2CD4 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC HAT
+    Prop<::unicode::General_Category>{ { 0x2CD5, 0x2CD5 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC HAT
+    Prop<::unicode::General_Category>{ { 0x2CD6, 0x2CD6 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC GANGIA
+    Prop<::unicode::General_Category>{ { 0x2CD7, 0x2CD7 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC GANGIA
+    Prop<::unicode::General_Category>{ { 0x2CD8, 0x2CD8 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC DJA
+    Prop<::unicode::General_Category>{ { 0x2CD9, 0x2CD9 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC DJA
+    Prop<::unicode::General_Category>{ { 0x2CDA, 0x2CDA }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD COPTIC SHIMA
+    Prop<::unicode::General_Category>{ { 0x2CDB, 0x2CDB }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD COPTIC SHIMA
+    Prop<::unicode::General_Category>{ { 0x2CDC, 0x2CDC }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD NUBIAN SHIMA
+    Prop<::unicode::General_Category>{ { 0x2CDD, 0x2CDD }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD NUBIAN SHIMA
+    Prop<::unicode::General_Category>{ { 0x2CDE, 0x2CDE }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD NUBIAN NGI
+    Prop<::unicode::General_Category>{ { 0x2CDF, 0x2CDF }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD NUBIAN NGI
+    Prop<::unicode::General_Category>{ { 0x2CE0, 0x2CE0 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD NUBIAN NYI
+    Prop<::unicode::General_Category>{ { 0x2CE1, 0x2CE1 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER OLD NUBIAN NYI
+    Prop<::unicode::General_Category>{ { 0x2CE2, 0x2CE2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER OLD NUBIAN WAU
+    Prop<::unicode::General_Category>{ { 0x2CE3, 0x2CE4 }, ::unicode::General_Category::Lowercase_Letter }, // [2] COPTIC SMALL LETTER OLD NUBIAN WAU..COPTIC SYMBOL KAI
+    Prop<::unicode::General_Category>{ { 0x2CE5, 0x2CEA }, ::unicode::General_Category::Other_Symbol }, // [6] COPTIC SYMBOL MI RO..COPTIC SYMBOL SHIMA SIMA
+    Prop<::unicode::General_Category>{ { 0x2CEB, 0x2CEB }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER CRYPTOGRAMMIC SHEI
+    Prop<::unicode::General_Category>{ { 0x2CEC, 0x2CEC }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER CRYPTOGRAMMIC SHEI
+    Prop<::unicode::General_Category>{ { 0x2CED, 0x2CED }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER CRYPTOGRAMMIC GANGIA
+    Prop<::unicode::General_Category>{ { 0x2CEE, 0x2CEE }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER CRYPTOGRAMMIC GANGIA
+    Prop<::unicode::General_Category>{ { 0x2CEF, 0x2CF1 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] COPTIC COMBINING NI ABOVE..COPTIC COMBINING SPIRITUS LENIS
+    Prop<::unicode::General_Category>{ { 0x2CF2, 0x2CF2 }, ::unicode::General_Category::Uppercase_Letter }, // COPTIC CAPITAL LETTER BOHAIRIC KHEI
+    Prop<::unicode::General_Category>{ { 0x2CF3, 0x2CF3 }, ::unicode::General_Category::Lowercase_Letter }, // COPTIC SMALL LETTER BOHAIRIC KHEI
+    Prop<::unicode::General_Category>{ { 0x2CF4, 0x2CF8 }, ::unicode::General_Category::Unassigned }, // [5] <reserved-2CF4>..<reserved-2CF8>
+    Prop<::unicode::General_Category>{ { 0x2CF9, 0x2CFC }, ::unicode::General_Category::Other_Punctuation }, // [4] COPTIC OLD NUBIAN FULL STOP..COPTIC OLD NUBIAN VERSE DIVIDER
+    Prop<::unicode::General_Category>{ { 0x2CFD, 0x2CFD }, ::unicode::General_Category::Other_Number }, // COPTIC FRACTION ONE HALF
+    Prop<::unicode::General_Category>{ { 0x2CFE, 0x2CFF }, ::unicode::General_Category::Other_Punctuation }, // [2] COPTIC FULL STOP..COPTIC MORPHOLOGICAL DIVIDER
+    Prop<::unicode::General_Category>{ { 0x2D00, 0x2D25 }, ::unicode::General_Category::Lowercase_Letter }, // [38] GEORGIAN SMALL LETTER AN..GEORGIAN SMALL LETTER HOE
+    Prop<::unicode::General_Category>{ { 0x2D26, 0x2D26 }, ::unicode::General_Category::Unassigned }, // <reserved-2D26>
+    Prop<::unicode::General_Category>{ { 0x2D27, 0x2D27 }, ::unicode::General_Category::Lowercase_Letter }, // GEORGIAN SMALL LETTER YN
+    Prop<::unicode::General_Category>{ { 0x2D28, 0x2D2C }, ::unicode::General_Category::Unassigned }, // [5] <reserved-2D28>..<reserved-2D2C>
+    Prop<::unicode::General_Category>{ { 0x2D2D, 0x2D2D }, ::unicode::General_Category::Lowercase_Letter }, // GEORGIAN SMALL LETTER AEN
+    Prop<::unicode::General_Category>{ { 0x2D2E, 0x2D2F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-2D2E>..<reserved-2D2F>
+    Prop<::unicode::General_Category>{ { 0x2D30, 0x2D67 }, ::unicode::General_Category::Other_Letter }, // [56] TIFINAGH LETTER YA..TIFINAGH LETTER YO
+    Prop<::unicode::General_Category>{ { 0x2D68, 0x2D6E }, ::unicode::General_Category::Unassigned }, // [7] <reserved-2D68>..<reserved-2D6E>
+    Prop<::unicode::General_Category>{ { 0x2D6F, 0x2D6F }, ::unicode::General_Category::Modifier_Letter }, // TIFINAGH MODIFIER LETTER LABIALIZATION MARK
+    Prop<::unicode::General_Category>{ { 0x2D70, 0x2D70 }, ::unicode::General_Category::Other_Punctuation }, // TIFINAGH SEPARATOR MARK
+    Prop<::unicode::General_Category>{ { 0x2D71, 0x2D7E }, ::unicode::General_Category::Unassigned }, // [14] <reserved-2D71>..<reserved-2D7E>
+    Prop<::unicode::General_Category>{ { 0x2D7F, 0x2D7F }, ::unicode::General_Category::Nonspacing_Mark }, // TIFINAGH CONSONANT JOINER
+    Prop<::unicode::General_Category>{ { 0x2D80, 0x2D96 }, ::unicode::General_Category::Other_Letter }, // [23] ETHIOPIC SYLLABLE LOA..ETHIOPIC SYLLABLE GGWE
+    Prop<::unicode::General_Category>{ { 0x2D97, 0x2D9F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-2D97>..<reserved-2D9F>
+    Prop<::unicode::General_Category>{ { 0x2DA0, 0x2DA6 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE SSA..ETHIOPIC SYLLABLE SSO
+    Prop<::unicode::General_Category>{ { 0x2DA7, 0x2DA7 }, ::unicode::General_Category::Unassigned }, // <reserved-2DA7>
+    Prop<::unicode::General_Category>{ { 0x2DA8, 0x2DAE }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE CCA..ETHIOPIC SYLLABLE CCO
+    Prop<::unicode::General_Category>{ { 0x2DAF, 0x2DAF }, ::unicode::General_Category::Unassigned }, // <reserved-2DAF>
+    Prop<::unicode::General_Category>{ { 0x2DB0, 0x2DB6 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE ZZA..ETHIOPIC SYLLABLE ZZO
+    Prop<::unicode::General_Category>{ { 0x2DB7, 0x2DB7 }, ::unicode::General_Category::Unassigned }, // <reserved-2DB7>
+    Prop<::unicode::General_Category>{ { 0x2DB8, 0x2DBE }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE CCHA..ETHIOPIC SYLLABLE CCHO
+    Prop<::unicode::General_Category>{ { 0x2DBF, 0x2DBF }, ::unicode::General_Category::Unassigned }, // <reserved-2DBF>
+    Prop<::unicode::General_Category>{ { 0x2DC0, 0x2DC6 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE QYA..ETHIOPIC SYLLABLE QYO
+    Prop<::unicode::General_Category>{ { 0x2DC7, 0x2DC7 }, ::unicode::General_Category::Unassigned }, // <reserved-2DC7>
+    Prop<::unicode::General_Category>{ { 0x2DC8, 0x2DCE }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE KYA..ETHIOPIC SYLLABLE KYO
+    Prop<::unicode::General_Category>{ { 0x2DCF, 0x2DCF }, ::unicode::General_Category::Unassigned }, // <reserved-2DCF>
+    Prop<::unicode::General_Category>{ { 0x2DD0, 0x2DD6 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE XYA..ETHIOPIC SYLLABLE XYO
+    Prop<::unicode::General_Category>{ { 0x2DD7, 0x2DD7 }, ::unicode::General_Category::Unassigned }, // <reserved-2DD7>
+    Prop<::unicode::General_Category>{ { 0x2DD8, 0x2DDE }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE GYA..ETHIOPIC SYLLABLE GYO
+    Prop<::unicode::General_Category>{ { 0x2DDF, 0x2DDF }, ::unicode::General_Category::Unassigned }, // <reserved-2DDF>
+    Prop<::unicode::General_Category>{ { 0x2DE0, 0x2DFF }, ::unicode::General_Category::Nonspacing_Mark }, // [32] COMBINING CYRILLIC LETTER BE..COMBINING CYRILLIC LETTER IOTIFIED BIG YUS
+    Prop<::unicode::General_Category>{ { 0x2E00, 0x2E01 }, ::unicode::General_Category::Other_Punctuation }, // [2] RIGHT ANGLE SUBSTITUTION MARKER..RIGHT ANGLE DOTTED SUBSTITUTION MARKER
+    Prop<::unicode::General_Category>{ { 0x2E02, 0x2E02 }, ::unicode::General_Category::Initial_Punctuation }, // LEFT SUBSTITUTION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E03, 0x2E03 }, ::unicode::General_Category::Final_Punctuation }, // RIGHT SUBSTITUTION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E04, 0x2E04 }, ::unicode::General_Category::Initial_Punctuation }, // LEFT DOTTED SUBSTITUTION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E05, 0x2E05 }, ::unicode::General_Category::Final_Punctuation }, // RIGHT DOTTED SUBSTITUTION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E06, 0x2E08 }, ::unicode::General_Category::Other_Punctuation }, // [3] RAISED INTERPOLATION MARKER..DOTTED TRANSPOSITION MARKER
+    Prop<::unicode::General_Category>{ { 0x2E09, 0x2E09 }, ::unicode::General_Category::Initial_Punctuation }, // LEFT TRANSPOSITION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E0A, 0x2E0A }, ::unicode::General_Category::Final_Punctuation }, // RIGHT TRANSPOSITION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E0B, 0x2E0B }, ::unicode::General_Category::Other_Punctuation }, // RAISED SQUARE
+    Prop<::unicode::General_Category>{ { 0x2E0C, 0x2E0C }, ::unicode::General_Category::Initial_Punctuation }, // LEFT RAISED OMISSION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E0D, 0x2E0D }, ::unicode::General_Category::Final_Punctuation }, // RIGHT RAISED OMISSION BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E0E, 0x2E16 }, ::unicode::General_Category::Other_Punctuation }, // [9] EDITORIAL CORONIS..DOTTED RIGHT-POINTING ANGLE
+    Prop<::unicode::General_Category>{ { 0x2E17, 0x2E17 }, ::unicode::General_Category::Dash_Punctuation }, // DOUBLE OBLIQUE HYPHEN
+    Prop<::unicode::General_Category>{ { 0x2E18, 0x2E19 }, ::unicode::General_Category::Other_Punctuation }, // [2] INVERTED INTERROBANG..PALM BRANCH
+    Prop<::unicode::General_Category>{ { 0x2E1A, 0x2E1A }, ::unicode::General_Category::Dash_Punctuation }, // HYPHEN WITH DIAERESIS
+    Prop<::unicode::General_Category>{ { 0x2E1B, 0x2E1B }, ::unicode::General_Category::Other_Punctuation }, // TILDE WITH RING ABOVE
+    Prop<::unicode::General_Category>{ { 0x2E1C, 0x2E1C }, ::unicode::General_Category::Initial_Punctuation }, // LEFT LOW PARAPHRASE BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E1D, 0x2E1D }, ::unicode::General_Category::Final_Punctuation }, // RIGHT LOW PARAPHRASE BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E1E, 0x2E1F }, ::unicode::General_Category::Other_Punctuation }, // [2] TILDE WITH DOT ABOVE..TILDE WITH DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x2E20, 0x2E20 }, ::unicode::General_Category::Initial_Punctuation }, // LEFT VERTICAL BAR WITH QUILL
+    Prop<::unicode::General_Category>{ { 0x2E21, 0x2E21 }, ::unicode::General_Category::Final_Punctuation }, // RIGHT VERTICAL BAR WITH QUILL
+    Prop<::unicode::General_Category>{ { 0x2E22, 0x2E22 }, ::unicode::General_Category::Open_Punctuation }, // TOP LEFT HALF BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E23, 0x2E23 }, ::unicode::General_Category::Close_Punctuation }, // TOP RIGHT HALF BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E24, 0x2E24 }, ::unicode::General_Category::Open_Punctuation }, // BOTTOM LEFT HALF BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E25, 0x2E25 }, ::unicode::General_Category::Close_Punctuation }, // BOTTOM RIGHT HALF BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E26, 0x2E26 }, ::unicode::General_Category::Open_Punctuation }, // LEFT SIDEWAYS U BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E27, 0x2E27 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT SIDEWAYS U BRACKET
+    Prop<::unicode::General_Category>{ { 0x2E28, 0x2E28 }, ::unicode::General_Category::Open_Punctuation }, // LEFT DOUBLE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x2E29, 0x2E29 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT DOUBLE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x2E2A, 0x2E2E }, ::unicode::General_Category::Other_Punctuation }, // [5] TWO DOTS OVER ONE DOT PUNCTUATION..REVERSED QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x2E2F, 0x2E2F }, ::unicode::General_Category::Modifier_Letter }, // VERTICAL TILDE
+    Prop<::unicode::General_Category>{ { 0x2E30, 0x2E39 }, ::unicode::General_Category::Other_Punctuation }, // [10] RING POINT..TOP HALF SECTION SIGN
+    Prop<::unicode::General_Category>{ { 0x2E3A, 0x2E3B }, ::unicode::General_Category::Dash_Punctuation }, // [2] TWO-EM DASH..THREE-EM DASH
+    Prop<::unicode::General_Category>{ { 0x2E3C, 0x2E3F }, ::unicode::General_Category::Other_Punctuation }, // [4] STENOGRAPHIC FULL STOP..CAPITULUM
+    Prop<::unicode::General_Category>{ { 0x2E40, 0x2E40 }, ::unicode::General_Category::Dash_Punctuation }, // DOUBLE HYPHEN
+    Prop<::unicode::General_Category>{ { 0x2E41, 0x2E41 }, ::unicode::General_Category::Other_Punctuation }, // REVERSED COMMA
+    Prop<::unicode::General_Category>{ { 0x2E42, 0x2E42 }, ::unicode::General_Category::Open_Punctuation }, // DOUBLE LOW-REVERSED-9 QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x2E43, 0x2E4F }, ::unicode::General_Category::Other_Punctuation }, // [13] DASH WITH LEFT UPTURN..CORNISH VERSE DIVIDER
+    Prop<::unicode::General_Category>{ { 0x2E50, 0x2E51 }, ::unicode::General_Category::Other_Symbol }, // [2] CROSS PATTY WITH RIGHT CROSSBAR..CROSS PATTY WITH LEFT CROSSBAR
+    Prop<::unicode::General_Category>{ { 0x2E52, 0x2E52 }, ::unicode::General_Category::Other_Punctuation }, // TIRONIAN SIGN CAPITAL ET
+    Prop<::unicode::General_Category>{ { 0x2E53, 0x2E7F }, ::unicode::General_Category::Unassigned }, // [45] <reserved-2E53>..<reserved-2E7F>
+    Prop<::unicode::General_Category>{ { 0x2E80, 0x2E99 }, ::unicode::General_Category::Other_Symbol }, // [26] CJK RADICAL REPEAT..CJK RADICAL RAP
+    Prop<::unicode::General_Category>{ { 0x2E9A, 0x2E9A }, ::unicode::General_Category::Unassigned }, // <reserved-2E9A>
+    Prop<::unicode::General_Category>{ { 0x2E9B, 0x2EF3 }, ::unicode::General_Category::Other_Symbol }, // [89] CJK RADICAL CHOKE..CJK RADICAL C-SIMPLIFIED TURTLE
+    Prop<::unicode::General_Category>{ { 0x2EF4, 0x2EFF }, ::unicode::General_Category::Unassigned }, // [12] <reserved-2EF4>..<reserved-2EFF>
+    Prop<::unicode::General_Category>{ { 0x2F00, 0x2FD5 }, ::unicode::General_Category::Other_Symbol }, // [214] KANGXI RADICAL ONE..KANGXI RADICAL FLUTE
+    Prop<::unicode::General_Category>{ { 0x2FD6, 0x2FEF }, ::unicode::General_Category::Unassigned }, // [26] <reserved-2FD6>..<reserved-2FEF>
+    Prop<::unicode::General_Category>{ { 0x2FF0, 0x2FFB }, ::unicode::General_Category::Other_Symbol }, // [12] IDEOGRAPHIC DESCRIPTION CHARACTER LEFT TO RIGHT..IDEOGRAPHIC DESCRIPTION CHARACTER OVERLAID
+    Prop<::unicode::General_Category>{ { 0x2FFC, 0x2FFF }, ::unicode::General_Category::Unassigned }, // [4] <reserved-2FFC>..<reserved-2FFF>
+    Prop<::unicode::General_Category>{ { 0x3000, 0x3000 }, ::unicode::General_Category::Space_Separator }, // IDEOGRAPHIC SPACE
+    Prop<::unicode::General_Category>{ { 0x3001, 0x3003 }, ::unicode::General_Category::Other_Punctuation }, // [3] IDEOGRAPHIC COMMA..DITTO MARK
+    Prop<::unicode::General_Category>{ { 0x3004, 0x3004 }, ::unicode::General_Category::Other_Symbol }, // JAPANESE INDUSTRIAL STANDARD SYMBOL
+    Prop<::unicode::General_Category>{ { 0x3005, 0x3005 }, ::unicode::General_Category::Modifier_Letter }, // IDEOGRAPHIC ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x3006, 0x3006 }, ::unicode::General_Category::Other_Letter }, // IDEOGRAPHIC CLOSING MARK
+    Prop<::unicode::General_Category>{ { 0x3007, 0x3007 }, ::unicode::General_Category::Letter_Number }, // IDEOGRAPHIC NUMBER ZERO
+    Prop<::unicode::General_Category>{ { 0x3008, 0x3008 }, ::unicode::General_Category::Open_Punctuation }, // LEFT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x3009, 0x3009 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x300A, 0x300A }, ::unicode::General_Category::Open_Punctuation }, // LEFT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x300B, 0x300B }, ::unicode::General_Category::Close_Punctuation }, // RIGHT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0x300C, 0x300C }, ::unicode::General_Category::Open_Punctuation }, // LEFT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0x300D, 0x300D }, ::unicode::General_Category::Close_Punctuation }, // RIGHT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0x300E, 0x300E }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0x300F, 0x300F }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0x3010, 0x3010 }, ::unicode::General_Category::Open_Punctuation }, // LEFT BLACK LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0x3011, 0x3011 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT BLACK LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0x3012, 0x3013 }, ::unicode::General_Category::Other_Symbol }, // [2] POSTAL MARK..GETA MARK
+    Prop<::unicode::General_Category>{ { 0x3014, 0x3014 }, ::unicode::General_Category::Open_Punctuation }, // LEFT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x3015, 0x3015 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x3016, 0x3016 }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0x3017, 0x3017 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0x3018, 0x3018 }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x3019, 0x3019 }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0x301A, 0x301A }, ::unicode::General_Category::Open_Punctuation }, // LEFT WHITE SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x301B, 0x301B }, ::unicode::General_Category::Close_Punctuation }, // RIGHT WHITE SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0x301C, 0x301C }, ::unicode::General_Category::Dash_Punctuation }, // WAVE DASH
+    Prop<::unicode::General_Category>{ { 0x301D, 0x301D }, ::unicode::General_Category::Open_Punctuation }, // REVERSED DOUBLE PRIME QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x301E, 0x301F }, ::unicode::General_Category::Close_Punctuation }, // [2] DOUBLE PRIME QUOTATION MARK..LOW DOUBLE PRIME QUOTATION MARK
+    Prop<::unicode::General_Category>{ { 0x3020, 0x3020 }, ::unicode::General_Category::Other_Symbol }, // POSTAL MARK FACE
+    Prop<::unicode::General_Category>{ { 0x3021, 0x3029 }, ::unicode::General_Category::Letter_Number }, // [9] HANGZHOU NUMERAL ONE..HANGZHOU NUMERAL NINE
+    Prop<::unicode::General_Category>{ { 0x302A, 0x302D }, ::unicode::General_Category::Nonspacing_Mark }, // [4] IDEOGRAPHIC LEVEL TONE MARK..IDEOGRAPHIC ENTERING TONE MARK
+    Prop<::unicode::General_Category>{ { 0x302E, 0x302F }, ::unicode::General_Category::Spacing_Mark }, // [2] HANGUL SINGLE DOT TONE MARK..HANGUL DOUBLE DOT TONE MARK
+    Prop<::unicode::General_Category>{ { 0x3030, 0x3030 }, ::unicode::General_Category::Dash_Punctuation }, // WAVY DASH
+    Prop<::unicode::General_Category>{ { 0x3031, 0x3035 }, ::unicode::General_Category::Modifier_Letter }, // [5] VERTICAL KANA REPEAT MARK..VERTICAL KANA REPEAT MARK LOWER HALF
+    Prop<::unicode::General_Category>{ { 0x3036, 0x3037 }, ::unicode::General_Category::Other_Symbol }, // [2] CIRCLED POSTAL MARK..IDEOGRAPHIC TELEGRAPH LINE FEED SEPARATOR SYMBOL
+    Prop<::unicode::General_Category>{ { 0x3038, 0x303A }, ::unicode::General_Category::Letter_Number }, // [3] HANGZHOU NUMERAL TEN..HANGZHOU NUMERAL THIRTY
+    Prop<::unicode::General_Category>{ { 0x303B, 0x303B }, ::unicode::General_Category::Modifier_Letter }, // VERTICAL IDEOGRAPHIC ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x303C, 0x303C }, ::unicode::General_Category::Other_Letter }, // MASU MARK
+    Prop<::unicode::General_Category>{ { 0x303D, 0x303D }, ::unicode::General_Category::Other_Punctuation }, // PART ALTERNATION MARK
+    Prop<::unicode::General_Category>{ { 0x303E, 0x303F }, ::unicode::General_Category::Other_Symbol }, // [2] IDEOGRAPHIC VARIATION INDICATOR..IDEOGRAPHIC HALF FILL SPACE
+    Prop<::unicode::General_Category>{ { 0x3040, 0x3040 }, ::unicode::General_Category::Unassigned }, // <reserved-3040>
+    Prop<::unicode::General_Category>{ { 0x3041, 0x3096 }, ::unicode::General_Category::Other_Letter }, // [86] HIRAGANA LETTER SMALL A..HIRAGANA LETTER SMALL KE
+    Prop<::unicode::General_Category>{ { 0x3097, 0x3098 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-3097>..<reserved-3098>
+    Prop<::unicode::General_Category>{ { 0x3099, 0x309A }, ::unicode::General_Category::Nonspacing_Mark }, // [2] COMBINING KATAKANA-HIRAGANA VOICED SOUND MARK..COMBINING KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK
+    Prop<::unicode::General_Category>{ { 0x309B, 0x309C }, ::unicode::General_Category::Modifier_Symbol }, // [2] KATAKANA-HIRAGANA VOICED SOUND MARK..KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK
+    Prop<::unicode::General_Category>{ { 0x309D, 0x309E }, ::unicode::General_Category::Modifier_Letter }, // [2] HIRAGANA ITERATION MARK..HIRAGANA VOICED ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x309F, 0x309F }, ::unicode::General_Category::Other_Letter }, // HIRAGANA DIGRAPH YORI
+    Prop<::unicode::General_Category>{ { 0x30A0, 0x30A0 }, ::unicode::General_Category::Dash_Punctuation }, // KATAKANA-HIRAGANA DOUBLE HYPHEN
+    Prop<::unicode::General_Category>{ { 0x30A1, 0x30FA }, ::unicode::General_Category::Other_Letter }, // [90] KATAKANA LETTER SMALL A..KATAKANA LETTER VO
+    Prop<::unicode::General_Category>{ { 0x30FB, 0x30FB }, ::unicode::General_Category::Other_Punctuation }, // KATAKANA MIDDLE DOT
+    Prop<::unicode::General_Category>{ { 0x30FC, 0x30FE }, ::unicode::General_Category::Modifier_Letter }, // [3] KATAKANA-HIRAGANA PROLONGED SOUND MARK..KATAKANA VOICED ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x30FF, 0x30FF }, ::unicode::General_Category::Other_Letter }, // KATAKANA DIGRAPH KOTO
+    Prop<::unicode::General_Category>{ { 0x3100, 0x3104 }, ::unicode::General_Category::Unassigned }, // [5] <reserved-3100>..<reserved-3104>
+    Prop<::unicode::General_Category>{ { 0x3105, 0x312F }, ::unicode::General_Category::Other_Letter }, // [43] BOPOMOFO LETTER B..BOPOMOFO LETTER NN
+    Prop<::unicode::General_Category>{ { 0x3130, 0x3130 }, ::unicode::General_Category::Unassigned }, // <reserved-3130>
+    Prop<::unicode::General_Category>{ { 0x3131, 0x318E }, ::unicode::General_Category::Other_Letter }, // [94] HANGUL LETTER KIYEOK..HANGUL LETTER ARAEAE
+    Prop<::unicode::General_Category>{ { 0x318F, 0x318F }, ::unicode::General_Category::Unassigned }, // <reserved-318F>
+    Prop<::unicode::General_Category>{ { 0x3190, 0x3191 }, ::unicode::General_Category::Other_Symbol }, // [2] IDEOGRAPHIC ANNOTATION LINKING MARK..IDEOGRAPHIC ANNOTATION REVERSE MARK
+    Prop<::unicode::General_Category>{ { 0x3192, 0x3195 }, ::unicode::General_Category::Other_Number }, // [4] IDEOGRAPHIC ANNOTATION ONE MARK..IDEOGRAPHIC ANNOTATION FOUR MARK
+    Prop<::unicode::General_Category>{ { 0x3196, 0x319F }, ::unicode::General_Category::Other_Symbol }, // [10] IDEOGRAPHIC ANNOTATION TOP MARK..IDEOGRAPHIC ANNOTATION MAN MARK
+    Prop<::unicode::General_Category>{ { 0x31A0, 0x31BF }, ::unicode::General_Category::Other_Letter }, // [32] BOPOMOFO LETTER BU..BOPOMOFO LETTER AH
+    Prop<::unicode::General_Category>{ { 0x31C0, 0x31E3 }, ::unicode::General_Category::Other_Symbol }, // [36] CJK STROKE T..CJK STROKE Q
+    Prop<::unicode::General_Category>{ { 0x31E4, 0x31EF }, ::unicode::General_Category::Unassigned }, // [12] <reserved-31E4>..<reserved-31EF>
+    Prop<::unicode::General_Category>{ { 0x31F0, 0x31FF }, ::unicode::General_Category::Other_Letter }, // [16] KATAKANA LETTER SMALL KU..KATAKANA LETTER SMALL RO
+    Prop<::unicode::General_Category>{ { 0x3200, 0x321E }, ::unicode::General_Category::Other_Symbol }, // [31] PARENTHESIZED HANGUL KIYEOK..PARENTHESIZED KOREAN CHARACTER O HU
+    Prop<::unicode::General_Category>{ { 0x321F, 0x321F }, ::unicode::General_Category::Unassigned }, // <reserved-321F>
+    Prop<::unicode::General_Category>{ { 0x3220, 0x3229 }, ::unicode::General_Category::Other_Number }, // [10] PARENTHESIZED IDEOGRAPH ONE..PARENTHESIZED IDEOGRAPH TEN
+    Prop<::unicode::General_Category>{ { 0x322A, 0x3247 }, ::unicode::General_Category::Other_Symbol }, // [30] PARENTHESIZED IDEOGRAPH MOON..CIRCLED IDEOGRAPH KOTO
+    Prop<::unicode::General_Category>{ { 0x3248, 0x324F }, ::unicode::General_Category::Other_Number }, // [8] CIRCLED NUMBER TEN ON BLACK SQUARE..CIRCLED NUMBER EIGHTY ON BLACK SQUARE
+    Prop<::unicode::General_Category>{ { 0x3250, 0x3250 }, ::unicode::General_Category::Other_Symbol }, // PARTNERSHIP SIGN
+    Prop<::unicode::General_Category>{ { 0x3251, 0x325F }, ::unicode::General_Category::Other_Number }, // [15] CIRCLED NUMBER TWENTY ONE..CIRCLED NUMBER THIRTY FIVE
+    Prop<::unicode::General_Category>{ { 0x3260, 0x327F }, ::unicode::General_Category::Other_Symbol }, // [32] CIRCLED HANGUL KIYEOK..KOREAN STANDARD SYMBOL
+    Prop<::unicode::General_Category>{ { 0x3280, 0x3289 }, ::unicode::General_Category::Other_Number }, // [10] CIRCLED IDEOGRAPH ONE..CIRCLED IDEOGRAPH TEN
+    Prop<::unicode::General_Category>{ { 0x328A, 0x32B0 }, ::unicode::General_Category::Other_Symbol }, // [39] CIRCLED IDEOGRAPH MOON..CIRCLED IDEOGRAPH NIGHT
+    Prop<::unicode::General_Category>{ { 0x32B1, 0x32BF }, ::unicode::General_Category::Other_Number }, // [15] CIRCLED NUMBER THIRTY SIX..CIRCLED NUMBER FIFTY
+    Prop<::unicode::General_Category>{ { 0x32C0, 0x33FF }, ::unicode::General_Category::Other_Symbol }, // [320] IDEOGRAPHIC TELEGRAPH SYMBOL FOR JANUARY..SQUARE GAL
+    Prop<::unicode::General_Category>{ { 0x3400, 0x4DBF }, ::unicode::General_Category::Other_Letter }, // [6592] CJK UNIFIED IDEOGRAPH-3400..CJK UNIFIED IDEOGRAPH-4DBF
+    Prop<::unicode::General_Category>{ { 0x4DC0, 0x4DFF }, ::unicode::General_Category::Other_Symbol }, // [64] HEXAGRAM FOR THE CREATIVE HEAVEN..HEXAGRAM FOR BEFORE COMPLETION
+    Prop<::unicode::General_Category>{ { 0x4E00, 0x9FFC }, ::unicode::General_Category::Other_Letter }, // [20989] CJK UNIFIED IDEOGRAPH-4E00..CJK UNIFIED IDEOGRAPH-9FFC
+    Prop<::unicode::General_Category>{ { 0x9FFD, 0x9FFF }, ::unicode::General_Category::Unassigned }, // [3] <reserved-9FFD>..<reserved-9FFF>
+    Prop<::unicode::General_Category>{ { 0xA000, 0xA014 }, ::unicode::General_Category::Other_Letter }, // [21] YI SYLLABLE IT..YI SYLLABLE E
+    Prop<::unicode::General_Category>{ { 0xA015, 0xA015 }, ::unicode::General_Category::Modifier_Letter }, // YI SYLLABLE WU
+    Prop<::unicode::General_Category>{ { 0xA016, 0xA48C }, ::unicode::General_Category::Other_Letter }, // [1143] YI SYLLABLE BIT..YI SYLLABLE YYR
+    Prop<::unicode::General_Category>{ { 0xA48D, 0xA48F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-A48D>..<reserved-A48F>
+    Prop<::unicode::General_Category>{ { 0xA490, 0xA4C6 }, ::unicode::General_Category::Other_Symbol }, // [55] YI RADICAL QOT..YI RADICAL KE
+    Prop<::unicode::General_Category>{ { 0xA4C7, 0xA4CF }, ::unicode::General_Category::Unassigned }, // [9] <reserved-A4C7>..<reserved-A4CF>
+    Prop<::unicode::General_Category>{ { 0xA4D0, 0xA4F7 }, ::unicode::General_Category::Other_Letter }, // [40] LISU LETTER BA..LISU LETTER OE
+    Prop<::unicode::General_Category>{ { 0xA4F8, 0xA4FD }, ::unicode::General_Category::Modifier_Letter }, // [6] LISU LETTER TONE MYA TI..LISU LETTER TONE MYA JEU
+    Prop<::unicode::General_Category>{ { 0xA4FE, 0xA4FF }, ::unicode::General_Category::Other_Punctuation }, // [2] LISU PUNCTUATION COMMA..LISU PUNCTUATION FULL STOP
+    Prop<::unicode::General_Category>{ { 0xA500, 0xA60B }, ::unicode::General_Category::Other_Letter }, // [268] VAI SYLLABLE EE..VAI SYLLABLE NG
+    Prop<::unicode::General_Category>{ { 0xA60C, 0xA60C }, ::unicode::General_Category::Modifier_Letter }, // VAI SYLLABLE LENGTHENER
+    Prop<::unicode::General_Category>{ { 0xA60D, 0xA60F }, ::unicode::General_Category::Other_Punctuation }, // [3] VAI COMMA..VAI QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0xA610, 0xA61F }, ::unicode::General_Category::Other_Letter }, // [16] VAI SYLLABLE NDOLE FA..VAI SYMBOL JONG
+    Prop<::unicode::General_Category>{ { 0xA620, 0xA629 }, ::unicode::General_Category::Decimal_Number }, // [10] VAI DIGIT ZERO..VAI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xA62A, 0xA62B }, ::unicode::General_Category::Other_Letter }, // [2] VAI SYLLABLE NDOLE MA..VAI SYLLABLE NDOLE DO
+    Prop<::unicode::General_Category>{ { 0xA62C, 0xA63F }, ::unicode::General_Category::Unassigned }, // [20] <reserved-A62C>..<reserved-A63F>
+    Prop<::unicode::General_Category>{ { 0xA640, 0xA640 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZEMLYA
+    Prop<::unicode::General_Category>{ { 0xA641, 0xA641 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZEMLYA
+    Prop<::unicode::General_Category>{ { 0xA642, 0xA642 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DZELO
+    Prop<::unicode::General_Category>{ { 0xA643, 0xA643 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DZELO
+    Prop<::unicode::General_Category>{ { 0xA644, 0xA644 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER REVERSED DZE
+    Prop<::unicode::General_Category>{ { 0xA645, 0xA645 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER REVERSED DZE
+    Prop<::unicode::General_Category>{ { 0xA646, 0xA646 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTA
+    Prop<::unicode::General_Category>{ { 0xA647, 0xA647 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTA
+    Prop<::unicode::General_Category>{ { 0xA648, 0xA648 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DJERV
+    Prop<::unicode::General_Category>{ { 0xA649, 0xA649 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DJERV
+    Prop<::unicode::General_Category>{ { 0xA64A, 0xA64A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER MONOGRAPH UK
+    Prop<::unicode::General_Category>{ { 0xA64B, 0xA64B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER MONOGRAPH UK
+    Prop<::unicode::General_Category>{ { 0xA64C, 0xA64C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BROAD OMEGA
+    Prop<::unicode::General_Category>{ { 0xA64D, 0xA64D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BROAD OMEGA
+    Prop<::unicode::General_Category>{ { 0xA64E, 0xA64E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER NEUTRAL YER
+    Prop<::unicode::General_Category>{ { 0xA64F, 0xA64F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER NEUTRAL YER
+    Prop<::unicode::General_Category>{ { 0xA650, 0xA650 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER YERU WITH BACK YER
+    Prop<::unicode::General_Category>{ { 0xA651, 0xA651 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER YERU WITH BACK YER
+    Prop<::unicode::General_Category>{ { 0xA652, 0xA652 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED YAT
+    Prop<::unicode::General_Category>{ { 0xA653, 0xA653 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED YAT
+    Prop<::unicode::General_Category>{ { 0xA654, 0xA654 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER REVERSED YU
+    Prop<::unicode::General_Category>{ { 0xA655, 0xA655 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER REVERSED YU
+    Prop<::unicode::General_Category>{ { 0xA656, 0xA656 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED A
+    Prop<::unicode::General_Category>{ { 0xA657, 0xA657 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED A
+    Prop<::unicode::General_Category>{ { 0xA658, 0xA658 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CLOSED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0xA659, 0xA659 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CLOSED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0xA65A, 0xA65A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BLENDED YUS
+    Prop<::unicode::General_Category>{ { 0xA65B, 0xA65B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BLENDED YUS
+    Prop<::unicode::General_Category>{ { 0xA65C, 0xA65C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER IOTIFIED CLOSED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0xA65D, 0xA65D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER IOTIFIED CLOSED LITTLE YUS
+    Prop<::unicode::General_Category>{ { 0xA65E, 0xA65E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER YN
+    Prop<::unicode::General_Category>{ { 0xA65F, 0xA65F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER YN
+    Prop<::unicode::General_Category>{ { 0xA660, 0xA660 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER REVERSED TSE
+    Prop<::unicode::General_Category>{ { 0xA661, 0xA661 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER REVERSED TSE
+    Prop<::unicode::General_Category>{ { 0xA662, 0xA662 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SOFT DE
+    Prop<::unicode::General_Category>{ { 0xA663, 0xA663 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SOFT DE
+    Prop<::unicode::General_Category>{ { 0xA664, 0xA664 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SOFT EL
+    Prop<::unicode::General_Category>{ { 0xA665, 0xA665 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SOFT EL
+    Prop<::unicode::General_Category>{ { 0xA666, 0xA666 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SOFT EM
+    Prop<::unicode::General_Category>{ { 0xA667, 0xA667 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SOFT EM
+    Prop<::unicode::General_Category>{ { 0xA668, 0xA668 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER MONOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA669, 0xA669 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER MONOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66A, 0xA66A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER BINOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66B, 0xA66B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER BINOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66C, 0xA66C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DOUBLE MONOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66D, 0xA66D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DOUBLE MONOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66E, 0xA66E }, ::unicode::General_Category::Other_Letter }, // CYRILLIC LETTER MULTIOCULAR O
+    Prop<::unicode::General_Category>{ { 0xA66F, 0xA66F }, ::unicode::General_Category::Nonspacing_Mark }, // COMBINING CYRILLIC VZMET
+    Prop<::unicode::General_Category>{ { 0xA670, 0xA672 }, ::unicode::General_Category::Enclosing_Mark }, // [3] COMBINING CYRILLIC TEN MILLIONS SIGN..COMBINING CYRILLIC THOUSAND MILLIONS SIGN
+    Prop<::unicode::General_Category>{ { 0xA673, 0xA673 }, ::unicode::General_Category::Other_Punctuation }, // SLAVONIC ASTERISK
+    Prop<::unicode::General_Category>{ { 0xA674, 0xA67D }, ::unicode::General_Category::Nonspacing_Mark }, // [10] COMBINING CYRILLIC LETTER UKRAINIAN IE..COMBINING CYRILLIC PAYEROK
+    Prop<::unicode::General_Category>{ { 0xA67E, 0xA67E }, ::unicode::General_Category::Other_Punctuation }, // CYRILLIC KAVYKA
+    Prop<::unicode::General_Category>{ { 0xA67F, 0xA67F }, ::unicode::General_Category::Modifier_Letter }, // CYRILLIC PAYEROK
+    Prop<::unicode::General_Category>{ { 0xA680, 0xA680 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DWE
+    Prop<::unicode::General_Category>{ { 0xA681, 0xA681 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DWE
+    Prop<::unicode::General_Category>{ { 0xA682, 0xA682 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DZWE
+    Prop<::unicode::General_Category>{ { 0xA683, 0xA683 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DZWE
+    Prop<::unicode::General_Category>{ { 0xA684, 0xA684 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER ZHWE
+    Prop<::unicode::General_Category>{ { 0xA685, 0xA685 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER ZHWE
+    Prop<::unicode::General_Category>{ { 0xA686, 0xA686 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CCHE
+    Prop<::unicode::General_Category>{ { 0xA687, 0xA687 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CCHE
+    Prop<::unicode::General_Category>{ { 0xA688, 0xA688 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DZZE
+    Prop<::unicode::General_Category>{ { 0xA689, 0xA689 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DZZE
+    Prop<::unicode::General_Category>{ { 0xA68A, 0xA68A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0xA68B, 0xA68B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TE WITH MIDDLE HOOK
+    Prop<::unicode::General_Category>{ { 0xA68C, 0xA68C }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TWE
+    Prop<::unicode::General_Category>{ { 0xA68D, 0xA68D }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TWE
+    Prop<::unicode::General_Category>{ { 0xA68E, 0xA68E }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TSWE
+    Prop<::unicode::General_Category>{ { 0xA68F, 0xA68F }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TSWE
+    Prop<::unicode::General_Category>{ { 0xA690, 0xA690 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TSSE
+    Prop<::unicode::General_Category>{ { 0xA691, 0xA691 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TSSE
+    Prop<::unicode::General_Category>{ { 0xA692, 0xA692 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER TCHE
+    Prop<::unicode::General_Category>{ { 0xA693, 0xA693 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER TCHE
+    Prop<::unicode::General_Category>{ { 0xA694, 0xA694 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER HWE
+    Prop<::unicode::General_Category>{ { 0xA695, 0xA695 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER HWE
+    Prop<::unicode::General_Category>{ { 0xA696, 0xA696 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER SHWE
+    Prop<::unicode::General_Category>{ { 0xA697, 0xA697 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER SHWE
+    Prop<::unicode::General_Category>{ { 0xA698, 0xA698 }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER DOUBLE O
+    Prop<::unicode::General_Category>{ { 0xA699, 0xA699 }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER DOUBLE O
+    Prop<::unicode::General_Category>{ { 0xA69A, 0xA69A }, ::unicode::General_Category::Uppercase_Letter }, // CYRILLIC CAPITAL LETTER CROSSED O
+    Prop<::unicode::General_Category>{ { 0xA69B, 0xA69B }, ::unicode::General_Category::Lowercase_Letter }, // CYRILLIC SMALL LETTER CROSSED O
+    Prop<::unicode::General_Category>{ { 0xA69C, 0xA69D }, ::unicode::General_Category::Modifier_Letter }, // [2] MODIFIER LETTER CYRILLIC HARD SIGN..MODIFIER LETTER CYRILLIC SOFT SIGN
+    Prop<::unicode::General_Category>{ { 0xA69E, 0xA69F }, ::unicode::General_Category::Nonspacing_Mark }, // [2] COMBINING CYRILLIC LETTER EF..COMBINING CYRILLIC LETTER IOTIFIED E
+    Prop<::unicode::General_Category>{ { 0xA6A0, 0xA6E5 }, ::unicode::General_Category::Other_Letter }, // [70] BAMUM LETTER A..BAMUM LETTER KI
+    Prop<::unicode::General_Category>{ { 0xA6E6, 0xA6EF }, ::unicode::General_Category::Letter_Number }, // [10] BAMUM LETTER MO..BAMUM LETTER KOGHOM
+    Prop<::unicode::General_Category>{ { 0xA6F0, 0xA6F1 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] BAMUM COMBINING MARK KOQNDON..BAMUM COMBINING MARK TUKWENTIS
+    Prop<::unicode::General_Category>{ { 0xA6F2, 0xA6F7 }, ::unicode::General_Category::Other_Punctuation }, // [6] BAMUM NJAEMLI..BAMUM QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0xA6F8, 0xA6FF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-A6F8>..<reserved-A6FF>
+    Prop<::unicode::General_Category>{ { 0xA700, 0xA716 }, ::unicode::General_Category::Modifier_Symbol }, // [23] MODIFIER LETTER CHINESE TONE YIN PING..MODIFIER LETTER EXTRA-LOW LEFT-STEM TONE BAR
+    Prop<::unicode::General_Category>{ { 0xA717, 0xA71F }, ::unicode::General_Category::Modifier_Letter }, // [9] MODIFIER LETTER DOT VERTICAL BAR..MODIFIER LETTER LOW INVERTED EXCLAMATION MARK
+    Prop<::unicode::General_Category>{ { 0xA720, 0xA721 }, ::unicode::General_Category::Modifier_Symbol }, // [2] MODIFIER LETTER STRESS AND HIGH TONE..MODIFIER LETTER STRESS AND LOW TONE
+    Prop<::unicode::General_Category>{ { 0xA722, 0xA722 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER EGYPTOLOGICAL ALEF
+    Prop<::unicode::General_Category>{ { 0xA723, 0xA723 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER EGYPTOLOGICAL ALEF
+    Prop<::unicode::General_Category>{ { 0xA724, 0xA724 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER EGYPTOLOGICAL AIN
+    Prop<::unicode::General_Category>{ { 0xA725, 0xA725 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER EGYPTOLOGICAL AIN
+    Prop<::unicode::General_Category>{ { 0xA726, 0xA726 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER HENG
+    Prop<::unicode::General_Category>{ { 0xA727, 0xA727 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER HENG
+    Prop<::unicode::General_Category>{ { 0xA728, 0xA728 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TZ
+    Prop<::unicode::General_Category>{ { 0xA729, 0xA729 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TZ
+    Prop<::unicode::General_Category>{ { 0xA72A, 0xA72A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TRESILLO
+    Prop<::unicode::General_Category>{ { 0xA72B, 0xA72B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TRESILLO
+    Prop<::unicode::General_Category>{ { 0xA72C, 0xA72C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER CUATRILLO
+    Prop<::unicode::General_Category>{ { 0xA72D, 0xA72D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER CUATRILLO
+    Prop<::unicode::General_Category>{ { 0xA72E, 0xA72E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER CUATRILLO WITH COMMA
+    Prop<::unicode::General_Category>{ { 0xA72F, 0xA731 }, ::unicode::General_Category::Lowercase_Letter }, // [3] LATIN SMALL LETTER CUATRILLO WITH COMMA..LATIN LETTER SMALL CAPITAL S
+    Prop<::unicode::General_Category>{ { 0xA732, 0xA732 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AA
+    Prop<::unicode::General_Category>{ { 0xA733, 0xA733 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AA
+    Prop<::unicode::General_Category>{ { 0xA734, 0xA734 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AO
+    Prop<::unicode::General_Category>{ { 0xA735, 0xA735 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AO
+    Prop<::unicode::General_Category>{ { 0xA736, 0xA736 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AU
+    Prop<::unicode::General_Category>{ { 0xA737, 0xA737 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AU
+    Prop<::unicode::General_Category>{ { 0xA738, 0xA738 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AV
+    Prop<::unicode::General_Category>{ { 0xA739, 0xA739 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AV
+    Prop<::unicode::General_Category>{ { 0xA73A, 0xA73A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AV WITH HORIZONTAL BAR
+    Prop<::unicode::General_Category>{ { 0xA73B, 0xA73B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AV WITH HORIZONTAL BAR
+    Prop<::unicode::General_Category>{ { 0xA73C, 0xA73C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER AY
+    Prop<::unicode::General_Category>{ { 0xA73D, 0xA73D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER AY
+    Prop<::unicode::General_Category>{ { 0xA73E, 0xA73E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER REVERSED C WITH DOT
+    Prop<::unicode::General_Category>{ { 0xA73F, 0xA73F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER REVERSED C WITH DOT
+    Prop<::unicode::General_Category>{ { 0xA740, 0xA740 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA741, 0xA741 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA742, 0xA742 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA743, 0xA743 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA744, 0xA744 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH STROKE AND DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA745, 0xA745 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH STROKE AND DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA746, 0xA746 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER BROKEN L
+    Prop<::unicode::General_Category>{ { 0xA747, 0xA747 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER BROKEN L
+    Prop<::unicode::General_Category>{ { 0xA748, 0xA748 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER L WITH HIGH STROKE
+    Prop<::unicode::General_Category>{ { 0xA749, 0xA749 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH HIGH STROKE
+    Prop<::unicode::General_Category>{ { 0xA74A, 0xA74A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH LONG STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA74B, 0xA74B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH LONG STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA74C, 0xA74C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER O WITH LOOP
+    Prop<::unicode::General_Category>{ { 0xA74D, 0xA74D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER O WITH LOOP
+    Prop<::unicode::General_Category>{ { 0xA74E, 0xA74E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER OO
+    Prop<::unicode::General_Category>{ { 0xA74F, 0xA74F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER OO
+    Prop<::unicode::General_Category>{ { 0xA750, 0xA750 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA751, 0xA751 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA752, 0xA752 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH FLOURISH
+    Prop<::unicode::General_Category>{ { 0xA753, 0xA753 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH FLOURISH
+    Prop<::unicode::General_Category>{ { 0xA754, 0xA754 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER P WITH SQUIRREL TAIL
+    Prop<::unicode::General_Category>{ { 0xA755, 0xA755 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER P WITH SQUIRREL TAIL
+    Prop<::unicode::General_Category>{ { 0xA756, 0xA756 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Q WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA757, 0xA757 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Q WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA758, 0xA758 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER Q WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA759, 0xA759 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER Q WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA75A, 0xA75A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R ROTUNDA
+    Prop<::unicode::General_Category>{ { 0xA75B, 0xA75B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R ROTUNDA
+    Prop<::unicode::General_Category>{ { 0xA75C, 0xA75C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER RUM ROTUNDA
+    Prop<::unicode::General_Category>{ { 0xA75D, 0xA75D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER RUM ROTUNDA
+    Prop<::unicode::General_Category>{ { 0xA75E, 0xA75E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER V WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA75F, 0xA75F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER V WITH DIAGONAL STROKE
+    Prop<::unicode::General_Category>{ { 0xA760, 0xA760 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VY
+    Prop<::unicode::General_Category>{ { 0xA761, 0xA761 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VY
+    Prop<::unicode::General_Category>{ { 0xA762, 0xA762 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VISIGOTHIC Z
+    Prop<::unicode::General_Category>{ { 0xA763, 0xA763 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VISIGOTHIC Z
+    Prop<::unicode::General_Category>{ { 0xA764, 0xA764 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER THORN WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA765, 0xA765 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER THORN WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA766, 0xA766 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER THORN WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA767, 0xA767 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER THORN WITH STROKE THROUGH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA768, 0xA768 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VEND
+    Prop<::unicode::General_Category>{ { 0xA769, 0xA769 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VEND
+    Prop<::unicode::General_Category>{ { 0xA76A, 0xA76A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER ET
+    Prop<::unicode::General_Category>{ { 0xA76B, 0xA76B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER ET
+    Prop<::unicode::General_Category>{ { 0xA76C, 0xA76C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER IS
+    Prop<::unicode::General_Category>{ { 0xA76D, 0xA76D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER IS
+    Prop<::unicode::General_Category>{ { 0xA76E, 0xA76E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER CON
+    Prop<::unicode::General_Category>{ { 0xA76F, 0xA76F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER CON
+    Prop<::unicode::General_Category>{ { 0xA770, 0xA770 }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER US
+    Prop<::unicode::General_Category>{ { 0xA771, 0xA778 }, ::unicode::General_Category::Lowercase_Letter }, // [8] LATIN SMALL LETTER DUM..LATIN SMALL LETTER UM
+    Prop<::unicode::General_Category>{ { 0xA779, 0xA779 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER INSULAR D
+    Prop<::unicode::General_Category>{ { 0xA77A, 0xA77A }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER INSULAR D
+    Prop<::unicode::General_Category>{ { 0xA77B, 0xA77B }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER INSULAR F
+    Prop<::unicode::General_Category>{ { 0xA77C, 0xA77C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER INSULAR F
+    Prop<::unicode::General_Category>{ { 0xA77D, 0xA77E }, ::unicode::General_Category::Uppercase_Letter }, // [2] LATIN CAPITAL LETTER INSULAR G..LATIN CAPITAL LETTER TURNED INSULAR G
+    Prop<::unicode::General_Category>{ { 0xA77F, 0xA77F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TURNED INSULAR G
+    Prop<::unicode::General_Category>{ { 0xA780, 0xA780 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TURNED L
+    Prop<::unicode::General_Category>{ { 0xA781, 0xA781 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER TURNED L
+    Prop<::unicode::General_Category>{ { 0xA782, 0xA782 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER INSULAR R
+    Prop<::unicode::General_Category>{ { 0xA783, 0xA783 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER INSULAR R
+    Prop<::unicode::General_Category>{ { 0xA784, 0xA784 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER INSULAR S
+    Prop<::unicode::General_Category>{ { 0xA785, 0xA785 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER INSULAR S
+    Prop<::unicode::General_Category>{ { 0xA786, 0xA786 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER INSULAR T
+    Prop<::unicode::General_Category>{ { 0xA787, 0xA787 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER INSULAR T
+    Prop<::unicode::General_Category>{ { 0xA788, 0xA788 }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER LOW CIRCUMFLEX ACCENT
+    Prop<::unicode::General_Category>{ { 0xA789, 0xA78A }, ::unicode::General_Category::Modifier_Symbol }, // [2] MODIFIER LETTER COLON..MODIFIER LETTER SHORT EQUALS SIGN
+    Prop<::unicode::General_Category>{ { 0xA78B, 0xA78B }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER SALTILLO
+    Prop<::unicode::General_Category>{ { 0xA78C, 0xA78C }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER SALTILLO
+    Prop<::unicode::General_Category>{ { 0xA78D, 0xA78D }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER TURNED H
+    Prop<::unicode::General_Category>{ { 0xA78E, 0xA78E }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER L WITH RETROFLEX HOOK AND BELT
+    Prop<::unicode::General_Category>{ { 0xA78F, 0xA78F }, ::unicode::General_Category::Other_Letter }, // LATIN LETTER SINOLOGICAL DOT
+    Prop<::unicode::General_Category>{ { 0xA790, 0xA790 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA791, 0xA791 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH DESCENDER
+    Prop<::unicode::General_Category>{ { 0xA792, 0xA792 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER C WITH BAR
+    Prop<::unicode::General_Category>{ { 0xA793, 0xA795 }, ::unicode::General_Category::Lowercase_Letter }, // [3] LATIN SMALL LETTER C WITH BAR..LATIN SMALL LETTER H WITH PALATAL HOOK
+    Prop<::unicode::General_Category>{ { 0xA796, 0xA796 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER B WITH FLOURISH
+    Prop<::unicode::General_Category>{ { 0xA797, 0xA797 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER B WITH FLOURISH
+    Prop<::unicode::General_Category>{ { 0xA798, 0xA798 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER F WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA799, 0xA799 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER F WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA79A, 0xA79A }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VOLAPUK AE
+    Prop<::unicode::General_Category>{ { 0xA79B, 0xA79B }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VOLAPUK AE
+    Prop<::unicode::General_Category>{ { 0xA79C, 0xA79C }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VOLAPUK OE
+    Prop<::unicode::General_Category>{ { 0xA79D, 0xA79D }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VOLAPUK OE
+    Prop<::unicode::General_Category>{ { 0xA79E, 0xA79E }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER VOLAPUK UE
+    Prop<::unicode::General_Category>{ { 0xA79F, 0xA79F }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER VOLAPUK UE
+    Prop<::unicode::General_Category>{ { 0xA7A0, 0xA7A0 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER G WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A1, 0xA7A1 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER G WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A2, 0xA7A2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER K WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A3, 0xA7A3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER K WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A4, 0xA7A4 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER N WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A5, 0xA7A5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER N WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A6, 0xA7A6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER R WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A7, 0xA7A7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER R WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A8, 0xA7A8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7A9, 0xA7A9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0xA7AA, 0xA7AE }, ::unicode::General_Category::Uppercase_Letter }, // [5] LATIN CAPITAL LETTER H WITH HOOK..LATIN CAPITAL LETTER SMALL CAPITAL I
+    Prop<::unicode::General_Category>{ { 0xA7AF, 0xA7AF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN LETTER SMALL CAPITAL Q
+    Prop<::unicode::General_Category>{ { 0xA7B0, 0xA7B4 }, ::unicode::General_Category::Uppercase_Letter }, // [5] LATIN CAPITAL LETTER TURNED K..LATIN CAPITAL LETTER BETA
+    Prop<::unicode::General_Category>{ { 0xA7B5, 0xA7B5 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER BETA
+    Prop<::unicode::General_Category>{ { 0xA7B6, 0xA7B6 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER OMEGA
+    Prop<::unicode::General_Category>{ { 0xA7B7, 0xA7B7 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER OMEGA
+    Prop<::unicode::General_Category>{ { 0xA7B8, 0xA7B8 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER U WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA7B9, 0xA7B9 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER U WITH STROKE
+    Prop<::unicode::General_Category>{ { 0xA7BA, 0xA7BA }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER GLOTTAL A
+    Prop<::unicode::General_Category>{ { 0xA7BB, 0xA7BB }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER GLOTTAL A
+    Prop<::unicode::General_Category>{ { 0xA7BC, 0xA7BC }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER GLOTTAL I
+    Prop<::unicode::General_Category>{ { 0xA7BD, 0xA7BD }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER GLOTTAL I
+    Prop<::unicode::General_Category>{ { 0xA7BE, 0xA7BE }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER GLOTTAL U
+    Prop<::unicode::General_Category>{ { 0xA7BF, 0xA7BF }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER GLOTTAL U
+    Prop<::unicode::General_Category>{ { 0xA7C0, 0xA7C1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-A7C0>..<reserved-A7C1>
+    Prop<::unicode::General_Category>{ { 0xA7C2, 0xA7C2 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER ANGLICANA W
+    Prop<::unicode::General_Category>{ { 0xA7C3, 0xA7C3 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER ANGLICANA W
+    Prop<::unicode::General_Category>{ { 0xA7C4, 0xA7C7 }, ::unicode::General_Category::Uppercase_Letter }, // [4] LATIN CAPITAL LETTER C WITH PALATAL HOOK..LATIN CAPITAL LETTER D WITH SHORT STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA7C8, 0xA7C8 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER D WITH SHORT STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA7C9, 0xA7C9 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER S WITH SHORT STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA7CA, 0xA7CA }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER S WITH SHORT STROKE OVERLAY
+    Prop<::unicode::General_Category>{ { 0xA7CB, 0xA7F4 }, ::unicode::General_Category::Unassigned }, // [42] <reserved-A7CB>..<reserved-A7F4>
+    Prop<::unicode::General_Category>{ { 0xA7F5, 0xA7F5 }, ::unicode::General_Category::Uppercase_Letter }, // LATIN CAPITAL LETTER REVERSED HALF H
+    Prop<::unicode::General_Category>{ { 0xA7F6, 0xA7F6 }, ::unicode::General_Category::Lowercase_Letter }, // LATIN SMALL LETTER REVERSED HALF H
+    Prop<::unicode::General_Category>{ { 0xA7F7, 0xA7F7 }, ::unicode::General_Category::Other_Letter }, // LATIN EPIGRAPHIC LETTER SIDEWAYS I
+    Prop<::unicode::General_Category>{ { 0xA7F8, 0xA7F9 }, ::unicode::General_Category::Modifier_Letter }, // [2] MODIFIER LETTER CAPITAL H WITH STROKE..MODIFIER LETTER SMALL LIGATURE OE
+    Prop<::unicode::General_Category>{ { 0xA7FA, 0xA7FA }, ::unicode::General_Category::Lowercase_Letter }, // LATIN LETTER SMALL CAPITAL TURNED M
+    Prop<::unicode::General_Category>{ { 0xA7FB, 0xA801 }, ::unicode::General_Category::Other_Letter }, // [7] LATIN EPIGRAPHIC LETTER REVERSED F..SYLOTI NAGRI LETTER I
+    Prop<::unicode::General_Category>{ { 0xA802, 0xA802 }, ::unicode::General_Category::Nonspacing_Mark }, // SYLOTI NAGRI SIGN DVISVARA
+    Prop<::unicode::General_Category>{ { 0xA803, 0xA805 }, ::unicode::General_Category::Other_Letter }, // [3] SYLOTI NAGRI LETTER U..SYLOTI NAGRI LETTER O
+    Prop<::unicode::General_Category>{ { 0xA806, 0xA806 }, ::unicode::General_Category::Nonspacing_Mark }, // SYLOTI NAGRI SIGN HASANTA
+    Prop<::unicode::General_Category>{ { 0xA807, 0xA80A }, ::unicode::General_Category::Other_Letter }, // [4] SYLOTI NAGRI LETTER KO..SYLOTI NAGRI LETTER GHO
+    Prop<::unicode::General_Category>{ { 0xA80B, 0xA80B }, ::unicode::General_Category::Nonspacing_Mark }, // SYLOTI NAGRI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0xA80C, 0xA822 }, ::unicode::General_Category::Other_Letter }, // [23] SYLOTI NAGRI LETTER CO..SYLOTI NAGRI LETTER HO
+    Prop<::unicode::General_Category>{ { 0xA823, 0xA824 }, ::unicode::General_Category::Spacing_Mark }, // [2] SYLOTI NAGRI VOWEL SIGN A..SYLOTI NAGRI VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0xA825, 0xA826 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SYLOTI NAGRI VOWEL SIGN U..SYLOTI NAGRI VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0xA827, 0xA827 }, ::unicode::General_Category::Spacing_Mark }, // SYLOTI NAGRI VOWEL SIGN OO
+    Prop<::unicode::General_Category>{ { 0xA828, 0xA82B }, ::unicode::General_Category::Other_Symbol }, // [4] SYLOTI NAGRI POETRY MARK-1..SYLOTI NAGRI POETRY MARK-4
+    Prop<::unicode::General_Category>{ { 0xA82C, 0xA82C }, ::unicode::General_Category::Nonspacing_Mark }, // SYLOTI NAGRI SIGN ALTERNATE HASANTA
+    Prop<::unicode::General_Category>{ { 0xA82D, 0xA82F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-A82D>..<reserved-A82F>
+    Prop<::unicode::General_Category>{ { 0xA830, 0xA835 }, ::unicode::General_Category::Other_Number }, // [6] NORTH INDIC FRACTION ONE QUARTER..NORTH INDIC FRACTION THREE SIXTEENTHS
+    Prop<::unicode::General_Category>{ { 0xA836, 0xA837 }, ::unicode::General_Category::Other_Symbol }, // [2] NORTH INDIC QUARTER MARK..NORTH INDIC PLACEHOLDER MARK
+    Prop<::unicode::General_Category>{ { 0xA838, 0xA838 }, ::unicode::General_Category::Currency_Symbol }, // NORTH INDIC RUPEE MARK
+    Prop<::unicode::General_Category>{ { 0xA839, 0xA839 }, ::unicode::General_Category::Other_Symbol }, // NORTH INDIC QUANTITY MARK
+    Prop<::unicode::General_Category>{ { 0xA83A, 0xA83F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-A83A>..<reserved-A83F>
+    Prop<::unicode::General_Category>{ { 0xA840, 0xA873 }, ::unicode::General_Category::Other_Letter }, // [52] PHAGS-PA LETTER KA..PHAGS-PA LETTER CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0xA874, 0xA877 }, ::unicode::General_Category::Other_Punctuation }, // [4] PHAGS-PA SINGLE HEAD MARK..PHAGS-PA MARK DOUBLE SHAD
+    Prop<::unicode::General_Category>{ { 0xA878, 0xA87F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-A878>..<reserved-A87F>
+    Prop<::unicode::General_Category>{ { 0xA880, 0xA881 }, ::unicode::General_Category::Spacing_Mark }, // [2] SAURASHTRA SIGN ANUSVARA..SAURASHTRA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0xA882, 0xA8B3 }, ::unicode::General_Category::Other_Letter }, // [50] SAURASHTRA LETTER A..SAURASHTRA LETTER LLA
+    Prop<::unicode::General_Category>{ { 0xA8B4, 0xA8C3 }, ::unicode::General_Category::Spacing_Mark }, // [16] SAURASHTRA CONSONANT SIGN HAARU..SAURASHTRA VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0xA8C4, 0xA8C5 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SAURASHTRA SIGN VIRAMA..SAURASHTRA SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0xA8C6, 0xA8CD }, ::unicode::General_Category::Unassigned }, // [8] <reserved-A8C6>..<reserved-A8CD>
+    Prop<::unicode::General_Category>{ { 0xA8CE, 0xA8CF }, ::unicode::General_Category::Other_Punctuation }, // [2] SAURASHTRA DANDA..SAURASHTRA DOUBLE DANDA
+    Prop<::unicode::General_Category>{ { 0xA8D0, 0xA8D9 }, ::unicode::General_Category::Decimal_Number }, // [10] SAURASHTRA DIGIT ZERO..SAURASHTRA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xA8DA, 0xA8DF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-A8DA>..<reserved-A8DF>
+    Prop<::unicode::General_Category>{ { 0xA8E0, 0xA8F1 }, ::unicode::General_Category::Nonspacing_Mark }, // [18] COMBINING DEVANAGARI DIGIT ZERO..COMBINING DEVANAGARI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0xA8F2, 0xA8F7 }, ::unicode::General_Category::Other_Letter }, // [6] DEVANAGARI SIGN SPACING CANDRABINDU..DEVANAGARI SIGN CANDRABINDU AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0xA8F8, 0xA8FA }, ::unicode::General_Category::Other_Punctuation }, // [3] DEVANAGARI SIGN PUSHPIKA..DEVANAGARI CARET
+    Prop<::unicode::General_Category>{ { 0xA8FB, 0xA8FB }, ::unicode::General_Category::Other_Letter }, // DEVANAGARI HEADSTROKE
+    Prop<::unicode::General_Category>{ { 0xA8FC, 0xA8FC }, ::unicode::General_Category::Other_Punctuation }, // DEVANAGARI SIGN SIDDHAM
+    Prop<::unicode::General_Category>{ { 0xA8FD, 0xA8FE }, ::unicode::General_Category::Other_Letter }, // [2] DEVANAGARI JAIN OM..DEVANAGARI LETTER AY
+    Prop<::unicode::General_Category>{ { 0xA8FF, 0xA8FF }, ::unicode::General_Category::Nonspacing_Mark }, // DEVANAGARI VOWEL SIGN AY
+    Prop<::unicode::General_Category>{ { 0xA900, 0xA909 }, ::unicode::General_Category::Decimal_Number }, // [10] KAYAH LI DIGIT ZERO..KAYAH LI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xA90A, 0xA925 }, ::unicode::General_Category::Other_Letter }, // [28] KAYAH LI LETTER KA..KAYAH LI LETTER OO
+    Prop<::unicode::General_Category>{ { 0xA926, 0xA92D }, ::unicode::General_Category::Nonspacing_Mark }, // [8] KAYAH LI VOWEL UE..KAYAH LI TONE CALYA PLOPHU
+    Prop<::unicode::General_Category>{ { 0xA92E, 0xA92F }, ::unicode::General_Category::Other_Punctuation }, // [2] KAYAH LI SIGN CWI..KAYAH LI SIGN SHYA
+    Prop<::unicode::General_Category>{ { 0xA930, 0xA946 }, ::unicode::General_Category::Other_Letter }, // [23] REJANG LETTER KA..REJANG LETTER A
+    Prop<::unicode::General_Category>{ { 0xA947, 0xA951 }, ::unicode::General_Category::Nonspacing_Mark }, // [11] REJANG VOWEL SIGN I..REJANG CONSONANT SIGN R
+    Prop<::unicode::General_Category>{ { 0xA952, 0xA953 }, ::unicode::General_Category::Spacing_Mark }, // [2] REJANG CONSONANT SIGN H..REJANG VIRAMA
+    Prop<::unicode::General_Category>{ { 0xA954, 0xA95E }, ::unicode::General_Category::Unassigned }, // [11] <reserved-A954>..<reserved-A95E>
+    Prop<::unicode::General_Category>{ { 0xA95F, 0xA95F }, ::unicode::General_Category::Other_Punctuation }, // REJANG SECTION MARK
+    Prop<::unicode::General_Category>{ { 0xA960, 0xA97C }, ::unicode::General_Category::Other_Letter }, // [29] HANGUL CHOSEONG TIKEUT-MIEUM..HANGUL CHOSEONG SSANGYEORINHIEUH
+    Prop<::unicode::General_Category>{ { 0xA97D, 0xA97F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-A97D>..<reserved-A97F>
+    Prop<::unicode::General_Category>{ { 0xA980, 0xA982 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] JAVANESE SIGN PANYANGGA..JAVANESE SIGN LAYAR
+    Prop<::unicode::General_Category>{ { 0xA983, 0xA983 }, ::unicode::General_Category::Spacing_Mark }, // JAVANESE SIGN WIGNYAN
+    Prop<::unicode::General_Category>{ { 0xA984, 0xA9B2 }, ::unicode::General_Category::Other_Letter }, // [47] JAVANESE LETTER A..JAVANESE LETTER HA
+    Prop<::unicode::General_Category>{ { 0xA9B3, 0xA9B3 }, ::unicode::General_Category::Nonspacing_Mark }, // JAVANESE SIGN CECAK TELU
+    Prop<::unicode::General_Category>{ { 0xA9B4, 0xA9B5 }, ::unicode::General_Category::Spacing_Mark }, // [2] JAVANESE VOWEL SIGN TARUNG..JAVANESE VOWEL SIGN TOLONG
+    Prop<::unicode::General_Category>{ { 0xA9B6, 0xA9B9 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] JAVANESE VOWEL SIGN WULU..JAVANESE VOWEL SIGN SUKU MENDUT
+    Prop<::unicode::General_Category>{ { 0xA9BA, 0xA9BB }, ::unicode::General_Category::Spacing_Mark }, // [2] JAVANESE VOWEL SIGN TALING..JAVANESE VOWEL SIGN DIRGA MURE
+    Prop<::unicode::General_Category>{ { 0xA9BC, 0xA9BD }, ::unicode::General_Category::Nonspacing_Mark }, // [2] JAVANESE VOWEL SIGN PEPET..JAVANESE CONSONANT SIGN KERET
+    Prop<::unicode::General_Category>{ { 0xA9BE, 0xA9C0 }, ::unicode::General_Category::Spacing_Mark }, // [3] JAVANESE CONSONANT SIGN PENGKAL..JAVANESE PANGKON
+    Prop<::unicode::General_Category>{ { 0xA9C1, 0xA9CD }, ::unicode::General_Category::Other_Punctuation }, // [13] JAVANESE LEFT RERENGGAN..JAVANESE TURNED PADA PISELEH
+    Prop<::unicode::General_Category>{ { 0xA9CE, 0xA9CE }, ::unicode::General_Category::Unassigned }, // <reserved-A9CE>
+    Prop<::unicode::General_Category>{ { 0xA9CF, 0xA9CF }, ::unicode::General_Category::Modifier_Letter }, // JAVANESE PANGRANGKEP
+    Prop<::unicode::General_Category>{ { 0xA9D0, 0xA9D9 }, ::unicode::General_Category::Decimal_Number }, // [10] JAVANESE DIGIT ZERO..JAVANESE DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xA9DA, 0xA9DD }, ::unicode::General_Category::Unassigned }, // [4] <reserved-A9DA>..<reserved-A9DD>
+    Prop<::unicode::General_Category>{ { 0xA9DE, 0xA9DF }, ::unicode::General_Category::Other_Punctuation }, // [2] JAVANESE PADA TIRTA TUMETES..JAVANESE PADA ISEN-ISEN
+    Prop<::unicode::General_Category>{ { 0xA9E0, 0xA9E4 }, ::unicode::General_Category::Other_Letter }, // [5] MYANMAR LETTER SHAN GHA..MYANMAR LETTER SHAN BHA
+    Prop<::unicode::General_Category>{ { 0xA9E5, 0xA9E5 }, ::unicode::General_Category::Nonspacing_Mark }, // MYANMAR SIGN SHAN SAW
+    Prop<::unicode::General_Category>{ { 0xA9E6, 0xA9E6 }, ::unicode::General_Category::Modifier_Letter }, // MYANMAR MODIFIER LETTER SHAN REDUPLICATION
+    Prop<::unicode::General_Category>{ { 0xA9E7, 0xA9EF }, ::unicode::General_Category::Other_Letter }, // [9] MYANMAR LETTER TAI LAING NYA..MYANMAR LETTER TAI LAING NNA
+    Prop<::unicode::General_Category>{ { 0xA9F0, 0xA9F9 }, ::unicode::General_Category::Decimal_Number }, // [10] MYANMAR TAI LAING DIGIT ZERO..MYANMAR TAI LAING DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xA9FA, 0xA9FE }, ::unicode::General_Category::Other_Letter }, // [5] MYANMAR LETTER TAI LAING LLA..MYANMAR LETTER TAI LAING BHA
+    Prop<::unicode::General_Category>{ { 0xA9FF, 0xA9FF }, ::unicode::General_Category::Unassigned }, // <reserved-A9FF>
+    Prop<::unicode::General_Category>{ { 0xAA00, 0xAA28 }, ::unicode::General_Category::Other_Letter }, // [41] CHAM LETTER A..CHAM LETTER HA
+    Prop<::unicode::General_Category>{ { 0xAA29, 0xAA2E }, ::unicode::General_Category::Nonspacing_Mark }, // [6] CHAM VOWEL SIGN AA..CHAM VOWEL SIGN OE
+    Prop<::unicode::General_Category>{ { 0xAA2F, 0xAA30 }, ::unicode::General_Category::Spacing_Mark }, // [2] CHAM VOWEL SIGN O..CHAM VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0xAA31, 0xAA32 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] CHAM VOWEL SIGN AU..CHAM VOWEL SIGN UE
+    Prop<::unicode::General_Category>{ { 0xAA33, 0xAA34 }, ::unicode::General_Category::Spacing_Mark }, // [2] CHAM CONSONANT SIGN YA..CHAM CONSONANT SIGN RA
+    Prop<::unicode::General_Category>{ { 0xAA35, 0xAA36 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] CHAM CONSONANT SIGN LA..CHAM CONSONANT SIGN WA
+    Prop<::unicode::General_Category>{ { 0xAA37, 0xAA3F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-AA37>..<reserved-AA3F>
+    Prop<::unicode::General_Category>{ { 0xAA40, 0xAA42 }, ::unicode::General_Category::Other_Letter }, // [3] CHAM LETTER FINAL K..CHAM LETTER FINAL NG
+    Prop<::unicode::General_Category>{ { 0xAA43, 0xAA43 }, ::unicode::General_Category::Nonspacing_Mark }, // CHAM CONSONANT SIGN FINAL NG
+    Prop<::unicode::General_Category>{ { 0xAA44, 0xAA4B }, ::unicode::General_Category::Other_Letter }, // [8] CHAM LETTER FINAL CH..CHAM LETTER FINAL SS
+    Prop<::unicode::General_Category>{ { 0xAA4C, 0xAA4C }, ::unicode::General_Category::Nonspacing_Mark }, // CHAM CONSONANT SIGN FINAL M
+    Prop<::unicode::General_Category>{ { 0xAA4D, 0xAA4D }, ::unicode::General_Category::Spacing_Mark }, // CHAM CONSONANT SIGN FINAL H
+    Prop<::unicode::General_Category>{ { 0xAA4E, 0xAA4F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-AA4E>..<reserved-AA4F>
+    Prop<::unicode::General_Category>{ { 0xAA50, 0xAA59 }, ::unicode::General_Category::Decimal_Number }, // [10] CHAM DIGIT ZERO..CHAM DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xAA5A, 0xAA5B }, ::unicode::General_Category::Unassigned }, // [2] <reserved-AA5A>..<reserved-AA5B>
+    Prop<::unicode::General_Category>{ { 0xAA5C, 0xAA5F }, ::unicode::General_Category::Other_Punctuation }, // [4] CHAM PUNCTUATION SPIRAL..CHAM PUNCTUATION TRIPLE DANDA
+    Prop<::unicode::General_Category>{ { 0xAA60, 0xAA6F }, ::unicode::General_Category::Other_Letter }, // [16] MYANMAR LETTER KHAMTI GA..MYANMAR LETTER KHAMTI FA
+    Prop<::unicode::General_Category>{ { 0xAA70, 0xAA70 }, ::unicode::General_Category::Modifier_Letter }, // MYANMAR MODIFIER LETTER KHAMTI REDUPLICATION
+    Prop<::unicode::General_Category>{ { 0xAA71, 0xAA76 }, ::unicode::General_Category::Other_Letter }, // [6] MYANMAR LETTER KHAMTI XA..MYANMAR LOGOGRAM KHAMTI HM
+    Prop<::unicode::General_Category>{ { 0xAA77, 0xAA79 }, ::unicode::General_Category::Other_Symbol }, // [3] MYANMAR SYMBOL AITON EXCLAMATION..MYANMAR SYMBOL AITON TWO
+    Prop<::unicode::General_Category>{ { 0xAA7A, 0xAA7A }, ::unicode::General_Category::Other_Letter }, // MYANMAR LETTER AITON RA
+    Prop<::unicode::General_Category>{ { 0xAA7B, 0xAA7B }, ::unicode::General_Category::Spacing_Mark }, // MYANMAR SIGN PAO KAREN TONE
+    Prop<::unicode::General_Category>{ { 0xAA7C, 0xAA7C }, ::unicode::General_Category::Nonspacing_Mark }, // MYANMAR SIGN TAI LAING TONE-2
+    Prop<::unicode::General_Category>{ { 0xAA7D, 0xAA7D }, ::unicode::General_Category::Spacing_Mark }, // MYANMAR SIGN TAI LAING TONE-5
+    Prop<::unicode::General_Category>{ { 0xAA7E, 0xAAAF }, ::unicode::General_Category::Other_Letter }, // [50] MYANMAR LETTER SHWE PALAUNG CHA..TAI VIET LETTER HIGH O
+    Prop<::unicode::General_Category>{ { 0xAAB0, 0xAAB0 }, ::unicode::General_Category::Nonspacing_Mark }, // TAI VIET MAI KANG
+    Prop<::unicode::General_Category>{ { 0xAAB1, 0xAAB1 }, ::unicode::General_Category::Other_Letter }, // TAI VIET VOWEL AA
+    Prop<::unicode::General_Category>{ { 0xAAB2, 0xAAB4 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] TAI VIET VOWEL I..TAI VIET VOWEL U
+    Prop<::unicode::General_Category>{ { 0xAAB5, 0xAAB6 }, ::unicode::General_Category::Other_Letter }, // [2] TAI VIET VOWEL E..TAI VIET VOWEL O
+    Prop<::unicode::General_Category>{ { 0xAAB7, 0xAAB8 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TAI VIET MAI KHIT..TAI VIET VOWEL IA
+    Prop<::unicode::General_Category>{ { 0xAAB9, 0xAABD }, ::unicode::General_Category::Other_Letter }, // [5] TAI VIET VOWEL UEA..TAI VIET VOWEL AN
+    Prop<::unicode::General_Category>{ { 0xAABE, 0xAABF }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TAI VIET VOWEL AM..TAI VIET TONE MAI EK
+    Prop<::unicode::General_Category>{ { 0xAAC0, 0xAAC0 }, ::unicode::General_Category::Other_Letter }, // TAI VIET TONE MAI NUENG
+    Prop<::unicode::General_Category>{ { 0xAAC1, 0xAAC1 }, ::unicode::General_Category::Nonspacing_Mark }, // TAI VIET TONE MAI THO
+    Prop<::unicode::General_Category>{ { 0xAAC2, 0xAAC2 }, ::unicode::General_Category::Other_Letter }, // TAI VIET TONE MAI SONG
+    Prop<::unicode::General_Category>{ { 0xAAC3, 0xAADA }, ::unicode::General_Category::Unassigned }, // [24] <reserved-AAC3>..<reserved-AADA>
+    Prop<::unicode::General_Category>{ { 0xAADB, 0xAADC }, ::unicode::General_Category::Other_Letter }, // [2] TAI VIET SYMBOL KON..TAI VIET SYMBOL NUENG
+    Prop<::unicode::General_Category>{ { 0xAADD, 0xAADD }, ::unicode::General_Category::Modifier_Letter }, // TAI VIET SYMBOL SAM
+    Prop<::unicode::General_Category>{ { 0xAADE, 0xAADF }, ::unicode::General_Category::Other_Punctuation }, // [2] TAI VIET SYMBOL HO HOI..TAI VIET SYMBOL KOI KOI
+    Prop<::unicode::General_Category>{ { 0xAAE0, 0xAAEA }, ::unicode::General_Category::Other_Letter }, // [11] MEETEI MAYEK LETTER E..MEETEI MAYEK LETTER SSA
+    Prop<::unicode::General_Category>{ { 0xAAEB, 0xAAEB }, ::unicode::General_Category::Spacing_Mark }, // MEETEI MAYEK VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0xAAEC, 0xAAED }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MEETEI MAYEK VOWEL SIGN UU..MEETEI MAYEK VOWEL SIGN AAI
+    Prop<::unicode::General_Category>{ { 0xAAEE, 0xAAEF }, ::unicode::General_Category::Spacing_Mark }, // [2] MEETEI MAYEK VOWEL SIGN AU..MEETEI MAYEK VOWEL SIGN AAU
+    Prop<::unicode::General_Category>{ { 0xAAF0, 0xAAF1 }, ::unicode::General_Category::Other_Punctuation }, // [2] MEETEI MAYEK CHEIKHAN..MEETEI MAYEK AHANG KHUDAM
+    Prop<::unicode::General_Category>{ { 0xAAF2, 0xAAF2 }, ::unicode::General_Category::Other_Letter }, // MEETEI MAYEK ANJI
+    Prop<::unicode::General_Category>{ { 0xAAF3, 0xAAF4 }, ::unicode::General_Category::Modifier_Letter }, // [2] MEETEI MAYEK SYLLABLE REPETITION MARK..MEETEI MAYEK WORD REPETITION MARK
+    Prop<::unicode::General_Category>{ { 0xAAF5, 0xAAF5 }, ::unicode::General_Category::Spacing_Mark }, // MEETEI MAYEK VOWEL SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0xAAF6, 0xAAF6 }, ::unicode::General_Category::Nonspacing_Mark }, // MEETEI MAYEK VIRAMA
+    Prop<::unicode::General_Category>{ { 0xAAF7, 0xAB00 }, ::unicode::General_Category::Unassigned }, // [10] <reserved-AAF7>..<reserved-AB00>
+    Prop<::unicode::General_Category>{ { 0xAB01, 0xAB06 }, ::unicode::General_Category::Other_Letter }, // [6] ETHIOPIC SYLLABLE TTHU..ETHIOPIC SYLLABLE TTHO
+    Prop<::unicode::General_Category>{ { 0xAB07, 0xAB08 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-AB07>..<reserved-AB08>
+    Prop<::unicode::General_Category>{ { 0xAB09, 0xAB0E }, ::unicode::General_Category::Other_Letter }, // [6] ETHIOPIC SYLLABLE DDHU..ETHIOPIC SYLLABLE DDHO
+    Prop<::unicode::General_Category>{ { 0xAB0F, 0xAB10 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-AB0F>..<reserved-AB10>
+    Prop<::unicode::General_Category>{ { 0xAB11, 0xAB16 }, ::unicode::General_Category::Other_Letter }, // [6] ETHIOPIC SYLLABLE DZU..ETHIOPIC SYLLABLE DZO
+    Prop<::unicode::General_Category>{ { 0xAB17, 0xAB1F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-AB17>..<reserved-AB1F>
+    Prop<::unicode::General_Category>{ { 0xAB20, 0xAB26 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE CCHHA..ETHIOPIC SYLLABLE CCHHO
+    Prop<::unicode::General_Category>{ { 0xAB27, 0xAB27 }, ::unicode::General_Category::Unassigned }, // <reserved-AB27>
+    Prop<::unicode::General_Category>{ { 0xAB28, 0xAB2E }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE BBA..ETHIOPIC SYLLABLE BBO
+    Prop<::unicode::General_Category>{ { 0xAB2F, 0xAB2F }, ::unicode::General_Category::Unassigned }, // <reserved-AB2F>
+    Prop<::unicode::General_Category>{ { 0xAB30, 0xAB5A }, ::unicode::General_Category::Lowercase_Letter }, // [43] LATIN SMALL LETTER BARRED ALPHA..LATIN SMALL LETTER Y WITH SHORT RIGHT LEG
+    Prop<::unicode::General_Category>{ { 0xAB5B, 0xAB5B }, ::unicode::General_Category::Modifier_Symbol }, // MODIFIER BREVE WITH INVERTED BREVE
+    Prop<::unicode::General_Category>{ { 0xAB5C, 0xAB5F }, ::unicode::General_Category::Modifier_Letter }, // [4] MODIFIER LETTER SMALL HENG..MODIFIER LETTER SMALL U WITH LEFT HOOK
+    Prop<::unicode::General_Category>{ { 0xAB60, 0xAB68 }, ::unicode::General_Category::Lowercase_Letter }, // [9] LATIN SMALL LETTER SAKHA YAT..LATIN SMALL LETTER TURNED R WITH MIDDLE TILDE
+    Prop<::unicode::General_Category>{ { 0xAB69, 0xAB69 }, ::unicode::General_Category::Modifier_Letter }, // MODIFIER LETTER SMALL TURNED W
+    Prop<::unicode::General_Category>{ { 0xAB6A, 0xAB6B }, ::unicode::General_Category::Modifier_Symbol }, // [2] MODIFIER LETTER LEFT TACK..MODIFIER LETTER RIGHT TACK
+    Prop<::unicode::General_Category>{ { 0xAB6C, 0xAB6F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-AB6C>..<reserved-AB6F>
+    Prop<::unicode::General_Category>{ { 0xAB70, 0xABBF }, ::unicode::General_Category::Lowercase_Letter }, // [80] CHEROKEE SMALL LETTER A..CHEROKEE SMALL LETTER YA
+    Prop<::unicode::General_Category>{ { 0xABC0, 0xABE2 }, ::unicode::General_Category::Other_Letter }, // [35] MEETEI MAYEK LETTER KOK..MEETEI MAYEK LETTER I LONSUM
+    Prop<::unicode::General_Category>{ { 0xABE3, 0xABE4 }, ::unicode::General_Category::Spacing_Mark }, // [2] MEETEI MAYEK VOWEL SIGN ONAP..MEETEI MAYEK VOWEL SIGN INAP
+    Prop<::unicode::General_Category>{ { 0xABE5, 0xABE5 }, ::unicode::General_Category::Nonspacing_Mark }, // MEETEI MAYEK VOWEL SIGN ANAP
+    Prop<::unicode::General_Category>{ { 0xABE6, 0xABE7 }, ::unicode::General_Category::Spacing_Mark }, // [2] MEETEI MAYEK VOWEL SIGN YENAP..MEETEI MAYEK VOWEL SIGN SOUNAP
+    Prop<::unicode::General_Category>{ { 0xABE8, 0xABE8 }, ::unicode::General_Category::Nonspacing_Mark }, // MEETEI MAYEK VOWEL SIGN UNAP
+    Prop<::unicode::General_Category>{ { 0xABE9, 0xABEA }, ::unicode::General_Category::Spacing_Mark }, // [2] MEETEI MAYEK VOWEL SIGN CHEINAP..MEETEI MAYEK VOWEL SIGN NUNG
+    Prop<::unicode::General_Category>{ { 0xABEB, 0xABEB }, ::unicode::General_Category::Other_Punctuation }, // MEETEI MAYEK CHEIKHEI
+    Prop<::unicode::General_Category>{ { 0xABEC, 0xABEC }, ::unicode::General_Category::Spacing_Mark }, // MEETEI MAYEK LUM IYEK
+    Prop<::unicode::General_Category>{ { 0xABED, 0xABED }, ::unicode::General_Category::Nonspacing_Mark }, // MEETEI MAYEK APUN IYEK
+    Prop<::unicode::General_Category>{ { 0xABEE, 0xABEF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-ABEE>..<reserved-ABEF>
+    Prop<::unicode::General_Category>{ { 0xABF0, 0xABF9 }, ::unicode::General_Category::Decimal_Number }, // [10] MEETEI MAYEK DIGIT ZERO..MEETEI MAYEK DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xABFA, 0xABFF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-ABFA>..<reserved-ABFF>
+    Prop<::unicode::General_Category>{ { 0xAC00, 0xD7A3 }, ::unicode::General_Category::Other_Letter }, // [11172] HANGUL SYLLABLE GA..HANGUL SYLLABLE HIH
+    Prop<::unicode::General_Category>{ { 0xD7A4, 0xD7AF }, ::unicode::General_Category::Unassigned }, // [12] <reserved-D7A4>..<reserved-D7AF>
+    Prop<::unicode::General_Category>{ { 0xD7B0, 0xD7C6 }, ::unicode::General_Category::Other_Letter }, // [23] HANGUL JUNGSEONG O-YEO..HANGUL JUNGSEONG ARAEA-E
+    Prop<::unicode::General_Category>{ { 0xD7C7, 0xD7CA }, ::unicode::General_Category::Unassigned }, // [4] <reserved-D7C7>..<reserved-D7CA>
+    Prop<::unicode::General_Category>{ { 0xD7CB, 0xD7FB }, ::unicode::General_Category::Other_Letter }, // [49] HANGUL JONGSEONG NIEUN-RIEUL..HANGUL JONGSEONG PHIEUPH-THIEUTH
+    Prop<::unicode::General_Category>{ { 0xD7FC, 0xD7FF }, ::unicode::General_Category::Unassigned }, // [4] <reserved-D7FC>..<reserved-D7FF>
+    Prop<::unicode::General_Category>{ { 0xD800, 0xDFFF }, ::unicode::General_Category::Surrogate }, // [2048] <surrogate-D800>..<surrogate-DFFF>
+    Prop<::unicode::General_Category>{ { 0xE000, 0xF8FF }, ::unicode::General_Category::Private_Use }, // [6400] <private-use-E000>..<private-use-F8FF>
+    Prop<::unicode::General_Category>{ { 0xF900, 0xFA6D }, ::unicode::General_Category::Other_Letter }, // [366] CJK COMPATIBILITY IDEOGRAPH-F900..CJK COMPATIBILITY IDEOGRAPH-FA6D
+    Prop<::unicode::General_Category>{ { 0xFA6E, 0xFA6F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FA6E>..<reserved-FA6F>
+    Prop<::unicode::General_Category>{ { 0xFA70, 0xFAD9 }, ::unicode::General_Category::Other_Letter }, // [106] CJK COMPATIBILITY IDEOGRAPH-FA70..CJK COMPATIBILITY IDEOGRAPH-FAD9
+    Prop<::unicode::General_Category>{ { 0xFADA, 0xFAFF }, ::unicode::General_Category::Unassigned }, // [38] <reserved-FADA>..<reserved-FAFF>
+    Prop<::unicode::General_Category>{ { 0xFB00, 0xFB06 }, ::unicode::General_Category::Lowercase_Letter }, // [7] LATIN SMALL LIGATURE FF..LATIN SMALL LIGATURE ST
+    Prop<::unicode::General_Category>{ { 0xFB07, 0xFB12 }, ::unicode::General_Category::Unassigned }, // [12] <reserved-FB07>..<reserved-FB12>
+    Prop<::unicode::General_Category>{ { 0xFB13, 0xFB17 }, ::unicode::General_Category::Lowercase_Letter }, // [5] ARMENIAN SMALL LIGATURE MEN NOW..ARMENIAN SMALL LIGATURE MEN XEH
+    Prop<::unicode::General_Category>{ { 0xFB18, 0xFB1C }, ::unicode::General_Category::Unassigned }, // [5] <reserved-FB18>..<reserved-FB1C>
+    Prop<::unicode::General_Category>{ { 0xFB1D, 0xFB1D }, ::unicode::General_Category::Other_Letter }, // HEBREW LETTER YOD WITH HIRIQ
+    Prop<::unicode::General_Category>{ { 0xFB1E, 0xFB1E }, ::unicode::General_Category::Nonspacing_Mark }, // HEBREW POINT JUDEO-SPANISH VARIKA
+    Prop<::unicode::General_Category>{ { 0xFB1F, 0xFB28 }, ::unicode::General_Category::Other_Letter }, // [10] HEBREW LIGATURE YIDDISH YOD YOD PATAH..HEBREW LETTER WIDE TAV
+    Prop<::unicode::General_Category>{ { 0xFB29, 0xFB29 }, ::unicode::General_Category::Math_Symbol }, // HEBREW LETTER ALTERNATIVE PLUS SIGN
+    Prop<::unicode::General_Category>{ { 0xFB2A, 0xFB36 }, ::unicode::General_Category::Other_Letter }, // [13] HEBREW LETTER SHIN WITH SHIN DOT..HEBREW LETTER ZAYIN WITH DAGESH
+    Prop<::unicode::General_Category>{ { 0xFB37, 0xFB37 }, ::unicode::General_Category::Unassigned }, // <reserved-FB37>
+    Prop<::unicode::General_Category>{ { 0xFB38, 0xFB3C }, ::unicode::General_Category::Other_Letter }, // [5] HEBREW LETTER TET WITH DAGESH..HEBREW LETTER LAMED WITH DAGESH
+    Prop<::unicode::General_Category>{ { 0xFB3D, 0xFB3D }, ::unicode::General_Category::Unassigned }, // <reserved-FB3D>
+    Prop<::unicode::General_Category>{ { 0xFB3E, 0xFB3E }, ::unicode::General_Category::Other_Letter }, // HEBREW LETTER MEM WITH DAGESH
+    Prop<::unicode::General_Category>{ { 0xFB3F, 0xFB3F }, ::unicode::General_Category::Unassigned }, // <reserved-FB3F>
+    Prop<::unicode::General_Category>{ { 0xFB40, 0xFB41 }, ::unicode::General_Category::Other_Letter }, // [2] HEBREW LETTER NUN WITH DAGESH..HEBREW LETTER SAMEKH WITH DAGESH
+    Prop<::unicode::General_Category>{ { 0xFB42, 0xFB42 }, ::unicode::General_Category::Unassigned }, // <reserved-FB42>
+    Prop<::unicode::General_Category>{ { 0xFB43, 0xFB44 }, ::unicode::General_Category::Other_Letter }, // [2] HEBREW LETTER FINAL PE WITH DAGESH..HEBREW LETTER PE WITH DAGESH
+    Prop<::unicode::General_Category>{ { 0xFB45, 0xFB45 }, ::unicode::General_Category::Unassigned }, // <reserved-FB45>
+    Prop<::unicode::General_Category>{ { 0xFB46, 0xFBB1 }, ::unicode::General_Category::Other_Letter }, // [108] HEBREW LETTER TSADI WITH DAGESH..ARABIC LETTER YEH BARREE WITH HAMZA ABOVE FINAL FORM
+    Prop<::unicode::General_Category>{ { 0xFBB2, 0xFBC1 }, ::unicode::General_Category::Modifier_Symbol }, // [16] ARABIC SYMBOL DOT ABOVE..ARABIC SYMBOL SMALL TAH BELOW
+    Prop<::unicode::General_Category>{ { 0xFBC2, 0xFBD2 }, ::unicode::General_Category::Unassigned }, // [17] <reserved-FBC2>..<reserved-FBD2>
+    Prop<::unicode::General_Category>{ { 0xFBD3, 0xFD3D }, ::unicode::General_Category::Other_Letter }, // [363] ARABIC LETTER NG ISOLATED FORM..ARABIC LIGATURE ALEF WITH FATHATAN ISOLATED FORM
+    Prop<::unicode::General_Category>{ { 0xFD3E, 0xFD3E }, ::unicode::General_Category::Close_Punctuation }, // ORNATE LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFD3F, 0xFD3F }, ::unicode::General_Category::Open_Punctuation }, // ORNATE RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFD40, 0xFD4F }, ::unicode::General_Category::Unassigned }, // [16] <reserved-FD40>..<reserved-FD4F>
+    Prop<::unicode::General_Category>{ { 0xFD50, 0xFD8F }, ::unicode::General_Category::Other_Letter }, // [64] ARABIC LIGATURE TEH WITH JEEM WITH MEEM INITIAL FORM..ARABIC LIGATURE MEEM WITH KHAH WITH MEEM INITIAL FORM
+    Prop<::unicode::General_Category>{ { 0xFD90, 0xFD91 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FD90>..<reserved-FD91>
+    Prop<::unicode::General_Category>{ { 0xFD92, 0xFDC7 }, ::unicode::General_Category::Other_Letter }, // [54] ARABIC LIGATURE MEEM WITH JEEM WITH KHAH INITIAL FORM..ARABIC LIGATURE NOON WITH JEEM WITH YEH FINAL FORM
+    Prop<::unicode::General_Category>{ { 0xFDC8, 0xFDEF }, ::unicode::General_Category::Unassigned }, // [40] <reserved-FDC8>..<noncharacter-FDEF>
+    Prop<::unicode::General_Category>{ { 0xFDF0, 0xFDFB }, ::unicode::General_Category::Other_Letter }, // [12] ARABIC LIGATURE SALLA USED AS KORANIC STOP SIGN ISOLATED FORM..ARABIC LIGATURE JALLAJALALOUHOU
+    Prop<::unicode::General_Category>{ { 0xFDFC, 0xFDFC }, ::unicode::General_Category::Currency_Symbol }, // RIAL SIGN
+    Prop<::unicode::General_Category>{ { 0xFDFD, 0xFDFD }, ::unicode::General_Category::Other_Symbol }, // ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM
+    Prop<::unicode::General_Category>{ { 0xFDFE, 0xFDFF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FDFE>..<reserved-FDFF>
+    Prop<::unicode::General_Category>{ { 0xFE00, 0xFE0F }, ::unicode::General_Category::Nonspacing_Mark }, // [16] VARIATION SELECTOR-1..VARIATION SELECTOR-16
+    Prop<::unicode::General_Category>{ { 0xFE10, 0xFE16 }, ::unicode::General_Category::Other_Punctuation }, // [7] PRESENTATION FORM FOR VERTICAL COMMA..PRESENTATION FORM FOR VERTICAL QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0xFE17, 0xFE17 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT WHITE LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE18, 0xFE18 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT WHITE LENTICULAR BRAKCET
+    Prop<::unicode::General_Category>{ { 0xFE19, 0xFE19 }, ::unicode::General_Category::Other_Punctuation }, // PRESENTATION FORM FOR VERTICAL HORIZONTAL ELLIPSIS
+    Prop<::unicode::General_Category>{ { 0xFE1A, 0xFE1F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-FE1A>..<reserved-FE1F>
+    Prop<::unicode::General_Category>{ { 0xFE20, 0xFE2F }, ::unicode::General_Category::Nonspacing_Mark }, // [16] COMBINING LIGATURE LEFT HALF..COMBINING CYRILLIC TITLO RIGHT HALF
+    Prop<::unicode::General_Category>{ { 0xFE30, 0xFE30 }, ::unicode::General_Category::Other_Punctuation }, // PRESENTATION FORM FOR VERTICAL TWO DOT LEADER
+    Prop<::unicode::General_Category>{ { 0xFE31, 0xFE32 }, ::unicode::General_Category::Dash_Punctuation }, // [2] PRESENTATION FORM FOR VERTICAL EM DASH..PRESENTATION FORM FOR VERTICAL EN DASH
+    Prop<::unicode::General_Category>{ { 0xFE33, 0xFE34 }, ::unicode::General_Category::Connector_Punctuation }, // [2] PRESENTATION FORM FOR VERTICAL LOW LINE..PRESENTATION FORM FOR VERTICAL WAVY LOW LINE
+    Prop<::unicode::General_Category>{ { 0xFE35, 0xFE35 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFE36, 0xFE36 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFE37, 0xFE37 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE38, 0xFE38 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE39, 0xFE39 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3A, 0xFE3A }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3B, 0xFE3B }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT BLACK LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3C, 0xFE3C }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT BLACK LENTICULAR BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3D, 0xFE3D }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3E, 0xFE3E }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT DOUBLE ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE3F, 0xFE3F }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE40, 0xFE40 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT ANGLE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE41, 0xFE41 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE42, 0xFE42 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE43, 0xFE43 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT WHITE CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE44, 0xFE44 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT WHITE CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE45, 0xFE46 }, ::unicode::General_Category::Other_Punctuation }, // [2] SESAME DOT..WHITE SESAME DOT
+    Prop<::unicode::General_Category>{ { 0xFE47, 0xFE47 }, ::unicode::General_Category::Open_Punctuation }, // PRESENTATION FORM FOR VERTICAL LEFT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE48, 0xFE48 }, ::unicode::General_Category::Close_Punctuation }, // PRESENTATION FORM FOR VERTICAL RIGHT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE49, 0xFE4C }, ::unicode::General_Category::Other_Punctuation }, // [4] DASHED OVERLINE..DOUBLE WAVY OVERLINE
+    Prop<::unicode::General_Category>{ { 0xFE4D, 0xFE4F }, ::unicode::General_Category::Connector_Punctuation }, // [3] DASHED LOW LINE..WAVY LOW LINE
+    Prop<::unicode::General_Category>{ { 0xFE50, 0xFE52 }, ::unicode::General_Category::Other_Punctuation }, // [3] SMALL COMMA..SMALL FULL STOP
+    Prop<::unicode::General_Category>{ { 0xFE53, 0xFE53 }, ::unicode::General_Category::Unassigned }, // <reserved-FE53>
+    Prop<::unicode::General_Category>{ { 0xFE54, 0xFE57 }, ::unicode::General_Category::Other_Punctuation }, // [4] SMALL SEMICOLON..SMALL EXCLAMATION MARK
+    Prop<::unicode::General_Category>{ { 0xFE58, 0xFE58 }, ::unicode::General_Category::Dash_Punctuation }, // SMALL EM DASH
+    Prop<::unicode::General_Category>{ { 0xFE59, 0xFE59 }, ::unicode::General_Category::Open_Punctuation }, // SMALL LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFE5A, 0xFE5A }, ::unicode::General_Category::Close_Punctuation }, // SMALL RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFE5B, 0xFE5B }, ::unicode::General_Category::Open_Punctuation }, // SMALL LEFT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE5C, 0xFE5C }, ::unicode::General_Category::Close_Punctuation }, // SMALL RIGHT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE5D, 0xFE5D }, ::unicode::General_Category::Open_Punctuation }, // SMALL LEFT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE5E, 0xFE5E }, ::unicode::General_Category::Close_Punctuation }, // SMALL RIGHT TORTOISE SHELL BRACKET
+    Prop<::unicode::General_Category>{ { 0xFE5F, 0xFE61 }, ::unicode::General_Category::Other_Punctuation }, // [3] SMALL NUMBER SIGN..SMALL ASTERISK
+    Prop<::unicode::General_Category>{ { 0xFE62, 0xFE62 }, ::unicode::General_Category::Math_Symbol }, // SMALL PLUS SIGN
+    Prop<::unicode::General_Category>{ { 0xFE63, 0xFE63 }, ::unicode::General_Category::Dash_Punctuation }, // SMALL HYPHEN-MINUS
+    Prop<::unicode::General_Category>{ { 0xFE64, 0xFE66 }, ::unicode::General_Category::Math_Symbol }, // [3] SMALL LESS-THAN SIGN..SMALL EQUALS SIGN
+    Prop<::unicode::General_Category>{ { 0xFE67, 0xFE67 }, ::unicode::General_Category::Unassigned }, // <reserved-FE67>
+    Prop<::unicode::General_Category>{ { 0xFE68, 0xFE68 }, ::unicode::General_Category::Other_Punctuation }, // SMALL REVERSE SOLIDUS
+    Prop<::unicode::General_Category>{ { 0xFE69, 0xFE69 }, ::unicode::General_Category::Currency_Symbol }, // SMALL DOLLAR SIGN
+    Prop<::unicode::General_Category>{ { 0xFE6A, 0xFE6B }, ::unicode::General_Category::Other_Punctuation }, // [2] SMALL PERCENT SIGN..SMALL COMMERCIAL AT
+    Prop<::unicode::General_Category>{ { 0xFE6C, 0xFE6F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-FE6C>..<reserved-FE6F>
+    Prop<::unicode::General_Category>{ { 0xFE70, 0xFE74 }, ::unicode::General_Category::Other_Letter }, // [5] ARABIC FATHATAN ISOLATED FORM..ARABIC KASRATAN ISOLATED FORM
+    Prop<::unicode::General_Category>{ { 0xFE75, 0xFE75 }, ::unicode::General_Category::Unassigned }, // <reserved-FE75>
+    Prop<::unicode::General_Category>{ { 0xFE76, 0xFEFC }, ::unicode::General_Category::Other_Letter }, // [135] ARABIC FATHA ISOLATED FORM..ARABIC LIGATURE LAM WITH ALEF FINAL FORM
+    Prop<::unicode::General_Category>{ { 0xFEFD, 0xFEFE }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FEFD>..<reserved-FEFE>
+    Prop<::unicode::General_Category>{ { 0xFEFF, 0xFEFF }, ::unicode::General_Category::Format }, // ZERO WIDTH NO-BREAK SPACE
+    Prop<::unicode::General_Category>{ { 0xFF00, 0xFF00 }, ::unicode::General_Category::Unassigned }, // <reserved-FF00>
+    Prop<::unicode::General_Category>{ { 0xFF01, 0xFF03 }, ::unicode::General_Category::Other_Punctuation }, // [3] FULLWIDTH EXCLAMATION MARK..FULLWIDTH NUMBER SIGN
+    Prop<::unicode::General_Category>{ { 0xFF04, 0xFF04 }, ::unicode::General_Category::Currency_Symbol }, // FULLWIDTH DOLLAR SIGN
+    Prop<::unicode::General_Category>{ { 0xFF05, 0xFF07 }, ::unicode::General_Category::Other_Punctuation }, // [3] FULLWIDTH PERCENT SIGN..FULLWIDTH APOSTROPHE
+    Prop<::unicode::General_Category>{ { 0xFF08, 0xFF08 }, ::unicode::General_Category::Open_Punctuation }, // FULLWIDTH LEFT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFF09, 0xFF09 }, ::unicode::General_Category::Close_Punctuation }, // FULLWIDTH RIGHT PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFF0A, 0xFF0A }, ::unicode::General_Category::Other_Punctuation }, // FULLWIDTH ASTERISK
+    Prop<::unicode::General_Category>{ { 0xFF0B, 0xFF0B }, ::unicode::General_Category::Math_Symbol }, // FULLWIDTH PLUS SIGN
+    Prop<::unicode::General_Category>{ { 0xFF0C, 0xFF0C }, ::unicode::General_Category::Other_Punctuation }, // FULLWIDTH COMMA
+    Prop<::unicode::General_Category>{ { 0xFF0D, 0xFF0D }, ::unicode::General_Category::Dash_Punctuation }, // FULLWIDTH HYPHEN-MINUS
+    Prop<::unicode::General_Category>{ { 0xFF0E, 0xFF0F }, ::unicode::General_Category::Other_Punctuation }, // [2] FULLWIDTH FULL STOP..FULLWIDTH SOLIDUS
+    Prop<::unicode::General_Category>{ { 0xFF10, 0xFF19 }, ::unicode::General_Category::Decimal_Number }, // [10] FULLWIDTH DIGIT ZERO..FULLWIDTH DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0xFF1A, 0xFF1B }, ::unicode::General_Category::Other_Punctuation }, // [2] FULLWIDTH COLON..FULLWIDTH SEMICOLON
+    Prop<::unicode::General_Category>{ { 0xFF1C, 0xFF1E }, ::unicode::General_Category::Math_Symbol }, // [3] FULLWIDTH LESS-THAN SIGN..FULLWIDTH GREATER-THAN SIGN
+    Prop<::unicode::General_Category>{ { 0xFF1F, 0xFF20 }, ::unicode::General_Category::Other_Punctuation }, // [2] FULLWIDTH QUESTION MARK..FULLWIDTH COMMERCIAL AT
+    Prop<::unicode::General_Category>{ { 0xFF21, 0xFF3A }, ::unicode::General_Category::Uppercase_Letter }, // [26] FULLWIDTH LATIN CAPITAL LETTER A..FULLWIDTH LATIN CAPITAL LETTER Z
+    Prop<::unicode::General_Category>{ { 0xFF3B, 0xFF3B }, ::unicode::General_Category::Open_Punctuation }, // FULLWIDTH LEFT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF3C, 0xFF3C }, ::unicode::General_Category::Other_Punctuation }, // FULLWIDTH REVERSE SOLIDUS
+    Prop<::unicode::General_Category>{ { 0xFF3D, 0xFF3D }, ::unicode::General_Category::Close_Punctuation }, // FULLWIDTH RIGHT SQUARE BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF3E, 0xFF3E }, ::unicode::General_Category::Modifier_Symbol }, // FULLWIDTH CIRCUMFLEX ACCENT
+    Prop<::unicode::General_Category>{ { 0xFF3F, 0xFF3F }, ::unicode::General_Category::Connector_Punctuation }, // FULLWIDTH LOW LINE
+    Prop<::unicode::General_Category>{ { 0xFF40, 0xFF40 }, ::unicode::General_Category::Modifier_Symbol }, // FULLWIDTH GRAVE ACCENT
+    Prop<::unicode::General_Category>{ { 0xFF41, 0xFF5A }, ::unicode::General_Category::Lowercase_Letter }, // [26] FULLWIDTH LATIN SMALL LETTER A..FULLWIDTH LATIN SMALL LETTER Z
+    Prop<::unicode::General_Category>{ { 0xFF5B, 0xFF5B }, ::unicode::General_Category::Open_Punctuation }, // FULLWIDTH LEFT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF5C, 0xFF5C }, ::unicode::General_Category::Math_Symbol }, // FULLWIDTH VERTICAL LINE
+    Prop<::unicode::General_Category>{ { 0xFF5D, 0xFF5D }, ::unicode::General_Category::Close_Punctuation }, // FULLWIDTH RIGHT CURLY BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF5E, 0xFF5E }, ::unicode::General_Category::Math_Symbol }, // FULLWIDTH TILDE
+    Prop<::unicode::General_Category>{ { 0xFF5F, 0xFF5F }, ::unicode::General_Category::Open_Punctuation }, // FULLWIDTH LEFT WHITE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFF60, 0xFF60 }, ::unicode::General_Category::Close_Punctuation }, // FULLWIDTH RIGHT WHITE PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0xFF61, 0xFF61 }, ::unicode::General_Category::Other_Punctuation }, // HALFWIDTH IDEOGRAPHIC FULL STOP
+    Prop<::unicode::General_Category>{ { 0xFF62, 0xFF62 }, ::unicode::General_Category::Open_Punctuation }, // HALFWIDTH LEFT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF63, 0xFF63 }, ::unicode::General_Category::Close_Punctuation }, // HALFWIDTH RIGHT CORNER BRACKET
+    Prop<::unicode::General_Category>{ { 0xFF64, 0xFF65 }, ::unicode::General_Category::Other_Punctuation }, // [2] HALFWIDTH IDEOGRAPHIC COMMA..HALFWIDTH KATAKANA MIDDLE DOT
+    Prop<::unicode::General_Category>{ { 0xFF66, 0xFF6F }, ::unicode::General_Category::Other_Letter }, // [10] HALFWIDTH KATAKANA LETTER WO..HALFWIDTH KATAKANA LETTER SMALL TU
+    Prop<::unicode::General_Category>{ { 0xFF70, 0xFF70 }, ::unicode::General_Category::Modifier_Letter }, // HALFWIDTH KATAKANA-HIRAGANA PROLONGED SOUND MARK
+    Prop<::unicode::General_Category>{ { 0xFF71, 0xFF9D }, ::unicode::General_Category::Other_Letter }, // [45] HALFWIDTH KATAKANA LETTER A..HALFWIDTH KATAKANA LETTER N
+    Prop<::unicode::General_Category>{ { 0xFF9E, 0xFF9F }, ::unicode::General_Category::Modifier_Letter }, // [2] HALFWIDTH KATAKANA VOICED SOUND MARK..HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK
+    Prop<::unicode::General_Category>{ { 0xFFA0, 0xFFBE }, ::unicode::General_Category::Other_Letter }, // [31] HALFWIDTH HANGUL FILLER..HALFWIDTH HANGUL LETTER HIEUH
+    Prop<::unicode::General_Category>{ { 0xFFBF, 0xFFC1 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-FFBF>..<reserved-FFC1>
+    Prop<::unicode::General_Category>{ { 0xFFC2, 0xFFC7 }, ::unicode::General_Category::Other_Letter }, // [6] HALFWIDTH HANGUL LETTER A..HALFWIDTH HANGUL LETTER E
+    Prop<::unicode::General_Category>{ { 0xFFC8, 0xFFC9 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FFC8>..<reserved-FFC9>
+    Prop<::unicode::General_Category>{ { 0xFFCA, 0xFFCF }, ::unicode::General_Category::Other_Letter }, // [6] HALFWIDTH HANGUL LETTER YEO..HALFWIDTH HANGUL LETTER OE
+    Prop<::unicode::General_Category>{ { 0xFFD0, 0xFFD1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FFD0>..<reserved-FFD1>
+    Prop<::unicode::General_Category>{ { 0xFFD2, 0xFFD7 }, ::unicode::General_Category::Other_Letter }, // [6] HALFWIDTH HANGUL LETTER YO..HALFWIDTH HANGUL LETTER YU
+    Prop<::unicode::General_Category>{ { 0xFFD8, 0xFFD9 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-FFD8>..<reserved-FFD9>
+    Prop<::unicode::General_Category>{ { 0xFFDA, 0xFFDC }, ::unicode::General_Category::Other_Letter }, // [3] HALFWIDTH HANGUL LETTER EU..HALFWIDTH HANGUL LETTER I
+    Prop<::unicode::General_Category>{ { 0xFFDD, 0xFFDF }, ::unicode::General_Category::Unassigned }, // [3] <reserved-FFDD>..<reserved-FFDF>
+    Prop<::unicode::General_Category>{ { 0xFFE0, 0xFFE1 }, ::unicode::General_Category::Currency_Symbol }, // [2] FULLWIDTH CENT SIGN..FULLWIDTH POUND SIGN
+    Prop<::unicode::General_Category>{ { 0xFFE2, 0xFFE2 }, ::unicode::General_Category::Math_Symbol }, // FULLWIDTH NOT SIGN
+    Prop<::unicode::General_Category>{ { 0xFFE3, 0xFFE3 }, ::unicode::General_Category::Modifier_Symbol }, // FULLWIDTH MACRON
+    Prop<::unicode::General_Category>{ { 0xFFE4, 0xFFE4 }, ::unicode::General_Category::Other_Symbol }, // FULLWIDTH BROKEN BAR
+    Prop<::unicode::General_Category>{ { 0xFFE5, 0xFFE6 }, ::unicode::General_Category::Currency_Symbol }, // [2] FULLWIDTH YEN SIGN..FULLWIDTH WON SIGN
+    Prop<::unicode::General_Category>{ { 0xFFE7, 0xFFE7 }, ::unicode::General_Category::Unassigned }, // <reserved-FFE7>
+    Prop<::unicode::General_Category>{ { 0xFFE8, 0xFFE8 }, ::unicode::General_Category::Other_Symbol }, // HALFWIDTH FORMS LIGHT VERTICAL
+    Prop<::unicode::General_Category>{ { 0xFFE9, 0xFFEC }, ::unicode::General_Category::Math_Symbol }, // [4] HALFWIDTH LEFTWARDS ARROW..HALFWIDTH DOWNWARDS ARROW
+    Prop<::unicode::General_Category>{ { 0xFFED, 0xFFEE }, ::unicode::General_Category::Other_Symbol }, // [2] HALFWIDTH BLACK SQUARE..HALFWIDTH WHITE CIRCLE
+    Prop<::unicode::General_Category>{ { 0xFFEF, 0xFFF8 }, ::unicode::General_Category::Unassigned }, // [10] <reserved-FFEF>..<reserved-FFF8>
+    Prop<::unicode::General_Category>{ { 0xFFF9, 0xFFFB }, ::unicode::General_Category::Format }, // [3] INTERLINEAR ANNOTATION ANCHOR..INTERLINEAR ANNOTATION TERMINATOR
+    Prop<::unicode::General_Category>{ { 0xFFFC, 0xFFFD }, ::unicode::General_Category::Other_Symbol }, // [2] OBJECT REPLACEMENT CHARACTER..REPLACEMENT CHARACTER
+    Prop<::unicode::General_Category>{ { 0xFFFE, 0xFFFF }, ::unicode::General_Category::Unassigned }, // [2] <noncharacter-FFFE>..<noncharacter-FFFF>
+    Prop<::unicode::General_Category>{ { 0x10000, 0x1000B }, ::unicode::General_Category::Other_Letter }, // [12] LINEAR B SYLLABLE B008 A..LINEAR B SYLLABLE B046 JE
+    Prop<::unicode::General_Category>{ { 0x1000C, 0x1000C }, ::unicode::General_Category::Unassigned }, // <reserved-1000C>
+    Prop<::unicode::General_Category>{ { 0x1000D, 0x10026 }, ::unicode::General_Category::Other_Letter }, // [26] LINEAR B SYLLABLE B036 JO..LINEAR B SYLLABLE B032 QO
+    Prop<::unicode::General_Category>{ { 0x10027, 0x10027 }, ::unicode::General_Category::Unassigned }, // <reserved-10027>
+    Prop<::unicode::General_Category>{ { 0x10028, 0x1003A }, ::unicode::General_Category::Other_Letter }, // [19] LINEAR B SYLLABLE B060 RA..LINEAR B SYLLABLE B042 WO
+    Prop<::unicode::General_Category>{ { 0x1003B, 0x1003B }, ::unicode::General_Category::Unassigned }, // <reserved-1003B>
+    Prop<::unicode::General_Category>{ { 0x1003C, 0x1003D }, ::unicode::General_Category::Other_Letter }, // [2] LINEAR B SYLLABLE B017 ZA..LINEAR B SYLLABLE B074 ZE
+    Prop<::unicode::General_Category>{ { 0x1003E, 0x1003E }, ::unicode::General_Category::Unassigned }, // <reserved-1003E>
+    Prop<::unicode::General_Category>{ { 0x1003F, 0x1004D }, ::unicode::General_Category::Other_Letter }, // [15] LINEAR B SYLLABLE B020 ZO..LINEAR B SYLLABLE B091 TWO
+    Prop<::unicode::General_Category>{ { 0x1004E, 0x1004F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1004E>..<reserved-1004F>
+    Prop<::unicode::General_Category>{ { 0x10050, 0x1005D }, ::unicode::General_Category::Other_Letter }, // [14] LINEAR B SYMBOL B018..LINEAR B SYMBOL B089
+    Prop<::unicode::General_Category>{ { 0x1005E, 0x1007F }, ::unicode::General_Category::Unassigned }, // [34] <reserved-1005E>..<reserved-1007F>
+    Prop<::unicode::General_Category>{ { 0x10080, 0x100FA }, ::unicode::General_Category::Other_Letter }, // [123] LINEAR B IDEOGRAM B100 MAN..LINEAR B IDEOGRAM VESSEL B305
+    Prop<::unicode::General_Category>{ { 0x100FB, 0x100FF }, ::unicode::General_Category::Unassigned }, // [5] <reserved-100FB>..<reserved-100FF>
+    Prop<::unicode::General_Category>{ { 0x10100, 0x10102 }, ::unicode::General_Category::Other_Punctuation }, // [3] AEGEAN WORD SEPARATOR LINE..AEGEAN CHECK MARK
+    Prop<::unicode::General_Category>{ { 0x10103, 0x10106 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-10103>..<reserved-10106>
+    Prop<::unicode::General_Category>{ { 0x10107, 0x10133 }, ::unicode::General_Category::Other_Number }, // [45] AEGEAN NUMBER ONE..AEGEAN NUMBER NINETY THOUSAND
+    Prop<::unicode::General_Category>{ { 0x10134, 0x10136 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-10134>..<reserved-10136>
+    Prop<::unicode::General_Category>{ { 0x10137, 0x1013F }, ::unicode::General_Category::Other_Symbol }, // [9] AEGEAN WEIGHT BASE UNIT..AEGEAN MEASURE THIRD SUBUNIT
+    Prop<::unicode::General_Category>{ { 0x10140, 0x10174 }, ::unicode::General_Category::Letter_Number }, // [53] GREEK ACROPHONIC ATTIC ONE QUARTER..GREEK ACROPHONIC STRATIAN FIFTY MNAS
+    Prop<::unicode::General_Category>{ { 0x10175, 0x10178 }, ::unicode::General_Category::Other_Number }, // [4] GREEK ONE HALF SIGN..GREEK THREE QUARTERS SIGN
+    Prop<::unicode::General_Category>{ { 0x10179, 0x10189 }, ::unicode::General_Category::Other_Symbol }, // [17] GREEK YEAR SIGN..GREEK TRYBLION BASE SIGN
+    Prop<::unicode::General_Category>{ { 0x1018A, 0x1018B }, ::unicode::General_Category::Other_Number }, // [2] GREEK ZERO SIGN..GREEK ONE QUARTER SIGN
+    Prop<::unicode::General_Category>{ { 0x1018C, 0x1018E }, ::unicode::General_Category::Other_Symbol }, // [3] GREEK SINUSOID SIGN..NOMISMA SIGN
+    Prop<::unicode::General_Category>{ { 0x1018F, 0x1018F }, ::unicode::General_Category::Unassigned }, // <reserved-1018F>
+    Prop<::unicode::General_Category>{ { 0x10190, 0x1019C }, ::unicode::General_Category::Other_Symbol }, // [13] ROMAN SEXTANS SIGN..ASCIA SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1019D, 0x1019F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1019D>..<reserved-1019F>
+    Prop<::unicode::General_Category>{ { 0x101A0, 0x101A0 }, ::unicode::General_Category::Other_Symbol }, // GREEK SYMBOL TAU RHO
+    Prop<::unicode::General_Category>{ { 0x101A1, 0x101CF }, ::unicode::General_Category::Unassigned }, // [47] <reserved-101A1>..<reserved-101CF>
+    Prop<::unicode::General_Category>{ { 0x101D0, 0x101FC }, ::unicode::General_Category::Other_Symbol }, // [45] PHAISTOS DISC SIGN PEDESTRIAN..PHAISTOS DISC SIGN WAVY BAND
+    Prop<::unicode::General_Category>{ { 0x101FD, 0x101FD }, ::unicode::General_Category::Nonspacing_Mark }, // PHAISTOS DISC SIGN COMBINING OBLIQUE STROKE
+    Prop<::unicode::General_Category>{ { 0x101FE, 0x1027F }, ::unicode::General_Category::Unassigned }, // [130] <reserved-101FE>..<reserved-1027F>
+    Prop<::unicode::General_Category>{ { 0x10280, 0x1029C }, ::unicode::General_Category::Other_Letter }, // [29] LYCIAN LETTER A..LYCIAN LETTER X
+    Prop<::unicode::General_Category>{ { 0x1029D, 0x1029F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1029D>..<reserved-1029F>
+    Prop<::unicode::General_Category>{ { 0x102A0, 0x102D0 }, ::unicode::General_Category::Other_Letter }, // [49] CARIAN LETTER A..CARIAN LETTER UUU3
+    Prop<::unicode::General_Category>{ { 0x102D1, 0x102DF }, ::unicode::General_Category::Unassigned }, // [15] <reserved-102D1>..<reserved-102DF>
+    Prop<::unicode::General_Category>{ { 0x102E0, 0x102E0 }, ::unicode::General_Category::Nonspacing_Mark }, // COPTIC EPACT THOUSANDS MARK
+    Prop<::unicode::General_Category>{ { 0x102E1, 0x102FB }, ::unicode::General_Category::Other_Number }, // [27] COPTIC EPACT DIGIT ONE..COPTIC EPACT NUMBER NINE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x102FC, 0x102FF }, ::unicode::General_Category::Unassigned }, // [4] <reserved-102FC>..<reserved-102FF>
+    Prop<::unicode::General_Category>{ { 0x10300, 0x1031F }, ::unicode::General_Category::Other_Letter }, // [32] OLD ITALIC LETTER A..OLD ITALIC LETTER ESS
+    Prop<::unicode::General_Category>{ { 0x10320, 0x10323 }, ::unicode::General_Category::Other_Number }, // [4] OLD ITALIC NUMERAL ONE..OLD ITALIC NUMERAL FIFTY
+    Prop<::unicode::General_Category>{ { 0x10324, 0x1032C }, ::unicode::General_Category::Unassigned }, // [9] <reserved-10324>..<reserved-1032C>
+    Prop<::unicode::General_Category>{ { 0x1032D, 0x10340 }, ::unicode::General_Category::Other_Letter }, // [20] OLD ITALIC LETTER YE..GOTHIC LETTER PAIRTHRA
+    Prop<::unicode::General_Category>{ { 0x10341, 0x10341 }, ::unicode::General_Category::Letter_Number }, // GOTHIC LETTER NINETY
+    Prop<::unicode::General_Category>{ { 0x10342, 0x10349 }, ::unicode::General_Category::Other_Letter }, // [8] GOTHIC LETTER RAIDA..GOTHIC LETTER OTHAL
+    Prop<::unicode::General_Category>{ { 0x1034A, 0x1034A }, ::unicode::General_Category::Letter_Number }, // GOTHIC LETTER NINE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x1034B, 0x1034F }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1034B>..<reserved-1034F>
+    Prop<::unicode::General_Category>{ { 0x10350, 0x10375 }, ::unicode::General_Category::Other_Letter }, // [38] OLD PERMIC LETTER AN..OLD PERMIC LETTER IA
+    Prop<::unicode::General_Category>{ { 0x10376, 0x1037A }, ::unicode::General_Category::Nonspacing_Mark }, // [5] COMBINING OLD PERMIC LETTER AN..COMBINING OLD PERMIC LETTER SII
+    Prop<::unicode::General_Category>{ { 0x1037B, 0x1037F }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1037B>..<reserved-1037F>
+    Prop<::unicode::General_Category>{ { 0x10380, 0x1039D }, ::unicode::General_Category::Other_Letter }, // [30] UGARITIC LETTER ALPA..UGARITIC LETTER SSU
+    Prop<::unicode::General_Category>{ { 0x1039E, 0x1039E }, ::unicode::General_Category::Unassigned }, // <reserved-1039E>
+    Prop<::unicode::General_Category>{ { 0x1039F, 0x1039F }, ::unicode::General_Category::Other_Punctuation }, // UGARITIC WORD DIVIDER
+    Prop<::unicode::General_Category>{ { 0x103A0, 0x103C3 }, ::unicode::General_Category::Other_Letter }, // [36] OLD PERSIAN SIGN A..OLD PERSIAN SIGN HA
+    Prop<::unicode::General_Category>{ { 0x103C4, 0x103C7 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-103C4>..<reserved-103C7>
+    Prop<::unicode::General_Category>{ { 0x103C8, 0x103CF }, ::unicode::General_Category::Other_Letter }, // [8] OLD PERSIAN SIGN AURAMAZDAA..OLD PERSIAN SIGN BUUMISH
+    Prop<::unicode::General_Category>{ { 0x103D0, 0x103D0 }, ::unicode::General_Category::Other_Punctuation }, // OLD PERSIAN WORD DIVIDER
+    Prop<::unicode::General_Category>{ { 0x103D1, 0x103D5 }, ::unicode::General_Category::Letter_Number }, // [5] OLD PERSIAN NUMBER ONE..OLD PERSIAN NUMBER HUNDRED
+    Prop<::unicode::General_Category>{ { 0x103D6, 0x103FF }, ::unicode::General_Category::Unassigned }, // [42] <reserved-103D6>..<reserved-103FF>
+    Prop<::unicode::General_Category>{ { 0x10400, 0x10427 }, ::unicode::General_Category::Uppercase_Letter }, // [40] DESERET CAPITAL LETTER LONG I..DESERET CAPITAL LETTER EW
+    Prop<::unicode::General_Category>{ { 0x10428, 0x1044F }, ::unicode::General_Category::Lowercase_Letter }, // [40] DESERET SMALL LETTER LONG I..DESERET SMALL LETTER EW
+    Prop<::unicode::General_Category>{ { 0x10450, 0x1049D }, ::unicode::General_Category::Other_Letter }, // [78] SHAVIAN LETTER PEEP..OSMANYA LETTER OO
+    Prop<::unicode::General_Category>{ { 0x1049E, 0x1049F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1049E>..<reserved-1049F>
+    Prop<::unicode::General_Category>{ { 0x104A0, 0x104A9 }, ::unicode::General_Category::Decimal_Number }, // [10] OSMANYA DIGIT ZERO..OSMANYA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x104AA, 0x104AF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-104AA>..<reserved-104AF>
+    Prop<::unicode::General_Category>{ { 0x104B0, 0x104D3 }, ::unicode::General_Category::Uppercase_Letter }, // [36] OSAGE CAPITAL LETTER A..OSAGE CAPITAL LETTER ZHA
+    Prop<::unicode::General_Category>{ { 0x104D4, 0x104D7 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-104D4>..<reserved-104D7>
+    Prop<::unicode::General_Category>{ { 0x104D8, 0x104FB }, ::unicode::General_Category::Lowercase_Letter }, // [36] OSAGE SMALL LETTER A..OSAGE SMALL LETTER ZHA
+    Prop<::unicode::General_Category>{ { 0x104FC, 0x104FF }, ::unicode::General_Category::Unassigned }, // [4] <reserved-104FC>..<reserved-104FF>
+    Prop<::unicode::General_Category>{ { 0x10500, 0x10527 }, ::unicode::General_Category::Other_Letter }, // [40] ELBASAN LETTER A..ELBASAN LETTER KHE
+    Prop<::unicode::General_Category>{ { 0x10528, 0x1052F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-10528>..<reserved-1052F>
+    Prop<::unicode::General_Category>{ { 0x10530, 0x10563 }, ::unicode::General_Category::Other_Letter }, // [52] CAUCASIAN ALBANIAN LETTER ALT..CAUCASIAN ALBANIAN LETTER KIW
+    Prop<::unicode::General_Category>{ { 0x10564, 0x1056E }, ::unicode::General_Category::Unassigned }, // [11] <reserved-10564>..<reserved-1056E>
+    Prop<::unicode::General_Category>{ { 0x1056F, 0x1056F }, ::unicode::General_Category::Other_Punctuation }, // CAUCASIAN ALBANIAN CITATION MARK
+    Prop<::unicode::General_Category>{ { 0x10570, 0x105FF }, ::unicode::General_Category::Unassigned }, // [144] <reserved-10570>..<reserved-105FF>
+    Prop<::unicode::General_Category>{ { 0x10600, 0x10736 }, ::unicode::General_Category::Other_Letter }, // [311] LINEAR A SIGN AB001..LINEAR A SIGN A664
+    Prop<::unicode::General_Category>{ { 0x10737, 0x1073F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-10737>..<reserved-1073F>
+    Prop<::unicode::General_Category>{ { 0x10740, 0x10755 }, ::unicode::General_Category::Other_Letter }, // [22] LINEAR A SIGN A701 A..LINEAR A SIGN A732 JE
+    Prop<::unicode::General_Category>{ { 0x10756, 0x1075F }, ::unicode::General_Category::Unassigned }, // [10] <reserved-10756>..<reserved-1075F>
+    Prop<::unicode::General_Category>{ { 0x10760, 0x10767 }, ::unicode::General_Category::Other_Letter }, // [8] LINEAR A SIGN A800..LINEAR A SIGN A807
+    Prop<::unicode::General_Category>{ { 0x10768, 0x107FF }, ::unicode::General_Category::Unassigned }, // [152] <reserved-10768>..<reserved-107FF>
+    Prop<::unicode::General_Category>{ { 0x10800, 0x10805 }, ::unicode::General_Category::Other_Letter }, // [6] CYPRIOT SYLLABLE A..CYPRIOT SYLLABLE JA
+    Prop<::unicode::General_Category>{ { 0x10806, 0x10807 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-10806>..<reserved-10807>
+    Prop<::unicode::General_Category>{ { 0x10808, 0x10808 }, ::unicode::General_Category::Other_Letter }, // CYPRIOT SYLLABLE JO
+    Prop<::unicode::General_Category>{ { 0x10809, 0x10809 }, ::unicode::General_Category::Unassigned }, // <reserved-10809>
+    Prop<::unicode::General_Category>{ { 0x1080A, 0x10835 }, ::unicode::General_Category::Other_Letter }, // [44] CYPRIOT SYLLABLE KA..CYPRIOT SYLLABLE WO
+    Prop<::unicode::General_Category>{ { 0x10836, 0x10836 }, ::unicode::General_Category::Unassigned }, // <reserved-10836>
+    Prop<::unicode::General_Category>{ { 0x10837, 0x10838 }, ::unicode::General_Category::Other_Letter }, // [2] CYPRIOT SYLLABLE XA..CYPRIOT SYLLABLE XE
+    Prop<::unicode::General_Category>{ { 0x10839, 0x1083B }, ::unicode::General_Category::Unassigned }, // [3] <reserved-10839>..<reserved-1083B>
+    Prop<::unicode::General_Category>{ { 0x1083C, 0x1083C }, ::unicode::General_Category::Other_Letter }, // CYPRIOT SYLLABLE ZA
+    Prop<::unicode::General_Category>{ { 0x1083D, 0x1083E }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1083D>..<reserved-1083E>
+    Prop<::unicode::General_Category>{ { 0x1083F, 0x10855 }, ::unicode::General_Category::Other_Letter }, // [23] CYPRIOT SYLLABLE ZO..IMPERIAL ARAMAIC LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10856, 0x10856 }, ::unicode::General_Category::Unassigned }, // <reserved-10856>
+    Prop<::unicode::General_Category>{ { 0x10857, 0x10857 }, ::unicode::General_Category::Other_Punctuation }, // IMPERIAL ARAMAIC SECTION SIGN
+    Prop<::unicode::General_Category>{ { 0x10858, 0x1085F }, ::unicode::General_Category::Other_Number }, // [8] IMPERIAL ARAMAIC NUMBER ONE..IMPERIAL ARAMAIC NUMBER TEN THOUSAND
+    Prop<::unicode::General_Category>{ { 0x10860, 0x10876 }, ::unicode::General_Category::Other_Letter }, // [23] PALMYRENE LETTER ALEPH..PALMYRENE LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10877, 0x10878 }, ::unicode::General_Category::Other_Symbol }, // [2] PALMYRENE LEFT-POINTING FLEURON..PALMYRENE RIGHT-POINTING FLEURON
+    Prop<::unicode::General_Category>{ { 0x10879, 0x1087F }, ::unicode::General_Category::Other_Number }, // [7] PALMYRENE NUMBER ONE..PALMYRENE NUMBER TWENTY
+    Prop<::unicode::General_Category>{ { 0x10880, 0x1089E }, ::unicode::General_Category::Other_Letter }, // [31] NABATAEAN LETTER FINAL ALEPH..NABATAEAN LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x1089F, 0x108A6 }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1089F>..<reserved-108A6>
+    Prop<::unicode::General_Category>{ { 0x108A7, 0x108AF }, ::unicode::General_Category::Other_Number }, // [9] NABATAEAN NUMBER ONE..NABATAEAN NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x108B0, 0x108DF }, ::unicode::General_Category::Unassigned }, // [48] <reserved-108B0>..<reserved-108DF>
+    Prop<::unicode::General_Category>{ { 0x108E0, 0x108F2 }, ::unicode::General_Category::Other_Letter }, // [19] HATRAN LETTER ALEPH..HATRAN LETTER QOPH
+    Prop<::unicode::General_Category>{ { 0x108F3, 0x108F3 }, ::unicode::General_Category::Unassigned }, // <reserved-108F3>
+    Prop<::unicode::General_Category>{ { 0x108F4, 0x108F5 }, ::unicode::General_Category::Other_Letter }, // [2] HATRAN LETTER SHIN..HATRAN LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x108F6, 0x108FA }, ::unicode::General_Category::Unassigned }, // [5] <reserved-108F6>..<reserved-108FA>
+    Prop<::unicode::General_Category>{ { 0x108FB, 0x108FF }, ::unicode::General_Category::Other_Number }, // [5] HATRAN NUMBER ONE..HATRAN NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x10900, 0x10915 }, ::unicode::General_Category::Other_Letter }, // [22] PHOENICIAN LETTER ALF..PHOENICIAN LETTER TAU
+    Prop<::unicode::General_Category>{ { 0x10916, 0x1091B }, ::unicode::General_Category::Other_Number }, // [6] PHOENICIAN NUMBER ONE..PHOENICIAN NUMBER THREE
+    Prop<::unicode::General_Category>{ { 0x1091C, 0x1091E }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1091C>..<reserved-1091E>
+    Prop<::unicode::General_Category>{ { 0x1091F, 0x1091F }, ::unicode::General_Category::Other_Punctuation }, // PHOENICIAN WORD SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x10920, 0x10939 }, ::unicode::General_Category::Other_Letter }, // [26] LYDIAN LETTER A..LYDIAN LETTER C
+    Prop<::unicode::General_Category>{ { 0x1093A, 0x1093E }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1093A>..<reserved-1093E>
+    Prop<::unicode::General_Category>{ { 0x1093F, 0x1093F }, ::unicode::General_Category::Other_Punctuation }, // LYDIAN TRIANGULAR MARK
+    Prop<::unicode::General_Category>{ { 0x10940, 0x1097F }, ::unicode::General_Category::Unassigned }, // [64] <reserved-10940>..<reserved-1097F>
+    Prop<::unicode::General_Category>{ { 0x10980, 0x109B7 }, ::unicode::General_Category::Other_Letter }, // [56] MEROITIC HIEROGLYPHIC LETTER A..MEROITIC CURSIVE LETTER DA
+    Prop<::unicode::General_Category>{ { 0x109B8, 0x109BB }, ::unicode::General_Category::Unassigned }, // [4] <reserved-109B8>..<reserved-109BB>
+    Prop<::unicode::General_Category>{ { 0x109BC, 0x109BD }, ::unicode::General_Category::Other_Number }, // [2] MEROITIC CURSIVE FRACTION ELEVEN TWELFTHS..MEROITIC CURSIVE FRACTION ONE HALF
+    Prop<::unicode::General_Category>{ { 0x109BE, 0x109BF }, ::unicode::General_Category::Other_Letter }, // [2] MEROITIC CURSIVE LOGOGRAM RMT..MEROITIC CURSIVE LOGOGRAM IMN
+    Prop<::unicode::General_Category>{ { 0x109C0, 0x109CF }, ::unicode::General_Category::Other_Number }, // [16] MEROITIC CURSIVE NUMBER ONE..MEROITIC CURSIVE NUMBER SEVENTY
+    Prop<::unicode::General_Category>{ { 0x109D0, 0x109D1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-109D0>..<reserved-109D1>
+    Prop<::unicode::General_Category>{ { 0x109D2, 0x109FF }, ::unicode::General_Category::Other_Number }, // [46] MEROITIC CURSIVE NUMBER ONE HUNDRED..MEROITIC CURSIVE FRACTION TEN TWELFTHS
+    Prop<::unicode::General_Category>{ { 0x10A00, 0x10A00 }, ::unicode::General_Category::Other_Letter }, // KHAROSHTHI LETTER A
+    Prop<::unicode::General_Category>{ { 0x10A01, 0x10A03 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] KHAROSHTHI VOWEL SIGN I..KHAROSHTHI VOWEL SIGN VOCALIC R
+    Prop<::unicode::General_Category>{ { 0x10A04, 0x10A04 }, ::unicode::General_Category::Unassigned }, // <reserved-10A04>
+    Prop<::unicode::General_Category>{ { 0x10A05, 0x10A06 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KHAROSHTHI VOWEL SIGN E..KHAROSHTHI VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x10A07, 0x10A0B }, ::unicode::General_Category::Unassigned }, // [5] <reserved-10A07>..<reserved-10A0B>
+    Prop<::unicode::General_Category>{ { 0x10A0C, 0x10A0F }, ::unicode::General_Category::Nonspacing_Mark }, // [4] KHAROSHTHI VOWEL LENGTH MARK..KHAROSHTHI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x10A10, 0x10A13 }, ::unicode::General_Category::Other_Letter }, // [4] KHAROSHTHI LETTER KA..KHAROSHTHI LETTER GHA
+    Prop<::unicode::General_Category>{ { 0x10A14, 0x10A14 }, ::unicode::General_Category::Unassigned }, // <reserved-10A14>
+    Prop<::unicode::General_Category>{ { 0x10A15, 0x10A17 }, ::unicode::General_Category::Other_Letter }, // [3] KHAROSHTHI LETTER CA..KHAROSHTHI LETTER JA
+    Prop<::unicode::General_Category>{ { 0x10A18, 0x10A18 }, ::unicode::General_Category::Unassigned }, // <reserved-10A18>
+    Prop<::unicode::General_Category>{ { 0x10A19, 0x10A35 }, ::unicode::General_Category::Other_Letter }, // [29] KHAROSHTHI LETTER NYA..KHAROSHTHI LETTER VHA
+    Prop<::unicode::General_Category>{ { 0x10A36, 0x10A37 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-10A36>..<reserved-10A37>
+    Prop<::unicode::General_Category>{ { 0x10A38, 0x10A3A }, ::unicode::General_Category::Nonspacing_Mark }, // [3] KHAROSHTHI SIGN BAR ABOVE..KHAROSHTHI SIGN DOT BELOW
+    Prop<::unicode::General_Category>{ { 0x10A3B, 0x10A3E }, ::unicode::General_Category::Unassigned }, // [4] <reserved-10A3B>..<reserved-10A3E>
+    Prop<::unicode::General_Category>{ { 0x10A3F, 0x10A3F }, ::unicode::General_Category::Nonspacing_Mark }, // KHAROSHTHI VIRAMA
+    Prop<::unicode::General_Category>{ { 0x10A40, 0x10A48 }, ::unicode::General_Category::Other_Number }, // [9] KHAROSHTHI DIGIT ONE..KHAROSHTHI FRACTION ONE HALF
+    Prop<::unicode::General_Category>{ { 0x10A49, 0x10A4F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-10A49>..<reserved-10A4F>
+    Prop<::unicode::General_Category>{ { 0x10A50, 0x10A58 }, ::unicode::General_Category::Other_Punctuation }, // [9] KHAROSHTHI PUNCTUATION DOT..KHAROSHTHI PUNCTUATION LINES
+    Prop<::unicode::General_Category>{ { 0x10A59, 0x10A5F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-10A59>..<reserved-10A5F>
+    Prop<::unicode::General_Category>{ { 0x10A60, 0x10A7C }, ::unicode::General_Category::Other_Letter }, // [29] OLD SOUTH ARABIAN LETTER HE..OLD SOUTH ARABIAN LETTER THETH
+    Prop<::unicode::General_Category>{ { 0x10A7D, 0x10A7E }, ::unicode::General_Category::Other_Number }, // [2] OLD SOUTH ARABIAN NUMBER ONE..OLD SOUTH ARABIAN NUMBER FIFTY
+    Prop<::unicode::General_Category>{ { 0x10A7F, 0x10A7F }, ::unicode::General_Category::Other_Punctuation }, // OLD SOUTH ARABIAN NUMERIC INDICATOR
+    Prop<::unicode::General_Category>{ { 0x10A80, 0x10A9C }, ::unicode::General_Category::Other_Letter }, // [29] OLD NORTH ARABIAN LETTER HEH..OLD NORTH ARABIAN LETTER ZAH
+    Prop<::unicode::General_Category>{ { 0x10A9D, 0x10A9F }, ::unicode::General_Category::Other_Number }, // [3] OLD NORTH ARABIAN NUMBER ONE..OLD NORTH ARABIAN NUMBER TWENTY
+    Prop<::unicode::General_Category>{ { 0x10AA0, 0x10ABF }, ::unicode::General_Category::Unassigned }, // [32] <reserved-10AA0>..<reserved-10ABF>
+    Prop<::unicode::General_Category>{ { 0x10AC0, 0x10AC7 }, ::unicode::General_Category::Other_Letter }, // [8] MANICHAEAN LETTER ALEPH..MANICHAEAN LETTER WAW
+    Prop<::unicode::General_Category>{ { 0x10AC8, 0x10AC8 }, ::unicode::General_Category::Other_Symbol }, // MANICHAEAN SIGN UD
+    Prop<::unicode::General_Category>{ { 0x10AC9, 0x10AE4 }, ::unicode::General_Category::Other_Letter }, // [28] MANICHAEAN LETTER ZAYIN..MANICHAEAN LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10AE5, 0x10AE6 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MANICHAEAN ABBREVIATION MARK ABOVE..MANICHAEAN ABBREVIATION MARK BELOW
+    Prop<::unicode::General_Category>{ { 0x10AE7, 0x10AEA }, ::unicode::General_Category::Unassigned }, // [4] <reserved-10AE7>..<reserved-10AEA>
+    Prop<::unicode::General_Category>{ { 0x10AEB, 0x10AEF }, ::unicode::General_Category::Other_Number }, // [5] MANICHAEAN NUMBER ONE..MANICHAEAN NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x10AF0, 0x10AF6 }, ::unicode::General_Category::Other_Punctuation }, // [7] MANICHAEAN PUNCTUATION STAR..MANICHAEAN PUNCTUATION LINE FILLER
+    Prop<::unicode::General_Category>{ { 0x10AF7, 0x10AFF }, ::unicode::General_Category::Unassigned }, // [9] <reserved-10AF7>..<reserved-10AFF>
+    Prop<::unicode::General_Category>{ { 0x10B00, 0x10B35 }, ::unicode::General_Category::Other_Letter }, // [54] AVESTAN LETTER A..AVESTAN LETTER HE
+    Prop<::unicode::General_Category>{ { 0x10B36, 0x10B38 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-10B36>..<reserved-10B38>
+    Prop<::unicode::General_Category>{ { 0x10B39, 0x10B3F }, ::unicode::General_Category::Other_Punctuation }, // [7] AVESTAN ABBREVIATION MARK..LARGE ONE RING OVER TWO RINGS PUNCTUATION
+    Prop<::unicode::General_Category>{ { 0x10B40, 0x10B55 }, ::unicode::General_Category::Other_Letter }, // [22] INSCRIPTIONAL PARTHIAN LETTER ALEPH..INSCRIPTIONAL PARTHIAN LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10B56, 0x10B57 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-10B56>..<reserved-10B57>
+    Prop<::unicode::General_Category>{ { 0x10B58, 0x10B5F }, ::unicode::General_Category::Other_Number }, // [8] INSCRIPTIONAL PARTHIAN NUMBER ONE..INSCRIPTIONAL PARTHIAN NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x10B60, 0x10B72 }, ::unicode::General_Category::Other_Letter }, // [19] INSCRIPTIONAL PAHLAVI LETTER ALEPH..INSCRIPTIONAL PAHLAVI LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10B73, 0x10B77 }, ::unicode::General_Category::Unassigned }, // [5] <reserved-10B73>..<reserved-10B77>
+    Prop<::unicode::General_Category>{ { 0x10B78, 0x10B7F }, ::unicode::General_Category::Other_Number }, // [8] INSCRIPTIONAL PAHLAVI NUMBER ONE..INSCRIPTIONAL PAHLAVI NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x10B80, 0x10B91 }, ::unicode::General_Category::Other_Letter }, // [18] PSALTER PAHLAVI LETTER ALEPH..PSALTER PAHLAVI LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10B92, 0x10B98 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-10B92>..<reserved-10B98>
+    Prop<::unicode::General_Category>{ { 0x10B99, 0x10B9C }, ::unicode::General_Category::Other_Punctuation }, // [4] PSALTER PAHLAVI SECTION MARK..PSALTER PAHLAVI FOUR DOTS WITH DOT
+    Prop<::unicode::General_Category>{ { 0x10B9D, 0x10BA8 }, ::unicode::General_Category::Unassigned }, // [12] <reserved-10B9D>..<reserved-10BA8>
+    Prop<::unicode::General_Category>{ { 0x10BA9, 0x10BAF }, ::unicode::General_Category::Other_Number }, // [7] PSALTER PAHLAVI NUMBER ONE..PSALTER PAHLAVI NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x10BB0, 0x10BFF }, ::unicode::General_Category::Unassigned }, // [80] <reserved-10BB0>..<reserved-10BFF>
+    Prop<::unicode::General_Category>{ { 0x10C00, 0x10C48 }, ::unicode::General_Category::Other_Letter }, // [73] OLD TURKIC LETTER ORKHON A..OLD TURKIC LETTER ORKHON BASH
+    Prop<::unicode::General_Category>{ { 0x10C49, 0x10C7F }, ::unicode::General_Category::Unassigned }, // [55] <reserved-10C49>..<reserved-10C7F>
+    Prop<::unicode::General_Category>{ { 0x10C80, 0x10CB2 }, ::unicode::General_Category::Uppercase_Letter }, // [51] OLD HUNGARIAN CAPITAL LETTER A..OLD HUNGARIAN CAPITAL LETTER US
+    Prop<::unicode::General_Category>{ { 0x10CB3, 0x10CBF }, ::unicode::General_Category::Unassigned }, // [13] <reserved-10CB3>..<reserved-10CBF>
+    Prop<::unicode::General_Category>{ { 0x10CC0, 0x10CF2 }, ::unicode::General_Category::Lowercase_Letter }, // [51] OLD HUNGARIAN SMALL LETTER A..OLD HUNGARIAN SMALL LETTER US
+    Prop<::unicode::General_Category>{ { 0x10CF3, 0x10CF9 }, ::unicode::General_Category::Unassigned }, // [7] <reserved-10CF3>..<reserved-10CF9>
+    Prop<::unicode::General_Category>{ { 0x10CFA, 0x10CFF }, ::unicode::General_Category::Other_Number }, // [6] OLD HUNGARIAN NUMBER ONE..OLD HUNGARIAN NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x10D00, 0x10D23 }, ::unicode::General_Category::Other_Letter }, // [36] HANIFI ROHINGYA LETTER A..HANIFI ROHINGYA MARK NA KHONNA
+    Prop<::unicode::General_Category>{ { 0x10D24, 0x10D27 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] HANIFI ROHINGYA SIGN HARBAHAY..HANIFI ROHINGYA SIGN TASSI
+    Prop<::unicode::General_Category>{ { 0x10D28, 0x10D2F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-10D28>..<reserved-10D2F>
+    Prop<::unicode::General_Category>{ { 0x10D30, 0x10D39 }, ::unicode::General_Category::Decimal_Number }, // [10] HANIFI ROHINGYA DIGIT ZERO..HANIFI ROHINGYA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x10D3A, 0x10E5F }, ::unicode::General_Category::Unassigned }, // [294] <reserved-10D3A>..<reserved-10E5F>
+    Prop<::unicode::General_Category>{ { 0x10E60, 0x10E7E }, ::unicode::General_Category::Other_Number }, // [31] RUMI DIGIT ONE..RUMI FRACTION TWO THIRDS
+    Prop<::unicode::General_Category>{ { 0x10E7F, 0x10E7F }, ::unicode::General_Category::Unassigned }, // <reserved-10E7F>
+    Prop<::unicode::General_Category>{ { 0x10E80, 0x10EA9 }, ::unicode::General_Category::Other_Letter }, // [42] YEZIDI LETTER ELIF..YEZIDI LETTER ET
+    Prop<::unicode::General_Category>{ { 0x10EAA, 0x10EAA }, ::unicode::General_Category::Unassigned }, // <reserved-10EAA>
+    Prop<::unicode::General_Category>{ { 0x10EAB, 0x10EAC }, ::unicode::General_Category::Nonspacing_Mark }, // [2] YEZIDI COMBINING HAMZA MARK..YEZIDI COMBINING MADDA MARK
+    Prop<::unicode::General_Category>{ { 0x10EAD, 0x10EAD }, ::unicode::General_Category::Dash_Punctuation }, // YEZIDI HYPHENATION MARK
+    Prop<::unicode::General_Category>{ { 0x10EAE, 0x10EAF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-10EAE>..<reserved-10EAF>
+    Prop<::unicode::General_Category>{ { 0x10EB0, 0x10EB1 }, ::unicode::General_Category::Other_Letter }, // [2] YEZIDI LETTER LAM WITH DOT ABOVE..YEZIDI LETTER YOT WITH CIRCUMFLEX ABOVE
+    Prop<::unicode::General_Category>{ { 0x10EB2, 0x10EFF }, ::unicode::General_Category::Unassigned }, // [78] <reserved-10EB2>..<reserved-10EFF>
+    Prop<::unicode::General_Category>{ { 0x10F00, 0x10F1C }, ::unicode::General_Category::Other_Letter }, // [29] OLD SOGDIAN LETTER ALEPH..OLD SOGDIAN LETTER FINAL TAW WITH VERTICAL TAIL
+    Prop<::unicode::General_Category>{ { 0x10F1D, 0x10F26 }, ::unicode::General_Category::Other_Number }, // [10] OLD SOGDIAN NUMBER ONE..OLD SOGDIAN FRACTION ONE HALF
+    Prop<::unicode::General_Category>{ { 0x10F27, 0x10F27 }, ::unicode::General_Category::Other_Letter }, // OLD SOGDIAN LIGATURE AYIN-DALETH
+    Prop<::unicode::General_Category>{ { 0x10F28, 0x10F2F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-10F28>..<reserved-10F2F>
+    Prop<::unicode::General_Category>{ { 0x10F30, 0x10F45 }, ::unicode::General_Category::Other_Letter }, // [22] SOGDIAN LETTER ALEPH..SOGDIAN INDEPENDENT SHIN
+    Prop<::unicode::General_Category>{ { 0x10F46, 0x10F50 }, ::unicode::General_Category::Nonspacing_Mark }, // [11] SOGDIAN COMBINING DOT BELOW..SOGDIAN COMBINING STROKE BELOW
+    Prop<::unicode::General_Category>{ { 0x10F51, 0x10F54 }, ::unicode::General_Category::Other_Number }, // [4] SOGDIAN NUMBER ONE..SOGDIAN NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x10F55, 0x10F59 }, ::unicode::General_Category::Other_Punctuation }, // [5] SOGDIAN PUNCTUATION TWO VERTICAL BARS..SOGDIAN PUNCTUATION HALF CIRCLE WITH DOT
+    Prop<::unicode::General_Category>{ { 0x10F5A, 0x10FAF }, ::unicode::General_Category::Unassigned }, // [86] <reserved-10F5A>..<reserved-10FAF>
+    Prop<::unicode::General_Category>{ { 0x10FB0, 0x10FC4 }, ::unicode::General_Category::Other_Letter }, // [21] CHORASMIAN LETTER ALEPH..CHORASMIAN LETTER TAW
+    Prop<::unicode::General_Category>{ { 0x10FC5, 0x10FCB }, ::unicode::General_Category::Other_Number }, // [7] CHORASMIAN NUMBER ONE..CHORASMIAN NUMBER ONE HUNDRED
+    Prop<::unicode::General_Category>{ { 0x10FCC, 0x10FDF }, ::unicode::General_Category::Unassigned }, // [20] <reserved-10FCC>..<reserved-10FDF>
+    Prop<::unicode::General_Category>{ { 0x10FE0, 0x10FF6 }, ::unicode::General_Category::Other_Letter }, // [23] ELYMAIC LETTER ALEPH..ELYMAIC LIGATURE ZAYIN-YODH
+    Prop<::unicode::General_Category>{ { 0x10FF7, 0x10FFF }, ::unicode::General_Category::Unassigned }, // [9] <reserved-10FF7>..<reserved-10FFF>
+    Prop<::unicode::General_Category>{ { 0x11000, 0x11000 }, ::unicode::General_Category::Spacing_Mark }, // BRAHMI SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x11001, 0x11001 }, ::unicode::General_Category::Nonspacing_Mark }, // BRAHMI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11002, 0x11002 }, ::unicode::General_Category::Spacing_Mark }, // BRAHMI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11003, 0x11037 }, ::unicode::General_Category::Other_Letter }, // [53] BRAHMI SIGN JIHVAMULIYA..BRAHMI LETTER OLD TAMIL NNNA
+    Prop<::unicode::General_Category>{ { 0x11038, 0x11046 }, ::unicode::General_Category::Nonspacing_Mark }, // [15] BRAHMI VOWEL SIGN AA..BRAHMI VIRAMA
+    Prop<::unicode::General_Category>{ { 0x11047, 0x1104D }, ::unicode::General_Category::Other_Punctuation }, // [7] BRAHMI DANDA..BRAHMI PUNCTUATION LOTUS
+    Prop<::unicode::General_Category>{ { 0x1104E, 0x11051 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1104E>..<reserved-11051>
+    Prop<::unicode::General_Category>{ { 0x11052, 0x11065 }, ::unicode::General_Category::Other_Number }, // [20] BRAHMI NUMBER ONE..BRAHMI NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x11066, 0x1106F }, ::unicode::General_Category::Decimal_Number }, // [10] BRAHMI DIGIT ZERO..BRAHMI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x11070, 0x1107E }, ::unicode::General_Category::Unassigned }, // [15] <reserved-11070>..<reserved-1107E>
+    Prop<::unicode::General_Category>{ { 0x1107F, 0x11081 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] BRAHMI NUMBER JOINER..KAITHI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11082, 0x11082 }, ::unicode::General_Category::Spacing_Mark }, // KAITHI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11083, 0x110AF }, ::unicode::General_Category::Other_Letter }, // [45] KAITHI LETTER A..KAITHI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x110B0, 0x110B2 }, ::unicode::General_Category::Spacing_Mark }, // [3] KAITHI VOWEL SIGN AA..KAITHI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x110B3, 0x110B6 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] KAITHI VOWEL SIGN U..KAITHI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x110B7, 0x110B8 }, ::unicode::General_Category::Spacing_Mark }, // [2] KAITHI VOWEL SIGN O..KAITHI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x110B9, 0x110BA }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KAITHI SIGN VIRAMA..KAITHI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x110BB, 0x110BC }, ::unicode::General_Category::Other_Punctuation }, // [2] KAITHI ABBREVIATION SIGN..KAITHI ENUMERATION SIGN
+    Prop<::unicode::General_Category>{ { 0x110BD, 0x110BD }, ::unicode::General_Category::Format }, // KAITHI NUMBER SIGN
+    Prop<::unicode::General_Category>{ { 0x110BE, 0x110C1 }, ::unicode::General_Category::Other_Punctuation }, // [4] KAITHI SECTION MARK..KAITHI DOUBLE DANDA
+    Prop<::unicode::General_Category>{ { 0x110C2, 0x110CC }, ::unicode::General_Category::Unassigned }, // [11] <reserved-110C2>..<reserved-110CC>
+    Prop<::unicode::General_Category>{ { 0x110CD, 0x110CD }, ::unicode::General_Category::Format }, // KAITHI NUMBER SIGN ABOVE
+    Prop<::unicode::General_Category>{ { 0x110CE, 0x110CF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-110CE>..<reserved-110CF>
+    Prop<::unicode::General_Category>{ { 0x110D0, 0x110E8 }, ::unicode::General_Category::Other_Letter }, // [25] SORA SOMPENG LETTER SAH..SORA SOMPENG LETTER MAE
+    Prop<::unicode::General_Category>{ { 0x110E9, 0x110EF }, ::unicode::General_Category::Unassigned }, // [7] <reserved-110E9>..<reserved-110EF>
+    Prop<::unicode::General_Category>{ { 0x110F0, 0x110F9 }, ::unicode::General_Category::Decimal_Number }, // [10] SORA SOMPENG DIGIT ZERO..SORA SOMPENG DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x110FA, 0x110FF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-110FA>..<reserved-110FF>
+    Prop<::unicode::General_Category>{ { 0x11100, 0x11102 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] CHAKMA SIGN CANDRABINDU..CHAKMA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11103, 0x11126 }, ::unicode::General_Category::Other_Letter }, // [36] CHAKMA LETTER AA..CHAKMA LETTER HAA
+    Prop<::unicode::General_Category>{ { 0x11127, 0x1112B }, ::unicode::General_Category::Nonspacing_Mark }, // [5] CHAKMA VOWEL SIGN A..CHAKMA VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x1112C, 0x1112C }, ::unicode::General_Category::Spacing_Mark }, // CHAKMA VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x1112D, 0x11134 }, ::unicode::General_Category::Nonspacing_Mark }, // [8] CHAKMA VOWEL SIGN AI..CHAKMA MAAYYAA
+    Prop<::unicode::General_Category>{ { 0x11135, 0x11135 }, ::unicode::General_Category::Unassigned }, // <reserved-11135>
+    Prop<::unicode::General_Category>{ { 0x11136, 0x1113F }, ::unicode::General_Category::Decimal_Number }, // [10] CHAKMA DIGIT ZERO..CHAKMA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x11140, 0x11143 }, ::unicode::General_Category::Other_Punctuation }, // [4] CHAKMA SECTION MARK..CHAKMA QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x11144, 0x11144 }, ::unicode::General_Category::Other_Letter }, // CHAKMA LETTER LHAA
+    Prop<::unicode::General_Category>{ { 0x11145, 0x11146 }, ::unicode::General_Category::Spacing_Mark }, // [2] CHAKMA VOWEL SIGN AA..CHAKMA VOWEL SIGN EI
+    Prop<::unicode::General_Category>{ { 0x11147, 0x11147 }, ::unicode::General_Category::Other_Letter }, // CHAKMA LETTER VAA
+    Prop<::unicode::General_Category>{ { 0x11148, 0x1114F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-11148>..<reserved-1114F>
+    Prop<::unicode::General_Category>{ { 0x11150, 0x11172 }, ::unicode::General_Category::Other_Letter }, // [35] MAHAJANI LETTER A..MAHAJANI LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x11173, 0x11173 }, ::unicode::General_Category::Nonspacing_Mark }, // MAHAJANI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x11174, 0x11175 }, ::unicode::General_Category::Other_Punctuation }, // [2] MAHAJANI ABBREVIATION SIGN..MAHAJANI SECTION MARK
+    Prop<::unicode::General_Category>{ { 0x11176, 0x11176 }, ::unicode::General_Category::Other_Letter }, // MAHAJANI LIGATURE SHRI
+    Prop<::unicode::General_Category>{ { 0x11177, 0x1117F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-11177>..<reserved-1117F>
+    Prop<::unicode::General_Category>{ { 0x11180, 0x11181 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SHARADA SIGN CANDRABINDU..SHARADA SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11182, 0x11182 }, ::unicode::General_Category::Spacing_Mark }, // SHARADA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11183, 0x111B2 }, ::unicode::General_Category::Other_Letter }, // [48] SHARADA LETTER A..SHARADA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x111B3, 0x111B5 }, ::unicode::General_Category::Spacing_Mark }, // [3] SHARADA VOWEL SIGN AA..SHARADA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x111B6, 0x111BE }, ::unicode::General_Category::Nonspacing_Mark }, // [9] SHARADA VOWEL SIGN U..SHARADA VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x111BF, 0x111C0 }, ::unicode::General_Category::Spacing_Mark }, // [2] SHARADA VOWEL SIGN AU..SHARADA SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x111C1, 0x111C4 }, ::unicode::General_Category::Other_Letter }, // [4] SHARADA SIGN AVAGRAHA..SHARADA OM
+    Prop<::unicode::General_Category>{ { 0x111C5, 0x111C8 }, ::unicode::General_Category::Other_Punctuation }, // [4] SHARADA DANDA..SHARADA SEPARATOR
+    Prop<::unicode::General_Category>{ { 0x111C9, 0x111CC }, ::unicode::General_Category::Nonspacing_Mark }, // [4] SHARADA SANDHI MARK..SHARADA EXTRA SHORT VOWEL MARK
+    Prop<::unicode::General_Category>{ { 0x111CD, 0x111CD }, ::unicode::General_Category::Other_Punctuation }, // SHARADA SUTRA MARK
+    Prop<::unicode::General_Category>{ { 0x111CE, 0x111CE }, ::unicode::General_Category::Spacing_Mark }, // SHARADA VOWEL SIGN PRISHTHAMATRA E
+    Prop<::unicode::General_Category>{ { 0x111CF, 0x111CF }, ::unicode::General_Category::Nonspacing_Mark }, // SHARADA SIGN INVERTED CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x111D0, 0x111D9 }, ::unicode::General_Category::Decimal_Number }, // [10] SHARADA DIGIT ZERO..SHARADA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x111DA, 0x111DA }, ::unicode::General_Category::Other_Letter }, // SHARADA EKAM
+    Prop<::unicode::General_Category>{ { 0x111DB, 0x111DB }, ::unicode::General_Category::Other_Punctuation }, // SHARADA SIGN SIDDHAM
+    Prop<::unicode::General_Category>{ { 0x111DC, 0x111DC }, ::unicode::General_Category::Other_Letter }, // SHARADA HEADSTROKE
+    Prop<::unicode::General_Category>{ { 0x111DD, 0x111DF }, ::unicode::General_Category::Other_Punctuation }, // [3] SHARADA CONTINUATION SIGN..SHARADA SECTION MARK-2
+    Prop<::unicode::General_Category>{ { 0x111E0, 0x111E0 }, ::unicode::General_Category::Unassigned }, // <reserved-111E0>
+    Prop<::unicode::General_Category>{ { 0x111E1, 0x111F4 }, ::unicode::General_Category::Other_Number }, // [20] SINHALA ARCHAIC DIGIT ONE..SINHALA ARCHAIC NUMBER ONE THOUSAND
+    Prop<::unicode::General_Category>{ { 0x111F5, 0x111FF }, ::unicode::General_Category::Unassigned }, // [11] <reserved-111F5>..<reserved-111FF>
+    Prop<::unicode::General_Category>{ { 0x11200, 0x11211 }, ::unicode::General_Category::Other_Letter }, // [18] KHOJKI LETTER A..KHOJKI LETTER JJA
+    Prop<::unicode::General_Category>{ { 0x11212, 0x11212 }, ::unicode::General_Category::Unassigned }, // <reserved-11212>
+    Prop<::unicode::General_Category>{ { 0x11213, 0x1122B }, ::unicode::General_Category::Other_Letter }, // [25] KHOJKI LETTER NYA..KHOJKI LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x1122C, 0x1122E }, ::unicode::General_Category::Spacing_Mark }, // [3] KHOJKI VOWEL SIGN AA..KHOJKI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x1122F, 0x11231 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] KHOJKI VOWEL SIGN U..KHOJKI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x11232, 0x11233 }, ::unicode::General_Category::Spacing_Mark }, // [2] KHOJKI VOWEL SIGN O..KHOJKI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x11234, 0x11234 }, ::unicode::General_Category::Nonspacing_Mark }, // KHOJKI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11235, 0x11235 }, ::unicode::General_Category::Spacing_Mark }, // KHOJKI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x11236, 0x11237 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] KHOJKI SIGN NUKTA..KHOJKI SIGN SHADDA
+    Prop<::unicode::General_Category>{ { 0x11238, 0x1123D }, ::unicode::General_Category::Other_Punctuation }, // [6] KHOJKI DANDA..KHOJKI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x1123E, 0x1123E }, ::unicode::General_Category::Nonspacing_Mark }, // KHOJKI SIGN SUKUN
+    Prop<::unicode::General_Category>{ { 0x1123F, 0x1127F }, ::unicode::General_Category::Unassigned }, // [65] <reserved-1123F>..<reserved-1127F>
+    Prop<::unicode::General_Category>{ { 0x11280, 0x11286 }, ::unicode::General_Category::Other_Letter }, // [7] MULTANI LETTER A..MULTANI LETTER GA
+    Prop<::unicode::General_Category>{ { 0x11287, 0x11287 }, ::unicode::General_Category::Unassigned }, // <reserved-11287>
+    Prop<::unicode::General_Category>{ { 0x11288, 0x11288 }, ::unicode::General_Category::Other_Letter }, // MULTANI LETTER GHA
+    Prop<::unicode::General_Category>{ { 0x11289, 0x11289 }, ::unicode::General_Category::Unassigned }, // <reserved-11289>
+    Prop<::unicode::General_Category>{ { 0x1128A, 0x1128D }, ::unicode::General_Category::Other_Letter }, // [4] MULTANI LETTER CA..MULTANI LETTER JJA
+    Prop<::unicode::General_Category>{ { 0x1128E, 0x1128E }, ::unicode::General_Category::Unassigned }, // <reserved-1128E>
+    Prop<::unicode::General_Category>{ { 0x1128F, 0x1129D }, ::unicode::General_Category::Other_Letter }, // [15] MULTANI LETTER NYA..MULTANI LETTER BA
+    Prop<::unicode::General_Category>{ { 0x1129E, 0x1129E }, ::unicode::General_Category::Unassigned }, // <reserved-1129E>
+    Prop<::unicode::General_Category>{ { 0x1129F, 0x112A8 }, ::unicode::General_Category::Other_Letter }, // [10] MULTANI LETTER BHA..MULTANI LETTER RHA
+    Prop<::unicode::General_Category>{ { 0x112A9, 0x112A9 }, ::unicode::General_Category::Other_Punctuation }, // MULTANI SECTION MARK
+    Prop<::unicode::General_Category>{ { 0x112AA, 0x112AF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-112AA>..<reserved-112AF>
+    Prop<::unicode::General_Category>{ { 0x112B0, 0x112DE }, ::unicode::General_Category::Other_Letter }, // [47] KHUDAWADI LETTER A..KHUDAWADI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x112DF, 0x112DF }, ::unicode::General_Category::Nonspacing_Mark }, // KHUDAWADI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x112E0, 0x112E2 }, ::unicode::General_Category::Spacing_Mark }, // [3] KHUDAWADI VOWEL SIGN AA..KHUDAWADI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x112E3, 0x112EA }, ::unicode::General_Category::Nonspacing_Mark }, // [8] KHUDAWADI VOWEL SIGN U..KHUDAWADI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x112EB, 0x112EF }, ::unicode::General_Category::Unassigned }, // [5] <reserved-112EB>..<reserved-112EF>
+    Prop<::unicode::General_Category>{ { 0x112F0, 0x112F9 }, ::unicode::General_Category::Decimal_Number }, // [10] KHUDAWADI DIGIT ZERO..KHUDAWADI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x112FA, 0x112FF }, ::unicode::General_Category::Unassigned }, // [6] <reserved-112FA>..<reserved-112FF>
+    Prop<::unicode::General_Category>{ { 0x11300, 0x11301 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GRANTHA SIGN COMBINING ANUSVARA ABOVE..GRANTHA SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x11302, 0x11303 }, ::unicode::General_Category::Spacing_Mark }, // [2] GRANTHA SIGN ANUSVARA..GRANTHA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11304, 0x11304 }, ::unicode::General_Category::Unassigned }, // <reserved-11304>
+    Prop<::unicode::General_Category>{ { 0x11305, 0x1130C }, ::unicode::General_Category::Other_Letter }, // [8] GRANTHA LETTER A..GRANTHA LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x1130D, 0x1130E }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1130D>..<reserved-1130E>
+    Prop<::unicode::General_Category>{ { 0x1130F, 0x11310 }, ::unicode::General_Category::Other_Letter }, // [2] GRANTHA LETTER EE..GRANTHA LETTER AI
+    Prop<::unicode::General_Category>{ { 0x11311, 0x11312 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11311>..<reserved-11312>
+    Prop<::unicode::General_Category>{ { 0x11313, 0x11328 }, ::unicode::General_Category::Other_Letter }, // [22] GRANTHA LETTER OO..GRANTHA LETTER NA
+    Prop<::unicode::General_Category>{ { 0x11329, 0x11329 }, ::unicode::General_Category::Unassigned }, // <reserved-11329>
+    Prop<::unicode::General_Category>{ { 0x1132A, 0x11330 }, ::unicode::General_Category::Other_Letter }, // [7] GRANTHA LETTER PA..GRANTHA LETTER RA
+    Prop<::unicode::General_Category>{ { 0x11331, 0x11331 }, ::unicode::General_Category::Unassigned }, // <reserved-11331>
+    Prop<::unicode::General_Category>{ { 0x11332, 0x11333 }, ::unicode::General_Category::Other_Letter }, // [2] GRANTHA LETTER LA..GRANTHA LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x11334, 0x11334 }, ::unicode::General_Category::Unassigned }, // <reserved-11334>
+    Prop<::unicode::General_Category>{ { 0x11335, 0x11339 }, ::unicode::General_Category::Other_Letter }, // [5] GRANTHA LETTER VA..GRANTHA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x1133A, 0x1133A }, ::unicode::General_Category::Unassigned }, // <reserved-1133A>
+    Prop<::unicode::General_Category>{ { 0x1133B, 0x1133C }, ::unicode::General_Category::Nonspacing_Mark }, // [2] COMBINING BINDU BELOW..GRANTHA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x1133D, 0x1133D }, ::unicode::General_Category::Other_Letter }, // GRANTHA SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x1133E, 0x1133F }, ::unicode::General_Category::Spacing_Mark }, // [2] GRANTHA VOWEL SIGN AA..GRANTHA VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0x11340, 0x11340 }, ::unicode::General_Category::Nonspacing_Mark }, // GRANTHA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x11341, 0x11344 }, ::unicode::General_Category::Spacing_Mark }, // [4] GRANTHA VOWEL SIGN U..GRANTHA VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x11345, 0x11346 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11345>..<reserved-11346>
+    Prop<::unicode::General_Category>{ { 0x11347, 0x11348 }, ::unicode::General_Category::Spacing_Mark }, // [2] GRANTHA VOWEL SIGN EE..GRANTHA VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x11349, 0x1134A }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11349>..<reserved-1134A>
+    Prop<::unicode::General_Category>{ { 0x1134B, 0x1134D }, ::unicode::General_Category::Spacing_Mark }, // [3] GRANTHA VOWEL SIGN OO..GRANTHA SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x1134E, 0x1134F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1134E>..<reserved-1134F>
+    Prop<::unicode::General_Category>{ { 0x11350, 0x11350 }, ::unicode::General_Category::Other_Letter }, // GRANTHA OM
+    Prop<::unicode::General_Category>{ { 0x11351, 0x11356 }, ::unicode::General_Category::Unassigned }, // [6] <reserved-11351>..<reserved-11356>
+    Prop<::unicode::General_Category>{ { 0x11357, 0x11357 }, ::unicode::General_Category::Spacing_Mark }, // GRANTHA AU LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x11358, 0x1135C }, ::unicode::General_Category::Unassigned }, // [5] <reserved-11358>..<reserved-1135C>
+    Prop<::unicode::General_Category>{ { 0x1135D, 0x11361 }, ::unicode::General_Category::Other_Letter }, // [5] GRANTHA SIGN PLUTA..GRANTHA LETTER VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x11362, 0x11363 }, ::unicode::General_Category::Spacing_Mark }, // [2] GRANTHA VOWEL SIGN VOCALIC L..GRANTHA VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x11364, 0x11365 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11364>..<reserved-11365>
+    Prop<::unicode::General_Category>{ { 0x11366, 0x1136C }, ::unicode::General_Category::Nonspacing_Mark }, // [7] COMBINING GRANTHA DIGIT ZERO..COMBINING GRANTHA DIGIT SIX
+    Prop<::unicode::General_Category>{ { 0x1136D, 0x1136F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1136D>..<reserved-1136F>
+    Prop<::unicode::General_Category>{ { 0x11370, 0x11374 }, ::unicode::General_Category::Nonspacing_Mark }, // [5] COMBINING GRANTHA LETTER A..COMBINING GRANTHA LETTER PA
+    Prop<::unicode::General_Category>{ { 0x11375, 0x113FF }, ::unicode::General_Category::Unassigned }, // [139] <reserved-11375>..<reserved-113FF>
+    Prop<::unicode::General_Category>{ { 0x11400, 0x11434 }, ::unicode::General_Category::Other_Letter }, // [53] NEWA LETTER A..NEWA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x11435, 0x11437 }, ::unicode::General_Category::Spacing_Mark }, // [3] NEWA VOWEL SIGN AA..NEWA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x11438, 0x1143F }, ::unicode::General_Category::Nonspacing_Mark }, // [8] NEWA VOWEL SIGN U..NEWA VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x11440, 0x11441 }, ::unicode::General_Category::Spacing_Mark }, // [2] NEWA VOWEL SIGN O..NEWA VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x11442, 0x11444 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] NEWA SIGN VIRAMA..NEWA SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11445, 0x11445 }, ::unicode::General_Category::Spacing_Mark }, // NEWA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11446, 0x11446 }, ::unicode::General_Category::Nonspacing_Mark }, // NEWA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x11447, 0x1144A }, ::unicode::General_Category::Other_Letter }, // [4] NEWA SIGN AVAGRAHA..NEWA SIDDHI
+    Prop<::unicode::General_Category>{ { 0x1144B, 0x1144F }, ::unicode::General_Category::Other_Punctuation }, // [5] NEWA DANDA..NEWA ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x11450, 0x11459 }, ::unicode::General_Category::Decimal_Number }, // [10] NEWA DIGIT ZERO..NEWA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1145A, 0x1145B }, ::unicode::General_Category::Other_Punctuation }, // [2] NEWA DOUBLE COMMA..NEWA PLACEHOLDER MARK
+    Prop<::unicode::General_Category>{ { 0x1145C, 0x1145C }, ::unicode::General_Category::Unassigned }, // <reserved-1145C>
+    Prop<::unicode::General_Category>{ { 0x1145D, 0x1145D }, ::unicode::General_Category::Other_Punctuation }, // NEWA INSERTION SIGN
+    Prop<::unicode::General_Category>{ { 0x1145E, 0x1145E }, ::unicode::General_Category::Nonspacing_Mark }, // NEWA SANDHI MARK
+    Prop<::unicode::General_Category>{ { 0x1145F, 0x11461 }, ::unicode::General_Category::Other_Letter }, // [3] NEWA LETTER VEDIC ANUSVARA..NEWA SIGN UPADHMANIYA
+    Prop<::unicode::General_Category>{ { 0x11462, 0x1147F }, ::unicode::General_Category::Unassigned }, // [30] <reserved-11462>..<reserved-1147F>
+    Prop<::unicode::General_Category>{ { 0x11480, 0x114AF }, ::unicode::General_Category::Other_Letter }, // [48] TIRHUTA ANJI..TIRHUTA LETTER HA
+    Prop<::unicode::General_Category>{ { 0x114B0, 0x114B2 }, ::unicode::General_Category::Spacing_Mark }, // [3] TIRHUTA VOWEL SIGN AA..TIRHUTA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x114B3, 0x114B8 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] TIRHUTA VOWEL SIGN U..TIRHUTA VOWEL SIGN VOCALIC LL
+    Prop<::unicode::General_Category>{ { 0x114B9, 0x114B9 }, ::unicode::General_Category::Spacing_Mark }, // TIRHUTA VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x114BA, 0x114BA }, ::unicode::General_Category::Nonspacing_Mark }, // TIRHUTA VOWEL SIGN SHORT E
+    Prop<::unicode::General_Category>{ { 0x114BB, 0x114BE }, ::unicode::General_Category::Spacing_Mark }, // [4] TIRHUTA VOWEL SIGN AI..TIRHUTA VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x114BF, 0x114C0 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TIRHUTA SIGN CANDRABINDU..TIRHUTA SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x114C1, 0x114C1 }, ::unicode::General_Category::Spacing_Mark }, // TIRHUTA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x114C2, 0x114C3 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] TIRHUTA SIGN VIRAMA..TIRHUTA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x114C4, 0x114C5 }, ::unicode::General_Category::Other_Letter }, // [2] TIRHUTA SIGN AVAGRAHA..TIRHUTA GVANG
+    Prop<::unicode::General_Category>{ { 0x114C6, 0x114C6 }, ::unicode::General_Category::Other_Punctuation }, // TIRHUTA ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x114C7, 0x114C7 }, ::unicode::General_Category::Other_Letter }, // TIRHUTA OM
+    Prop<::unicode::General_Category>{ { 0x114C8, 0x114CF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-114C8>..<reserved-114CF>
+    Prop<::unicode::General_Category>{ { 0x114D0, 0x114D9 }, ::unicode::General_Category::Decimal_Number }, // [10] TIRHUTA DIGIT ZERO..TIRHUTA DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x114DA, 0x1157F }, ::unicode::General_Category::Unassigned }, // [166] <reserved-114DA>..<reserved-1157F>
+    Prop<::unicode::General_Category>{ { 0x11580, 0x115AE }, ::unicode::General_Category::Other_Letter }, // [47] SIDDHAM LETTER A..SIDDHAM LETTER HA
+    Prop<::unicode::General_Category>{ { 0x115AF, 0x115B1 }, ::unicode::General_Category::Spacing_Mark }, // [3] SIDDHAM VOWEL SIGN AA..SIDDHAM VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x115B2, 0x115B5 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] SIDDHAM VOWEL SIGN U..SIDDHAM VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x115B6, 0x115B7 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-115B6>..<reserved-115B7>
+    Prop<::unicode::General_Category>{ { 0x115B8, 0x115BB }, ::unicode::General_Category::Spacing_Mark }, // [4] SIDDHAM VOWEL SIGN E..SIDDHAM VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x115BC, 0x115BD }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SIDDHAM SIGN CANDRABINDU..SIDDHAM SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x115BE, 0x115BE }, ::unicode::General_Category::Spacing_Mark }, // SIDDHAM SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x115BF, 0x115C0 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SIDDHAM SIGN VIRAMA..SIDDHAM SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x115C1, 0x115D7 }, ::unicode::General_Category::Other_Punctuation }, // [23] SIDDHAM SIGN SIDDHAM..SIDDHAM SECTION MARK WITH CIRCLES AND FOUR ENCLOSURES
+    Prop<::unicode::General_Category>{ { 0x115D8, 0x115DB }, ::unicode::General_Category::Other_Letter }, // [4] SIDDHAM LETTER THREE-CIRCLE ALTERNATE I..SIDDHAM LETTER ALTERNATE U
+    Prop<::unicode::General_Category>{ { 0x115DC, 0x115DD }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SIDDHAM VOWEL SIGN ALTERNATE U..SIDDHAM VOWEL SIGN ALTERNATE UU
+    Prop<::unicode::General_Category>{ { 0x115DE, 0x115FF }, ::unicode::General_Category::Unassigned }, // [34] <reserved-115DE>..<reserved-115FF>
+    Prop<::unicode::General_Category>{ { 0x11600, 0x1162F }, ::unicode::General_Category::Other_Letter }, // [48] MODI LETTER A..MODI LETTER LLA
+    Prop<::unicode::General_Category>{ { 0x11630, 0x11632 }, ::unicode::General_Category::Spacing_Mark }, // [3] MODI VOWEL SIGN AA..MODI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x11633, 0x1163A }, ::unicode::General_Category::Nonspacing_Mark }, // [8] MODI VOWEL SIGN U..MODI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x1163B, 0x1163C }, ::unicode::General_Category::Spacing_Mark }, // [2] MODI VOWEL SIGN O..MODI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x1163D, 0x1163D }, ::unicode::General_Category::Nonspacing_Mark }, // MODI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x1163E, 0x1163E }, ::unicode::General_Category::Spacing_Mark }, // MODI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x1163F, 0x11640 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MODI SIGN VIRAMA..MODI SIGN ARDHACANDRA
+    Prop<::unicode::General_Category>{ { 0x11641, 0x11643 }, ::unicode::General_Category::Other_Punctuation }, // [3] MODI DANDA..MODI ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x11644, 0x11644 }, ::unicode::General_Category::Other_Letter }, // MODI SIGN HUVA
+    Prop<::unicode::General_Category>{ { 0x11645, 0x1164F }, ::unicode::General_Category::Unassigned }, // [11] <reserved-11645>..<reserved-1164F>
+    Prop<::unicode::General_Category>{ { 0x11650, 0x11659 }, ::unicode::General_Category::Decimal_Number }, // [10] MODI DIGIT ZERO..MODI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1165A, 0x1165F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-1165A>..<reserved-1165F>
+    Prop<::unicode::General_Category>{ { 0x11660, 0x1166C }, ::unicode::General_Category::Other_Punctuation }, // [13] MONGOLIAN BIRGA WITH ORNAMENT..MONGOLIAN TURNED SWIRL BIRGA WITH DOUBLE ORNAMENT
+    Prop<::unicode::General_Category>{ { 0x1166D, 0x1167F }, ::unicode::General_Category::Unassigned }, // [19] <reserved-1166D>..<reserved-1167F>
+    Prop<::unicode::General_Category>{ { 0x11680, 0x116AA }, ::unicode::General_Category::Other_Letter }, // [43] TAKRI LETTER A..TAKRI LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x116AB, 0x116AB }, ::unicode::General_Category::Nonspacing_Mark }, // TAKRI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x116AC, 0x116AC }, ::unicode::General_Category::Spacing_Mark }, // TAKRI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x116AD, 0x116AD }, ::unicode::General_Category::Nonspacing_Mark }, // TAKRI VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x116AE, 0x116AF }, ::unicode::General_Category::Spacing_Mark }, // [2] TAKRI VOWEL SIGN I..TAKRI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x116B0, 0x116B5 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] TAKRI VOWEL SIGN U..TAKRI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x116B6, 0x116B6 }, ::unicode::General_Category::Spacing_Mark }, // TAKRI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x116B7, 0x116B7 }, ::unicode::General_Category::Nonspacing_Mark }, // TAKRI SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x116B8, 0x116B8 }, ::unicode::General_Category::Other_Letter }, // TAKRI LETTER ARCHAIC KHA
+    Prop<::unicode::General_Category>{ { 0x116B9, 0x116BF }, ::unicode::General_Category::Unassigned }, // [7] <reserved-116B9>..<reserved-116BF>
+    Prop<::unicode::General_Category>{ { 0x116C0, 0x116C9 }, ::unicode::General_Category::Decimal_Number }, // [10] TAKRI DIGIT ZERO..TAKRI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x116CA, 0x116FF }, ::unicode::General_Category::Unassigned }, // [54] <reserved-116CA>..<reserved-116FF>
+    Prop<::unicode::General_Category>{ { 0x11700, 0x1171A }, ::unicode::General_Category::Other_Letter }, // [27] AHOM LETTER KA..AHOM LETTER ALTERNATE BA
+    Prop<::unicode::General_Category>{ { 0x1171B, 0x1171C }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1171B>..<reserved-1171C>
+    Prop<::unicode::General_Category>{ { 0x1171D, 0x1171F }, ::unicode::General_Category::Nonspacing_Mark }, // [3] AHOM CONSONANT SIGN MEDIAL LA..AHOM CONSONANT SIGN MEDIAL LIGATING RA
+    Prop<::unicode::General_Category>{ { 0x11720, 0x11721 }, ::unicode::General_Category::Spacing_Mark }, // [2] AHOM VOWEL SIGN A..AHOM VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x11722, 0x11725 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] AHOM VOWEL SIGN I..AHOM VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x11726, 0x11726 }, ::unicode::General_Category::Spacing_Mark }, // AHOM VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x11727, 0x1172B }, ::unicode::General_Category::Nonspacing_Mark }, // [5] AHOM VOWEL SIGN AW..AHOM SIGN KILLER
+    Prop<::unicode::General_Category>{ { 0x1172C, 0x1172F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1172C>..<reserved-1172F>
+    Prop<::unicode::General_Category>{ { 0x11730, 0x11739 }, ::unicode::General_Category::Decimal_Number }, // [10] AHOM DIGIT ZERO..AHOM DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1173A, 0x1173B }, ::unicode::General_Category::Other_Number }, // [2] AHOM NUMBER TEN..AHOM NUMBER TWENTY
+    Prop<::unicode::General_Category>{ { 0x1173C, 0x1173E }, ::unicode::General_Category::Other_Punctuation }, // [3] AHOM SIGN SMALL SECTION..AHOM SIGN RULAI
+    Prop<::unicode::General_Category>{ { 0x1173F, 0x1173F }, ::unicode::General_Category::Other_Symbol }, // AHOM SYMBOL VI
+    Prop<::unicode::General_Category>{ { 0x11740, 0x117FF }, ::unicode::General_Category::Unassigned }, // [192] <reserved-11740>..<reserved-117FF>
+    Prop<::unicode::General_Category>{ { 0x11800, 0x1182B }, ::unicode::General_Category::Other_Letter }, // [44] DOGRA LETTER A..DOGRA LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x1182C, 0x1182E }, ::unicode::General_Category::Spacing_Mark }, // [3] DOGRA VOWEL SIGN AA..DOGRA VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x1182F, 0x11837 }, ::unicode::General_Category::Nonspacing_Mark }, // [9] DOGRA VOWEL SIGN U..DOGRA SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11838, 0x11838 }, ::unicode::General_Category::Spacing_Mark }, // DOGRA SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11839, 0x1183A }, ::unicode::General_Category::Nonspacing_Mark }, // [2] DOGRA SIGN VIRAMA..DOGRA SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x1183B, 0x1183B }, ::unicode::General_Category::Other_Punctuation }, // DOGRA ABBREVIATION SIGN
+    Prop<::unicode::General_Category>{ { 0x1183C, 0x1189F }, ::unicode::General_Category::Unassigned }, // [100] <reserved-1183C>..<reserved-1189F>
+    Prop<::unicode::General_Category>{ { 0x118A0, 0x118BF }, ::unicode::General_Category::Uppercase_Letter }, // [32] WARANG CITI CAPITAL LETTER NGAA..WARANG CITI CAPITAL LETTER VIYO
+    Prop<::unicode::General_Category>{ { 0x118C0, 0x118DF }, ::unicode::General_Category::Lowercase_Letter }, // [32] WARANG CITI SMALL LETTER NGAA..WARANG CITI SMALL LETTER VIYO
+    Prop<::unicode::General_Category>{ { 0x118E0, 0x118E9 }, ::unicode::General_Category::Decimal_Number }, // [10] WARANG CITI DIGIT ZERO..WARANG CITI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x118EA, 0x118F2 }, ::unicode::General_Category::Other_Number }, // [9] WARANG CITI NUMBER TEN..WARANG CITI NUMBER NINETY
+    Prop<::unicode::General_Category>{ { 0x118F3, 0x118FE }, ::unicode::General_Category::Unassigned }, // [12] <reserved-118F3>..<reserved-118FE>
+    Prop<::unicode::General_Category>{ { 0x118FF, 0x11906 }, ::unicode::General_Category::Other_Letter }, // [8] WARANG CITI OM..DIVES AKURU LETTER E
+    Prop<::unicode::General_Category>{ { 0x11907, 0x11908 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11907>..<reserved-11908>
+    Prop<::unicode::General_Category>{ { 0x11909, 0x11909 }, ::unicode::General_Category::Other_Letter }, // DIVES AKURU LETTER O
+    Prop<::unicode::General_Category>{ { 0x1190A, 0x1190B }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1190A>..<reserved-1190B>
+    Prop<::unicode::General_Category>{ { 0x1190C, 0x11913 }, ::unicode::General_Category::Other_Letter }, // [8] DIVES AKURU LETTER KA..DIVES AKURU LETTER JA
+    Prop<::unicode::General_Category>{ { 0x11914, 0x11914 }, ::unicode::General_Category::Unassigned }, // <reserved-11914>
+    Prop<::unicode::General_Category>{ { 0x11915, 0x11916 }, ::unicode::General_Category::Other_Letter }, // [2] DIVES AKURU LETTER NYA..DIVES AKURU LETTER TTA
+    Prop<::unicode::General_Category>{ { 0x11917, 0x11917 }, ::unicode::General_Category::Unassigned }, // <reserved-11917>
+    Prop<::unicode::General_Category>{ { 0x11918, 0x1192F }, ::unicode::General_Category::Other_Letter }, // [24] DIVES AKURU LETTER DDA..DIVES AKURU LETTER ZA
+    Prop<::unicode::General_Category>{ { 0x11930, 0x11935 }, ::unicode::General_Category::Spacing_Mark }, // [6] DIVES AKURU VOWEL SIGN AA..DIVES AKURU VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x11936, 0x11936 }, ::unicode::General_Category::Unassigned }, // <reserved-11936>
+    Prop<::unicode::General_Category>{ { 0x11937, 0x11938 }, ::unicode::General_Category::Spacing_Mark }, // [2] DIVES AKURU VOWEL SIGN AI..DIVES AKURU VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x11939, 0x1193A }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11939>..<reserved-1193A>
+    Prop<::unicode::General_Category>{ { 0x1193B, 0x1193C }, ::unicode::General_Category::Nonspacing_Mark }, // [2] DIVES AKURU SIGN ANUSVARA..DIVES AKURU SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x1193D, 0x1193D }, ::unicode::General_Category::Spacing_Mark }, // DIVES AKURU SIGN HALANTA
+    Prop<::unicode::General_Category>{ { 0x1193E, 0x1193E }, ::unicode::General_Category::Nonspacing_Mark }, // DIVES AKURU VIRAMA
+    Prop<::unicode::General_Category>{ { 0x1193F, 0x1193F }, ::unicode::General_Category::Other_Letter }, // DIVES AKURU PREFIXED NASAL SIGN
+    Prop<::unicode::General_Category>{ { 0x11940, 0x11940 }, ::unicode::General_Category::Spacing_Mark }, // DIVES AKURU MEDIAL YA
+    Prop<::unicode::General_Category>{ { 0x11941, 0x11941 }, ::unicode::General_Category::Other_Letter }, // DIVES AKURU INITIAL RA
+    Prop<::unicode::General_Category>{ { 0x11942, 0x11942 }, ::unicode::General_Category::Spacing_Mark }, // DIVES AKURU MEDIAL RA
+    Prop<::unicode::General_Category>{ { 0x11943, 0x11943 }, ::unicode::General_Category::Nonspacing_Mark }, // DIVES AKURU SIGN NUKTA
+    Prop<::unicode::General_Category>{ { 0x11944, 0x11946 }, ::unicode::General_Category::Other_Punctuation }, // [3] DIVES AKURU DOUBLE DANDA..DIVES AKURU END OF TEXT MARK
+    Prop<::unicode::General_Category>{ { 0x11947, 0x1194F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-11947>..<reserved-1194F>
+    Prop<::unicode::General_Category>{ { 0x11950, 0x11959 }, ::unicode::General_Category::Decimal_Number }, // [10] DIVES AKURU DIGIT ZERO..DIVES AKURU DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1195A, 0x1199F }, ::unicode::General_Category::Unassigned }, // [70] <reserved-1195A>..<reserved-1199F>
+    Prop<::unicode::General_Category>{ { 0x119A0, 0x119A7 }, ::unicode::General_Category::Other_Letter }, // [8] NANDINAGARI LETTER A..NANDINAGARI LETTER VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x119A8, 0x119A9 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-119A8>..<reserved-119A9>
+    Prop<::unicode::General_Category>{ { 0x119AA, 0x119D0 }, ::unicode::General_Category::Other_Letter }, // [39] NANDINAGARI LETTER E..NANDINAGARI LETTER RRA
+    Prop<::unicode::General_Category>{ { 0x119D1, 0x119D3 }, ::unicode::General_Category::Spacing_Mark }, // [3] NANDINAGARI VOWEL SIGN AA..NANDINAGARI VOWEL SIGN II
+    Prop<::unicode::General_Category>{ { 0x119D4, 0x119D7 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] NANDINAGARI VOWEL SIGN U..NANDINAGARI VOWEL SIGN VOCALIC RR
+    Prop<::unicode::General_Category>{ { 0x119D8, 0x119D9 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-119D8>..<reserved-119D9>
+    Prop<::unicode::General_Category>{ { 0x119DA, 0x119DB }, ::unicode::General_Category::Nonspacing_Mark }, // [2] NANDINAGARI VOWEL SIGN E..NANDINAGARI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x119DC, 0x119DF }, ::unicode::General_Category::Spacing_Mark }, // [4] NANDINAGARI VOWEL SIGN O..NANDINAGARI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x119E0, 0x119E0 }, ::unicode::General_Category::Nonspacing_Mark }, // NANDINAGARI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x119E1, 0x119E1 }, ::unicode::General_Category::Other_Letter }, // NANDINAGARI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x119E2, 0x119E2 }, ::unicode::General_Category::Other_Punctuation }, // NANDINAGARI SIGN SIDDHAM
+    Prop<::unicode::General_Category>{ { 0x119E3, 0x119E3 }, ::unicode::General_Category::Other_Letter }, // NANDINAGARI HEADSTROKE
+    Prop<::unicode::General_Category>{ { 0x119E4, 0x119E4 }, ::unicode::General_Category::Spacing_Mark }, // NANDINAGARI VOWEL SIGN PRISHTHAMATRA E
+    Prop<::unicode::General_Category>{ { 0x119E5, 0x119FF }, ::unicode::General_Category::Unassigned }, // [27] <reserved-119E5>..<reserved-119FF>
+    Prop<::unicode::General_Category>{ { 0x11A00, 0x11A00 }, ::unicode::General_Category::Other_Letter }, // ZANABAZAR SQUARE LETTER A
+    Prop<::unicode::General_Category>{ { 0x11A01, 0x11A0A }, ::unicode::General_Category::Nonspacing_Mark }, // [10] ZANABAZAR SQUARE VOWEL SIGN I..ZANABAZAR SQUARE VOWEL LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x11A0B, 0x11A32 }, ::unicode::General_Category::Other_Letter }, // [40] ZANABAZAR SQUARE LETTER KA..ZANABAZAR SQUARE LETTER KSSA
+    Prop<::unicode::General_Category>{ { 0x11A33, 0x11A38 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] ZANABAZAR SQUARE FINAL CONSONANT MARK..ZANABAZAR SQUARE SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11A39, 0x11A39 }, ::unicode::General_Category::Spacing_Mark }, // ZANABAZAR SQUARE SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11A3A, 0x11A3A }, ::unicode::General_Category::Other_Letter }, // ZANABAZAR SQUARE CLUSTER-INITIAL LETTER RA
+    Prop<::unicode::General_Category>{ { 0x11A3B, 0x11A3E }, ::unicode::General_Category::Nonspacing_Mark }, // [4] ZANABAZAR SQUARE CLUSTER-FINAL LETTER YA..ZANABAZAR SQUARE CLUSTER-FINAL LETTER VA
+    Prop<::unicode::General_Category>{ { 0x11A3F, 0x11A46 }, ::unicode::General_Category::Other_Punctuation }, // [8] ZANABAZAR SQUARE INITIAL HEAD MARK..ZANABAZAR SQUARE CLOSING DOUBLE-LINED HEAD MARK
+    Prop<::unicode::General_Category>{ { 0x11A47, 0x11A47 }, ::unicode::General_Category::Nonspacing_Mark }, // ZANABAZAR SQUARE SUBJOINER
+    Prop<::unicode::General_Category>{ { 0x11A48, 0x11A4F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-11A48>..<reserved-11A4F>
+    Prop<::unicode::General_Category>{ { 0x11A50, 0x11A50 }, ::unicode::General_Category::Other_Letter }, // SOYOMBO LETTER A
+    Prop<::unicode::General_Category>{ { 0x11A51, 0x11A56 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] SOYOMBO VOWEL SIGN I..SOYOMBO VOWEL SIGN OE
+    Prop<::unicode::General_Category>{ { 0x11A57, 0x11A58 }, ::unicode::General_Category::Spacing_Mark }, // [2] SOYOMBO VOWEL SIGN AI..SOYOMBO VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x11A59, 0x11A5B }, ::unicode::General_Category::Nonspacing_Mark }, // [3] SOYOMBO VOWEL SIGN VOCALIC R..SOYOMBO VOWEL LENGTH MARK
+    Prop<::unicode::General_Category>{ { 0x11A5C, 0x11A89 }, ::unicode::General_Category::Other_Letter }, // [46] SOYOMBO LETTER KA..SOYOMBO CLUSTER-INITIAL LETTER SA
+    Prop<::unicode::General_Category>{ { 0x11A8A, 0x11A96 }, ::unicode::General_Category::Nonspacing_Mark }, // [13] SOYOMBO FINAL CONSONANT SIGN G..SOYOMBO SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11A97, 0x11A97 }, ::unicode::General_Category::Spacing_Mark }, // SOYOMBO SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11A98, 0x11A99 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] SOYOMBO GEMINATION MARK..SOYOMBO SUBJOINER
+    Prop<::unicode::General_Category>{ { 0x11A9A, 0x11A9C }, ::unicode::General_Category::Other_Punctuation }, // [3] SOYOMBO MARK TSHEG..SOYOMBO MARK DOUBLE SHAD
+    Prop<::unicode::General_Category>{ { 0x11A9D, 0x11A9D }, ::unicode::General_Category::Other_Letter }, // SOYOMBO MARK PLUTA
+    Prop<::unicode::General_Category>{ { 0x11A9E, 0x11AA2 }, ::unicode::General_Category::Other_Punctuation }, // [5] SOYOMBO HEAD MARK WITH MOON AND SUN AND TRIPLE FLAME..SOYOMBO TERMINAL MARK-2
+    Prop<::unicode::General_Category>{ { 0x11AA3, 0x11ABF }, ::unicode::General_Category::Unassigned }, // [29] <reserved-11AA3>..<reserved-11ABF>
+    Prop<::unicode::General_Category>{ { 0x11AC0, 0x11AF8 }, ::unicode::General_Category::Other_Letter }, // [57] PAU CIN HAU LETTER PA..PAU CIN HAU GLOTTAL STOP FINAL
+    Prop<::unicode::General_Category>{ { 0x11AF9, 0x11BFF }, ::unicode::General_Category::Unassigned }, // [263] <reserved-11AF9>..<reserved-11BFF>
+    Prop<::unicode::General_Category>{ { 0x11C00, 0x11C08 }, ::unicode::General_Category::Other_Letter }, // [9] BHAIKSUKI LETTER A..BHAIKSUKI LETTER VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x11C09, 0x11C09 }, ::unicode::General_Category::Unassigned }, // <reserved-11C09>
+    Prop<::unicode::General_Category>{ { 0x11C0A, 0x11C2E }, ::unicode::General_Category::Other_Letter }, // [37] BHAIKSUKI LETTER E..BHAIKSUKI LETTER HA
+    Prop<::unicode::General_Category>{ { 0x11C2F, 0x11C2F }, ::unicode::General_Category::Spacing_Mark }, // BHAIKSUKI VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x11C30, 0x11C36 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] BHAIKSUKI VOWEL SIGN I..BHAIKSUKI VOWEL SIGN VOCALIC L
+    Prop<::unicode::General_Category>{ { 0x11C37, 0x11C37 }, ::unicode::General_Category::Unassigned }, // <reserved-11C37>
+    Prop<::unicode::General_Category>{ { 0x11C38, 0x11C3D }, ::unicode::General_Category::Nonspacing_Mark }, // [6] BHAIKSUKI VOWEL SIGN E..BHAIKSUKI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11C3E, 0x11C3E }, ::unicode::General_Category::Spacing_Mark }, // BHAIKSUKI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11C3F, 0x11C3F }, ::unicode::General_Category::Nonspacing_Mark }, // BHAIKSUKI SIGN VIRAMA
+    Prop<::unicode::General_Category>{ { 0x11C40, 0x11C40 }, ::unicode::General_Category::Other_Letter }, // BHAIKSUKI SIGN AVAGRAHA
+    Prop<::unicode::General_Category>{ { 0x11C41, 0x11C45 }, ::unicode::General_Category::Other_Punctuation }, // [5] BHAIKSUKI DANDA..BHAIKSUKI GAP FILLER-2
+    Prop<::unicode::General_Category>{ { 0x11C46, 0x11C4F }, ::unicode::General_Category::Unassigned }, // [10] <reserved-11C46>..<reserved-11C4F>
+    Prop<::unicode::General_Category>{ { 0x11C50, 0x11C59 }, ::unicode::General_Category::Decimal_Number }, // [10] BHAIKSUKI DIGIT ZERO..BHAIKSUKI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x11C5A, 0x11C6C }, ::unicode::General_Category::Other_Number }, // [19] BHAIKSUKI NUMBER ONE..BHAIKSUKI HUNDREDS UNIT MARK
+    Prop<::unicode::General_Category>{ { 0x11C6D, 0x11C6F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-11C6D>..<reserved-11C6F>
+    Prop<::unicode::General_Category>{ { 0x11C70, 0x11C71 }, ::unicode::General_Category::Other_Punctuation }, // [2] MARCHEN HEAD MARK..MARCHEN MARK SHAD
+    Prop<::unicode::General_Category>{ { 0x11C72, 0x11C8F }, ::unicode::General_Category::Other_Letter }, // [30] MARCHEN LETTER KA..MARCHEN LETTER A
+    Prop<::unicode::General_Category>{ { 0x11C90, 0x11C91 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-11C90>..<reserved-11C91>
+    Prop<::unicode::General_Category>{ { 0x11C92, 0x11CA7 }, ::unicode::General_Category::Nonspacing_Mark }, // [22] MARCHEN SUBJOINED LETTER KA..MARCHEN SUBJOINED LETTER ZA
+    Prop<::unicode::General_Category>{ { 0x11CA8, 0x11CA8 }, ::unicode::General_Category::Unassigned }, // <reserved-11CA8>
+    Prop<::unicode::General_Category>{ { 0x11CA9, 0x11CA9 }, ::unicode::General_Category::Spacing_Mark }, // MARCHEN SUBJOINED LETTER YA
+    Prop<::unicode::General_Category>{ { 0x11CAA, 0x11CB0 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] MARCHEN SUBJOINED LETTER RA..MARCHEN VOWEL SIGN AA
+    Prop<::unicode::General_Category>{ { 0x11CB1, 0x11CB1 }, ::unicode::General_Category::Spacing_Mark }, // MARCHEN VOWEL SIGN I
+    Prop<::unicode::General_Category>{ { 0x11CB2, 0x11CB3 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MARCHEN VOWEL SIGN U..MARCHEN VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x11CB4, 0x11CB4 }, ::unicode::General_Category::Spacing_Mark }, // MARCHEN VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x11CB5, 0x11CB6 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MARCHEN SIGN ANUSVARA..MARCHEN SIGN CANDRABINDU
+    Prop<::unicode::General_Category>{ { 0x11CB7, 0x11CFF }, ::unicode::General_Category::Unassigned }, // [73] <reserved-11CB7>..<reserved-11CFF>
+    Prop<::unicode::General_Category>{ { 0x11D00, 0x11D06 }, ::unicode::General_Category::Other_Letter }, // [7] MASARAM GONDI LETTER A..MASARAM GONDI LETTER E
+    Prop<::unicode::General_Category>{ { 0x11D07, 0x11D07 }, ::unicode::General_Category::Unassigned }, // <reserved-11D07>
+    Prop<::unicode::General_Category>{ { 0x11D08, 0x11D09 }, ::unicode::General_Category::Other_Letter }, // [2] MASARAM GONDI LETTER AI..MASARAM GONDI LETTER O
+    Prop<::unicode::General_Category>{ { 0x11D0A, 0x11D0A }, ::unicode::General_Category::Unassigned }, // <reserved-11D0A>
+    Prop<::unicode::General_Category>{ { 0x11D0B, 0x11D30 }, ::unicode::General_Category::Other_Letter }, // [38] MASARAM GONDI LETTER AU..MASARAM GONDI LETTER TRA
+    Prop<::unicode::General_Category>{ { 0x11D31, 0x11D36 }, ::unicode::General_Category::Nonspacing_Mark }, // [6] MASARAM GONDI VOWEL SIGN AA..MASARAM GONDI VOWEL SIGN VOCALIC R
+    Prop<::unicode::General_Category>{ { 0x11D37, 0x11D39 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-11D37>..<reserved-11D39>
+    Prop<::unicode::General_Category>{ { 0x11D3A, 0x11D3A }, ::unicode::General_Category::Nonspacing_Mark }, // MASARAM GONDI VOWEL SIGN E
+    Prop<::unicode::General_Category>{ { 0x11D3B, 0x11D3B }, ::unicode::General_Category::Unassigned }, // <reserved-11D3B>
+    Prop<::unicode::General_Category>{ { 0x11D3C, 0x11D3D }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MASARAM GONDI VOWEL SIGN AI..MASARAM GONDI VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x11D3E, 0x11D3E }, ::unicode::General_Category::Unassigned }, // <reserved-11D3E>
+    Prop<::unicode::General_Category>{ { 0x11D3F, 0x11D45 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] MASARAM GONDI VOWEL SIGN AU..MASARAM GONDI VIRAMA
+    Prop<::unicode::General_Category>{ { 0x11D46, 0x11D46 }, ::unicode::General_Category::Other_Letter }, // MASARAM GONDI REPHA
+    Prop<::unicode::General_Category>{ { 0x11D47, 0x11D47 }, ::unicode::General_Category::Nonspacing_Mark }, // MASARAM GONDI RA-KARA
+    Prop<::unicode::General_Category>{ { 0x11D48, 0x11D4F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-11D48>..<reserved-11D4F>
+    Prop<::unicode::General_Category>{ { 0x11D50, 0x11D59 }, ::unicode::General_Category::Decimal_Number }, // [10] MASARAM GONDI DIGIT ZERO..MASARAM GONDI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x11D5A, 0x11D5F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-11D5A>..<reserved-11D5F>
+    Prop<::unicode::General_Category>{ { 0x11D60, 0x11D65 }, ::unicode::General_Category::Other_Letter }, // [6] GUNJALA GONDI LETTER A..GUNJALA GONDI LETTER UU
+    Prop<::unicode::General_Category>{ { 0x11D66, 0x11D66 }, ::unicode::General_Category::Unassigned }, // <reserved-11D66>
+    Prop<::unicode::General_Category>{ { 0x11D67, 0x11D68 }, ::unicode::General_Category::Other_Letter }, // [2] GUNJALA GONDI LETTER EE..GUNJALA GONDI LETTER AI
+    Prop<::unicode::General_Category>{ { 0x11D69, 0x11D69 }, ::unicode::General_Category::Unassigned }, // <reserved-11D69>
+    Prop<::unicode::General_Category>{ { 0x11D6A, 0x11D89 }, ::unicode::General_Category::Other_Letter }, // [32] GUNJALA GONDI LETTER OO..GUNJALA GONDI LETTER SA
+    Prop<::unicode::General_Category>{ { 0x11D8A, 0x11D8E }, ::unicode::General_Category::Spacing_Mark }, // [5] GUNJALA GONDI VOWEL SIGN AA..GUNJALA GONDI VOWEL SIGN UU
+    Prop<::unicode::General_Category>{ { 0x11D8F, 0x11D8F }, ::unicode::General_Category::Unassigned }, // <reserved-11D8F>
+    Prop<::unicode::General_Category>{ { 0x11D90, 0x11D91 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] GUNJALA GONDI VOWEL SIGN EE..GUNJALA GONDI VOWEL SIGN AI
+    Prop<::unicode::General_Category>{ { 0x11D92, 0x11D92 }, ::unicode::General_Category::Unassigned }, // <reserved-11D92>
+    Prop<::unicode::General_Category>{ { 0x11D93, 0x11D94 }, ::unicode::General_Category::Spacing_Mark }, // [2] GUNJALA GONDI VOWEL SIGN OO..GUNJALA GONDI VOWEL SIGN AU
+    Prop<::unicode::General_Category>{ { 0x11D95, 0x11D95 }, ::unicode::General_Category::Nonspacing_Mark }, // GUNJALA GONDI SIGN ANUSVARA
+    Prop<::unicode::General_Category>{ { 0x11D96, 0x11D96 }, ::unicode::General_Category::Spacing_Mark }, // GUNJALA GONDI SIGN VISARGA
+    Prop<::unicode::General_Category>{ { 0x11D97, 0x11D97 }, ::unicode::General_Category::Nonspacing_Mark }, // GUNJALA GONDI VIRAMA
+    Prop<::unicode::General_Category>{ { 0x11D98, 0x11D98 }, ::unicode::General_Category::Other_Letter }, // GUNJALA GONDI OM
+    Prop<::unicode::General_Category>{ { 0x11D99, 0x11D9F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-11D99>..<reserved-11D9F>
+    Prop<::unicode::General_Category>{ { 0x11DA0, 0x11DA9 }, ::unicode::General_Category::Decimal_Number }, // [10] GUNJALA GONDI DIGIT ZERO..GUNJALA GONDI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x11DAA, 0x11EDF }, ::unicode::General_Category::Unassigned }, // [310] <reserved-11DAA>..<reserved-11EDF>
+    Prop<::unicode::General_Category>{ { 0x11EE0, 0x11EF2 }, ::unicode::General_Category::Other_Letter }, // [19] MAKASAR LETTER KA..MAKASAR ANGKA
+    Prop<::unicode::General_Category>{ { 0x11EF3, 0x11EF4 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] MAKASAR VOWEL SIGN I..MAKASAR VOWEL SIGN U
+    Prop<::unicode::General_Category>{ { 0x11EF5, 0x11EF6 }, ::unicode::General_Category::Spacing_Mark }, // [2] MAKASAR VOWEL SIGN E..MAKASAR VOWEL SIGN O
+    Prop<::unicode::General_Category>{ { 0x11EF7, 0x11EF8 }, ::unicode::General_Category::Other_Punctuation }, // [2] MAKASAR PASSIMBANG..MAKASAR END OF SECTION
+    Prop<::unicode::General_Category>{ { 0x11EF9, 0x11FAF }, ::unicode::General_Category::Unassigned }, // [183] <reserved-11EF9>..<reserved-11FAF>
+    Prop<::unicode::General_Category>{ { 0x11FB0, 0x11FB0 }, ::unicode::General_Category::Other_Letter }, // LISU LETTER YHA
+    Prop<::unicode::General_Category>{ { 0x11FB1, 0x11FBF }, ::unicode::General_Category::Unassigned }, // [15] <reserved-11FB1>..<reserved-11FBF>
+    Prop<::unicode::General_Category>{ { 0x11FC0, 0x11FD4 }, ::unicode::General_Category::Other_Number }, // [21] TAMIL FRACTION ONE THREE-HUNDRED-AND-TWENTIETH..TAMIL FRACTION DOWNSCALING FACTOR KIIZH
+    Prop<::unicode::General_Category>{ { 0x11FD5, 0x11FDC }, ::unicode::General_Category::Other_Symbol }, // [8] TAMIL SIGN NEL..TAMIL SIGN MUKKURUNI
+    Prop<::unicode::General_Category>{ { 0x11FDD, 0x11FE0 }, ::unicode::General_Category::Currency_Symbol }, // [4] TAMIL SIGN KAACU..TAMIL SIGN VARAAKAN
+    Prop<::unicode::General_Category>{ { 0x11FE1, 0x11FF1 }, ::unicode::General_Category::Other_Symbol }, // [17] TAMIL SIGN PAARAM..TAMIL SIGN VAKAIYARAA
+    Prop<::unicode::General_Category>{ { 0x11FF2, 0x11FFE }, ::unicode::General_Category::Unassigned }, // [13] <reserved-11FF2>..<reserved-11FFE>
+    Prop<::unicode::General_Category>{ { 0x11FFF, 0x11FFF }, ::unicode::General_Category::Other_Punctuation }, // TAMIL PUNCTUATION END OF TEXT
+    Prop<::unicode::General_Category>{ { 0x12000, 0x12399 }, ::unicode::General_Category::Other_Letter }, // [922] CUNEIFORM SIGN A..CUNEIFORM SIGN U U
+    Prop<::unicode::General_Category>{ { 0x1239A, 0x123FF }, ::unicode::General_Category::Unassigned }, // [102] <reserved-1239A>..<reserved-123FF>
+    Prop<::unicode::General_Category>{ { 0x12400, 0x1246E }, ::unicode::General_Category::Letter_Number }, // [111] CUNEIFORM NUMERIC SIGN TWO ASH..CUNEIFORM NUMERIC SIGN NINE U VARIANT FORM
+    Prop<::unicode::General_Category>{ { 0x1246F, 0x1246F }, ::unicode::General_Category::Unassigned }, // <reserved-1246F>
+    Prop<::unicode::General_Category>{ { 0x12470, 0x12474 }, ::unicode::General_Category::Other_Punctuation }, // [5] CUNEIFORM PUNCTUATION SIGN OLD ASSYRIAN WORD DIVIDER..CUNEIFORM PUNCTUATION SIGN DIAGONAL QUADCOLON
+    Prop<::unicode::General_Category>{ { 0x12475, 0x1247F }, ::unicode::General_Category::Unassigned }, // [11] <reserved-12475>..<reserved-1247F>
+    Prop<::unicode::General_Category>{ { 0x12480, 0x12543 }, ::unicode::General_Category::Other_Letter }, // [196] CUNEIFORM SIGN AB TIMES NUN TENU..CUNEIFORM SIGN ZU5 TIMES THREE DISH TENU
+    Prop<::unicode::General_Category>{ { 0x12544, 0x12FFF }, ::unicode::General_Category::Unassigned }, // [2748] <reserved-12544>..<reserved-12FFF>
+    Prop<::unicode::General_Category>{ { 0x13000, 0x1342E }, ::unicode::General_Category::Other_Letter }, // [1071] EGYPTIAN HIEROGLYPH A001..EGYPTIAN HIEROGLYPH AA032
+    Prop<::unicode::General_Category>{ { 0x1342F, 0x1342F }, ::unicode::General_Category::Unassigned }, // <reserved-1342F>
+    Prop<::unicode::General_Category>{ { 0x13430, 0x13438 }, ::unicode::General_Category::Format }, // [9] EGYPTIAN HIEROGLYPH VERTICAL JOINER..EGYPTIAN HIEROGLYPH END SEGMENT
+    Prop<::unicode::General_Category>{ { 0x13439, 0x143FF }, ::unicode::General_Category::Unassigned }, // [4039] <reserved-13439>..<reserved-143FF>
+    Prop<::unicode::General_Category>{ { 0x14400, 0x14646 }, ::unicode::General_Category::Other_Letter }, // [583] ANATOLIAN HIEROGLYPH A001..ANATOLIAN HIEROGLYPH A530
+    Prop<::unicode::General_Category>{ { 0x14647, 0x167FF }, ::unicode::General_Category::Unassigned }, // [8633] <reserved-14647>..<reserved-167FF>
+    Prop<::unicode::General_Category>{ { 0x16800, 0x16A38 }, ::unicode::General_Category::Other_Letter }, // [569] BAMUM LETTER PHASE-A NGKUE MFON..BAMUM LETTER PHASE-F VUEQ
+    Prop<::unicode::General_Category>{ { 0x16A39, 0x16A3F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-16A39>..<reserved-16A3F>
+    Prop<::unicode::General_Category>{ { 0x16A40, 0x16A5E }, ::unicode::General_Category::Other_Letter }, // [31] MRO LETTER TA..MRO LETTER TEK
+    Prop<::unicode::General_Category>{ { 0x16A5F, 0x16A5F }, ::unicode::General_Category::Unassigned }, // <reserved-16A5F>
+    Prop<::unicode::General_Category>{ { 0x16A60, 0x16A69 }, ::unicode::General_Category::Decimal_Number }, // [10] MRO DIGIT ZERO..MRO DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x16A6A, 0x16A6D }, ::unicode::General_Category::Unassigned }, // [4] <reserved-16A6A>..<reserved-16A6D>
+    Prop<::unicode::General_Category>{ { 0x16A6E, 0x16A6F }, ::unicode::General_Category::Other_Punctuation }, // [2] MRO DANDA..MRO DOUBLE DANDA
+    Prop<::unicode::General_Category>{ { 0x16A70, 0x16ACF }, ::unicode::General_Category::Unassigned }, // [96] <reserved-16A70>..<reserved-16ACF>
+    Prop<::unicode::General_Category>{ { 0x16AD0, 0x16AED }, ::unicode::General_Category::Other_Letter }, // [30] BASSA VAH LETTER ENNI..BASSA VAH LETTER I
+    Prop<::unicode::General_Category>{ { 0x16AEE, 0x16AEF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-16AEE>..<reserved-16AEF>
+    Prop<::unicode::General_Category>{ { 0x16AF0, 0x16AF4 }, ::unicode::General_Category::Nonspacing_Mark }, // [5] BASSA VAH COMBINING HIGH TONE..BASSA VAH COMBINING HIGH-LOW TONE
+    Prop<::unicode::General_Category>{ { 0x16AF5, 0x16AF5 }, ::unicode::General_Category::Other_Punctuation }, // BASSA VAH FULL STOP
+    Prop<::unicode::General_Category>{ { 0x16AF6, 0x16AFF }, ::unicode::General_Category::Unassigned }, // [10] <reserved-16AF6>..<reserved-16AFF>
+    Prop<::unicode::General_Category>{ { 0x16B00, 0x16B2F }, ::unicode::General_Category::Other_Letter }, // [48] PAHAWH HMONG VOWEL KEEB..PAHAWH HMONG CONSONANT CAU
+    Prop<::unicode::General_Category>{ { 0x16B30, 0x16B36 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] PAHAWH HMONG MARK CIM TUB..PAHAWH HMONG MARK CIM TAUM
+    Prop<::unicode::General_Category>{ { 0x16B37, 0x16B3B }, ::unicode::General_Category::Other_Punctuation }, // [5] PAHAWH HMONG SIGN VOS THOM..PAHAWH HMONG SIGN VOS FEEM
+    Prop<::unicode::General_Category>{ { 0x16B3C, 0x16B3F }, ::unicode::General_Category::Other_Symbol }, // [4] PAHAWH HMONG SIGN XYEEM NTXIV..PAHAWH HMONG SIGN XYEEM FAIB
+    Prop<::unicode::General_Category>{ { 0x16B40, 0x16B43 }, ::unicode::General_Category::Modifier_Letter }, // [4] PAHAWH HMONG SIGN VOS SEEV..PAHAWH HMONG SIGN IB YAM
+    Prop<::unicode::General_Category>{ { 0x16B44, 0x16B44 }, ::unicode::General_Category::Other_Punctuation }, // PAHAWH HMONG SIGN XAUS
+    Prop<::unicode::General_Category>{ { 0x16B45, 0x16B45 }, ::unicode::General_Category::Other_Symbol }, // PAHAWH HMONG SIGN CIM TSOV ROG
+    Prop<::unicode::General_Category>{ { 0x16B46, 0x16B4F }, ::unicode::General_Category::Unassigned }, // [10] <reserved-16B46>..<reserved-16B4F>
+    Prop<::unicode::General_Category>{ { 0x16B50, 0x16B59 }, ::unicode::General_Category::Decimal_Number }, // [10] PAHAWH HMONG DIGIT ZERO..PAHAWH HMONG DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x16B5A, 0x16B5A }, ::unicode::General_Category::Unassigned }, // <reserved-16B5A>
+    Prop<::unicode::General_Category>{ { 0x16B5B, 0x16B61 }, ::unicode::General_Category::Other_Number }, // [7] PAHAWH HMONG NUMBER TENS..PAHAWH HMONG NUMBER TRILLIONS
+    Prop<::unicode::General_Category>{ { 0x16B62, 0x16B62 }, ::unicode::General_Category::Unassigned }, // <reserved-16B62>
+    Prop<::unicode::General_Category>{ { 0x16B63, 0x16B77 }, ::unicode::General_Category::Other_Letter }, // [21] PAHAWH HMONG SIGN VOS LUB..PAHAWH HMONG SIGN CIM NRES TOS
+    Prop<::unicode::General_Category>{ { 0x16B78, 0x16B7C }, ::unicode::General_Category::Unassigned }, // [5] <reserved-16B78>..<reserved-16B7C>
+    Prop<::unicode::General_Category>{ { 0x16B7D, 0x16B8F }, ::unicode::General_Category::Other_Letter }, // [19] PAHAWH HMONG CLAN SIGN TSHEEJ..PAHAWH HMONG CLAN SIGN VWJ
+    Prop<::unicode::General_Category>{ { 0x16B90, 0x16E3F }, ::unicode::General_Category::Unassigned }, // [688] <reserved-16B90>..<reserved-16E3F>
+    Prop<::unicode::General_Category>{ { 0x16E40, 0x16E5F }, ::unicode::General_Category::Uppercase_Letter }, // [32] MEDEFAIDRIN CAPITAL LETTER M..MEDEFAIDRIN CAPITAL LETTER Y
+    Prop<::unicode::General_Category>{ { 0x16E60, 0x16E7F }, ::unicode::General_Category::Lowercase_Letter }, // [32] MEDEFAIDRIN SMALL LETTER M..MEDEFAIDRIN SMALL LETTER Y
+    Prop<::unicode::General_Category>{ { 0x16E80, 0x16E96 }, ::unicode::General_Category::Other_Number }, // [23] MEDEFAIDRIN DIGIT ZERO..MEDEFAIDRIN DIGIT THREE ALTERNATE FORM
+    Prop<::unicode::General_Category>{ { 0x16E97, 0x16E9A }, ::unicode::General_Category::Other_Punctuation }, // [4] MEDEFAIDRIN COMMA..MEDEFAIDRIN EXCLAMATION OH
+    Prop<::unicode::General_Category>{ { 0x16E9B, 0x16EFF }, ::unicode::General_Category::Unassigned }, // [101] <reserved-16E9B>..<reserved-16EFF>
+    Prop<::unicode::General_Category>{ { 0x16F00, 0x16F4A }, ::unicode::General_Category::Other_Letter }, // [75] MIAO LETTER PA..MIAO LETTER RTE
+    Prop<::unicode::General_Category>{ { 0x16F4B, 0x16F4E }, ::unicode::General_Category::Unassigned }, // [4] <reserved-16F4B>..<reserved-16F4E>
+    Prop<::unicode::General_Category>{ { 0x16F4F, 0x16F4F }, ::unicode::General_Category::Nonspacing_Mark }, // MIAO SIGN CONSONANT MODIFIER BAR
+    Prop<::unicode::General_Category>{ { 0x16F50, 0x16F50 }, ::unicode::General_Category::Other_Letter }, // MIAO LETTER NASALIZATION
+    Prop<::unicode::General_Category>{ { 0x16F51, 0x16F87 }, ::unicode::General_Category::Spacing_Mark }, // [55] MIAO SIGN ASPIRATION..MIAO VOWEL SIGN UI
+    Prop<::unicode::General_Category>{ { 0x16F88, 0x16F8E }, ::unicode::General_Category::Unassigned }, // [7] <reserved-16F88>..<reserved-16F8E>
+    Prop<::unicode::General_Category>{ { 0x16F8F, 0x16F92 }, ::unicode::General_Category::Nonspacing_Mark }, // [4] MIAO TONE RIGHT..MIAO TONE BELOW
+    Prop<::unicode::General_Category>{ { 0x16F93, 0x16F9F }, ::unicode::General_Category::Modifier_Letter }, // [13] MIAO LETTER TONE-2..MIAO LETTER REFORMED TONE-8
+    Prop<::unicode::General_Category>{ { 0x16FA0, 0x16FDF }, ::unicode::General_Category::Unassigned }, // [64] <reserved-16FA0>..<reserved-16FDF>
+    Prop<::unicode::General_Category>{ { 0x16FE0, 0x16FE1 }, ::unicode::General_Category::Modifier_Letter }, // [2] TANGUT ITERATION MARK..NUSHU ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x16FE2, 0x16FE2 }, ::unicode::General_Category::Other_Punctuation }, // OLD CHINESE HOOK MARK
+    Prop<::unicode::General_Category>{ { 0x16FE3, 0x16FE3 }, ::unicode::General_Category::Modifier_Letter }, // OLD CHINESE ITERATION MARK
+    Prop<::unicode::General_Category>{ { 0x16FE4, 0x16FE4 }, ::unicode::General_Category::Nonspacing_Mark }, // KHITAN SMALL SCRIPT FILLER
+    Prop<::unicode::General_Category>{ { 0x16FE5, 0x16FEF }, ::unicode::General_Category::Unassigned }, // [11] <reserved-16FE5>..<reserved-16FEF>
+    Prop<::unicode::General_Category>{ { 0x16FF0, 0x16FF1 }, ::unicode::General_Category::Spacing_Mark }, // [2] VIETNAMESE ALTERNATE READING MARK CA..VIETNAMESE ALTERNATE READING MARK NHAY
+    Prop<::unicode::General_Category>{ { 0x16FF2, 0x16FFF }, ::unicode::General_Category::Unassigned }, // [14] <reserved-16FF2>..<reserved-16FFF>
+    Prop<::unicode::General_Category>{ { 0x17000, 0x187F7 }, ::unicode::General_Category::Other_Letter }, // [6136] TANGUT IDEOGRAPH-17000..TANGUT IDEOGRAPH-187F7
+    Prop<::unicode::General_Category>{ { 0x187F8, 0x187FF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-187F8>..<reserved-187FF>
+    Prop<::unicode::General_Category>{ { 0x18800, 0x18CD5 }, ::unicode::General_Category::Other_Letter }, // [1238] TANGUT COMPONENT-001..KHITAN SMALL SCRIPT CHARACTER-18CD5
+    Prop<::unicode::General_Category>{ { 0x18CD6, 0x18CFF }, ::unicode::General_Category::Unassigned }, // [42] <reserved-18CD6>..<reserved-18CFF>
+    Prop<::unicode::General_Category>{ { 0x18D00, 0x18D08 }, ::unicode::General_Category::Other_Letter }, // [9] TANGUT IDEOGRAPH-18D00..TANGUT IDEOGRAPH-18D08
+    Prop<::unicode::General_Category>{ { 0x18D09, 0x1AFFF }, ::unicode::General_Category::Unassigned }, // [8951] <reserved-18D09>..<reserved-1AFFF>
+    Prop<::unicode::General_Category>{ { 0x1B000, 0x1B11E }, ::unicode::General_Category::Other_Letter }, // [287] KATAKANA LETTER ARCHAIC E..HENTAIGANA LETTER N-MU-MO-2
+    Prop<::unicode::General_Category>{ { 0x1B11F, 0x1B14F }, ::unicode::General_Category::Unassigned }, // [49] <reserved-1B11F>..<reserved-1B14F>
+    Prop<::unicode::General_Category>{ { 0x1B150, 0x1B152 }, ::unicode::General_Category::Other_Letter }, // [3] HIRAGANA LETTER SMALL WI..HIRAGANA LETTER SMALL WO
+    Prop<::unicode::General_Category>{ { 0x1B153, 0x1B163 }, ::unicode::General_Category::Unassigned }, // [17] <reserved-1B153>..<reserved-1B163>
+    Prop<::unicode::General_Category>{ { 0x1B164, 0x1B167 }, ::unicode::General_Category::Other_Letter }, // [4] KATAKANA LETTER SMALL WI..KATAKANA LETTER SMALL N
+    Prop<::unicode::General_Category>{ { 0x1B168, 0x1B16F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1B168>..<reserved-1B16F>
+    Prop<::unicode::General_Category>{ { 0x1B170, 0x1B2FB }, ::unicode::General_Category::Other_Letter }, // [396] NUSHU CHARACTER-1B170..NUSHU CHARACTER-1B2FB
+    Prop<::unicode::General_Category>{ { 0x1B2FC, 0x1BBFF }, ::unicode::General_Category::Unassigned }, // [2308] <reserved-1B2FC>..<reserved-1BBFF>
+    Prop<::unicode::General_Category>{ { 0x1BC00, 0x1BC6A }, ::unicode::General_Category::Other_Letter }, // [107] DUPLOYAN LETTER H..DUPLOYAN LETTER VOCALIC M
+    Prop<::unicode::General_Category>{ { 0x1BC6B, 0x1BC6F }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1BC6B>..<reserved-1BC6F>
+    Prop<::unicode::General_Category>{ { 0x1BC70, 0x1BC7C }, ::unicode::General_Category::Other_Letter }, // [13] DUPLOYAN AFFIX LEFT HORIZONTAL SECANT..DUPLOYAN AFFIX ATTACHED TANGENT HOOK
+    Prop<::unicode::General_Category>{ { 0x1BC7D, 0x1BC7F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1BC7D>..<reserved-1BC7F>
+    Prop<::unicode::General_Category>{ { 0x1BC80, 0x1BC88 }, ::unicode::General_Category::Other_Letter }, // [9] DUPLOYAN AFFIX HIGH ACUTE..DUPLOYAN AFFIX HIGH VERTICAL
+    Prop<::unicode::General_Category>{ { 0x1BC89, 0x1BC8F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1BC89>..<reserved-1BC8F>
+    Prop<::unicode::General_Category>{ { 0x1BC90, 0x1BC99 }, ::unicode::General_Category::Other_Letter }, // [10] DUPLOYAN AFFIX LOW ACUTE..DUPLOYAN AFFIX LOW ARROW
+    Prop<::unicode::General_Category>{ { 0x1BC9A, 0x1BC9B }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1BC9A>..<reserved-1BC9B>
+    Prop<::unicode::General_Category>{ { 0x1BC9C, 0x1BC9C }, ::unicode::General_Category::Other_Symbol }, // DUPLOYAN SIGN O WITH CROSS
+    Prop<::unicode::General_Category>{ { 0x1BC9D, 0x1BC9E }, ::unicode::General_Category::Nonspacing_Mark }, // [2] DUPLOYAN THICK LETTER SELECTOR..DUPLOYAN DOUBLE MARK
+    Prop<::unicode::General_Category>{ { 0x1BC9F, 0x1BC9F }, ::unicode::General_Category::Other_Punctuation }, // DUPLOYAN PUNCTUATION CHINOOK FULL STOP
+    Prop<::unicode::General_Category>{ { 0x1BCA0, 0x1BCA3 }, ::unicode::General_Category::Format }, // [4] SHORTHAND FORMAT LETTER OVERLAP..SHORTHAND FORMAT UP STEP
+    Prop<::unicode::General_Category>{ { 0x1BCA4, 0x1CFFF }, ::unicode::General_Category::Unassigned }, // [4956] <reserved-1BCA4>..<reserved-1CFFF>
+    Prop<::unicode::General_Category>{ { 0x1D000, 0x1D0F5 }, ::unicode::General_Category::Other_Symbol }, // [246] BYZANTINE MUSICAL SYMBOL PSILI..BYZANTINE MUSICAL SYMBOL GORGON NEO KATO
+    Prop<::unicode::General_Category>{ { 0x1D0F6, 0x1D0FF }, ::unicode::General_Category::Unassigned }, // [10] <reserved-1D0F6>..<reserved-1D0FF>
+    Prop<::unicode::General_Category>{ { 0x1D100, 0x1D126 }, ::unicode::General_Category::Other_Symbol }, // [39] MUSICAL SYMBOL SINGLE BARLINE..MUSICAL SYMBOL DRUM CLEF-2
+    Prop<::unicode::General_Category>{ { 0x1D127, 0x1D128 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D127>..<reserved-1D128>
+    Prop<::unicode::General_Category>{ { 0x1D129, 0x1D164 }, ::unicode::General_Category::Other_Symbol }, // [60] MUSICAL SYMBOL MULTIPLE MEASURE REST..MUSICAL SYMBOL ONE HUNDRED TWENTY-EIGHTH NOTE
+    Prop<::unicode::General_Category>{ { 0x1D165, 0x1D166 }, ::unicode::General_Category::Spacing_Mark }, // [2] MUSICAL SYMBOL COMBINING STEM..MUSICAL SYMBOL COMBINING SPRECHGESANG STEM
+    Prop<::unicode::General_Category>{ { 0x1D167, 0x1D169 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] MUSICAL SYMBOL COMBINING TREMOLO-1..MUSICAL SYMBOL COMBINING TREMOLO-3
+    Prop<::unicode::General_Category>{ { 0x1D16A, 0x1D16C }, ::unicode::General_Category::Other_Symbol }, // [3] MUSICAL SYMBOL FINGERED TREMOLO-1..MUSICAL SYMBOL FINGERED TREMOLO-3
+    Prop<::unicode::General_Category>{ { 0x1D16D, 0x1D172 }, ::unicode::General_Category::Spacing_Mark }, // [6] MUSICAL SYMBOL COMBINING AUGMENTATION DOT..MUSICAL SYMBOL COMBINING FLAG-5
+    Prop<::unicode::General_Category>{ { 0x1D173, 0x1D17A }, ::unicode::General_Category::Format }, // [8] MUSICAL SYMBOL BEGIN BEAM..MUSICAL SYMBOL END PHRASE
+    Prop<::unicode::General_Category>{ { 0x1D17B, 0x1D182 }, ::unicode::General_Category::Nonspacing_Mark }, // [8] MUSICAL SYMBOL COMBINING ACCENT..MUSICAL SYMBOL COMBINING LOURE
+    Prop<::unicode::General_Category>{ { 0x1D183, 0x1D184 }, ::unicode::General_Category::Other_Symbol }, // [2] MUSICAL SYMBOL ARPEGGIATO UP..MUSICAL SYMBOL ARPEGGIATO DOWN
+    Prop<::unicode::General_Category>{ { 0x1D185, 0x1D18B }, ::unicode::General_Category::Nonspacing_Mark }, // [7] MUSICAL SYMBOL COMBINING DOIT..MUSICAL SYMBOL COMBINING TRIPLE TONGUE
+    Prop<::unicode::General_Category>{ { 0x1D18C, 0x1D1A9 }, ::unicode::General_Category::Other_Symbol }, // [30] MUSICAL SYMBOL RINFORZANDO..MUSICAL SYMBOL DEGREE SLASH
+    Prop<::unicode::General_Category>{ { 0x1D1AA, 0x1D1AD }, ::unicode::General_Category::Nonspacing_Mark }, // [4] MUSICAL SYMBOL COMBINING DOWN BOW..MUSICAL SYMBOL COMBINING SNAP PIZZICATO
+    Prop<::unicode::General_Category>{ { 0x1D1AE, 0x1D1E8 }, ::unicode::General_Category::Other_Symbol }, // [59] MUSICAL SYMBOL PEDAL MARK..MUSICAL SYMBOL KIEVAN FLAT SIGN
+    Prop<::unicode::General_Category>{ { 0x1D1E9, 0x1D1FF }, ::unicode::General_Category::Unassigned }, // [23] <reserved-1D1E9>..<reserved-1D1FF>
+    Prop<::unicode::General_Category>{ { 0x1D200, 0x1D241 }, ::unicode::General_Category::Other_Symbol }, // [66] GREEK VOCAL NOTATION SYMBOL-1..GREEK INSTRUMENTAL NOTATION SYMBOL-54
+    Prop<::unicode::General_Category>{ { 0x1D242, 0x1D244 }, ::unicode::General_Category::Nonspacing_Mark }, // [3] COMBINING GREEK MUSICAL TRISEME..COMBINING GREEK MUSICAL PENTASEME
+    Prop<::unicode::General_Category>{ { 0x1D245, 0x1D245 }, ::unicode::General_Category::Other_Symbol }, // GREEK MUSICAL LEIMMA
+    Prop<::unicode::General_Category>{ { 0x1D246, 0x1D2DF }, ::unicode::General_Category::Unassigned }, // [154] <reserved-1D246>..<reserved-1D2DF>
+    Prop<::unicode::General_Category>{ { 0x1D2E0, 0x1D2F3 }, ::unicode::General_Category::Other_Number }, // [20] MAYAN NUMERAL ZERO..MAYAN NUMERAL NINETEEN
+    Prop<::unicode::General_Category>{ { 0x1D2F4, 0x1D2FF }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1D2F4>..<reserved-1D2FF>
+    Prop<::unicode::General_Category>{ { 0x1D300, 0x1D356 }, ::unicode::General_Category::Other_Symbol }, // [87] MONOGRAM FOR EARTH..TETRAGRAM FOR FOSTERING
+    Prop<::unicode::General_Category>{ { 0x1D357, 0x1D35F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-1D357>..<reserved-1D35F>
+    Prop<::unicode::General_Category>{ { 0x1D360, 0x1D378 }, ::unicode::General_Category::Other_Number }, // [25] COUNTING ROD UNIT DIGIT ONE..TALLY MARK FIVE
+    Prop<::unicode::General_Category>{ { 0x1D379, 0x1D3FF }, ::unicode::General_Category::Unassigned }, // [135] <reserved-1D379>..<reserved-1D3FF>
+    Prop<::unicode::General_Category>{ { 0x1D400, 0x1D419 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL BOLD CAPITAL A..MATHEMATICAL BOLD CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D41A, 0x1D433 }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL BOLD SMALL A..MATHEMATICAL BOLD SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D434, 0x1D44D }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL ITALIC CAPITAL A..MATHEMATICAL ITALIC CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D44E, 0x1D454 }, ::unicode::General_Category::Lowercase_Letter }, // [7] MATHEMATICAL ITALIC SMALL A..MATHEMATICAL ITALIC SMALL G
+    Prop<::unicode::General_Category>{ { 0x1D455, 0x1D455 }, ::unicode::General_Category::Unassigned }, // <reserved-1D455>
+    Prop<::unicode::General_Category>{ { 0x1D456, 0x1D467 }, ::unicode::General_Category::Lowercase_Letter }, // [18] MATHEMATICAL ITALIC SMALL I..MATHEMATICAL ITALIC SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D468, 0x1D481 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL BOLD ITALIC CAPITAL A..MATHEMATICAL BOLD ITALIC CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D482, 0x1D49B }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL BOLD ITALIC SMALL A..MATHEMATICAL BOLD ITALIC SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D49C, 0x1D49C }, ::unicode::General_Category::Uppercase_Letter }, // MATHEMATICAL SCRIPT CAPITAL A
+    Prop<::unicode::General_Category>{ { 0x1D49D, 0x1D49D }, ::unicode::General_Category::Unassigned }, // <reserved-1D49D>
+    Prop<::unicode::General_Category>{ { 0x1D49E, 0x1D49F }, ::unicode::General_Category::Uppercase_Letter }, // [2] MATHEMATICAL SCRIPT CAPITAL C..MATHEMATICAL SCRIPT CAPITAL D
+    Prop<::unicode::General_Category>{ { 0x1D4A0, 0x1D4A1 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D4A0>..<reserved-1D4A1>
+    Prop<::unicode::General_Category>{ { 0x1D4A2, 0x1D4A2 }, ::unicode::General_Category::Uppercase_Letter }, // MATHEMATICAL SCRIPT CAPITAL G
+    Prop<::unicode::General_Category>{ { 0x1D4A3, 0x1D4A4 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D4A3>..<reserved-1D4A4>
+    Prop<::unicode::General_Category>{ { 0x1D4A5, 0x1D4A6 }, ::unicode::General_Category::Uppercase_Letter }, // [2] MATHEMATICAL SCRIPT CAPITAL J..MATHEMATICAL SCRIPT CAPITAL K
+    Prop<::unicode::General_Category>{ { 0x1D4A7, 0x1D4A8 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D4A7>..<reserved-1D4A8>
+    Prop<::unicode::General_Category>{ { 0x1D4A9, 0x1D4AC }, ::unicode::General_Category::Uppercase_Letter }, // [4] MATHEMATICAL SCRIPT CAPITAL N..MATHEMATICAL SCRIPT CAPITAL Q
+    Prop<::unicode::General_Category>{ { 0x1D4AD, 0x1D4AD }, ::unicode::General_Category::Unassigned }, // <reserved-1D4AD>
+    Prop<::unicode::General_Category>{ { 0x1D4AE, 0x1D4B5 }, ::unicode::General_Category::Uppercase_Letter }, // [8] MATHEMATICAL SCRIPT CAPITAL S..MATHEMATICAL SCRIPT CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D4B6, 0x1D4B9 }, ::unicode::General_Category::Lowercase_Letter }, // [4] MATHEMATICAL SCRIPT SMALL A..MATHEMATICAL SCRIPT SMALL D
+    Prop<::unicode::General_Category>{ { 0x1D4BA, 0x1D4BA }, ::unicode::General_Category::Unassigned }, // <reserved-1D4BA>
+    Prop<::unicode::General_Category>{ { 0x1D4BB, 0x1D4BB }, ::unicode::General_Category::Lowercase_Letter }, // MATHEMATICAL SCRIPT SMALL F
+    Prop<::unicode::General_Category>{ { 0x1D4BC, 0x1D4BC }, ::unicode::General_Category::Unassigned }, // <reserved-1D4BC>
+    Prop<::unicode::General_Category>{ { 0x1D4BD, 0x1D4C3 }, ::unicode::General_Category::Lowercase_Letter }, // [7] MATHEMATICAL SCRIPT SMALL H..MATHEMATICAL SCRIPT SMALL N
+    Prop<::unicode::General_Category>{ { 0x1D4C4, 0x1D4C4 }, ::unicode::General_Category::Unassigned }, // <reserved-1D4C4>
+    Prop<::unicode::General_Category>{ { 0x1D4C5, 0x1D4CF }, ::unicode::General_Category::Lowercase_Letter }, // [11] MATHEMATICAL SCRIPT SMALL P..MATHEMATICAL SCRIPT SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D4D0, 0x1D4E9 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL BOLD SCRIPT CAPITAL A..MATHEMATICAL BOLD SCRIPT CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D4EA, 0x1D503 }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL BOLD SCRIPT SMALL A..MATHEMATICAL BOLD SCRIPT SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D504, 0x1D505 }, ::unicode::General_Category::Uppercase_Letter }, // [2] MATHEMATICAL FRAKTUR CAPITAL A..MATHEMATICAL FRAKTUR CAPITAL B
+    Prop<::unicode::General_Category>{ { 0x1D506, 0x1D506 }, ::unicode::General_Category::Unassigned }, // <reserved-1D506>
+    Prop<::unicode::General_Category>{ { 0x1D507, 0x1D50A }, ::unicode::General_Category::Uppercase_Letter }, // [4] MATHEMATICAL FRAKTUR CAPITAL D..MATHEMATICAL FRAKTUR CAPITAL G
+    Prop<::unicode::General_Category>{ { 0x1D50B, 0x1D50C }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D50B>..<reserved-1D50C>
+    Prop<::unicode::General_Category>{ { 0x1D50D, 0x1D514 }, ::unicode::General_Category::Uppercase_Letter }, // [8] MATHEMATICAL FRAKTUR CAPITAL J..MATHEMATICAL FRAKTUR CAPITAL Q
+    Prop<::unicode::General_Category>{ { 0x1D515, 0x1D515 }, ::unicode::General_Category::Unassigned }, // <reserved-1D515>
+    Prop<::unicode::General_Category>{ { 0x1D516, 0x1D51C }, ::unicode::General_Category::Uppercase_Letter }, // [7] MATHEMATICAL FRAKTUR CAPITAL S..MATHEMATICAL FRAKTUR CAPITAL Y
+    Prop<::unicode::General_Category>{ { 0x1D51D, 0x1D51D }, ::unicode::General_Category::Unassigned }, // <reserved-1D51D>
+    Prop<::unicode::General_Category>{ { 0x1D51E, 0x1D537 }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL FRAKTUR SMALL A..MATHEMATICAL FRAKTUR SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D538, 0x1D539 }, ::unicode::General_Category::Uppercase_Letter }, // [2] MATHEMATICAL DOUBLE-STRUCK CAPITAL A..MATHEMATICAL DOUBLE-STRUCK CAPITAL B
+    Prop<::unicode::General_Category>{ { 0x1D53A, 0x1D53A }, ::unicode::General_Category::Unassigned }, // <reserved-1D53A>
+    Prop<::unicode::General_Category>{ { 0x1D53B, 0x1D53E }, ::unicode::General_Category::Uppercase_Letter }, // [4] MATHEMATICAL DOUBLE-STRUCK CAPITAL D..MATHEMATICAL DOUBLE-STRUCK CAPITAL G
+    Prop<::unicode::General_Category>{ { 0x1D53F, 0x1D53F }, ::unicode::General_Category::Unassigned }, // <reserved-1D53F>
+    Prop<::unicode::General_Category>{ { 0x1D540, 0x1D544 }, ::unicode::General_Category::Uppercase_Letter }, // [5] MATHEMATICAL DOUBLE-STRUCK CAPITAL I..MATHEMATICAL DOUBLE-STRUCK CAPITAL M
+    Prop<::unicode::General_Category>{ { 0x1D545, 0x1D545 }, ::unicode::General_Category::Unassigned }, // <reserved-1D545>
+    Prop<::unicode::General_Category>{ { 0x1D546, 0x1D546 }, ::unicode::General_Category::Uppercase_Letter }, // MATHEMATICAL DOUBLE-STRUCK CAPITAL O
+    Prop<::unicode::General_Category>{ { 0x1D547, 0x1D549 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1D547>..<reserved-1D549>
+    Prop<::unicode::General_Category>{ { 0x1D54A, 0x1D550 }, ::unicode::General_Category::Uppercase_Letter }, // [7] MATHEMATICAL DOUBLE-STRUCK CAPITAL S..MATHEMATICAL DOUBLE-STRUCK CAPITAL Y
+    Prop<::unicode::General_Category>{ { 0x1D551, 0x1D551 }, ::unicode::General_Category::Unassigned }, // <reserved-1D551>
+    Prop<::unicode::General_Category>{ { 0x1D552, 0x1D56B }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL DOUBLE-STRUCK SMALL A..MATHEMATICAL DOUBLE-STRUCK SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D56C, 0x1D585 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL BOLD FRAKTUR CAPITAL A..MATHEMATICAL BOLD FRAKTUR CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D586, 0x1D59F }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL BOLD FRAKTUR SMALL A..MATHEMATICAL BOLD FRAKTUR SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D5A0, 0x1D5B9 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL SANS-SERIF CAPITAL A..MATHEMATICAL SANS-SERIF CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D5BA, 0x1D5D3 }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL SANS-SERIF SMALL A..MATHEMATICAL SANS-SERIF SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D5D4, 0x1D5ED }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL SANS-SERIF BOLD CAPITAL A..MATHEMATICAL SANS-SERIF BOLD CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D5EE, 0x1D607 }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL SANS-SERIF BOLD SMALL A..MATHEMATICAL SANS-SERIF BOLD SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D608, 0x1D621 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL SANS-SERIF ITALIC CAPITAL A..MATHEMATICAL SANS-SERIF ITALIC CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D622, 0x1D63B }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL SANS-SERIF ITALIC SMALL A..MATHEMATICAL SANS-SERIF ITALIC SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D63C, 0x1D655 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL A..MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D656, 0x1D66F }, ::unicode::General_Category::Lowercase_Letter }, // [26] MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL A..MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL Z
+    Prop<::unicode::General_Category>{ { 0x1D670, 0x1D689 }, ::unicode::General_Category::Uppercase_Letter }, // [26] MATHEMATICAL MONOSPACE CAPITAL A..MATHEMATICAL MONOSPACE CAPITAL Z
+    Prop<::unicode::General_Category>{ { 0x1D68A, 0x1D6A5 }, ::unicode::General_Category::Lowercase_Letter }, // [28] MATHEMATICAL MONOSPACE SMALL A..MATHEMATICAL ITALIC SMALL DOTLESS J
+    Prop<::unicode::General_Category>{ { 0x1D6A6, 0x1D6A7 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D6A6>..<reserved-1D6A7>
+    Prop<::unicode::General_Category>{ { 0x1D6A8, 0x1D6C0 }, ::unicode::General_Category::Uppercase_Letter }, // [25] MATHEMATICAL BOLD CAPITAL ALPHA..MATHEMATICAL BOLD CAPITAL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D6C1, 0x1D6C1 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL BOLD NABLA
+    Prop<::unicode::General_Category>{ { 0x1D6C2, 0x1D6DA }, ::unicode::General_Category::Lowercase_Letter }, // [25] MATHEMATICAL BOLD SMALL ALPHA..MATHEMATICAL BOLD SMALL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D6DB, 0x1D6DB }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL BOLD PARTIAL DIFFERENTIAL
+    Prop<::unicode::General_Category>{ { 0x1D6DC, 0x1D6E1 }, ::unicode::General_Category::Lowercase_Letter }, // [6] MATHEMATICAL BOLD EPSILON SYMBOL..MATHEMATICAL BOLD PI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1D6E2, 0x1D6FA }, ::unicode::General_Category::Uppercase_Letter }, // [25] MATHEMATICAL ITALIC CAPITAL ALPHA..MATHEMATICAL ITALIC CAPITAL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D6FB, 0x1D6FB }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL ITALIC NABLA
+    Prop<::unicode::General_Category>{ { 0x1D6FC, 0x1D714 }, ::unicode::General_Category::Lowercase_Letter }, // [25] MATHEMATICAL ITALIC SMALL ALPHA..MATHEMATICAL ITALIC SMALL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D715, 0x1D715 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL ITALIC PARTIAL DIFFERENTIAL
+    Prop<::unicode::General_Category>{ { 0x1D716, 0x1D71B }, ::unicode::General_Category::Lowercase_Letter }, // [6] MATHEMATICAL ITALIC EPSILON SYMBOL..MATHEMATICAL ITALIC PI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1D71C, 0x1D734 }, ::unicode::General_Category::Uppercase_Letter }, // [25] MATHEMATICAL BOLD ITALIC CAPITAL ALPHA..MATHEMATICAL BOLD ITALIC CAPITAL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D735, 0x1D735 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL BOLD ITALIC NABLA
+    Prop<::unicode::General_Category>{ { 0x1D736, 0x1D74E }, ::unicode::General_Category::Lowercase_Letter }, // [25] MATHEMATICAL BOLD ITALIC SMALL ALPHA..MATHEMATICAL BOLD ITALIC SMALL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D74F, 0x1D74F }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL BOLD ITALIC PARTIAL DIFFERENTIAL
+    Prop<::unicode::General_Category>{ { 0x1D750, 0x1D755 }, ::unicode::General_Category::Lowercase_Letter }, // [6] MATHEMATICAL BOLD ITALIC EPSILON SYMBOL..MATHEMATICAL BOLD ITALIC PI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1D756, 0x1D76E }, ::unicode::General_Category::Uppercase_Letter }, // [25] MATHEMATICAL SANS-SERIF BOLD CAPITAL ALPHA..MATHEMATICAL SANS-SERIF BOLD CAPITAL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D76F, 0x1D76F }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL SANS-SERIF BOLD NABLA
+    Prop<::unicode::General_Category>{ { 0x1D770, 0x1D788 }, ::unicode::General_Category::Lowercase_Letter }, // [25] MATHEMATICAL SANS-SERIF BOLD SMALL ALPHA..MATHEMATICAL SANS-SERIF BOLD SMALL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D789, 0x1D789 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL SANS-SERIF BOLD PARTIAL DIFFERENTIAL
+    Prop<::unicode::General_Category>{ { 0x1D78A, 0x1D78F }, ::unicode::General_Category::Lowercase_Letter }, // [6] MATHEMATICAL SANS-SERIF BOLD EPSILON SYMBOL..MATHEMATICAL SANS-SERIF BOLD PI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1D790, 0x1D7A8 }, ::unicode::General_Category::Uppercase_Letter }, // [25] MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL ALPHA..MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D7A9, 0x1D7A9 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL SANS-SERIF BOLD ITALIC NABLA
+    Prop<::unicode::General_Category>{ { 0x1D7AA, 0x1D7C2 }, ::unicode::General_Category::Lowercase_Letter }, // [25] MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL ALPHA..MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL OMEGA
+    Prop<::unicode::General_Category>{ { 0x1D7C3, 0x1D7C3 }, ::unicode::General_Category::Math_Symbol }, // MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL
+    Prop<::unicode::General_Category>{ { 0x1D7C4, 0x1D7C9 }, ::unicode::General_Category::Lowercase_Letter }, // [6] MATHEMATICAL SANS-SERIF BOLD ITALIC EPSILON SYMBOL..MATHEMATICAL SANS-SERIF BOLD ITALIC PI SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1D7CA, 0x1D7CA }, ::unicode::General_Category::Uppercase_Letter }, // MATHEMATICAL BOLD CAPITAL DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x1D7CB, 0x1D7CB }, ::unicode::General_Category::Lowercase_Letter }, // MATHEMATICAL BOLD SMALL DIGAMMA
+    Prop<::unicode::General_Category>{ { 0x1D7CC, 0x1D7CD }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1D7CC>..<reserved-1D7CD>
+    Prop<::unicode::General_Category>{ { 0x1D7CE, 0x1D7FF }, ::unicode::General_Category::Decimal_Number }, // [50] MATHEMATICAL BOLD DIGIT ZERO..MATHEMATICAL MONOSPACE DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1D800, 0x1D9FF }, ::unicode::General_Category::Other_Symbol }, // [512] SIGNWRITING HAND-FIST INDEX..SIGNWRITING HEAD
+    Prop<::unicode::General_Category>{ { 0x1DA00, 0x1DA36 }, ::unicode::General_Category::Nonspacing_Mark }, // [55] SIGNWRITING HEAD RIM..SIGNWRITING AIR SUCKING IN
+    Prop<::unicode::General_Category>{ { 0x1DA37, 0x1DA3A }, ::unicode::General_Category::Other_Symbol }, // [4] SIGNWRITING AIR BLOW SMALL ROTATIONS..SIGNWRITING BREATH EXHALE
+    Prop<::unicode::General_Category>{ { 0x1DA3B, 0x1DA6C }, ::unicode::General_Category::Nonspacing_Mark }, // [50] SIGNWRITING MOUTH CLOSED NEUTRAL..SIGNWRITING EXCITEMENT
+    Prop<::unicode::General_Category>{ { 0x1DA6D, 0x1DA74 }, ::unicode::General_Category::Other_Symbol }, // [8] SIGNWRITING SHOULDER HIP SPINE..SIGNWRITING TORSO-FLOORPLANE TWISTING
+    Prop<::unicode::General_Category>{ { 0x1DA75, 0x1DA75 }, ::unicode::General_Category::Nonspacing_Mark }, // SIGNWRITING UPPER BODY TILTING FROM HIP JOINTS
+    Prop<::unicode::General_Category>{ { 0x1DA76, 0x1DA83 }, ::unicode::General_Category::Other_Symbol }, // [14] SIGNWRITING LIMB COMBINATION..SIGNWRITING LOCATION DEPTH
+    Prop<::unicode::General_Category>{ { 0x1DA84, 0x1DA84 }, ::unicode::General_Category::Nonspacing_Mark }, // SIGNWRITING LOCATION HEAD NECK
+    Prop<::unicode::General_Category>{ { 0x1DA85, 0x1DA86 }, ::unicode::General_Category::Other_Symbol }, // [2] SIGNWRITING LOCATION TORSO..SIGNWRITING LOCATION LIMBS DIGITS
+    Prop<::unicode::General_Category>{ { 0x1DA87, 0x1DA8B }, ::unicode::General_Category::Other_Punctuation }, // [5] SIGNWRITING COMMA..SIGNWRITING PARENTHESIS
+    Prop<::unicode::General_Category>{ { 0x1DA8C, 0x1DA9A }, ::unicode::General_Category::Unassigned }, // [15] <reserved-1DA8C>..<reserved-1DA9A>
+    Prop<::unicode::General_Category>{ { 0x1DA9B, 0x1DA9F }, ::unicode::General_Category::Nonspacing_Mark }, // [5] SIGNWRITING FILL MODIFIER-2..SIGNWRITING FILL MODIFIER-6
+    Prop<::unicode::General_Category>{ { 0x1DAA0, 0x1DAA0 }, ::unicode::General_Category::Unassigned }, // <reserved-1DAA0>
+    Prop<::unicode::General_Category>{ { 0x1DAA1, 0x1DAAF }, ::unicode::General_Category::Nonspacing_Mark }, // [15] SIGNWRITING ROTATION MODIFIER-2..SIGNWRITING ROTATION MODIFIER-16
+    Prop<::unicode::General_Category>{ { 0x1DAB0, 0x1DFFF }, ::unicode::General_Category::Unassigned }, // [1360] <reserved-1DAB0>..<reserved-1DFFF>
+    Prop<::unicode::General_Category>{ { 0x1E000, 0x1E006 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] COMBINING GLAGOLITIC LETTER AZU..COMBINING GLAGOLITIC LETTER ZHIVETE
+    Prop<::unicode::General_Category>{ { 0x1E007, 0x1E007 }, ::unicode::General_Category::Unassigned }, // <reserved-1E007>
+    Prop<::unicode::General_Category>{ { 0x1E008, 0x1E018 }, ::unicode::General_Category::Nonspacing_Mark }, // [17] COMBINING GLAGOLITIC LETTER ZEMLJA..COMBINING GLAGOLITIC LETTER HERU
+    Prop<::unicode::General_Category>{ { 0x1E019, 0x1E01A }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1E019>..<reserved-1E01A>
+    Prop<::unicode::General_Category>{ { 0x1E01B, 0x1E021 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] COMBINING GLAGOLITIC LETTER SHTA..COMBINING GLAGOLITIC LETTER YATI
+    Prop<::unicode::General_Category>{ { 0x1E022, 0x1E022 }, ::unicode::General_Category::Unassigned }, // <reserved-1E022>
+    Prop<::unicode::General_Category>{ { 0x1E023, 0x1E024 }, ::unicode::General_Category::Nonspacing_Mark }, // [2] COMBINING GLAGOLITIC LETTER YU..COMBINING GLAGOLITIC LETTER SMALL YUS
+    Prop<::unicode::General_Category>{ { 0x1E025, 0x1E025 }, ::unicode::General_Category::Unassigned }, // <reserved-1E025>
+    Prop<::unicode::General_Category>{ { 0x1E026, 0x1E02A }, ::unicode::General_Category::Nonspacing_Mark }, // [5] COMBINING GLAGOLITIC LETTER YO..COMBINING GLAGOLITIC LETTER FITA
+    Prop<::unicode::General_Category>{ { 0x1E02B, 0x1E0FF }, ::unicode::General_Category::Unassigned }, // [213] <reserved-1E02B>..<reserved-1E0FF>
+    Prop<::unicode::General_Category>{ { 0x1E100, 0x1E12C }, ::unicode::General_Category::Other_Letter }, // [45] NYIAKENG PUACHUE HMONG LETTER MA..NYIAKENG PUACHUE HMONG LETTER W
+    Prop<::unicode::General_Category>{ { 0x1E12D, 0x1E12F }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1E12D>..<reserved-1E12F>
+    Prop<::unicode::General_Category>{ { 0x1E130, 0x1E136 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] NYIAKENG PUACHUE HMONG TONE-B..NYIAKENG PUACHUE HMONG TONE-D
+    Prop<::unicode::General_Category>{ { 0x1E137, 0x1E13D }, ::unicode::General_Category::Modifier_Letter }, // [7] NYIAKENG PUACHUE HMONG SIGN FOR PERSON..NYIAKENG PUACHUE HMONG SYLLABLE LENGTHENER
+    Prop<::unicode::General_Category>{ { 0x1E13E, 0x1E13F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1E13E>..<reserved-1E13F>
+    Prop<::unicode::General_Category>{ { 0x1E140, 0x1E149 }, ::unicode::General_Category::Decimal_Number }, // [10] NYIAKENG PUACHUE HMONG DIGIT ZERO..NYIAKENG PUACHUE HMONG DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1E14A, 0x1E14D }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1E14A>..<reserved-1E14D>
+    Prop<::unicode::General_Category>{ { 0x1E14E, 0x1E14E }, ::unicode::General_Category::Other_Letter }, // NYIAKENG PUACHUE HMONG LOGOGRAM NYAJ
+    Prop<::unicode::General_Category>{ { 0x1E14F, 0x1E14F }, ::unicode::General_Category::Other_Symbol }, // NYIAKENG PUACHUE HMONG CIRCLED CA
+    Prop<::unicode::General_Category>{ { 0x1E150, 0x1E2BF }, ::unicode::General_Category::Unassigned }, // [368] <reserved-1E150>..<reserved-1E2BF>
+    Prop<::unicode::General_Category>{ { 0x1E2C0, 0x1E2EB }, ::unicode::General_Category::Other_Letter }, // [44] WANCHO LETTER AA..WANCHO LETTER YIH
+    Prop<::unicode::General_Category>{ { 0x1E2EC, 0x1E2EF }, ::unicode::General_Category::Nonspacing_Mark }, // [4] WANCHO TONE TUP..WANCHO TONE KOINI
+    Prop<::unicode::General_Category>{ { 0x1E2F0, 0x1E2F9 }, ::unicode::General_Category::Decimal_Number }, // [10] WANCHO DIGIT ZERO..WANCHO DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1E2FA, 0x1E2FE }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1E2FA>..<reserved-1E2FE>
+    Prop<::unicode::General_Category>{ { 0x1E2FF, 0x1E2FF }, ::unicode::General_Category::Currency_Symbol }, // WANCHO NGUN SIGN
+    Prop<::unicode::General_Category>{ { 0x1E300, 0x1E7FF }, ::unicode::General_Category::Unassigned }, // [1280] <reserved-1E300>..<reserved-1E7FF>
+    Prop<::unicode::General_Category>{ { 0x1E800, 0x1E8C4 }, ::unicode::General_Category::Other_Letter }, // [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
+    Prop<::unicode::General_Category>{ { 0x1E8C5, 0x1E8C6 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1E8C5>..<reserved-1E8C6>
+    Prop<::unicode::General_Category>{ { 0x1E8C7, 0x1E8CF }, ::unicode::General_Category::Other_Number }, // [9] MENDE KIKAKUI DIGIT ONE..MENDE KIKAKUI DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1E8D0, 0x1E8D6 }, ::unicode::General_Category::Nonspacing_Mark }, // [7] MENDE KIKAKUI COMBINING NUMBER TEENS..MENDE KIKAKUI COMBINING NUMBER MILLIONS
+    Prop<::unicode::General_Category>{ { 0x1E8D7, 0x1E8FF }, ::unicode::General_Category::Unassigned }, // [41] <reserved-1E8D7>..<reserved-1E8FF>
+    Prop<::unicode::General_Category>{ { 0x1E900, 0x1E921 }, ::unicode::General_Category::Uppercase_Letter }, // [34] ADLAM CAPITAL LETTER ALIF..ADLAM CAPITAL LETTER SHA
+    Prop<::unicode::General_Category>{ { 0x1E922, 0x1E943 }, ::unicode::General_Category::Lowercase_Letter }, // [34] ADLAM SMALL LETTER ALIF..ADLAM SMALL LETTER SHA
+    Prop<::unicode::General_Category>{ { 0x1E944, 0x1E94A }, ::unicode::General_Category::Nonspacing_Mark }, // [7] ADLAM ALIF LENGTHENER..ADLAM NUKTA
+    Prop<::unicode::General_Category>{ { 0x1E94B, 0x1E94B }, ::unicode::General_Category::Modifier_Letter }, // ADLAM NASALIZATION MARK
+    Prop<::unicode::General_Category>{ { 0x1E94C, 0x1E94F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1E94C>..<reserved-1E94F>
+    Prop<::unicode::General_Category>{ { 0x1E950, 0x1E959 }, ::unicode::General_Category::Decimal_Number }, // [10] ADLAM DIGIT ZERO..ADLAM DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1E95A, 0x1E95D }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1E95A>..<reserved-1E95D>
+    Prop<::unicode::General_Category>{ { 0x1E95E, 0x1E95F }, ::unicode::General_Category::Other_Punctuation }, // [2] ADLAM INITIAL EXCLAMATION MARK..ADLAM INITIAL QUESTION MARK
+    Prop<::unicode::General_Category>{ { 0x1E960, 0x1EC70 }, ::unicode::General_Category::Unassigned }, // [785] <reserved-1E960>..<reserved-1EC70>
+    Prop<::unicode::General_Category>{ { 0x1EC71, 0x1ECAB }, ::unicode::General_Category::Other_Number }, // [59] INDIC SIYAQ NUMBER ONE..INDIC SIYAQ NUMBER PREFIXED NINE
+    Prop<::unicode::General_Category>{ { 0x1ECAC, 0x1ECAC }, ::unicode::General_Category::Other_Symbol }, // INDIC SIYAQ PLACEHOLDER
+    Prop<::unicode::General_Category>{ { 0x1ECAD, 0x1ECAF }, ::unicode::General_Category::Other_Number }, // [3] INDIC SIYAQ FRACTION ONE QUARTER..INDIC SIYAQ FRACTION THREE QUARTERS
+    Prop<::unicode::General_Category>{ { 0x1ECB0, 0x1ECB0 }, ::unicode::General_Category::Currency_Symbol }, // INDIC SIYAQ RUPEE MARK
+    Prop<::unicode::General_Category>{ { 0x1ECB1, 0x1ECB4 }, ::unicode::General_Category::Other_Number }, // [4] INDIC SIYAQ NUMBER ALTERNATE ONE..INDIC SIYAQ ALTERNATE LAKH MARK
+    Prop<::unicode::General_Category>{ { 0x1ECB5, 0x1ED00 }, ::unicode::General_Category::Unassigned }, // [76] <reserved-1ECB5>..<reserved-1ED00>
+    Prop<::unicode::General_Category>{ { 0x1ED01, 0x1ED2D }, ::unicode::General_Category::Other_Number }, // [45] OTTOMAN SIYAQ NUMBER ONE..OTTOMAN SIYAQ NUMBER NINETY THOUSAND
+    Prop<::unicode::General_Category>{ { 0x1ED2E, 0x1ED2E }, ::unicode::General_Category::Other_Symbol }, // OTTOMAN SIYAQ MARRATAN
+    Prop<::unicode::General_Category>{ { 0x1ED2F, 0x1ED3D }, ::unicode::General_Category::Other_Number }, // [15] OTTOMAN SIYAQ ALTERNATE NUMBER TWO..OTTOMAN SIYAQ FRACTION ONE SIXTH
+    Prop<::unicode::General_Category>{ { 0x1ED3E, 0x1EDFF }, ::unicode::General_Category::Unassigned }, // [194] <reserved-1ED3E>..<reserved-1EDFF>
+    Prop<::unicode::General_Category>{ { 0x1EE00, 0x1EE03 }, ::unicode::General_Category::Other_Letter }, // [4] ARABIC MATHEMATICAL ALEF..ARABIC MATHEMATICAL DAL
+    Prop<::unicode::General_Category>{ { 0x1EE04, 0x1EE04 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE04>
+    Prop<::unicode::General_Category>{ { 0x1EE05, 0x1EE1F }, ::unicode::General_Category::Other_Letter }, // [27] ARABIC MATHEMATICAL WAW..ARABIC MATHEMATICAL DOTLESS QAF
+    Prop<::unicode::General_Category>{ { 0x1EE20, 0x1EE20 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE20>
+    Prop<::unicode::General_Category>{ { 0x1EE21, 0x1EE22 }, ::unicode::General_Category::Other_Letter }, // [2] ARABIC MATHEMATICAL INITIAL BEH..ARABIC MATHEMATICAL INITIAL JEEM
+    Prop<::unicode::General_Category>{ { 0x1EE23, 0x1EE23 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE23>
+    Prop<::unicode::General_Category>{ { 0x1EE24, 0x1EE24 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL INITIAL HEH
+    Prop<::unicode::General_Category>{ { 0x1EE25, 0x1EE26 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1EE25>..<reserved-1EE26>
+    Prop<::unicode::General_Category>{ { 0x1EE27, 0x1EE27 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL INITIAL HAH
+    Prop<::unicode::General_Category>{ { 0x1EE28, 0x1EE28 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE28>
+    Prop<::unicode::General_Category>{ { 0x1EE29, 0x1EE32 }, ::unicode::General_Category::Other_Letter }, // [10] ARABIC MATHEMATICAL INITIAL YEH..ARABIC MATHEMATICAL INITIAL QAF
+    Prop<::unicode::General_Category>{ { 0x1EE33, 0x1EE33 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE33>
+    Prop<::unicode::General_Category>{ { 0x1EE34, 0x1EE37 }, ::unicode::General_Category::Other_Letter }, // [4] ARABIC MATHEMATICAL INITIAL SHEEN..ARABIC MATHEMATICAL INITIAL KHAH
+    Prop<::unicode::General_Category>{ { 0x1EE38, 0x1EE38 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE38>
+    Prop<::unicode::General_Category>{ { 0x1EE39, 0x1EE39 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL INITIAL DAD
+    Prop<::unicode::General_Category>{ { 0x1EE3A, 0x1EE3A }, ::unicode::General_Category::Unassigned }, // <reserved-1EE3A>
+    Prop<::unicode::General_Category>{ { 0x1EE3B, 0x1EE3B }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL INITIAL GHAIN
+    Prop<::unicode::General_Category>{ { 0x1EE3C, 0x1EE41 }, ::unicode::General_Category::Unassigned }, // [6] <reserved-1EE3C>..<reserved-1EE41>
+    Prop<::unicode::General_Category>{ { 0x1EE42, 0x1EE42 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED JEEM
+    Prop<::unicode::General_Category>{ { 0x1EE43, 0x1EE46 }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1EE43>..<reserved-1EE46>
+    Prop<::unicode::General_Category>{ { 0x1EE47, 0x1EE47 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED HAH
+    Prop<::unicode::General_Category>{ { 0x1EE48, 0x1EE48 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE48>
+    Prop<::unicode::General_Category>{ { 0x1EE49, 0x1EE49 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED YEH
+    Prop<::unicode::General_Category>{ { 0x1EE4A, 0x1EE4A }, ::unicode::General_Category::Unassigned }, // <reserved-1EE4A>
+    Prop<::unicode::General_Category>{ { 0x1EE4B, 0x1EE4B }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED LAM
+    Prop<::unicode::General_Category>{ { 0x1EE4C, 0x1EE4C }, ::unicode::General_Category::Unassigned }, // <reserved-1EE4C>
+    Prop<::unicode::General_Category>{ { 0x1EE4D, 0x1EE4F }, ::unicode::General_Category::Other_Letter }, // [3] ARABIC MATHEMATICAL TAILED NOON..ARABIC MATHEMATICAL TAILED AIN
+    Prop<::unicode::General_Category>{ { 0x1EE50, 0x1EE50 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE50>
+    Prop<::unicode::General_Category>{ { 0x1EE51, 0x1EE52 }, ::unicode::General_Category::Other_Letter }, // [2] ARABIC MATHEMATICAL TAILED SAD..ARABIC MATHEMATICAL TAILED QAF
+    Prop<::unicode::General_Category>{ { 0x1EE53, 0x1EE53 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE53>
+    Prop<::unicode::General_Category>{ { 0x1EE54, 0x1EE54 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED SHEEN
+    Prop<::unicode::General_Category>{ { 0x1EE55, 0x1EE56 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1EE55>..<reserved-1EE56>
+    Prop<::unicode::General_Category>{ { 0x1EE57, 0x1EE57 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED KHAH
+    Prop<::unicode::General_Category>{ { 0x1EE58, 0x1EE58 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE58>
+    Prop<::unicode::General_Category>{ { 0x1EE59, 0x1EE59 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED DAD
+    Prop<::unicode::General_Category>{ { 0x1EE5A, 0x1EE5A }, ::unicode::General_Category::Unassigned }, // <reserved-1EE5A>
+    Prop<::unicode::General_Category>{ { 0x1EE5B, 0x1EE5B }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED GHAIN
+    Prop<::unicode::General_Category>{ { 0x1EE5C, 0x1EE5C }, ::unicode::General_Category::Unassigned }, // <reserved-1EE5C>
+    Prop<::unicode::General_Category>{ { 0x1EE5D, 0x1EE5D }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED DOTLESS NOON
+    Prop<::unicode::General_Category>{ { 0x1EE5E, 0x1EE5E }, ::unicode::General_Category::Unassigned }, // <reserved-1EE5E>
+    Prop<::unicode::General_Category>{ { 0x1EE5F, 0x1EE5F }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL TAILED DOTLESS QAF
+    Prop<::unicode::General_Category>{ { 0x1EE60, 0x1EE60 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE60>
+    Prop<::unicode::General_Category>{ { 0x1EE61, 0x1EE62 }, ::unicode::General_Category::Other_Letter }, // [2] ARABIC MATHEMATICAL STRETCHED BEH..ARABIC MATHEMATICAL STRETCHED JEEM
+    Prop<::unicode::General_Category>{ { 0x1EE63, 0x1EE63 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE63>
+    Prop<::unicode::General_Category>{ { 0x1EE64, 0x1EE64 }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL STRETCHED HEH
+    Prop<::unicode::General_Category>{ { 0x1EE65, 0x1EE66 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1EE65>..<reserved-1EE66>
+    Prop<::unicode::General_Category>{ { 0x1EE67, 0x1EE6A }, ::unicode::General_Category::Other_Letter }, // [4] ARABIC MATHEMATICAL STRETCHED HAH..ARABIC MATHEMATICAL STRETCHED KAF
+    Prop<::unicode::General_Category>{ { 0x1EE6B, 0x1EE6B }, ::unicode::General_Category::Unassigned }, // <reserved-1EE6B>
+    Prop<::unicode::General_Category>{ { 0x1EE6C, 0x1EE72 }, ::unicode::General_Category::Other_Letter }, // [7] ARABIC MATHEMATICAL STRETCHED MEEM..ARABIC MATHEMATICAL STRETCHED QAF
+    Prop<::unicode::General_Category>{ { 0x1EE73, 0x1EE73 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE73>
+    Prop<::unicode::General_Category>{ { 0x1EE74, 0x1EE77 }, ::unicode::General_Category::Other_Letter }, // [4] ARABIC MATHEMATICAL STRETCHED SHEEN..ARABIC MATHEMATICAL STRETCHED KHAH
+    Prop<::unicode::General_Category>{ { 0x1EE78, 0x1EE78 }, ::unicode::General_Category::Unassigned }, // <reserved-1EE78>
+    Prop<::unicode::General_Category>{ { 0x1EE79, 0x1EE7C }, ::unicode::General_Category::Other_Letter }, // [4] ARABIC MATHEMATICAL STRETCHED DAD..ARABIC MATHEMATICAL STRETCHED DOTLESS BEH
+    Prop<::unicode::General_Category>{ { 0x1EE7D, 0x1EE7D }, ::unicode::General_Category::Unassigned }, // <reserved-1EE7D>
+    Prop<::unicode::General_Category>{ { 0x1EE7E, 0x1EE7E }, ::unicode::General_Category::Other_Letter }, // ARABIC MATHEMATICAL STRETCHED DOTLESS FEH
+    Prop<::unicode::General_Category>{ { 0x1EE7F, 0x1EE7F }, ::unicode::General_Category::Unassigned }, // <reserved-1EE7F>
+    Prop<::unicode::General_Category>{ { 0x1EE80, 0x1EE89 }, ::unicode::General_Category::Other_Letter }, // [10] ARABIC MATHEMATICAL LOOPED ALEF..ARABIC MATHEMATICAL LOOPED YEH
+    Prop<::unicode::General_Category>{ { 0x1EE8A, 0x1EE8A }, ::unicode::General_Category::Unassigned }, // <reserved-1EE8A>
+    Prop<::unicode::General_Category>{ { 0x1EE8B, 0x1EE9B }, ::unicode::General_Category::Other_Letter }, // [17] ARABIC MATHEMATICAL LOOPED LAM..ARABIC MATHEMATICAL LOOPED GHAIN
+    Prop<::unicode::General_Category>{ { 0x1EE9C, 0x1EEA0 }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1EE9C>..<reserved-1EEA0>
+    Prop<::unicode::General_Category>{ { 0x1EEA1, 0x1EEA3 }, ::unicode::General_Category::Other_Letter }, // [3] ARABIC MATHEMATICAL DOUBLE-STRUCK BEH..ARABIC MATHEMATICAL DOUBLE-STRUCK DAL
+    Prop<::unicode::General_Category>{ { 0x1EEA4, 0x1EEA4 }, ::unicode::General_Category::Unassigned }, // <reserved-1EEA4>
+    Prop<::unicode::General_Category>{ { 0x1EEA5, 0x1EEA9 }, ::unicode::General_Category::Other_Letter }, // [5] ARABIC MATHEMATICAL DOUBLE-STRUCK WAW..ARABIC MATHEMATICAL DOUBLE-STRUCK YEH
+    Prop<::unicode::General_Category>{ { 0x1EEAA, 0x1EEAA }, ::unicode::General_Category::Unassigned }, // <reserved-1EEAA>
+    Prop<::unicode::General_Category>{ { 0x1EEAB, 0x1EEBB }, ::unicode::General_Category::Other_Letter }, // [17] ARABIC MATHEMATICAL DOUBLE-STRUCK LAM..ARABIC MATHEMATICAL DOUBLE-STRUCK GHAIN
+    Prop<::unicode::General_Category>{ { 0x1EEBC, 0x1EEEF }, ::unicode::General_Category::Unassigned }, // [52] <reserved-1EEBC>..<reserved-1EEEF>
+    Prop<::unicode::General_Category>{ { 0x1EEF0, 0x1EEF1 }, ::unicode::General_Category::Math_Symbol }, // [2] ARABIC MATHEMATICAL OPERATOR MEEM WITH HAH WITH TATWEEL..ARABIC MATHEMATICAL OPERATOR HAH WITH DAL
+    Prop<::unicode::General_Category>{ { 0x1EEF2, 0x1EFFF }, ::unicode::General_Category::Unassigned }, // [270] <reserved-1EEF2>..<reserved-1EFFF>
+    Prop<::unicode::General_Category>{ { 0x1F000, 0x1F02B }, ::unicode::General_Category::Other_Symbol }, // [44] MAHJONG TILE EAST WIND..MAHJONG TILE BACK
+    Prop<::unicode::General_Category>{ { 0x1F02C, 0x1F02F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1F02C>..<reserved-1F02F>
+    Prop<::unicode::General_Category>{ { 0x1F030, 0x1F093 }, ::unicode::General_Category::Other_Symbol }, // [100] DOMINO TILE HORIZONTAL BACK..DOMINO TILE VERTICAL-06-06
+    Prop<::unicode::General_Category>{ { 0x1F094, 0x1F09F }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1F094>..<reserved-1F09F>
+    Prop<::unicode::General_Category>{ { 0x1F0A0, 0x1F0AE }, ::unicode::General_Category::Other_Symbol }, // [15] PLAYING CARD BACK..PLAYING CARD KING OF SPADES
+    Prop<::unicode::General_Category>{ { 0x1F0AF, 0x1F0B0 }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F0AF>..<reserved-1F0B0>
+    Prop<::unicode::General_Category>{ { 0x1F0B1, 0x1F0BF }, ::unicode::General_Category::Other_Symbol }, // [15] PLAYING CARD ACE OF HEARTS..PLAYING CARD RED JOKER
+    Prop<::unicode::General_Category>{ { 0x1F0C0, 0x1F0C0 }, ::unicode::General_Category::Unassigned }, // <reserved-1F0C0>
+    Prop<::unicode::General_Category>{ { 0x1F0C1, 0x1F0CF }, ::unicode::General_Category::Other_Symbol }, // [15] PLAYING CARD ACE OF DIAMONDS..PLAYING CARD BLACK JOKER
+    Prop<::unicode::General_Category>{ { 0x1F0D0, 0x1F0D0 }, ::unicode::General_Category::Unassigned }, // <reserved-1F0D0>
+    Prop<::unicode::General_Category>{ { 0x1F0D1, 0x1F0F5 }, ::unicode::General_Category::Other_Symbol }, // [37] PLAYING CARD ACE OF CLUBS..PLAYING CARD TRUMP-21
+    Prop<::unicode::General_Category>{ { 0x1F0F6, 0x1F0FF }, ::unicode::General_Category::Unassigned }, // [10] <reserved-1F0F6>..<reserved-1F0FF>
+    Prop<::unicode::General_Category>{ { 0x1F100, 0x1F10C }, ::unicode::General_Category::Other_Number }, // [13] DIGIT ZERO FULL STOP..DINGBAT NEGATIVE CIRCLED SANS-SERIF DIGIT ZERO
+    Prop<::unicode::General_Category>{ { 0x1F10D, 0x1F1AD }, ::unicode::General_Category::Other_Symbol }, // [161] CIRCLED ZERO WITH SLASH..MASK WORK SYMBOL
+    Prop<::unicode::General_Category>{ { 0x1F1AE, 0x1F1E5 }, ::unicode::General_Category::Unassigned }, // [56] <reserved-1F1AE>..<reserved-1F1E5>
+    Prop<::unicode::General_Category>{ { 0x1F1E6, 0x1F202 }, ::unicode::General_Category::Other_Symbol }, // [29] REGIONAL INDICATOR SYMBOL LETTER A..SQUARED KATAKANA SA
+    Prop<::unicode::General_Category>{ { 0x1F203, 0x1F20F }, ::unicode::General_Category::Unassigned }, // [13] <reserved-1F203>..<reserved-1F20F>
+    Prop<::unicode::General_Category>{ { 0x1F210, 0x1F23B }, ::unicode::General_Category::Other_Symbol }, // [44] SQUARED CJK UNIFIED IDEOGRAPH-624B..SQUARED CJK UNIFIED IDEOGRAPH-914D
+    Prop<::unicode::General_Category>{ { 0x1F23C, 0x1F23F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1F23C>..<reserved-1F23F>
+    Prop<::unicode::General_Category>{ { 0x1F240, 0x1F248 }, ::unicode::General_Category::Other_Symbol }, // [9] TORTOISE SHELL BRACKETED CJK UNIFIED IDEOGRAPH-672C..TORTOISE SHELL BRACKETED CJK UNIFIED IDEOGRAPH-6557
+    Prop<::unicode::General_Category>{ { 0x1F249, 0x1F24F }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1F249>..<reserved-1F24F>
+    Prop<::unicode::General_Category>{ { 0x1F250, 0x1F251 }, ::unicode::General_Category::Other_Symbol }, // [2] CIRCLED IDEOGRAPH ADVANTAGE..CIRCLED IDEOGRAPH ACCEPT
+    Prop<::unicode::General_Category>{ { 0x1F252, 0x1F25F }, ::unicode::General_Category::Unassigned }, // [14] <reserved-1F252>..<reserved-1F25F>
+    Prop<::unicode::General_Category>{ { 0x1F260, 0x1F265 }, ::unicode::General_Category::Other_Symbol }, // [6] ROUNDED SYMBOL FOR FU..ROUNDED SYMBOL FOR CAI
+    Prop<::unicode::General_Category>{ { 0x1F266, 0x1F2FF }, ::unicode::General_Category::Unassigned }, // [154] <reserved-1F266>..<reserved-1F2FF>
+    Prop<::unicode::General_Category>{ { 0x1F300, 0x1F3FA }, ::unicode::General_Category::Other_Symbol }, // [251] CYCLONE..AMPHORA
+    Prop<::unicode::General_Category>{ { 0x1F3FB, 0x1F3FF }, ::unicode::General_Category::Modifier_Symbol }, // [5] EMOJI MODIFIER FITZPATRICK TYPE-1-2..EMOJI MODIFIER FITZPATRICK TYPE-6
+    Prop<::unicode::General_Category>{ { 0x1F400, 0x1F6D7 }, ::unicode::General_Category::Other_Symbol }, // [728] RAT..ELEVATOR
+    Prop<::unicode::General_Category>{ { 0x1F6D8, 0x1F6DF }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1F6D8>..<reserved-1F6DF>
+    Prop<::unicode::General_Category>{ { 0x1F6E0, 0x1F6EC }, ::unicode::General_Category::Other_Symbol }, // [13] HAMMER AND WRENCH..AIRPLANE ARRIVING
+    Prop<::unicode::General_Category>{ { 0x1F6ED, 0x1F6EF }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1F6ED>..<reserved-1F6EF>
+    Prop<::unicode::General_Category>{ { 0x1F6F0, 0x1F6FC }, ::unicode::General_Category::Other_Symbol }, // [13] SATELLITE..ROLLER SKATE
+    Prop<::unicode::General_Category>{ { 0x1F6FD, 0x1F6FF }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1F6FD>..<reserved-1F6FF>
+    Prop<::unicode::General_Category>{ { 0x1F700, 0x1F773 }, ::unicode::General_Category::Other_Symbol }, // [116] ALCHEMICAL SYMBOL FOR QUINTESSENCE..ALCHEMICAL SYMBOL FOR HALF OUNCE
+    Prop<::unicode::General_Category>{ { 0x1F774, 0x1F77F }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1F774>..<reserved-1F77F>
+    Prop<::unicode::General_Category>{ { 0x1F780, 0x1F7D8 }, ::unicode::General_Category::Other_Symbol }, // [89] BLACK LEFT-POINTING ISOSCELES RIGHT TRIANGLE..NEGATIVE CIRCLED SQUARE
+    Prop<::unicode::General_Category>{ { 0x1F7D9, 0x1F7DF }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1F7D9>..<reserved-1F7DF>
+    Prop<::unicode::General_Category>{ { 0x1F7E0, 0x1F7EB }, ::unicode::General_Category::Other_Symbol }, // [12] LARGE ORANGE CIRCLE..LARGE BROWN SQUARE
+    Prop<::unicode::General_Category>{ { 0x1F7EC, 0x1F7FF }, ::unicode::General_Category::Unassigned }, // [20] <reserved-1F7EC>..<reserved-1F7FF>
+    Prop<::unicode::General_Category>{ { 0x1F800, 0x1F80B }, ::unicode::General_Category::Other_Symbol }, // [12] LEFTWARDS ARROW WITH SMALL TRIANGLE ARROWHEAD..DOWNWARDS ARROW WITH LARGE TRIANGLE ARROWHEAD
+    Prop<::unicode::General_Category>{ { 0x1F80C, 0x1F80F }, ::unicode::General_Category::Unassigned }, // [4] <reserved-1F80C>..<reserved-1F80F>
+    Prop<::unicode::General_Category>{ { 0x1F810, 0x1F847 }, ::unicode::General_Category::Other_Symbol }, // [56] LEFTWARDS ARROW WITH SMALL EQUILATERAL ARROWHEAD..DOWNWARDS HEAVY ARROW
+    Prop<::unicode::General_Category>{ { 0x1F848, 0x1F84F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1F848>..<reserved-1F84F>
+    Prop<::unicode::General_Category>{ { 0x1F850, 0x1F859 }, ::unicode::General_Category::Other_Symbol }, // [10] LEFTWARDS SANS-SERIF ARROW..UP DOWN SANS-SERIF ARROW
+    Prop<::unicode::General_Category>{ { 0x1F85A, 0x1F85F }, ::unicode::General_Category::Unassigned }, // [6] <reserved-1F85A>..<reserved-1F85F>
+    Prop<::unicode::General_Category>{ { 0x1F860, 0x1F887 }, ::unicode::General_Category::Other_Symbol }, // [40] WIDE-HEADED LEFTWARDS LIGHT BARB ARROW..WIDE-HEADED SOUTH WEST VERY HEAVY BARB ARROW
+    Prop<::unicode::General_Category>{ { 0x1F888, 0x1F88F }, ::unicode::General_Category::Unassigned }, // [8] <reserved-1F888>..<reserved-1F88F>
+    Prop<::unicode::General_Category>{ { 0x1F890, 0x1F8AD }, ::unicode::General_Category::Other_Symbol }, // [30] LEFTWARDS TRIANGLE ARROWHEAD..WHITE ARROW SHAFT WIDTH TWO THIRDS
+    Prop<::unicode::General_Category>{ { 0x1F8AE, 0x1F8AF }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1F8AE>..<reserved-1F8AF>
+    Prop<::unicode::General_Category>{ { 0x1F8B0, 0x1F8B1 }, ::unicode::General_Category::Other_Symbol }, // [2] ARROW POINTING UPWARDS THEN NORTH WEST..ARROW POINTING RIGHTWARDS THEN CURVING SOUTH WEST
+    Prop<::unicode::General_Category>{ { 0x1F8B2, 0x1F8FF }, ::unicode::General_Category::Unassigned }, // [78] <reserved-1F8B2>..<reserved-1F8FF>
+    Prop<::unicode::General_Category>{ { 0x1F900, 0x1F978 }, ::unicode::General_Category::Other_Symbol }, // [121] CIRCLED CROSS FORMEE WITH FOUR DOTS..DISGUISED FACE
+    Prop<::unicode::General_Category>{ { 0x1F979, 0x1F979 }, ::unicode::General_Category::Unassigned }, // <reserved-1F979>
+    Prop<::unicode::General_Category>{ { 0x1F97A, 0x1F9CB }, ::unicode::General_Category::Other_Symbol }, // [82] FACE WITH PLEADING EYES..BUBBLE TEA
+    Prop<::unicode::General_Category>{ { 0x1F9CC, 0x1F9CC }, ::unicode::General_Category::Unassigned }, // <reserved-1F9CC>
+    Prop<::unicode::General_Category>{ { 0x1F9CD, 0x1FA53 }, ::unicode::General_Category::Other_Symbol }, // [135] STANDING PERSON..BLACK CHESS KNIGHT-BISHOP
+    Prop<::unicode::General_Category>{ { 0x1FA54, 0x1FA5F }, ::unicode::General_Category::Unassigned }, // [12] <reserved-1FA54>..<reserved-1FA5F>
+    Prop<::unicode::General_Category>{ { 0x1FA60, 0x1FA6D }, ::unicode::General_Category::Other_Symbol }, // [14] XIANGQI RED GENERAL..XIANGQI BLACK SOLDIER
+    Prop<::unicode::General_Category>{ { 0x1FA6E, 0x1FA6F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-1FA6E>..<reserved-1FA6F>
+    Prop<::unicode::General_Category>{ { 0x1FA70, 0x1FA74 }, ::unicode::General_Category::Other_Symbol }, // [5] BALLET SHOES..THONG SANDAL
+    Prop<::unicode::General_Category>{ { 0x1FA75, 0x1FA77 }, ::unicode::General_Category::Unassigned }, // [3] <reserved-1FA75>..<reserved-1FA77>
+    Prop<::unicode::General_Category>{ { 0x1FA78, 0x1FA7A }, ::unicode::General_Category::Other_Symbol }, // [3] DROP OF BLOOD..STETHOSCOPE
+    Prop<::unicode::General_Category>{ { 0x1FA7B, 0x1FA7F }, ::unicode::General_Category::Unassigned }, // [5] <reserved-1FA7B>..<reserved-1FA7F>
+    Prop<::unicode::General_Category>{ { 0x1FA80, 0x1FA86 }, ::unicode::General_Category::Other_Symbol }, // [7] YO-YO..NESTING DOLLS
+    Prop<::unicode::General_Category>{ { 0x1FA87, 0x1FA8F }, ::unicode::General_Category::Unassigned }, // [9] <reserved-1FA87>..<reserved-1FA8F>
+    Prop<::unicode::General_Category>{ { 0x1FA90, 0x1FAA8 }, ::unicode::General_Category::Other_Symbol }, // [25] RINGED PLANET..ROCK
+    Prop<::unicode::General_Category>{ { 0x1FAA9, 0x1FAAF }, ::unicode::General_Category::Unassigned }, // [7] <reserved-1FAA9>..<reserved-1FAAF>
+    Prop<::unicode::General_Category>{ { 0x1FAB0, 0x1FAB6 }, ::unicode::General_Category::Other_Symbol }, // [7] FLY..FEATHER
+    Prop<::unicode::General_Category>{ { 0x1FAB7, 0x1FABF }, ::unicode::General_Category::Unassigned }, // [9] <reserved-1FAB7>..<reserved-1FABF>
+    Prop<::unicode::General_Category>{ { 0x1FAC0, 0x1FAC2 }, ::unicode::General_Category::Other_Symbol }, // [3] ANATOMICAL HEART..PEOPLE HUGGING
+    Prop<::unicode::General_Category>{ { 0x1FAC3, 0x1FACF }, ::unicode::General_Category::Unassigned }, // [13] <reserved-1FAC3>..<reserved-1FACF>
+    Prop<::unicode::General_Category>{ { 0x1FAD0, 0x1FAD6 }, ::unicode::General_Category::Other_Symbol }, // [7] BLUEBERRIES..TEAPOT
+    Prop<::unicode::General_Category>{ { 0x1FAD7, 0x1FAFF }, ::unicode::General_Category::Unassigned }, // [41] <reserved-1FAD7>..<reserved-1FAFF>
+    Prop<::unicode::General_Category>{ { 0x1FB00, 0x1FB92 }, ::unicode::General_Category::Other_Symbol }, // [147] BLOCK SEXTANT-1..UPPER HALF INVERSE MEDIUM SHADE AND LOWER HALF BLOCK
+    Prop<::unicode::General_Category>{ { 0x1FB93, 0x1FB93 }, ::unicode::General_Category::Unassigned }, // <reserved-1FB93>
+    Prop<::unicode::General_Category>{ { 0x1FB94, 0x1FBCA }, ::unicode::General_Category::Other_Symbol }, // [55] LEFT HALF INVERSE MEDIUM SHADE AND RIGHT HALF BLOCK..WHITE UP-POINTING CHEVRON
+    Prop<::unicode::General_Category>{ { 0x1FBCB, 0x1FBEF }, ::unicode::General_Category::Unassigned }, // [37] <reserved-1FBCB>..<reserved-1FBEF>
+    Prop<::unicode::General_Category>{ { 0x1FBF0, 0x1FBF9 }, ::unicode::General_Category::Decimal_Number }, // [10] SEGMENTED DIGIT ZERO..SEGMENTED DIGIT NINE
+    Prop<::unicode::General_Category>{ { 0x1FBFA, 0x1FFFF }, ::unicode::General_Category::Unassigned }, // [1030] <reserved-1FBFA>..<noncharacter-1FFFF>
+    Prop<::unicode::General_Category>{ { 0x20000, 0x2A6DD }, ::unicode::General_Category::Other_Letter }, // [42718] CJK UNIFIED IDEOGRAPH-20000..CJK UNIFIED IDEOGRAPH-2A6DD
+    Prop<::unicode::General_Category>{ { 0x2A6DE, 0x2A6FF }, ::unicode::General_Category::Unassigned }, // [34] <reserved-2A6DE>..<reserved-2A6FF>
+    Prop<::unicode::General_Category>{ { 0x2A700, 0x2B734 }, ::unicode::General_Category::Other_Letter }, // [4149] CJK UNIFIED IDEOGRAPH-2A700..CJK UNIFIED IDEOGRAPH-2B734
+    Prop<::unicode::General_Category>{ { 0x2B735, 0x2B73F }, ::unicode::General_Category::Unassigned }, // [11] <reserved-2B735>..<reserved-2B73F>
+    Prop<::unicode::General_Category>{ { 0x2B740, 0x2B81D }, ::unicode::General_Category::Other_Letter }, // [222] CJK UNIFIED IDEOGRAPH-2B740..CJK UNIFIED IDEOGRAPH-2B81D
+    Prop<::unicode::General_Category>{ { 0x2B81E, 0x2B81F }, ::unicode::General_Category::Unassigned }, // [2] <reserved-2B81E>..<reserved-2B81F>
+    Prop<::unicode::General_Category>{ { 0x2B820, 0x2CEA1 }, ::unicode::General_Category::Other_Letter }, // [5762] CJK UNIFIED IDEOGRAPH-2B820..CJK UNIFIED IDEOGRAPH-2CEA1
+    Prop<::unicode::General_Category>{ { 0x2CEA2, 0x2CEAF }, ::unicode::General_Category::Unassigned }, // [14] <reserved-2CEA2>..<reserved-2CEAF>
+    Prop<::unicode::General_Category>{ { 0x2CEB0, 0x2EBE0 }, ::unicode::General_Category::Other_Letter }, // [7473] CJK UNIFIED IDEOGRAPH-2CEB0..CJK UNIFIED IDEOGRAPH-2EBE0
+    Prop<::unicode::General_Category>{ { 0x2EBE1, 0x2F7FF }, ::unicode::General_Category::Unassigned }, // [3103] <reserved-2EBE1>..<reserved-2F7FF>
+    Prop<::unicode::General_Category>{ { 0x2F800, 0x2FA1D }, ::unicode::General_Category::Other_Letter }, // [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
+    Prop<::unicode::General_Category>{ { 0x2FA1E, 0x2FFFF }, ::unicode::General_Category::Unassigned }, // [1506] <reserved-2FA1E>..<noncharacter-2FFFF>
+    Prop<::unicode::General_Category>{ { 0x30000, 0x3134A }, ::unicode::General_Category::Other_Letter }, // [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
+    Prop<::unicode::General_Category>{ { 0x3134B, 0xE0000 }, ::unicode::General_Category::Unassigned }, // [715958] <reserved-3134B>..<reserved-E0000>
+    Prop<::unicode::General_Category>{ { 0xE0001, 0xE0001 }, ::unicode::General_Category::Format }, // LANGUAGE TAG
+    Prop<::unicode::General_Category>{ { 0xE0002, 0xE001F }, ::unicode::General_Category::Unassigned }, // [30] <reserved-E0002>..<reserved-E001F>
+    Prop<::unicode::General_Category>{ { 0xE0020, 0xE007F }, ::unicode::General_Category::Format }, // [96] TAG SPACE..CANCEL TAG
+    Prop<::unicode::General_Category>{ { 0xE0080, 0xE00FF }, ::unicode::General_Category::Unassigned }, // [128] <reserved-E0080>..<reserved-E00FF>
+    Prop<::unicode::General_Category>{ { 0xE0100, 0xE01EF }, ::unicode::General_Category::Nonspacing_Mark }, // [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
+    Prop<::unicode::General_Category>{ { 0xE01F0, 0xEFFFF }, ::unicode::General_Category::Unassigned }, // [65040] <reserved-E01F0>..<noncharacter-EFFFF>
+    Prop<::unicode::General_Category>{ { 0xF0000, 0xFFFFD }, ::unicode::General_Category::Private_Use }, // [65534] <private-use-F0000>..<private-use-FFFFD>
+    Prop<::unicode::General_Category>{ { 0xFFFFE, 0xFFFFF }, ::unicode::General_Category::Unassigned }, // [2] <noncharacter-FFFFE>..<noncharacter-FFFFF>
+    Prop<::unicode::General_Category>{ { 0x100000, 0x10FFFD }, ::unicode::General_Category::Private_Use }, // [65534] <private-use-100000>..<private-use-10FFFD>
+    Prop<::unicode::General_Category>{ { 0x10FFFE, 0x10FFFF }, ::unicode::General_Category::Unassigned }, // [2] <noncharacter-10FFFE>..<noncharacter-10FFFF>
+};
+} // end namespace tables
+
+namespace general_category {
+    General_Category get(char32_t _value) noexcept {
+        if (auto const p = search(tables::General_Category, _value); p.has_value())
+            return p.value();
+        return General_Category::Unspecified;
+    }
+}
+
+namespace tables {
 auto constexpr Close_Punctuation = std::array{ // {{{
     Interval{ 0x0029, 0x0029 }, // RIGHT PARENTHESIS
     Interval{ 0x005D, 0x005D }, // RIGHT SQUARE BRACKET
@@ -15929,6 +19818,7 @@ bool contains(General_Category _cat, char32_t _codepoint) noexcept {
         case General_Category::Titlecase_Letter: return contains(tables::Titlecase_Letter, _codepoint);
         case General_Category::Unassigned: return contains(tables::Unassigned, _codepoint);
         case General_Category::Uppercase_Letter: return contains(tables::Uppercase_Letter, _codepoint);
+        case General_Category::Unspecified: return false;
     }
     return false;
 }

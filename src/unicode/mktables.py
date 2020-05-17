@@ -31,7 +31,8 @@ class UCDGenerator:
         self.impl = open(_impl_file, 'w')
         self.singleValueRE = re.compile('([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
         self.rangeValueRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
-        self.general_categories = dict()
+        self.general_category_map = dict()
+        self.general_category = list()
 
     def close(self):
         self.header.close()
@@ -105,7 +106,8 @@ class UCDGenerator:
             headerRE = re.compile('^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
             cat_name = ''
-            cats = dict()
+            cats_grouped = dict()
+            cats_all = []
             while True:
                 line = f.readline()
                 if not line:
@@ -113,8 +115,8 @@ class UCDGenerator:
                 m = headerRE.match(line)
                 if m:
                     cat_name = m.group(1)
-                    if not (cat_name in cats):
-                        cats[cat_name] = []
+                    if not (cat_name in cats_grouped):
+                        cats_grouped[cat_name] = []
                 if len(line) == 0 or line[0] == '#':
                     continue
                 m = self.singleValueRE.match(line)
@@ -122,15 +124,20 @@ class UCDGenerator:
                     code = int(m.group(1), 16)
                     prop = property_values[m.group(2)]
                     comment = m.group(3)
-                    cats[cat_name].append({'start': code, 'end': code, 'property': prop, 'comment': comment})
+                    cats_grouped[cat_name].append({'start': code, 'end': code, 'property': prop, 'comment': comment})
+                    cats_all.append({'start': code, 'end': code, 'category': cat_name, 'property': prop, 'comment': comment})
                 m = self.rangeValueRE.match(line)
                 if m:
                     start = int(m.group(1), 16)
                     end = int(m.group(2), 16)
                     prop = property_values[m.group(3)]
                     comment = m.group(4)
-                    cats[cat_name].append({'start': start, 'end': end, 'property': prop, 'comment': comment})
-            self.general_categories = cats
+                    cats_grouped[cat_name].append({'start': start, 'end': end, 'property': prop, 'comment': comment})
+                    cats_all.append({'start': start, 'end': end, 'category': cat_name, 'property': prop, 'comment': comment})
+            self.general_category_map = cats_grouped
+
+            cats_all.sort(key = lambda a: a['start'])
+            self.general_category = cats_all
         # }}}
 
     def file_header(self): # {{{
@@ -258,7 +265,7 @@ namespace unicode {
 
             # sort table
             for prop_key in props.keys():
-                    props[prop_key].sort(key = lambda a: a['start'])
+                props[prop_key].sort(key = lambda a: a['start'])
 
             # write range tables
             self.impl.write("namespace tables {\n")
@@ -369,7 +376,33 @@ namespace unicode {
         # }}}
 
     def write_general_categories(self): # {{{
-        cats = self.general_categories
+        gcats = self.general_category
+        self.impl.write("namespace tables {\n")
+        type_name = "General_Category"
+        fqdn_type_name = "::unicode::{}".format(type_name)
+        self.impl.write("auto const {} = std::array{{\n".format(type_name))
+        for cat in gcats:
+            self.impl.write(
+                "    Prop<{}>{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
+                fqdn_type_name,
+                cat['start'],
+                cat['end'],
+                fqdn_type_name,
+                cat['property'],
+                cat['comment']))
+        self.impl.write("};\n")
+        self.impl.write("} // end namespace tables\n\n")
+
+        self.impl.write("namespace {} {{\n".format(type_name.lower()))
+        self.impl.write("    {} get(char32_t _value) noexcept {{\n".format(type_name))
+        self.impl.write("        if (auto const p = search(tables::{}, _value); p.has_value())\n".format(type_name))
+        self.impl.write('            return p.value();\n')
+        self.impl.write('        return {}::Unspecified;\n'.format(type_name))
+        self.impl.write("    }\n")
+        self.impl.write("}\n\n")
+        # -----------------------------------------------------------------------------------------------
+
+        cats = self.general_category_map
 
         # write range tables
         self.impl.write("namespace tables {\n")
@@ -385,12 +418,14 @@ namespace unicode {
         self.impl.write("    switch (_cat) {\n")
         for name in sorted(cats.keys()):
             self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
+        self.impl.write("        case General_Category::{0:}: return false;\n".format('Unspecified')) # special case
         self.impl.write("    }\n")
         self.impl.write("    return false;\n")
         self.impl.write("}\n\n")
 
         # write enums / signature
         self.header.write("enum class General_Category {\n")
+        self.header.write("    {},\n".format('Unspecified')) # special case for general purpose get() function
         for name in sorted(cats.keys()):
             self.header.write("    {},\n".format(name))
         self.header.write("};\n\n")
@@ -398,6 +433,7 @@ namespace unicode {
         self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
 
         self.header.write('namespace general_category {\n')
+        self.header.write("    {} get(char32_t _value) noexcept;\n\n".format(type_name))
         for name in sorted(cats.keys()):
             self.header.write(
                     '    inline bool {}(char32_t _codepoint) {{ return contains(General_Category::{}, _codepoint); }}\n'.

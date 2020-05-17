@@ -13,14 +13,21 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 
 - [x] API for accessing UCD properties
 - [x] UTF8 <-> UTF32 conversion
+- [x] wcwidth equivalent (`int unicode::width(char32_t)`)
 - [x] grapheme segmentation (UTS algorithm)
+- [x] symbol/emoji segmentation (UTS algorithm)
 - [ ] word segmentation (UTS algorithm)
 - [ ] script segmentation
-- [x] symbol/emoji segmentation (UTS algorithm)
 - [ ] generic text segmentation (top level segmentation API suitable for text shaping implementations)
-- [ ] wcwidth equivalent (`unicode::width(char32_t)`)
-- [ ] CLI tool: unicode-inspect for inspecting input files by code point, grapheme cluster, word, script, ...
+- [ ] CLI tool: unicode-inspect for inspecting input files by code point properties, grapheme cluster, word, script, ...
 - [ ] unit tests for most parts (wcwidth / segmentation)
+
+# Unicode Technical Specifications
+
+- [UTS 11](https://unicode.org/reports/tr11/) - character width
+- [UTS 24](https://unicode.org/reports/tr24/) - script property
+- [UTS 29](https://unicode.org/reports/tr29/) - text segmentation (grapheme cluster, word boundary)
+- [UTS 51](https://unicode.org/reports/tr51/) - Emoji
 
 ### Integrate with your CMake project
 

@@ -1023,6 +1023,7 @@ enum class Core_Property {
 bool contains(Core_Property _prop, char32_t _codepoint) noexcept;
 
 enum class General_Category {
+    Unspecified,
     Close_Punctuation,
     Connector_Punctuation,
     Control,
@@ -1058,6 +1059,8 @@ enum class General_Category {
 bool contains(General_Category _cat, char32_t _codepoint) noexcept;
 
 namespace general_category {
+    General_Category get(char32_t _value) noexcept;
+
     inline bool close_punctuation(char32_t _codepoint) { return contains(General_Category::Close_Punctuation, _codepoint); }
     inline bool connector_punctuation(char32_t _codepoint) { return contains(General_Category::Connector_Punctuation, _codepoint); }
     inline bool control(char32_t _codepoint) { return contains(General_Category::Control, _codepoint); }

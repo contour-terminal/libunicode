@@ -22,6 +22,7 @@ if(LIBUNICODE_TESTING)
         grapheme_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp
+        width_test.cpp
         word_segmenter_test.cpp
     )
     target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)
