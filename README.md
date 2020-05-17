@@ -1,7 +1,7 @@
 [![C++17](https://img.shields.io/badge/standard-C%2B%2B%2017-blue.svg?logo=C%2B%2B)](https://isocpp.org/)
 [![Build](https://github.com/christianparpart/contour/workflows/Ubuntu/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3AUbuntu)
-[![Build](https://github.com/christianparpart/contour/workflows/Windows/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3AWindows)
-[![Build](https://github.com/christianparpart/contour/workflows/MacOS/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3AMacOS)
+[![Windows](https://github.com/christianparpart/libunicode/workflows/Windows/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3AWindows)
+[![OS/X](https://github.com/christianparpart/libunicode/workflows/MacOS/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3AMacOS)
 
 # Modern C++17 Unicode Library
 
