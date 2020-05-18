@@ -27,5 +27,5 @@ TEST_CASE("random test", "[width]")
 
     // emoji
     CHECK(unicode::width(U'\U0001F60A') == 2); // 😊 :blush:
-    CHECK(unicode::width(U'💀') == 2); // :skull:
+    CHECK(unicode::width(U'\U0001F480') == 2); // 💀 :skull:
 }
