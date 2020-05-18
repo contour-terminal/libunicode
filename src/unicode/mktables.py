@@ -14,9 +14,12 @@
  */
 """
 
+import os
 import re
 
-PROJECT_ROOT = '/home/trapni/projects/libunicode'
+SCRIPT_DIR_NAME = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = SCRIPT_DIR_NAME + '/../..'
+
 
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
 UCD_DIR = PROJECT_ROOT + '/docs/ucd'
@@ -210,7 +213,11 @@ namespace unicode {
         # write range tables
         self.impl.write("namespace tables {\n")
         for name in sorted(props.keys()):
-            self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
+            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                name,
+                'Interval',
+                len(props[name]),
+                FOLD_OPEN))
             for propRange in props[name]:
                 self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }}, // {}\n".format(propRange['start'], propRange['end'], propRange['comment']))
             self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
@@ -270,10 +277,15 @@ namespace unicode {
             # write range tables
             self.impl.write("namespace tables {\n")
             for name in sorted(props.keys()):
-                self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
+                element_type = 'Prop<::unicode::{}>'.format(name)
+                self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                    name,
+                    element_type,
+                    len(props[name]),
+                    FOLD_OPEN))
                 for propRange in props[name]:
-                    self.impl.write("    Prop<::unicode::{}>{{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
-                               name,
+                    self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
+                               element_type,
                                propRange['start'],
                                propRange['end'],
                                name,
@@ -354,7 +366,12 @@ namespace unicode {
             # write range tables
             self.impl.write("namespace tables {\n")
             for name in sorted(props.keys()):
-                self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
+                self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                    name,
+                    'Interval',
+                    len(props[name]),
+                    FOLD_OPEN
+                ))
                 for propRange in props[name]:
                     self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }}, // {}\n".format(
                                propRange['start'],
@@ -380,11 +397,16 @@ namespace unicode {
         self.impl.write("namespace tables {\n")
         type_name = "General_Category"
         fqdn_type_name = "::unicode::{}".format(type_name)
-        self.impl.write("auto const {} = std::array{{\n".format(type_name))
+        element_type = 'Prop<{}>'.format(fqdn_type_name)
+        self.impl.write("auto const {} = std::array<{}, {}>{{\n".format(
+            type_name,
+            element_type,
+            len(gcats)
+        ))
         for cat in gcats:
             self.impl.write(
-                "    Prop<{}>{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
-                fqdn_type_name,
+                "    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
+                element_type,
                 cat['start'],
                 cat['end'],
                 fqdn_type_name,
@@ -407,7 +429,12 @@ namespace unicode {
         # write range tables
         self.impl.write("namespace tables {\n")
         for name in sorted(cats.keys()):
-            self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(name, FOLD_OPEN))
+            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                name,
+                'Interval',
+                len(cats[name]),
+                FOLD_OPEN
+            ))
             for propRange in cats[name]:
                 self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }}, // {}\n".format(propRange['start'], propRange['end'], propRange['comment']))
             self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
@@ -499,10 +526,16 @@ namespace unicode {
 
             # impl: range tables
             self.impl.write("namespace tables {\n")
-            self.impl.write("auto constexpr {} = std::array{{ // {}\n".format(table_name, FOLD_OPEN))
+            element_type = 'Prop<{}>'.format(prop_type)
+            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                table_name,
+                element_type,
+                len(table),
+                FOLD_OPEN
+            ))
             for propRange in table:
-                self.impl.write("    Prop<{}>{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
-                                prop_type,
+                self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
+                                element_type,
                                 propRange['start'],
                                 propRange['end'],
                                 prop_type,
