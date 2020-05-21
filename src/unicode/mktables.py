@@ -17,9 +17,7 @@
 import os
 import re
 
-SCRIPT_DIR_NAME = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = SCRIPT_DIR_NAME + '/../..'
-
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
 UCD_DIR = PROJECT_ROOT + '/docs/ucd'
@@ -34,6 +32,8 @@ class UCDGenerator:
         self.impl = open(_impl_file, 'w')
         self.singleValueRE = re.compile('([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
         self.rangeValueRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
+        self.singleValueMultiRE = re.compile('([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
+        self.rangeValueMultiRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
         self.general_category_map = dict()
         self.general_category = list()
 
@@ -45,17 +45,52 @@ class UCDGenerator:
         self.load_property_value_aliases()
         self.load_general_category()
         self.load_core_properties()
+        self.load_scripts()
+        self.load_script_extensions()
 
         self.file_header()
         self.write_properties()
         self.write_core_properties()
         self.write_general_categories()
+        self.write_scripts()
+        self.write_script_extensions()
 
         self.process_grapheme_break_props()
         self.process_east_asian_width()
         self.process_emoji_props()
 
         self.file_footer()
+
+    def file_header(self): # {{{
+        self.header.write(globals()['__doc__'])
+        self.header.write("""#pragma once
+
+#include <array>
+#include <optional>
+#include <string>
+#include <utility>
+
+namespace unicode {
+
+""")
+
+        self.impl.write(globals()['__doc__'])
+        self.impl.write("""
+#include <unicode/ucd.h>
+#include <unicode/ucd_private.h>
+
+#include <array>
+#include <optional>
+#include <string>
+
+namespace unicode {
+
+""") # }}}
+
+    def file_footer(self): # {{{
+        self.header.write("} // end namespace\n")
+        self.impl.write("} // end namespace\n")
+# }}}
 
     def load_property_value_aliases(self): # {{{
         with open(self.ucd_dir + '/PropertyValueAliases.txt') as f:
@@ -97,9 +132,19 @@ class UCDGenerator:
             if name in ['General_Category', 'Grapheme_Cluster_Break']:
                 # XXX those properties are generated specifically
                 continue
+            # TODO: Script property values Unknown, Common, and Inherited
+            # are special and thuse ensured to be first in list.
             self.header.write('enum class {} {{\n'.format(name))
-            for value in sorted(self.property_values[name].keys()):
-                self.header.write('    {},\n'.format(self.property_values[name][value]))
+            values = list()
+            for key in self.property_values[name].keys():
+                if name == 'Script' and self.property_values[name][key] in ('Unknown', 'Common', 'Inherited'):
+                    continue
+                values.append(self.property_values[name][key])
+            if name == 'Script':
+                for value in ('Unknown', 'Common', 'Inherited'):
+                    self.header.write('    {},\n'.format(value))
+            for value in sorted(values):
+                self.header.write('    {},\n'.format(value))
             self.header.write('};\n\n')
         self.header.write("// {}\n\n".format(FOLD_CLOSE))
         # }}}
@@ -142,37 +187,6 @@ class UCDGenerator:
             cats_all.sort(key = lambda a: a['start'])
             self.general_category = cats_all
         # }}}
-
-    def file_header(self): # {{{
-        self.header.write(globals()['__doc__'])
-        self.header.write("""#pragma once
-
-#include <array>
-#include <optional>
-#include <string>
-#include <utility>
-
-namespace unicode {
-
-""")
-
-        self.impl.write(globals()['__doc__'])
-        self.impl.write("""
-#include <unicode/ucd.h>
-#include <unicode/ucd_private.h>
-
-#include <array>
-#include <optional>
-#include <string>
-
-namespace unicode {
-
-""") # }}}
-
-    def file_footer(self): # {{{
-        self.header.write("} // end namespace\n")
-        self.impl.write("} // end namespace\n")
-# }}}
 
     def load_core_properties(self): # {{{
         with open(self.ucd_dir + '/DerivedCoreProperties.txt', 'r') as f:
@@ -238,6 +252,63 @@ namespace unicode {
             self.header.write("    {},\n".format(name))
         self.header.write("};\n\n")
         self.header.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept;\n\n")
+        # }}}
+
+    def load_generic_properties(self, filename): # {{{
+        with open(filename, 'r') as f:
+            props = list()
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                m = self.singleValueRE.match(line)
+                if m:
+                    code = int(m.group(1), 16)
+                    prop = m.group(2)
+                    comment = m.group(3)
+                    props.append({'start': code, 'end': code, 'property': prop, 'comment': comment})
+                m = self.rangeValueRE.match(line)
+                if m:
+                    start = int(m.group(1), 16)
+                    end = int(m.group(2), 16)
+                    prop = m.group(3)
+                    comment = m.group(4)
+                    props.append({'start': start, 'end': end, 'property': prop, 'comment': comment})
+
+            # sort table
+            props.sort(key = lambda a: a['start'])
+
+            return props
+        # }}}
+
+    def write_generic_properties(self, props, name): # {{{
+        # write range tables
+        element_type = 'Prop<unicode::{}>'.format(name)
+
+        self.header.write('std::optional<{}> {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
+
+        self.impl.write("namespace tables {\n")
+        self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+            name,
+            element_type,
+            len(props),
+            FOLD_OPEN))
+        for propRange in props:
+            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }}, // {}\n".format(
+                            element_type,
+                            propRange['start'],
+                            propRange['end'],
+                            name,
+                            propRange['property'],
+                            propRange['comment']))
+        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
+
+        self.impl.write('std::optional<{}> {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
+        self.impl.write('    if (auto p = search(tables::{}, _codepoint); p.has_value())\n'.format(name))
+        self.impl.write('        return p;\n')
+        self.impl.write('    return std::nullopt;\n')
+        self.impl.write('}\n\n')
         # }}}
 
     def process_props(self, filename, prop_key): # {{{
@@ -325,6 +396,89 @@ namespace unicode {
 
     def process_grapheme_break_props(self):
         self.process_props(self.ucd_dir + '/auxiliary/GraphemeBreakProperty.txt', 'Property')
+
+    def load_scripts(self):
+        self.scripts = self.load_generic_properties(self.ucd_dir + '/Scripts.txt')
+
+    def write_scripts(self):
+        self.write_generic_properties(self.scripts, 'Script')
+
+    def load_script_extensions(self): # {{{
+        filename = self.ucd_dir + '/ScriptExtensions.txt'
+        with open(filename, 'r') as f:
+            props = list()
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                m = self.singleValueMultiRE.match(line)
+                if m:
+                    code = int(m.group(1), 16)
+                    prop = sorted(m.group(2).strip().split(' '))
+                    comment = m.group(3)
+                    props.append({'start': code, 'end': code, 'property': prop, 'comment': comment})
+                m = self.rangeValueMultiRE.match(line)
+                if m:
+                    start = int(m.group(1), 16)
+                    end = int(m.group(2), 16)
+                    prop = sorted(m.group(3).strip().split(' '))
+                    comment = m.group(4)
+                    props.append({'start': start, 'end': end, 'property': prop, 'comment': comment})
+
+            # sort table
+            props.sort(key = lambda a: a['start'])
+
+            self.script_extensions = props
+        # }}}
+
+    def write_script_extensions(self): # {{{
+        self.impl.write("namespace tables {{ // {} ScriptExtensions\n".format(FOLD_OPEN))
+        # construct indirected lists
+        done_list = list()
+        for sce in self.script_extensions:
+            scripts = sce['property']
+            key = 'sce_{}'.format('_'.join(scripts))
+            if key in done_list:
+                continue
+            done_list.append(key)
+            self.impl.write('auto constexpr {} = std::array<{}, {}>{{\n'.format(
+                            key,
+                            'unicode::Script',
+                            len(scripts)))
+            for script_abbrev in scripts:
+                script = self.property_values['Script'][script_abbrev]
+                self.impl.write('    unicode::Script::{},\n'.format(script))
+            self.impl.write('};\n\n')
+
+        # construct main lookup table
+        element_type = 'Prop<std::pair<unicode::Script const*, std::size_t>>'
+        self.impl.write('auto constexpr {} = std::array<{}, {}>{{\n'.format(
+                        'sce',
+                        element_type,
+                        len(self.script_extensions)))
+        for sce in self.script_extensions:
+            scripts = sce['property']
+            key = 'sce_{}'.format('_'.join(scripts))
+            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {} }}, // {}\n".format(
+                            element_type,
+                            sce['start'],
+                            sce['end'],
+                            '{{ {0}.data(), {0}.size() }}'.format(key),
+                            sce['comment']))
+        self.impl.write('};\n')
+        self.impl.write("}} // {}\n\n".format(FOLD_CLOSE))
+
+        # getter function
+        self.header.write("bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept;\n\n")
+        self.impl.write("bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept {\n")
+        self.impl.write("    if (auto const p = search(tables::{}, _codepoint); p.has_value()) {{\n".format('sce'))
+        self.impl.write('        *_result = p.value().first;\n')
+        self.impl.write('        *_count = p.value().second;\n')
+        self.impl.write("        return true;\n")
+        self.impl.write("    }\n")
+        self.impl.write("    return false;\n")
+        self.impl.write("}\n\n")
+    # }}}
 
     def parse_range(self, line): # {{{
         m = self.singleValueRE.match(line)
