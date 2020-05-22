@@ -17,7 +17,7 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 - [x] grapheme segmentation (UTS algorithm)
 - [x] symbol/emoji segmentation (UTS algorithm)
 - [ ] word segmentation (UTS algorithm)
-- [ ] script segmentation
+- [ ] script segmentation [UTS 24](https://unicode.org/reports/tr24/)
 - [ ] generic text segmentation (top level segmentation API suitable for text shaping implementations)
 - [ ] CLI tool: unicode-inspect for inspecting input files by code point properties, grapheme cluster, word, script, ...
 - [ ] unit tests for most parts (wcwidth / segmentation)
@@ -53,6 +53,15 @@ target_link_libraries(your_tool PUBLIC unicode::core)
 ### Users of this library
 
 * [Contour Terminal Emulator](https://github.com/christianparpart/contour/)
+
+### Disclaimer
+
+This library is -in terms of features- by no means competive to the ICU library, but it attempts to
+provide a clean and intuitive modern C++ API for those that do not want to fight legacy-style C APIs.
+
+I hope that over time we can add more and more features to this library to conform to the Unicode
+specification eventually at some point and I welcome everyone to contribute to it by forking the
+library, creating pull requests, or even just constructive feedback.
 
 ### License
 
