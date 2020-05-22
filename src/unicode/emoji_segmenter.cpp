@@ -85,23 +85,23 @@ class RagelIterator {
     EmojiSegmentationCategory category_;
     char32_t const* buffer_;
     size_t size_;
-    size_t cursor_;
+    size_t currentCursorEnd_;
 
   public:
     constexpr RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept
       : category_{ EmojiSegmentationCategory::Invalid },
         buffer_{ _buffer },
         size_{ _size },
-        cursor_{ _cursor }
+        currentCursorEnd_{ _cursor }
     {
         updateCategory();
     }
 
     constexpr RagelIterator() noexcept : RagelIterator(U"", 0, 0) {}
 
-    constexpr char32_t codepoint() const noexcept { return buffer_[cursor_]; }
+    constexpr char32_t codepoint() const noexcept { return buffer_[currentCursorEnd_]; }
     constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
-    constexpr size_t cursor() const noexcept { return cursor_; }
+    constexpr size_t cursor() const noexcept { return currentCursorEnd_; }
 
     constexpr void updateCategory()
     {
@@ -110,17 +110,17 @@ class RagelIterator {
 
     constexpr int operator*() const noexcept { return static_cast<int>(category_); }
 
-    constexpr RagelIterator& operator++() noexcept { cursor_++; updateCategory(); return *this; }
-    constexpr RagelIterator& operator--(int) noexcept { cursor_--; updateCategory(); return *this; }
+    constexpr RagelIterator& operator++() noexcept { currentCursorEnd_++; updateCategory(); return *this; }
+    constexpr RagelIterator& operator--(int) noexcept { currentCursorEnd_--; updateCategory(); return *this; }
 
-    constexpr RagelIterator operator+(int v) const noexcept { return {buffer_, size_, cursor_ + v}; }
-    constexpr RagelIterator operator-(int v) const noexcept { return {buffer_, size_, cursor_ - v}; }
+    constexpr RagelIterator operator+(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ + v}; }
+    constexpr RagelIterator operator-(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ - v}; }
 
-    constexpr RagelIterator& operator=(int v) noexcept { cursor_ = v; updateCategory(); return *this; }
+    constexpr RagelIterator& operator=(int v) noexcept { currentCursorEnd_ = v; updateCategory(); return *this; }
 
     constexpr bool operator==(RagelIterator const& _rhs) const noexcept
     {
-        return buffer_ == _rhs.buffer_ && size_ == _rhs.size_ && cursor_ == _rhs.cursor_;
+        return buffer_ == _rhs.buffer_ && size_ == _rhs.size_ && currentCursorEnd_ == _rhs.currentCursorEnd_;
     }
 
     constexpr bool operator!=(RagelIterator const& _rhs) const noexcept { return !(*this == _rhs); }
@@ -133,14 +133,34 @@ using emoji_text_iter_t = RagelIterator;
 
 void emoji_segmenter::consume() noexcept
 {
-    if (size_ != 0)
+    // 01234567890123456
+    // "ABC EMOJI DEFGH"
+    //  [---]    |     |
+    //      [----]     |
+    //           [-----]
+
+    currentCursorBegin_ = currentCursorEnd_;
+    currentCursorEnd_ = nextCursorBegin_;
+    isEmoji_ = isNextEmoji_;
+
+    if (nextCursorBegin_ >= size_)
+        return;
+
+    do
     {
-        lastCursor_ = cursor_;
-        auto const i = RagelIterator(buffer_, size_, cursor_);
+        auto const i = RagelIterator(buffer_, size_, currentCursorEnd_);
         auto const e = RagelIterator(buffer_, size_, size_);
-        auto const o = scan_emoji_presentation(i, e, &isEmoji_);
-        cursor_ = o.cursor();
+        auto const o = scan_emoji_presentation(i, e, &isNextEmoji_);
+
+        if (isEmoji_ != isNextEmoji_)
+        {
+            nextCursorBegin_ = o.cursor();
+            break;
+        }
+
+        currentCursorEnd_ = o.cursor();
     }
+    while (currentCursorEnd_ < size_);
 }
 
 } // end namespace

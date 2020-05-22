@@ -35,20 +35,23 @@ class emoji_segmenter {
   private:
     char32_t const* buffer_;
     size_t size_;
-    size_t lastCursor_;
-    size_t cursor_;
+
+    size_t currentCursorBegin_ = 0;
+    size_t currentCursorEnd_ = 0;
+    size_t nextCursorBegin_ = 0;
 
     bool isEmoji_ = false;
+    bool isNextEmoji_ = false;
 
   public:
     emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
       : buffer_{ _buffer },
-        size_{ _size },
-        lastCursor_{ 0 },
-        cursor_{ 0 },
-        isEmoji_{false}
+        size_{ _size }
     {
         consume();
+
+        if (currentCursorEnd_ == 0)
+            consume();
     }
 
     emoji_segmenter(std::u32string_view const& _sv) noexcept
@@ -64,8 +67,8 @@ class emoji_segmenter {
     /// @returns the underlying current segment that has been processed the last.
     constexpr std::u32string_view operator*() const noexcept
     {
-        if (cursor_ > 0)
-            return std::u32string_view(buffer_ + lastCursor_, cursor_ - lastCursor_);
+        if (currentCursorEnd_ > 0)
+            return std::u32string_view(buffer_ + currentCursorBegin_, currentCursorEnd_ - currentCursorBegin_);
         else
             return std::u32string_view{};
     }

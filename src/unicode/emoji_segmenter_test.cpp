@@ -33,13 +33,26 @@ TEST_CASE("emoji_segmenter.emoji.simple1", "[emoji_segmenter]")
 
 TEST_CASE("emoji_segmenter.emoji.simple2", "[emoji_segmenter]")
 {
-    auto const codepoints = u32string_view{U"\U0001f600\U0001f600"};
+    auto const codepoints = u32string_view{U"\U0001f600\U0001f600"}; // 😀😀
     auto es = emoji_segmenter{ codepoints };
 
     CHECK(es.isEmoji());
-    CHECK(*es == U"\U0001f600");
+    CHECK(*es == codepoints);
 
     ++es;
+    CHECK(*es == U"");
+}
+
+TEST_CASE("emoji_segmenter.text_emoji", "[emoji_segmenter]")
+{
+    auto const codepoints = u32string_view{U"ABC \U0001f600"};
+    auto es = emoji_segmenter{ codepoints };
+
+    CHECK(es.isText());
+    CHECK(*es == U"ABC ");
+
+    ++es;
+    CHECK(es.isEmoji());
     CHECK(*es == U"\U0001f600");
 
     ++es;
@@ -81,27 +94,33 @@ TEST_CASE("emoji_segmenter.emoji.text.emoji", "[emoji_segmenter]")
 TEST_CASE("emoji_segmenter.mixed_complex", "[emoji_segmenter]")
 {
     auto const codepoints = u32string_view{
+        U"Hello("                                       // Latin text
         U"\u270c"                                       // ✌ Waving hand
         U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F"       // 🤦🏼‍♂️ Face Palm
-        U"\u270c\ufe0e"                                 // ✌ Waving hand (text presentation)
+        U"\u270c\ufe0e :-)"                             // ✌ Waving hand (text presentation)
         U"\u270c"                                       // ✌ Waving hand
+        U")合!"
     };
     auto es = emoji_segmenter{ codepoints };
 
-    CHECK(es.isEmoji());
-    CHECK(*es == U"\u270c");
+    CHECK(es.isText());
+    CHECK(*es == U"Hello(");
 
     ++es;
     CHECK(es.isEmoji());
-    CHECK(*es == U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F");
+    CHECK(*es == U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F");
 
     ++es;
     CHECK(es.isText());
-    CHECK(*es == U"\u270c\ufe0e");
+    CHECK(*es == U"\u270c\ufe0e :-)");
 
     ++es;
     CHECK(es.isEmoji());
     CHECK(*es == U"\u270c");
+
+    ++es;
+    CHECK(es.isText());
+    CHECK(*es == U")合!");
 
     ++es;
     CHECK(*es == U"");
