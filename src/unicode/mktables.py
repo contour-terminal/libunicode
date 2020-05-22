@@ -140,11 +140,14 @@ namespace unicode {
                 if name == 'Script' and self.property_values[name][key] in ('Unknown', 'Common', 'Inherited'):
                     continue
                 values.append(self.property_values[name][key])
+            i = 0
             if name == 'Script':
                 for value in ('Unknown', 'Common', 'Inherited'):
-                    self.header.write('    {},\n'.format(value))
+                    self.header.write('    {} = {},\n'.format(value, i))
+                    i += 1
             for value in sorted(values):
-                self.header.write('    {},\n'.format(value))
+                self.header.write('    {} = {},\n'.format(value, i))
+                i += 1
             self.header.write('};\n\n')
         self.header.write("// {}\n\n".format(FOLD_CLOSE))
         # }}}
