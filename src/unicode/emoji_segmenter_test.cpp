@@ -102,7 +102,6 @@ TEST_CASE("emoji_segmenter.mixed_complex", "[emoji_segmenter]")
         U")合!"
     };
     auto es = emoji_segmenter{ codepoints };
-
     CHECK(es.isText());
     CHECK(*es == U"Hello(");
 

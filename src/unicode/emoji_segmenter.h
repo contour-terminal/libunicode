@@ -14,8 +14,7 @@
 #pragma once
 
 #include <unicode/ucd.h>
-
-#include <fmt/format.h>
+#include <unicode/support.h>
 
 #include <array>
 #include <algorithm>
@@ -74,6 +73,20 @@ class emoji_segmenter {
     }
 
     void consume() noexcept;
+
+    bool consume(out<size_t> _size, out<bool> _emoji)
+    {
+        consume();
+
+        if (currentCursorBegin_ > 0)
+        {
+            *_size = currentCursorEnd_;
+            *_emoji = isEmoji_;
+            return true;
+        }
+
+        return false;
+    }
 
     emoji_segmenter& operator++() noexcept { consume(); return *this; }
     emoji_segmenter& operator++(int) noexcept { return ++*this; }

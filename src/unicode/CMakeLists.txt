@@ -5,6 +5,7 @@ add_library(unicode STATIC
     grapheme_segmenter.h
     ucd.h ucd.cpp
     script_segmenter.h script_segmenter.cpp
+    text_segmenter.h text_segmenter.cpp
     word_segmenter.h
 )
 add_library(unicode::core ALIAS unicode)
@@ -25,6 +26,7 @@ if(LIBUNICODE_TESTING)
         unicode_test.cpp
         width_test.cpp
         script_segmenter_test.cpp
+        text_segmenter_test.cpp
         word_segmenter_test.cpp
     )
     target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)
