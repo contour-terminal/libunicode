@@ -16,9 +16,11 @@
 #include <unicode/script_segmenter.h>
 #include <unicode/emoji_segmenter.h>
 #include <unicode/ucd.h>
+#include <unicode/ucd_ostream.h>
 #include <unicode/support.h>
 
 #include <iterator>
+#include <ostream>
 
 namespace unicode {
 
@@ -76,4 +78,30 @@ class text_segmenter {
     emoji_segmenter emojiSegmenter_;
 };
 
+constexpr bool operator==(segment const& a, segment const& b)
+{
+    return a.start == b.start
+        && a.end == b.end
+        && a.script == b.script
+        && a.emoji == b.emoji
+        && a.fontFallbackPriority == b.fontFallbackPriority;
+}
+
+constexpr bool operator!=(segment const& a, segment const& b)
+{
+    return !(a == b);
+}
+
 } // end namespace
+
+namespace std {
+    inline ostream& operator<<(ostream& os, unicode::segment const& s)
+    {
+        return os << '('
+                  << s.start << ".." << s.end
+                  << ", " << s.script
+                  << ", " << (s.emoji ? "emoji" : "text")
+                  << ')';
+    }
+}
+
