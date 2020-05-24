@@ -131,7 +131,15 @@ using emoji_text_iter_t = RagelIterator;
 #include "emoji_presentation_scanner.c"
 }
 
-void emoji_segmenter::consume() noexcept
+emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
+  : buffer_{ _buffer },
+    size_{ _size }
+{
+    if (size_)
+        consume_once();
+}
+
+bool emoji_segmenter::consume(out<size_t> _size, out<bool> _emoji) noexcept
 {
     // 01234567890123456
     // "ABC EMOJI DEFGH"
@@ -144,23 +152,34 @@ void emoji_segmenter::consume() noexcept
     isEmoji_ = isNextEmoji_;
 
     if (nextCursorBegin_ >= size_)
-        return;
+        return false;
 
     do
     {
-        auto const i = RagelIterator(buffer_, size_, currentCursorEnd_);
-        auto const e = RagelIterator(buffer_, size_, size_);
-        auto const o = scan_emoji_presentation(i, e, &isNextEmoji_);
+        auto const o = consume_once();
 
         if (isEmoji_ != isNextEmoji_)
         {
-            nextCursorBegin_ = o.cursor();
+            nextCursorBegin_ = o;
             break;
         }
 
-        currentCursorEnd_ = o.cursor();
+        currentCursorEnd_ = o;
     }
     while (currentCursorEnd_ < size_);
+
+    _size.assign(currentCursorEnd_);
+    _emoji.assign(isEmoji_);
+
+    return true;
+}
+
+size_t emoji_segmenter::consume_once()
+{
+    auto const i = RagelIterator(buffer_, size_, currentCursorEnd_);
+    auto const e = RagelIterator(buffer_, size_, size_);
+    auto const o = scan_emoji_presentation(i, e, &isNextEmoji_);
+    return o.cursor();
 }
 
 } // end namespace

@@ -43,19 +43,25 @@ class emoji_segmenter {
     bool isNextEmoji_ = false;
 
   public:
-    emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
-      : buffer_{ _buffer },
-        size_{ _size }
-    {
-        consume();
-
-        if (currentCursorEnd_ == 0)
-            consume();
-    }
+    emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept;
 
     emoji_segmenter(std::u32string_view const& _sv) noexcept
       : emoji_segmenter(_sv.data(), _sv.size())
     {}
+
+    constexpr char32_t const* buffer() const noexcept { return buffer_; }
+    constexpr size_t size() const noexcept { return size_; }
+    constexpr size_t currentCursorBegin() const noexcept { return currentCursorBegin_; }
+    constexpr size_t currentCursorEnd() const noexcept { return currentCursorEnd_; }
+
+    bool consume(out<size_t> _size, out<bool> _emoji) noexcept;
+
+    bool consume() noexcept
+    {
+        size_t size;
+        bool emoji;
+        return consume(out(size), out(emoji));
+    }
 
     /// @returns whether or not the currently segmented emoji is to be rendered in text-presentation or not.
     constexpr bool isText() const noexcept { return !isEmoji_; }
@@ -64,39 +70,20 @@ class emoji_segmenter {
     constexpr bool isEmoji() const noexcept { return isEmoji_; }
 
     /// @returns the underlying current segment that has been processed the last.
-    constexpr std::u32string_view operator*() const noexcept
+    constexpr std::u32string_view substr() const noexcept
     {
+        // TODO: provide such an accessor in text_run_segmenter
         if (currentCursorEnd_ > 0)
             return std::u32string_view(buffer_ + currentCursorBegin_, currentCursorEnd_ - currentCursorBegin_);
         else
             return std::u32string_view{};
     }
 
-    void consume() noexcept;
+    /// @returns the underlying current segment that has been processed the last.
+    constexpr std::u32string_view operator*() const noexcept { return substr(); }
 
-    bool consume(out<size_t> _size, out<bool> _emoji)
-    {
-        consume();
-
-        if (currentCursorBegin_ > 0)
-        {
-            *_size = currentCursorEnd_;
-            *_emoji = isEmoji_;
-            return true;
-        }
-
-        return false;
-    }
-
-    emoji_segmenter& operator++() noexcept { consume(); return *this; }
-    emoji_segmenter& operator++(int) noexcept { return ++*this; }
-
-    constexpr bool operator==(emoji_segmenter const& _rhs) const noexcept
-    {
-        return buffer_ == _rhs.buffer_ && size_ == _rhs.size_;
-    }
-
-    constexpr bool operator!=(emoji_segmenter const& _rhs) const noexcept { return !(*this == _rhs); }
+  private:
+    size_t consume_once();
 };
 
 } // end namespace

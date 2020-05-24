@@ -24,10 +24,11 @@ TEST_CASE("emoji_segmenter.emoji.simple1", "[emoji_segmenter]")
     auto const codepoints = u32string_view{U"\U0001f600"};
     auto es = emoji_segmenter{ codepoints };
 
+    es.consume();
     CHECK(*es == U"\U0001f600");
     CHECK(es.isEmoji());
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
 
@@ -36,10 +37,11 @@ TEST_CASE("emoji_segmenter.emoji.simple2", "[emoji_segmenter]")
     auto const codepoints = u32string_view{U"\U0001f600\U0001f600"}; // 😀😀
     auto es = emoji_segmenter{ codepoints };
 
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == codepoints);
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
 
@@ -48,14 +50,15 @@ TEST_CASE("emoji_segmenter.text_emoji", "[emoji_segmenter]")
     auto const codepoints = u32string_view{U"ABC \U0001f600"};
     auto es = emoji_segmenter{ codepoints };
 
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U"ABC ");
 
-    ++es;
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == U"\U0001f600");
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
 
@@ -64,10 +67,11 @@ TEST_CASE("emoji_segmenter.text.simple1", "[emoji_segmenter]")
     auto const codepoints = u32string_view{U"\u270c\ufe0e"};
     auto es = emoji_segmenter{ codepoints };
 
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U"\u270c\ufe0e");
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
 
@@ -76,18 +80,19 @@ TEST_CASE("emoji_segmenter.emoji.text.emoji", "[emoji_segmenter]")
     auto const codepoints = u32string_view{U"\u270c\u270c\ufe0e\u270c"};
     auto es = emoji_segmenter{ codepoints };
 
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == U"\u270c");
 
-    ++es;
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U"\u270c\ufe0e");
 
-    ++es;
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == U"\u270c");
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
 
@@ -102,25 +107,27 @@ TEST_CASE("emoji_segmenter.mixed_complex", "[emoji_segmenter]")
         U")合!"
     };
     auto es = emoji_segmenter{ codepoints };
+
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U"Hello(");
 
-    ++es;
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F");
 
-    ++es;
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U"\u270c\ufe0e :-)");
 
-    ++es;
+    es.consume();
     CHECK(es.isEmoji());
     CHECK(*es == U"\u270c");
 
-    ++es;
+    es.consume();
     CHECK(es.isText());
     CHECK(*es == U")合!");
 
-    ++es;
+    es.consume();
     CHECK(*es == U"");
 }
