@@ -3,9 +3,9 @@ add_library(unicode STATIC
 	width.h width.cpp
     emoji_segmenter.h emoji_segmenter.cpp
     grapheme_segmenter.h
-    ucd.h ucd.cpp
+    run_segmenter.h run_segmenter.cpp
     script_segmenter.h script_segmenter.cpp
-    text_segmenter.h text_segmenter.cpp
+    ucd.h ucd.cpp
     word_segmenter.h
 )
 add_library(unicode::core ALIAS unicode)
@@ -22,11 +22,11 @@ if(LIBUNICODE_TESTING)
 		utf8_test.cpp
         emoji_segmenter_test.cpp
         grapheme_segmenter_test.cpp
+        run_segmenter_test.cpp
+        script_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp
         width_test.cpp
-        script_segmenter_test.cpp
-        text_segmenter_test.cpp
         word_segmenter_test.cpp
     )
     target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)

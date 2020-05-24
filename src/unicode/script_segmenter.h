@@ -108,7 +108,7 @@ class script_segmenter {
     size_t size_;
 
     ScriptSet currentScriptSet_{};
-    Script commonPreferredScript_ = Script::Unknown;
+    Script commonPreferredScript_ = Script::Common;
 };
 
 } // end namespace

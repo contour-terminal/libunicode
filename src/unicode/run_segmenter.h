@@ -1,6 +1,6 @@
 /**
- * This file is part of the "libterminal" project
- *   Copyright (c) 2019 Christian Parpart <christian@parpart.family>
+ * This file is part of the "libunicode" project
+ *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,30 +24,42 @@
 
 namespace unicode {
 
-enum class FontFallbackPriority {
-    Invalid = 0,
+/// Used to distinguish between standard text and emoji text.
+enum class RunPresentationStyle {
     Text,
-    EmojiInText,
-    EmojiInEmoji,
+    Emoji
 };
 
+/// Contains the extracted information of run_segmenter's single run.
 struct segment
 {
+    /// start-offset of the current segment that has been extracted
     size_t start = 0;
+
+    /// end-offset (excluding) of the current segment that has been extracted
     size_t end = 0;
 
+    /// the script (writing system) this segment has been identified with
     Script script = Script::Unknown;
 
-    bool emoji = false;
-    FontFallbackPriority fontFallbackPriority = FontFallbackPriority::Text;
+    /// presentation style of the underlying segment
+    RunPresentationStyle presentationStyle = RunPresentationStyle::Text;
 };
 
-class text_segmenter {
+/// API for segmenting incoming text into small runs.
+///
+/// A ``run`` is a unit suitable for text shaping, but may as well be used
+/// for other purposes, too.
+///
+/// @see script_segmenter
+/// @see emoji_segmenter
+/// @see grapheme_segmenter
+class run_segmenter {
   public:
-    text_segmenter(char32_t const* _text, size_t _size, size_t _startOffset = 0);
+    run_segmenter(char32_t const* _text, size_t _size, size_t _startOffset = 0);
 
-    text_segmenter(std::u32string_view const& _sv, size_t _startOffset = 0) :
-        text_segmenter(_sv.data(), _sv.size(), _startOffset) {}
+    run_segmenter(std::u32string_view const& _sv, size_t _startOffset = 0) :
+        run_segmenter(_sv.data(), _sv.size(), _startOffset) {}
 
     /// Splits input text into segments, such as pure text by script, emoji-emoji, or emoji-text.
     ///
@@ -61,7 +73,7 @@ class text_segmenter {
                                    out<size_t> _position,
                                    out<Property> _property);
 
-    constexpr bool finished() const noexcept { return lastSplit_ == size_; }
+    constexpr bool finished() const noexcept { return lastSplit_ >= size_; }
 
   private:
     size_t startOffset_ = 0;
@@ -83,8 +95,7 @@ constexpr bool operator==(segment const& a, segment const& b)
     return a.start == b.start
         && a.end == b.end
         && a.script == b.script
-        && a.emoji == b.emoji
-        && a.fontFallbackPriority == b.fontFallbackPriority;
+        && a.presentationStyle == b.presentationStyle;
 }
 
 constexpr bool operator!=(segment const& a, segment const& b)
@@ -94,13 +105,26 @@ constexpr bool operator!=(segment const& a, segment const& b)
 
 } // end namespace
 
-namespace std {
+namespace std
+{
+    inline ostream& operator<<(ostream& os, unicode::RunPresentationStyle ps)
+    {
+        switch (ps)
+        {
+            case unicode::RunPresentationStyle::Text:
+                return os << "Text";
+            case unicode::RunPresentationStyle::Emoji:
+                return os << "Emoji";
+        }
+        return os;
+    }
+
     inline ostream& operator<<(ostream& os, unicode::segment const& s)
     {
         return os << '('
                   << s.start << ".." << s.end
                   << ", " << s.script
-                  << ", " << (s.emoji ? "emoji" : "text")
+                  << ", " << s.presentationStyle
                   << ')';
     }
 }
