@@ -10,10 +10,10 @@ class out {
   public:
     constexpr out(std::reference_wrapper<T> _ref) noexcept : ref_{&_ref.value()} {}
     constexpr explicit out(T& _ref) noexcept : ref_{&_ref} {}
-    constexpr out(out const&) = default;
-    constexpr out(out&&) = default;
-    constexpr out& operator=(out const&) = default;
-    constexpr out& operator=(out&&) = default;
+    constexpr out(out const&) noexcept = default;
+    constexpr out(out&&) noexcept = default;
+    constexpr out& operator=(out const&) noexcept = default;
+    constexpr out& operator=(out&&) noexcept = default;
 
     constexpr T& get() noexcept { return *ref_; }
     constexpr T const& get() const noexcept { return *ref_; }
