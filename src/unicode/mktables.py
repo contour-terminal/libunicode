@@ -27,7 +27,7 @@ UCD_DIR = PROJECT_ROOT + '/docs/ucd'
 FOLD_OPEN = '{{{'
 FOLD_CLOSE = '}}}'
 
-class EnumBuilder: # {{{
+class EnumBuilder(ABC): # {{{
     @abstractmethod
     def close(self):
         pass
