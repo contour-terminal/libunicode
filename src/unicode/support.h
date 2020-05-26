@@ -48,6 +48,7 @@ class fs_array {
         size_ = 0;
     };
 
+    constexpr size_t capacity() const noexcept { return N; }
     constexpr size_t size() const noexcept { return size_; }
     constexpr bool empty() const noexcept { return size_ == 0; }
 
@@ -73,6 +74,9 @@ class fs_array {
 
     constexpr const_iterator begin() const noexcept { return values_.begin(); }
     constexpr const_iterator end() const noexcept { return values_.end(); }
+
+    constexpr T* data() noexcept { return values_.data(); }
+    constexpr T const* data() const noexcept { return values_.data(); }
 
   private:
     array_type values_;

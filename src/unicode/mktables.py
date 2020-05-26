@@ -381,44 +381,6 @@ namespace unicode {
             return props
         # }}}
 
-    def write_generic_properties(self, props, name): # {{{
-        # write range tables
-        element_type = 'Prop<unicode::{}>'.format(name)
-
-        self.header.write('std::optional<{}> {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
-
-        self.impl.write("namespace tables {\n")
-        self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
-            name,
-            element_type,
-            len(props),
-            FOLD_OPEN))
-        pset = set()
-        for propRange in props:
-            pset.add(propRange['property'])
-            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }}, // {}\n".format(
-                            element_type,
-                            propRange['start'],
-                            propRange['end'],
-                            name,
-                            propRange['property'],
-                            propRange['comment']))
-
-        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
-        self.impl.write("} // end namespace tables\n\n")
-
-        self.builder.begin(name)
-        for p in sorted(pset):
-            self.builder.member(p)
-        self.builder.end()
-
-        self.impl.write('std::optional<{}> {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
-        self.impl.write('    if (auto p = search(tables::{}, _codepoint); p.has_value())\n'.format(name))
-        self.impl.write('        return p;\n')
-        self.impl.write('    return std::nullopt;\n')
-        self.impl.write('}\n\n')
-        # }}}
-
     def process_props(self, filename, prop_key): # {{{
         with open(filename, 'r') as f:
             headerRE = re.compile('^#\s*{}:\s*(\w+)$'.format(prop_key))
@@ -519,8 +481,44 @@ namespace unicode {
     def load_scripts(self):
         self.scripts = self.load_generic_properties(self.ucd_dir + '/Scripts.txt')
 
-    def write_scripts(self):
-        self.write_generic_properties(self.scripts, 'Script')
+    def write_scripts(self): # {{{
+        name = 'Script'
+        props = self.scripts
+        element_type = 'Prop<unicode::{}>'.format(name)
+
+        self.impl.write("namespace tables {\n")
+        self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+            name,
+            element_type,
+            len(props),
+            FOLD_OPEN))
+        pset = set()
+        for propRange in props:
+            pset.add(propRange['property'])
+            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }}, // {}\n".format(
+                            element_type,
+                            propRange['start'],
+                            propRange['end'],
+                            name,
+                            propRange['property'],
+                            propRange['comment']))
+
+        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
+
+        self.builder.begin(name)
+        for p in sorted(pset):
+            self.builder.member(p)
+        self.builder.end()
+
+        self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
+
+        self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
+        self.impl.write('    if (auto const p = search(tables::{}, _codepoint); p.has_value())\n'.format(name))
+        self.impl.write('        return p.value();\n')
+        self.impl.write('    return Script::Unknown;\n')
+        self.impl.write('}\n\n')
+        # }}}
 
     def load_script_extensions(self): # {{{
         filename = self.ucd_dir + '/ScriptExtensions.txt'
@@ -588,14 +586,16 @@ namespace unicode {
         self.impl.write("}} // {}\n\n".format(FOLD_CLOSE))
 
         # getter function
-        self.header.write("bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept;\n\n")
-        self.impl.write("bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept {\n")
+        self.header.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept;\n\n")
+        self.impl.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {\n")
         self.impl.write("    if (auto const p = search(tables::{}, _codepoint); p.has_value()) {{\n".format('sce'))
-        self.impl.write('        *_result = p.value().first;\n')
-        self.impl.write('        *_count = p.value().second;\n')
-        self.impl.write("        return true;\n")
+        self.impl.write('        auto const cap = std::min(_capacity, p.value().second);\n')
+        self.impl.write('        for (size_t i = 0; i < cap; ++i)\n')
+        self.impl.write('            _result[i] = p.value().first[i];\n')
+        self.impl.write('        return cap;\n')
         self.impl.write("    }\n")
-        self.impl.write("    return false;\n")
+        self.impl.write('    *_result = script(_codepoint);\n')
+        self.impl.write('    return 1;\n')
         self.impl.write("}\n\n")
     # }}}
 

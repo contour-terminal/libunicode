@@ -21923,10 +21923,10 @@ auto constexpr Script = std::array<Prop<unicode::Script>, 2095>{ // {{{
 }; // }}}
 } // end namespace tables
 
-std::optional<Script> script(char32_t _codepoint) noexcept {
-    if (auto p = search(tables::Script, _codepoint); p.has_value())
-        return p;
-    return std::nullopt;
+Script script(char32_t _codepoint) noexcept {
+    if (auto const p = search(tables::Script, _codepoint); p.has_value())
+        return p.value();
+    return Script::Unknown;
 }
 
 namespace tables { // {{{ ScriptExtensions
@@ -22492,13 +22492,15 @@ auto constexpr sce = std::array<Prop<std::pair<unicode::Script const*, std::size
 };
 } // }}}
 
-bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept {
+size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {
     if (auto const p = search(tables::sce, _codepoint); p.has_value()) {
-        *_result = p.value().first;
-        *_count = p.value().second;
-        return true;
+        auto const cap = std::min(_capacity, p.value().second);
+        for (size_t i = 0; i < cap; ++i)
+            _result[i] = p.value().first[i];
+        return cap;
     }
-    return false;
+    *_result = script(_codepoint);
+    return 1;
 }
 
 namespace tables {

@@ -17,6 +17,19 @@
 #include <string_view>
 
 using namespace std::string_view_literals;
+using namespace std::string_view_literals;
+
+TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
+{
+    auto constexpr str = U"\uE0B0"sv; // some PUA codepoint
+    auto seg = unicode::script_segmenter{str.data(), str.size()};
+
+    auto const r1 = seg.consume();
+    REQUIRE(r1.has_value());
+    auto const res1 = r1.value();
+    CHECK(res1.size == 1);
+    CHECK(res1.script == unicode::Script::Unknown);
+}
 
 TEST_CASE("script_segmenter.greek_kanji_greek", "[script_segmenter]")
 {

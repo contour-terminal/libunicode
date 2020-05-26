@@ -1093,9 +1093,9 @@ namespace general_category {
     inline bool uppercase_letter(char32_t _codepoint) { return contains(General_Category::Uppercase_Letter, _codepoint); }
 }
 
-std::optional<Script> script(char32_t _codepoint) noexcept;
+Script script(char32_t _codepoint) noexcept;
 
-bool script_extensions(char32_t _codepoint, Script const** _result, size_t* _count) noexcept;
+size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept;
 
 enum class Grapheme_Cluster_Break {
     CR,

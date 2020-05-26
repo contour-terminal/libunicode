@@ -42,19 +42,6 @@ optional<script_segmenter::result> script_segmenter::consume()
     return res;
 }
 
-constexpr bool specialScript(Script _script) noexcept // TODO: better wording (spec explicit-vs-implicit?)
-{
-    switch (_script)
-    {
-        case Script::Unknown:
-        case Script::Inherited:
-        case Script::Common:
-            return true;
-        default:
-            return false;
-    }
-}
-
 bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentSet)
 {
     if (_nextSet.empty() || _currentSet.empty())
@@ -65,7 +52,7 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
 
     Script priorityScript = *currentSetIter++;
 
-    if (specialScript(_nextSet[0]))
+    if (_nextSet[0] == Script::Common || _nextSet[0] == Script::Inherited)
     {
         if (_nextSet.size() == 2 && priorityScript == Script::Inherited && commonPreferredScript_ == Script::Common)
             commonPreferredScript_ = _nextSet[1];
@@ -122,19 +109,14 @@ script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t _codepoint)
 {
     ScriptSet scriptSet;
 
-    Script const* sce{};
-    size_t sceCount{};
-    if (script_extensions(_codepoint, &sce, &sceCount))
-        for (size_t i = 0; i < sceCount; ++i)
-            scriptSet.push_back(sce[i]);
+    size_t const sceCount = script_extensions(_codepoint, scriptSet.data(), scriptSet.capacity());
+    scriptSet.resize(sceCount);
 
-    if (optional<Script> sc = script(_codepoint); sc.has_value())
-    {
-        if (auto i = find(scriptSet.begin(), scriptSet.end(), *sc); i != scriptSet.end())
-            swap(*i, *scriptSet.begin());
-        else
-            scriptSet.push_back(sc.value());
-    }
+    Script const sc = script(_codepoint);
+    if (auto i = find(scriptSet.begin(), scriptSet.end(), sc); i != scriptSet.end())
+        swap(*i, *scriptSet.begin());
+    else
+        scriptSet.push_back(sc);
 
     return scriptSet;
 }
