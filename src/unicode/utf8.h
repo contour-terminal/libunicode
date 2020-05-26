@@ -72,6 +72,11 @@ inline std::string to_utf8(char32_t const* _characters, size_t n)
     return s;
 }
 
+inline std::string to_utf8(char32_t _character)
+{
+    return to_utf8(&_character, 1);
+}
+
 inline std::string to_utf8(std::u32string const& _characters)
 {
     return to_utf8(_characters.data(), _characters.size());
