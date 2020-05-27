@@ -100,53 +100,48 @@ struct Success{ char32_t value; };
 using ConvertResult = std::variant<Invalid, Incomplete, Success>;
 
 /// Progressively decodes a UTF-8 codepoint.
-constexpr ConvertResult from_utf8(utf8_decoder_state& _state, char _byte)
+constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
 {
-    if (_state.expectedLength == 0)
+    if (!_state.expectedLength)
     {
-        _state.currentLength = 1;
-
         if ((_byte >> 7) == 0)
         {
             _state.expectedLength = 1;
             _state.character = _byte;
-            return Success{static_cast<char32_t>(_byte)};
         }
-        else if (((_byte >> 5) & 0b111) == 0b110)
-        {
-            _state.expectedLength = 2;
-            _state.character = _byte & 0b0001'1111;
-            return Incomplete{};
-        }
-        else if (((_byte >> 4) & 0b1111) == 0b1110)
-        {
-            _state.expectedLength = 3;
-            _state.character = _byte & 0b0000'1111;
-            return Incomplete{};
-        }
-        else if (((_byte >> 3) & 0b11111) == 0b1111'0)
+        else if (((_byte >> 3) & 0b1111'0) == 0b1111'0)
         {
             _state.expectedLength = 4;
             _state.character = _byte & 0b0000'0111;
-            return Incomplete{};
+        }
+        else if (((_byte >> 4) & 0b1110) == 0b1110)
+        {
+            _state.expectedLength = 3;
+            _state.character = _byte & 0b0000'1111;
+        }
+        else if (((_byte >> 5) & 0b110) == 0b110)
+        {
+            _state.expectedLength = 2;
+            _state.character = _byte & 0b0001'1111;
         }
         else
             return Invalid{};
     }
-
-    _state.character <<= 6;
-    _state.character |= _byte & 0b0011'1111;
+    else
+    {
+        _state.character <<= 6;
+        _state.character |= _byte & 0b0011'1111;
+    }
     _state.currentLength++;
 
-    if (_state.currentLength < _state.expectedLength)
-        return Incomplete{};
+    if  (_state.currentLength < _state.expectedLength)
+        return {Incomplete{}};
 
-    auto const result = _state.character;
-    _state.expectedLength = 0;
-    return Success{result};
+    _state.expectedLength = 0; // reset state
+    return {Success{_state.character}};
 }
 
-constexpr int from_utf8i(utf8_decoder_state& _state, char _byte)
+constexpr unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
 {
     auto const result = from_utf8(_state, _byte);
 
@@ -159,27 +154,31 @@ constexpr int from_utf8i(utf8_decoder_state& _state, char _byte)
     return std::get<Success>(result).value;
 }
 
-constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t const* _bytes)
-{
-    if (auto const result = from_utf8(_state, *_bytes); !std::holds_alternative<Incomplete>(result))
-        return result;
-
-    return from_utf8(_state, _bytes + 1);
-}
-
 constexpr ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
 {
     auto state = utf8_decoder_state{};
-    auto const result = from_utf8(state, _bytes);
+    auto result = ConvertResult{};
+
+    do result = from_utf8(state, *_bytes++);
+    while (std::holds_alternative<Incomplete>(result));
+
     if (_size)
         *_size = state.currentLength;
+
     return result;
 }
 
+#if __cplusplus > 201703L // C++20 (char8_t)
+inline ConvertResult from_utf8(char8_t const* _bytes, size_t* _size)
+{
+    return from_utf8((uint8_t const*)(_bytes), _size);
+}
+#else
 inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 {
     return from_utf8((uint8_t const*)(_bytes), _size);
 }
+#endif
 
 inline std::u32string from_utf8(std::string const& _bytes)
 {

@@ -29,7 +29,7 @@ std::string binstr(unsigned n)
     return ss;
 }
 
-TEST_CASE("bytes_1", "[utf8]")
+TEST_CASE("utf8.bytes_1", "[utf8]")
 {
     uint8_t constexpr C = '[';
 
@@ -48,31 +48,30 @@ TEST_CASE("bytes_1", "[utf8]")
     REQUIRE(b == C);
 }
 
-TEST_CASE("bytes_2", "[utf8]")
+TEST_CASE("utf8.bytes_2", "[utf8]")
 {
     char32_t constexpr C{ 0xF6 }; // 0xC3 0xB6, 'ö'
-    INFO(fmt::format("C : 0x{:04X}", (unsigned)C));
+    INFO(fmt::format("codepoint : 0x{:04X}", (unsigned)C));
 
     // encode
-    uint8_t b2[3] = {};
-    INFO(fmt::format("before: {} {} {}", binstr(b2[0]), binstr(b2[1]), binstr(b2[2])));
-    auto const count = to_utf8(C, b2);
-    INFO(fmt::format("   : {:X} {:X}", b2[0], b2[1]));
+    uint8_t actual[2] = {};
+    auto const count = to_utf8(C, actual);
+    INFO(fmt::format("utf8      : {:X} {:X}", actual[0], actual[1]));
+    INFO(fmt::format("binary    : {} {}", binstr(actual[0]), binstr(actual[1])));
     REQUIRE(count == 2);
-    CHECK(b2[0] == 0xC3);
-    CHECK(b2[1] == 0xB6);
-    INFO(fmt::format("after: {} {} {}", binstr(b2[0]), binstr(b2[1]), binstr(b2[2])));
+    CHECK(actual[0] == 0xC3);
+    CHECK(actual[1] == 0xB6);
 
     // decode
     size_t len = 0;
-    auto const a = from_utf8(b2, &len);
+    auto const a = from_utf8(actual, &len);
     REQUIRE(holds_alternative<Success>(a));
     char32_t b = get<Success>(a).value;
     INFO(fmt::format("char32_t : 0x{:04X} ==? 0x{:04X}", (unsigned)b, (unsigned)C));
     REQUIRE(b == C);
 }
 
-TEST_CASE("bytes_3", "[utf8]")
+TEST_CASE("utf8.bytes_3", "[utf8]")
 {
     // encode
     uint8_t b3[4] = {};
@@ -94,12 +93,12 @@ TEST_CASE("bytes_3", "[utf8]")
     REQUIRE(b == 0x20AC);
 }
 
-TEST_CASE("bytes_3_dash", "[utf8]")
+TEST_CASE("utf8.bytes_3_dash", "[utf8]")
 {
     auto constexpr codepoint = 0x251C;
     // decode
     size_t len = 0;
-    auto const a = from_utf8("\xE2\x94\x9C", &len);
+    auto const a = from_utf8(u8"\xE2\x94\x9C", &len);
 
     REQUIRE(holds_alternative<Success>(a));
     REQUIRE(get<Success>(a).value == codepoint);
@@ -116,7 +115,7 @@ TEST_CASE("bytes_3_dash", "[utf8]")
     INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
 }
 
-TEST_CASE("from_utf8", "[utf8]")
+TEST_CASE("utf8.from_utf8", "[utf8]")
 {
     auto const a8 = string{"Hello, World!"};
     auto const a32 = from_utf8(a8);
