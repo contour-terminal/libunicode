@@ -142,6 +142,11 @@ emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
 bool emoji_segmenter::consume(out<size_t> _size, out<bool> _emoji) noexcept
 {
     // 01234567890123456
+    // "A EMOJI"
+    //  []     |
+    //   []    |
+    //    [----]
+
     // "ABC EMOJI DEFGH"
     //  [---]    |     |
     //      [----]     |
@@ -170,6 +175,7 @@ bool emoji_segmenter::consume(out<size_t> _size, out<bool> _emoji) noexcept
 
     _size.assign(currentCursorEnd_);
     _emoji.assign(isEmoji_);
+    nextCursorBegin_ = currentCursorEnd_;
 
     return true;
 }
