@@ -16,11 +16,18 @@
 #include <unicode/ucd.h>
 #include <unicode/support.h>
 
-#include <array>
 #include <algorithm>
+#include <array>
+#include <ostream>
 #include <utility>
 
 namespace unicode {
+
+/// Used to distinguish between standard text and emoji text.
+enum class PresentationStyle {
+    Text,
+    Emoji
+};
 
 /**
  * emoji_segmenter API for segmenting emojis into text-emoji and emoji-emoji presentations.
@@ -87,3 +94,18 @@ class emoji_segmenter {
 };
 
 } // end namespace
+
+namespace std
+{
+    inline ostream& operator<<(ostream& os, unicode::PresentationStyle ps)
+    {
+        switch (ps)
+        {
+            case unicode::PresentationStyle::Text:
+                return os << "Text";
+            case unicode::PresentationStyle::Emoji:
+                return os << "Emoji";
+        }
+        return os;
+    }
+}

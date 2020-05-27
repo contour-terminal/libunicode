@@ -34,7 +34,7 @@ namespace
     {
         u32string_view text;
         unicode::Script script;
-        RunPresentationStyle presentationStyle;
+        PresentationStyle presentationStyle;
     };
 
     void test_run_segmentation(std::vector<Expectation> const& _rs)
@@ -60,11 +60,12 @@ namespace
         {
             INFO(fmt::format("run segmentation for part {}: \"{}\" to be {}",
                              i, to_utf8(_rs[i].text), expects[i]));
-            REQUIRE(segmenter.consume(out(actualSegment)));
-
+            bool const consumeSuccess = segmenter.consume(out(actualSegment));
+            REQUIRE(consumeSuccess);
             CHECK(actualSegment == expects[i]);
         }
-        REQUIRE_FALSE(segmenter.consume(out(actualSegment)));
+        bool const consumeFail = segmenter.consume(out(actualSegment));
+        REQUIRE_FALSE(consumeFail);
     }
 }
 
@@ -77,54 +78,79 @@ TEST_CASE("run_segmenter.empty", "[run_segmenter]")
     CHECK(result.start == 0);
     CHECK(result.end == 0);
     CHECK(result.script == Script::Unknown);
-    CHECK(result.presentationStyle == RunPresentationStyle::Text);
+    CHECK(result.presentationStyle == PresentationStyle::Text);
+}
+
+TEST_CASE("run_segmenter.LatinEmoji", "[run_segmenter]")
+{
+    test_run_segmentation({
+        {U"A", Script::Latin, PresentationStyle::Text},
+        {U"😀", Script::Latin, PresentationStyle::Emoji},
+    });
+}
+
+TEST_CASE("run_segmenter.LatinCommonEmoji", "[run_segmenter]")
+{
+    test_run_segmentation({
+        {U"A ", Script::Latin, PresentationStyle::Text},
+        {U"😀", Script::Latin, PresentationStyle::Emoji},
+    });
+}
+
+TEST_CASE("run_segmenter.LatinEmojiLatin", "[run_segmenter]")
+{
+    test_run_segmentation({
+        {U"AB", Script::Latin, PresentationStyle::Text},
+        {U"😀", Script::Latin, PresentationStyle::Emoji},
+        {U"CD", Script::Latin, PresentationStyle::Text},
+    });
 }
 
 TEST_CASE("run_segmenter.LatinPunctuationSideways", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"Abc.;?Xyz", Script::Latin, RunPresentationStyle::Text}
+        {U"Abc.;?Xyz", Script::Latin, PresentationStyle::Text}
     });
 }
 
 TEST_CASE("run_segmenter.OneSpace", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U" ", Script::Common, RunPresentationStyle::Text}
+        {U" ", Script::Common, PresentationStyle::Text}
     });
 }
 
 TEST_CASE("run_segmenter.ArabicHangul", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"نص", Script::Arabic, RunPresentationStyle::Text},
-        {U"키스의", Script::Hangul, RunPresentationStyle::Text}
+        {U"نص", Script::Arabic, PresentationStyle::Text},
+        {U"키스의", Script::Hangul, PresentationStyle::Text}
     });
 }
 
 TEST_CASE("run_segmenter.JapaneseHindiEmojiMix", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"百家姓", Script::Han, RunPresentationStyle::Text},
-        {U"ऋषियों", Script::Devanagari, RunPresentationStyle::Text},
-        {U"🌱🌲🌳🌴", Script::Devanagari, RunPresentationStyle::Emoji},
-        {U"百家姓", Script::Han, RunPresentationStyle::Text},
-        {U"🌱🌲", Script::Han, RunPresentationStyle::Emoji}
+        {U"百家姓", Script::Han, PresentationStyle::Text},
+        {U"ऋषियों", Script::Devanagari, PresentationStyle::Text},
+        {U"🌱🌲🌳🌴", Script::Devanagari, PresentationStyle::Emoji},
+        {U"百家姓", Script::Han, PresentationStyle::Text},
+        {U"🌱🌲", Script::Han, PresentationStyle::Emoji}
     });
 }
 
 TEST_CASE("run_segmenter.CombiningCirlce", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"◌́◌̀◌̈◌̂◌̄◌̊", Script::Common, RunPresentationStyle::Text}
+        {U"◌́◌̀◌̈◌̂◌̄◌̊", Script::Common, PresentationStyle::Text}
     });
 }
 
 TEST_CASE("run_segmenter.Arab_Hangul", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"نص", Script::Arabic, RunPresentationStyle::Text},
-        {U"키스의",  Script::Hangul, RunPresentationStyle::Text},
+        {U"نص", Script::Arabic, PresentationStyle::Text},
+        {U"키스의",  Script::Hangul, PresentationStyle::Text},
     });
 }
 
@@ -132,23 +158,23 @@ TEST_CASE("run_segmenter.Arab_Hangul", "[run_segmenter]")
 // TEST_CASE("run_segmenter.HangulSpace", "[run_segmenter]")
 // {
 //     test_run_segmentation({
-//         {U"키스의", Script::Hangul, RunPresentationStyle::Text},     // Orientation::Keep
-//         {U" ", Script::Hangul, RunPresentationStyle::Text},          // Orientation::Sideways
-//         {U"고유조건은", Script::Hangul, RunPresentationStyle::Text}  // Orientation::Keep
+//         {U"키스의", Script::Hangul, PresentationStyle::Text},     // Orientation::Keep
+//         {U" ", Script::Hangul, PresentationStyle::Text},          // Orientation::Sideways
+//         {U"고유조건은", Script::Hangul, PresentationStyle::Text}  // Orientation::Keep
 //     });
 // }
 
 TEST_CASE("run_segmenter.TechnicalCommonUpright", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"⌀⌁⌂", Script::Common, RunPresentationStyle::Text},
+        {U"⌀⌁⌂", Script::Common, PresentationStyle::Text},
     });
 }
 
 TEST_CASE("run_segmenter.PunctuationCommonSideways", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U".…¡", Script::Common, RunPresentationStyle::Text}
+        {U".…¡", Script::Common, PresentationStyle::Text}
     });
 }
 
@@ -156,33 +182,33 @@ TEST_CASE("run_segmenter.PunctuationCommonSideways", "[run_segmenter]")
 // TEST_CASE("run_segmenter.JapanesePunctuationMixedInside", "[run_segmenter]")
 // {
 //     test_run_segmentation({
-//         {U"いろはに", Script::Hiragana, RunPresentationStyle::Text}, // Orientation::Keep
-//         {U".…¡", Script::Hiragana, RunPresentationStyle::Text},      // Orientation::RotateSideways
-//         {U"ほへと", Script::Hiragana, RunPresentationStyle::Text},   // Orientation::Keep
+//         {U"いろはに", Script::Hiragana, PresentationStyle::Text}, // Orientation::Keep
+//         {U".…¡", Script::Hiragana, PresentationStyle::Text},      // Orientation::RotateSideways
+//         {U"ほへと", Script::Hiragana, PresentationStyle::Text},   // Orientation::Keep
 //     });
 // }
 
 TEST_CASE("run_segmenter.JapanesePunctuationMixedInsideHorizontal", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"いろはに.…¡ほへと", Script::Hiragana, RunPresentationStyle::Text}, // Orientation::Keep
+        {U"いろはに.…¡ほへと", Script::Hiragana, PresentationStyle::Text}, // Orientation::Keep
     });
 }
 
 TEST_CASE("run_segmenter.PunctuationDevanagariCombining", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"क+े", Script::Devanagari, RunPresentationStyle::Text}, // Orientation::Keep
+        {U"क+े", Script::Devanagari, PresentationStyle::Text}, // Orientation::Keep
     });
 }
 
 TEST_CASE("run_segmenter.EmojiZWJSequences", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"👩‍👩‍👧‍👦👩‍❤️‍💋‍👨", Script::Latin, RunPresentationStyle::Emoji},
-        {U"abcd", Script::Latin, RunPresentationStyle::Text},
-        {U"👩‍👩", Script::Latin, RunPresentationStyle::Emoji},
-        {U"\U0000200D‍efg", Script::Latin, RunPresentationStyle::Text},
+        {U"👩‍👩‍👧‍👦👩‍❤️‍💋‍👨", Script::Latin, PresentationStyle::Emoji},
+        {U"abcd", Script::Latin, PresentationStyle::Text},
+        {U"👩‍👩", Script::Latin, PresentationStyle::Emoji},
+        {U"\U0000200D‍efg", Script::Latin, PresentationStyle::Text},
     });
 }
 
@@ -190,8 +216,8 @@ TEST_CASE("run_segmenter.EmojiZWJSequences", "[run_segmenter]")
 // TEST_CASE("run_segmenter.JapaneseLetterlikeEnd", "[run_segmenter]")
 // {
 //     test_run_segmentation({
-//         {U"いろは", Script::Hiragana, RunPresentationStyle::Text}, // Orientation::Keep
-//         {U"ℐℒℐℒℐℒℐℒℐℒℐℒℐℒ", Script::Hiragana, RunPresentationStyle::Text}, // Orientation::RotateSideways
+//         {U"いろは", Script::Hiragana, PresentationStyle::Text}, // Orientation::Keep
+//         {U"ℐℒℐℒℐℒℐℒℐℒℐℒℐℒ", Script::Hiragana, PresentationStyle::Text}, // Orientation::RotateSideways
 //     });
 // }
 
@@ -199,9 +225,9 @@ TEST_CASE("run_segmenter.EmojiZWJSequences", "[run_segmenter]")
 // TEST_CASE("run_segmenter.JapaneseCase", "[run_segmenter]")
 // {
 //     test_run_segmentation({
-//         {U"いろは", Script::Hiragana, RunPresentationStyle::Text},   // Keep
-//         {U"aaAA", Script::Latin, RunPresentationStyle::Text},        // RotateSideways
-//         {U"いろは", Script::Hiragana, RunPresentationStyle::Text},   // Keep
+//         {U"いろは", Script::Hiragana, PresentationStyle::Text},   // Keep
+//         {U"aaAA", Script::Latin, PresentationStyle::Text},        // RotateSideways
+//         {U"いろは", Script::Hiragana, PresentationStyle::Text},   // Keep
 //     });
 // }
 
@@ -210,16 +236,16 @@ TEST_CASE("run_segmenter.DingbatsMiscSymbolsModifier", "[run_segmenter]")
     test_run_segmentation({{
         U"⛹🏻✍🏻✊🏼",
         Script::Common,
-        RunPresentationStyle::Emoji
+        PresentationStyle::Emoji
     }});
 }
 
 TEST_CASE("run_segmenter.ArmenianCyrillicCase", "[run_segmenter]")
 {
     test_run_segmentation({
-        {U"աբգ", Script::Armenian, RunPresentationStyle::Text},
-        {U"αβγ", Script::Greek, RunPresentationStyle::Text},
-        {U"ԱԲԳ", Script::Armenian, RunPresentationStyle::Text}
+        {U"աբգ", Script::Armenian, PresentationStyle::Text},
+        {U"αβγ", Script::Greek, PresentationStyle::Text},
+        {U"ԱԲԳ", Script::Armenian, PresentationStyle::Text}
     });
 }
 
@@ -229,7 +255,7 @@ TEST_CASE("run_segmenter.EmojiSubdivisionFlags", "[run_segmenter]")
         U"🏴󠁧󠁢󠁷󠁬󠁳󠁿🏴󠁧󠁢󠁳󠁣󠁴󠁿🏴󠁧󠁢"
         U"󠁥󠁮󠁧󠁿",
         Script::Common,
-        RunPresentationStyle::Emoji
+        PresentationStyle::Emoji
     }});
 }
 
@@ -240,6 +266,6 @@ TEST_CASE("run_segmenter.NonEmojiPresentationSymbols", "[run_segmenter]")
         U"\U00002628\U00002629\U0000262b\U0000262c\U00002670"
         U"\U00002671\U0000271f\U00002720",
         Script::Common,
-        RunPresentationStyle::Text
+        PresentationStyle::Text
     }}); // Orientation::Keep
 }

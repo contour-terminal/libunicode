@@ -24,12 +24,6 @@
 
 namespace unicode {
 
-/// Used to distinguish between standard text and emoji text.
-enum class RunPresentationStyle {
-    Text,
-    Emoji
-};
-
 /// Contains the extracted information of run_segmenter's single run.
 struct segment
 {
@@ -43,7 +37,7 @@ struct segment
     Script script = Script::Unknown;
 
     /// presentation style of the underlying segment
-    RunPresentationStyle presentationStyle = RunPresentationStyle::Text;
+    PresentationStyle presentationStyle = PresentationStyle::Text;
 };
 
 /// API for segmenting incoming text into small runs.
@@ -107,18 +101,6 @@ constexpr bool operator!=(segment const& a, segment const& b)
 
 namespace std
 {
-    inline ostream& operator<<(ostream& os, unicode::RunPresentationStyle ps)
-    {
-        switch (ps)
-        {
-            case unicode::RunPresentationStyle::Text:
-                return os << "Text";
-            case unicode::RunPresentationStyle::Emoji:
-                return os << "Emoji";
-        }
-        return os;
-    }
-
     inline ostream& operator<<(ostream& os, unicode::segment const& s)
     {
         return os << '('
@@ -128,4 +110,3 @@ namespace std
                   << ')';
     }
 }
-

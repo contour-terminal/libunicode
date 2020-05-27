@@ -28,10 +28,10 @@ namespace {
         u32string_view text;
         size_t start;
         size_t end;
-        bool emoji; //or that? RunPresentationStyle style;
+        PresentationStyle presentationStyle;
     };
 
-    void test_segments(int _lineNo, std::vector<std::pair<std::u32string_view, bool>> const& _expects)
+    void test_segments(int _lineNo, std::vector<std::pair<std::u32string_view, PresentationStyle>> const& _expects)
     {
         vector<Expectation> expects;
         u32string fullText;
@@ -55,13 +55,18 @@ namespace {
         auto segmenter = unicode::emoji_segmenter{fullText};
         for (size_t i = 0; i < _expects.size(); ++i)
         {
-            INFO(fmt::format("run segmentation for part {}: \"{}\" to be {}",
-                             i, to_utf8(_expects[i].first), _expects[i].second ? "an emoji" : "a text"));
+            INFO(fmt::format(
+                "run segmentation for part {}: \"{}\" to be {}",
+                i,
+                to_utf8(_expects[i].first),
+                _expects[i].second
+            ));
             bool const consumeSuccess = segmenter.consume(out(size), out(isEmoji));
+            auto const presentationStyle = isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text;
             REQUIRE(consumeSuccess);
             CHECK(_expects[i].first == *segmenter);
             CHECK(size == expects[i].end);
-            CHECK(isEmoji == expects[i].emoji);
+            CHECK(presentationStyle == expects[i].presentationStyle);
         }
         bool const consumeFail = segmenter.consume(out(size), out(isEmoji));
         REQUIRE_FALSE(consumeFail);
@@ -71,64 +76,64 @@ namespace {
 TEST_CASE("emoji_segmenter.Emoji", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"\U0001F600", true}
+        {U"\U0001F600", PresentationStyle::Emoji}
     });
 }
 
 TEST_CASE("emoji_segmenter.LatinEmoji", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"AB", false},
-        {U"😀", true}
+        {U"AB", PresentationStyle::Text},
+        {U"😀", PresentationStyle::Emoji}
     });
 }
 
 TEST_CASE("emoji_segmenter.EmojiLatin", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"😀", true},
-        {U"A", false},
+        {U"😀", PresentationStyle::Emoji},
+        {U"A", PresentationStyle::Text},
     });
 }
 
 TEST_CASE("emoji_segmenter.TwoEmojis", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"😀😀", true},
+        {U"😀😀", PresentationStyle::Emoji},
     });
 }
 
 TEST_CASE("emoji_segmenter.LatinCommonEmoji", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"AB ", false},
-        {U"😀", true},
+        {U"AB ", PresentationStyle::Text},
+        {U"😀", PresentationStyle::Emoji},
     });
 }
 
 TEST_CASE("emoji_segmenter.EmojiTextPresentation", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"\u270c\ufe0e", false},
+        {U"\u270c\ufe0e", PresentationStyle::Text},
     });
 }
 
 TEST_CASE("emoji_segmenter.emoji.text.emoji", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"\u270c", true},
-        {U"\u270c\ufe0e", false},
-        {U"\u270c", true},
+        {U"\u270c", PresentationStyle::Emoji},
+        {U"\u270c\ufe0e", PresentationStyle::Text},
+        {U"\u270c", PresentationStyle::Emoji},
     });
 }
 
 TEST_CASE("emoji_segmenter.mixed_complex", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
-        {U"Hello(", false},                                      // Latin text
-        {U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F", true}, // 🤦🏼‍♂️ Face Palm
-        {U"\u270c\ufe0e :-)", false},                            // ✌ Waving hand (text presentation)
-        {U"\u270c", true},                                       // ✌ Waving hand
-        {U")合!", false},
+        {U"Hello(", PresentationStyle::Text},                                        // Latin text
+        {U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F", PresentationStyle::Emoji}, // 🤦🏼‍♂️ Face Palm
+        {U"\u270c\ufe0e :-)", PresentationStyle::Text},                              // ✌ Waving hand (text presentation)
+        {U"\u270c", PresentationStyle::Emoji},                                       // ✌ Waving hand
+        {U")合!", PresentationStyle::Text},                                          // Kanji text
     });
 }

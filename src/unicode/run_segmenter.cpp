@@ -49,7 +49,7 @@ bool run_segmenter::consume(out<segment> _result)
 
     candidate_.start = candidate_.end;
     candidate_.end = lastSplit_ - startOffset_;
-    candidate_.presentationStyle = isEmoji ? RunPresentationStyle::Emoji : RunPresentationStyle::Text;
+    candidate_.presentationStyle = isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text;
 
     *_result = candidate_;
     return true;
