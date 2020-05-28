@@ -109,17 +109,17 @@ constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
             _state.expectedLength = 1;
             _state.character = _byte;
         }
-        else if (((_byte >> 3) & 0b1111'0) == 0b1111'0)
+        else if ((_byte & 0b1111'0000) == 0b1111'0000)
         {
             _state.expectedLength = 4;
             _state.character = _byte & 0b0000'0111;
         }
-        else if (((_byte >> 4) & 0b1110) == 0b1110)
+        else if ((_byte & 0b1110'0000) == 0b1110'0000)
         {
             _state.expectedLength = 3;
             _state.character = _byte & 0b0000'1111;
         }
-        else if (((_byte >> 5) & 0b110) == 0b110)
+        else if ((_byte & 0b1100'0000) == 0b1100'0000)
         {
             _state.expectedLength = 2;
             _state.character = _byte & 0b0001'1111;
