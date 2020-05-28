@@ -15,8 +15,10 @@
 #include <catch2/catch.hpp>
 
 #include <fmt/format.h>
-#include <cstdlib>
+
 #include <cassert>
+#include <cstdlib>
+#include <variant>
 
 using namespace std;
 using namespace unicode;
@@ -124,4 +126,48 @@ TEST_CASE("utf8.from_utf8", "[utf8]")
     auto const b8 = string{"😖:-)"};
     auto const b32 = from_utf8(b8);
     CHECK(b32 == U"😖:-)");
+}
+
+TEST_CASE("utf8.iter", "[utf8]")
+{
+    auto constexpr values = string_view{
+        "["
+        "\xC3\xB6"          // ö  - german o-umlaut
+        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+    };
+    char const* p = values.data();
+    auto state = utf8_decoder_state{};
+
+    // single-byte
+    auto result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Success>(result));
+    REQUIRE(get<Success>(result).value == '[');
+
+    // double-byte
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Success>(result));
+    REQUIRE(get<Success>(result).value == U'ö');
+
+    // 3 bytes
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Success>(result));
+    REQUIRE(get<Success>(result).value == U'€');
+
+    // 4 bytes
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Incomplete>(result));
+    result = from_utf8(state, *p++);
+    REQUIRE(holds_alternative<Success>(result));
+    REQUIRE(get<Success>(result).value == U'\U0001F600');
 }

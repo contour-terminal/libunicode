@@ -104,25 +104,28 @@ constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
 {
     if (!_state.expectedLength)
     {
-        if ((_byte >> 7) == 0)
+        if ((_byte & 0b1000'0000) == 0)
         {
-            _state.expectedLength = 1;
-            _state.character = _byte;
+            _state.currentLength = 1;
+            return Success{_byte};
         }
-        else if ((_byte & 0b1111'0000) == 0b1111'0000)
+        else if ((_byte & 0b1110'0000) == 0b1100'0000)
         {
-            _state.expectedLength = 4;
-            _state.character = _byte & 0b0000'0111;
+            _state.currentLength = 1;
+            _state.expectedLength = 2;
+            _state.character = _byte & 0b0001'1111;
         }
-        else if ((_byte & 0b1110'0000) == 0b1110'0000)
+        else if ((_byte & 0b1111'0000) == 0b1110'0000)
         {
+            _state.currentLength = 1;
             _state.expectedLength = 3;
             _state.character = _byte & 0b0000'1111;
         }
-        else if ((_byte & 0b1100'0000) == 0b1100'0000)
+        else if ((_byte & 0b1111'1000) == 0b1111'0000)
         {
-            _state.expectedLength = 2;
-            _state.character = _byte & 0b0001'1111;
+            _state.currentLength = 1;
+            _state.expectedLength = 4;
+            _state.character = _byte & 0b0000'0111;
         }
         else
             return Invalid{};
@@ -131,8 +134,8 @@ constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
     {
         _state.character <<= 6;
         _state.character |= _byte & 0b0011'1111;
+        _state.currentLength++;
     }
-    _state.currentLength++;
 
     if  (_state.currentLength < _state.expectedLength)
         return {Incomplete{}};
