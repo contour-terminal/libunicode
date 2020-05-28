@@ -24,22 +24,6 @@
 
 namespace unicode {
 
-/// Contains the extracted information of run_segmenter's single run.
-struct segment
-{
-    /// start-offset of the current segment that has been extracted
-    size_t start = 0;
-
-    /// end-offset (excluding) of the current segment that has been extracted
-    size_t end = 0;
-
-    /// the script (writing system) this segment has been identified with
-    Script script = Script::Unknown;
-
-    /// presentation style of the underlying segment
-    PresentationStyle presentationStyle = PresentationStyle::Text;
-};
-
 /// API for segmenting incoming text into small runs.
 ///
 /// A ``run`` is a unit suitable for text shaping, but may as well be used
@@ -50,6 +34,22 @@ struct segment
 /// @see grapheme_segmenter
 class run_segmenter {
   public:
+    /// Contains the extracted information of run_segmenter's single run.
+    struct range
+    {
+        /// start-offset of the current segment that has been extracted
+        size_t start = 0;
+
+        /// end-offset (excluding) of the current segment that has been extracted
+        size_t end = 0;
+
+        /// the script (writing system) this segment has been identified with
+        Script script = Script::Unknown;
+
+        /// presentation style of the underlying segment
+        PresentationStyle presentationStyle = PresentationStyle::Text;
+    };
+
     run_segmenter(char32_t const* _text, size_t _size, size_t _startOffset = 0);
 
     run_segmenter(std::u32string_view const& _sv, size_t _startOffset = 0) :
@@ -59,7 +59,7 @@ class run_segmenter {
     ///
     /// @retval true more data can be processed
     /// @retval false end of input data has been reached.
-    bool consume(out<segment> _result);
+    bool consume(out<range> _result);
 
   private:
     template <typename Segmenter, typename Property>
@@ -77,14 +77,14 @@ class run_segmenter {
     size_t scriptRunPosition_ = 0;
     size_t emojiRunPosition_ = 0;
 
-    segment candidate_{};
+    range candidate_{};
 
     size_t size_;
     script_segmenter scriptSegmenter_;
     emoji_segmenter emojiSegmenter_;
 };
 
-constexpr bool operator==(segment const& a, segment const& b)
+constexpr bool operator==(run_segmenter::range const& a, run_segmenter::range const& b)
 {
     return a.start == b.start
         && a.end == b.end
@@ -92,7 +92,7 @@ constexpr bool operator==(segment const& a, segment const& b)
         && a.presentationStyle == b.presentationStyle;
 }
 
-constexpr bool operator!=(segment const& a, segment const& b)
+constexpr bool operator!=(run_segmenter::range const& a, run_segmenter::range const& b)
 {
     return !(a == b);
 }
@@ -101,7 +101,7 @@ constexpr bool operator!=(segment const& a, segment const& b)
 
 namespace std
 {
-    inline ostream& operator<<(ostream& os, unicode::segment const& s)
+    inline ostream& operator<<(ostream& os, unicode::run_segmenter::range const& s)
     {
         return os << '('
                   << s.start << ".." << s.end

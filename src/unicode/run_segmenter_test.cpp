@@ -39,12 +39,12 @@ namespace
 
     void test_run_segmentation(std::vector<Expectation> const& _rs)
     {
-        vector<segment> expects;
+        vector<run_segmenter::range> expects;
         u32string text;
         size_t i = 0;
         for (Expectation const& expect : _rs)
         {
-            expects.push_back(segment{
+            expects.push_back(run_segmenter::range{
                 i,
                 i + expect.text.size(),
                 expect.script,
@@ -55,7 +55,7 @@ namespace
         }
 
         auto segmenter = unicode::run_segmenter{text};
-        unicode::segment actualSegment;
+        unicode::run_segmenter::range actualSegment;
         for (size_t i = 0; i < _rs.size(); ++i)
         {
             INFO(fmt::format("run segmentation for part {}: \"{}\" to be {}",
@@ -72,7 +72,7 @@ namespace
 TEST_CASE("run_segmenter.empty", "[run_segmenter]")
 {
     auto rs = run_segmenter{U""};
-    auto result = segment{};
+    auto result = run_segmenter::range{};
     auto const rv = rs.consume(out(result));
     CHECK_FALSE(rv);
     CHECK(result.start == 0);

@@ -30,7 +30,7 @@ run_segmenter::run_segmenter(char32_t const* _data,
 {
 }
 
-bool run_segmenter::consume(out<segment> _result)
+bool run_segmenter::consume(out<range> _result)
 {
     if (finished())
         return false;
