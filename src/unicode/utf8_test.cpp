@@ -149,7 +149,7 @@ TEST_CASE("utf8.iter", "[utf8]")
     REQUIRE(holds_alternative<Incomplete>(result));
     result = from_utf8(state, *p++);
     REQUIRE(holds_alternative<Success>(result));
-    REQUIRE(get<Success>(result).value == U'ö');
+    REQUIRE(get<Success>(result).value == U'\u00F6'); // ö
 
     // 3 bytes
     result = from_utf8(state, *p++);
@@ -158,7 +158,7 @@ TEST_CASE("utf8.iter", "[utf8]")
     REQUIRE(holds_alternative<Incomplete>(result));
     result = from_utf8(state, *p++);
     REQUIRE(holds_alternative<Success>(result));
-    REQUIRE(get<Success>(result).value == U'€');
+    REQUIRE(get<Success>(result).value == U'\u20AC'); // €
 
     // 4 bytes
     result = from_utf8(state, *p++);
