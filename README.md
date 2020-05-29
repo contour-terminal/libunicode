@@ -16,11 +16,11 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 - [x] wcwidth equivalent (`int unicode::width(char32_t)`)
 - [x] grapheme segmentation (UTS algorithm)
 - [x] symbol/emoji segmentation (UTS algorithm)
+- [x] script segmentation [UTS 24](https://unicode.org/reports/tr24/)
+- [x] unit tests for most parts (wcwidth / segmentation)
+- [x] generic text run segmentation (top level segmentation API suitable for text shaping implementations)
 - [ ] word segmentation (UTS algorithm)
-- [ ] script segmentation [UTS 24](https://unicode.org/reports/tr24/)
-- [ ] generic text segmentation (top level segmentation API suitable for text shaping implementations)
 - [ ] CLI tool: unicode-inspect for inspecting input files by code point properties, grapheme cluster, word, script, ...
-- [ ] unit tests for most parts (wcwidth / segmentation)
 
 # Unicode Technical Specifications
 
