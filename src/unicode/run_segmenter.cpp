@@ -20,11 +20,8 @@ using namespace std;
 
 namespace unicode {
 
-run_segmenter::run_segmenter(char32_t const* _data,
-                             size_t _size,
-                             size_t _startOffset)
-    : startOffset_{_startOffset},
-      size_{_size},
+run_segmenter::run_segmenter(char32_t const* _data, size_t _size)
+    : size_{_size},
       scriptSegmenter_{_data, _size},
       emojiSegmenter_{_data, _size}
 {
@@ -48,7 +45,7 @@ bool run_segmenter::consume(out<range> _result)
     lastSplit_ = *minPosition;
 
     candidate_.start = candidate_.end;
-    candidate_.end = lastSplit_ - startOffset_;
+    candidate_.end = lastSplit_;
     candidate_.presentationStyle = isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text;
 
     *_result = candidate_;

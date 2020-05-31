@@ -50,10 +50,10 @@ class run_segmenter {
         PresentationStyle presentationStyle = PresentationStyle::Text;
     };
 
-    run_segmenter(char32_t const* _text, size_t _size, size_t _startOffset = 0);
+    run_segmenter(char32_t const* _text, size_t _size);
 
-    run_segmenter(std::u32string_view const& _sv, size_t _startOffset = 0) :
-        run_segmenter(_sv.data(), _sv.size(), _startOffset) {}
+    run_segmenter(std::u32string_view const& _sv) :
+        run_segmenter(_sv.data(), _sv.size()) {}
 
     /// Splits input text into segments, such as pure text by script, emoji-emoji, or emoji-text.
     ///
@@ -70,7 +70,6 @@ class run_segmenter {
     constexpr bool finished() const noexcept { return lastSplit_ >= size_; }
 
   private:
-    size_t startOffset_ = 0;
     size_t lastSplit_ = 0;
 
     //size_t wordRunPosition_ = 0; // TODO
