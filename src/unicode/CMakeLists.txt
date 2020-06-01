@@ -3,7 +3,7 @@ add_library(unicode STATIC
 	width.h width.cpp
     emoji_segmenter.h emoji_segmenter.cpp
     grapheme_segmenter.h
-    run_segmenter.h run_segmenter.cpp
+    run_segmenter.h
     script_segmenter.h script_segmenter.cpp
     ucd.h ucd.cpp
     word_segmenter.h

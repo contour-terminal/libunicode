@@ -47,8 +47,7 @@ namespace
             expects.push_back(run_segmenter::range{
                 i,
                 i + expect.text.size(),
-                expect.script,
-                expect.presentationStyle,
+                { expect.script, expect.presentationStyle },
             });
             text += expect.text;
             i += expect.text.size();
@@ -77,8 +76,8 @@ TEST_CASE("run_segmenter.empty", "[run_segmenter]")
     CHECK_FALSE(rv);
     CHECK(result.start == 0);
     CHECK(result.end == 0);
-    CHECK(result.script == Script::Unknown);
-    CHECK(result.presentationStyle == PresentationStyle::Text);
+    CHECK(get<Script>(result.properties) == Script::Unknown);
+    CHECK(get<PresentationStyle>(result.properties) == PresentationStyle::Text);
 }
 
 TEST_CASE("run_segmenter.LatinEmoji", "[run_segmenter]")

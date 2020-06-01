@@ -188,4 +188,12 @@ size_t emoji_segmenter::consume_once()
     return o.cursor();
 }
 
+bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept
+{
+    bool isEmoji{};
+    bool const result = consume(_size, out(isEmoji));
+    _emoji.assign(isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text);
+    return result;
+}
+
 } // end namespace

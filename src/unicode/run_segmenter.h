@@ -19,10 +19,27 @@
 #include <unicode/ucd_ostream.h>
 #include <unicode/support.h>
 
+#include <array>
 #include <iterator>
 #include <ostream>
+#include <tuple>
 
 namespace unicode {
+
+template <typename T>
+using segmenter_property_t = typename T::property_type;
+
+template <typename... Ts>
+using segmenter_property_tuple = std::tuple<segmenter_property_t<Ts>...>;
+
+namespace
+{
+    template <typename Prepend, typename... Ts>
+    inline void _continuePrintList(std::ostream& os, Prepend const& prep, std::tuple<Ts...> const& p)
+    {
+        ((os << prep << std::get<Ts>(p)), ...);
+    }
+}
 
 /// API for segmenting incoming text into small runs.
 ///
@@ -32,8 +49,11 @@ namespace unicode {
 /// @see script_segmenter
 /// @see emoji_segmenter
 /// @see grapheme_segmenter
-class run_segmenter {
+template <typename... Segmenter>
+class basic_run_segmenter {
   public:
+    using property_tuple = std::tuple<segmenter_property_t<Segmenter>...>;
+
     /// Contains the extracted information of run_segmenter's single run.
     struct range
     {
@@ -44,68 +64,123 @@ class run_segmenter {
         size_t end = 0;
 
         /// the script (writing system) this segment has been identified with
-        Script script = Script::Unknown;
-
         /// presentation style of the underlying segment
-        PresentationStyle presentationStyle = PresentationStyle::Text;
+        property_tuple properties;
+
+        constexpr bool operator==(range const& other) const noexcept
+        {
+            return start == other.start
+                && end == other.end
+                && properties == other.properties;
+        }
+
+        constexpr bool operator!=(range const& other) const noexcept
+        {
+            return !(*this == other);
+        }
+
+        friend inline std::ostream& operator<<(std::ostream& os, range const& r)
+        {
+            os << '(' << r.start << ".." << r.end;
+            _continuePrintList(os, ", ", r.properties);
+            os << ')';
+            return os;
+        }
     };
 
-    run_segmenter(char32_t const* _text, size_t _size);
+    basic_run_segmenter(std::u32string_view const& _sv)
+        : basic_run_segmenter(_sv.data(), _sv.size()) {}
 
-    run_segmenter(std::u32string_view const& _sv) :
-        run_segmenter(_sv.data(), _sv.size()) {}
+    basic_run_segmenter(char32_t const* _text, size_t _size)
+        : segmenter_{},
+          size_{_size}
+    {
+        initialize<0, Segmenter...>(_text, _size);
+    }
+
+    constexpr bool finished() const noexcept { return lastSplit_ >= size_; }
 
     /// Splits input text into segments, such as pure text by script, emoji-emoji, or emoji-text.
     ///
     /// @retval true more data can be processed
     /// @retval false end of input data has been reached.
-    bool consume(out<range> _result);
+    bool consume(out<range> _result)
+    {
+        if (finished())
+            return false;
+
+        consumeAllUntilSplitPosition<0, Segmenter...>();
+
+        auto const minPosition = std::min_element(begin(positions_), end(positions_));
+
+        lastSplit_ = *minPosition;
+
+        candidate_.start = candidate_.end;
+        candidate_.end = lastSplit_;
+        candidate_.properties = properties_;
+
+        *_result = candidate_;
+        return true;
+    }
 
   private:
-    template <typename Segmenter, typename Property>
-    void consumeUntilSplitPosition(Segmenter& _segmenter,
+    template <size_t I>
+    void initialize(char32_t const*, size_t) {}
+
+    template <size_t I, typename Current, typename... Remaining>
+    void initialize(char32_t const* _text, size_t _size)
+    {
+        std::get<I>(segmenter_) = Current{_text, _size};
+        initialize<I + 1, Remaining...>(_text, _size);
+    }
+
+    template <size_t I>
+    void consumeAllUntilSplitPosition() {}
+
+    template <size_t I, typename Current, typename... Remaining>
+    void consumeAllUntilSplitPosition()
+    {
+        consumeUntilSplitPosition(
+            std::get<Current>(segmenter_),
+            out(positions_[I]),
+            out(std::get<I>(properties_))
+        );
+        consumeAllUntilSplitPosition<I + 1, Remaining...>();
+    }
+
+    template <typename TheSegmenter, typename Property>
+    void consumeUntilSplitPosition(TheSegmenter& _segmenter,
                                    out<size_t> _position,
-                                   out<Property> _property);
+                                   out<Property> _property)
+    {
+        if (*_position > lastSplit_)
+            return;
 
-    constexpr bool finished() const noexcept { return lastSplit_ >= size_; }
+        if (*_position > size_)
+            return;
+
+        for (;;)
+        {
+            if (!_segmenter.consume(_position, _property))
+                break;
+
+            if (*_position > lastSplit_)
+                break;
+        }
+    }
 
   private:
+    using position_list = std::array<size_t, sizeof...(Segmenter)>;
+    using segmenter_tuple = std::tuple<Segmenter...>;
+
     size_t lastSplit_ = 0;
-
-    //size_t wordRunPosition_ = 0; // TODO
-    size_t scriptRunPosition_ = 0;
-    size_t emojiRunPosition_ = 0;
-
-    range candidate_{};
-
+    range candidate_ = {};
+    position_list positions_{};
+    property_tuple properties_{};
+    segmenter_tuple segmenter_;
     size_t size_;
-    script_segmenter scriptSegmenter_;
-    emoji_segmenter emojiSegmenter_;
 };
 
-constexpr bool operator==(run_segmenter::range const& a, run_segmenter::range const& b)
-{
-    return a.start == b.start
-        && a.end == b.end
-        && a.script == b.script
-        && a.presentationStyle == b.presentationStyle;
-}
-
-constexpr bool operator!=(run_segmenter::range const& a, run_segmenter::range const& b)
-{
-    return !(a == b);
-}
+using run_segmenter = basic_run_segmenter<script_segmenter, emoji_segmenter>;
 
 } // end namespace
-
-namespace std
-{
-    inline ostream& operator<<(ostream& os, unicode::run_segmenter::range const& s)
-    {
-        return os << '('
-                  << s.start << ".." << s.end
-                  << ", " << s.script
-                  << ", " << s.presentationStyle
-                  << ')';
-    }
-}

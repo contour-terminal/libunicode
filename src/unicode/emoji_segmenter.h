@@ -39,8 +39,8 @@ enum class PresentationStyle {
  */
 class emoji_segmenter {
   private:
-    char32_t const* buffer_;
-    size_t size_;
+    char32_t const* buffer_ = U"";
+    size_t size_ = 0;
 
     size_t currentCursorBegin_ = 0;
     size_t currentCursorEnd_ = 0;
@@ -50,6 +50,14 @@ class emoji_segmenter {
     bool isNextEmoji_ = false;
 
   public:
+    using property_type = PresentationStyle;
+
+    constexpr emoji_segmenter() noexcept = default;
+    constexpr emoji_segmenter& operator=(emoji_segmenter const&) noexcept = default;
+    constexpr emoji_segmenter& operator=(emoji_segmenter&&) noexcept = default;
+    constexpr emoji_segmenter(emoji_segmenter const&) noexcept = default;
+    constexpr emoji_segmenter(emoji_segmenter&&) noexcept = default;
+
     emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept;
 
     emoji_segmenter(std::u32string_view const& _sv) noexcept
@@ -62,6 +70,7 @@ class emoji_segmenter {
     constexpr size_t currentCursorEnd() const noexcept { return currentCursorEnd_; }
 
     bool consume(out<size_t> _size, out<bool> _emoji) noexcept;
+    bool consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept;
 
     bool consume() noexcept
     {

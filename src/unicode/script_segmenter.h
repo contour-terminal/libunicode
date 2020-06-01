@@ -24,6 +24,12 @@ namespace unicode {
 
 class script_segmenter {
   public:
+    constexpr script_segmenter() noexcept = default;
+    constexpr script_segmenter& operator=(script_segmenter const&) noexcept = default;
+    constexpr script_segmenter& operator=(script_segmenter&&) noexcept = default;
+    constexpr script_segmenter(script_segmenter const&) noexcept = default;
+    constexpr script_segmenter(script_segmenter&&) noexcept = default;
+
     constexpr script_segmenter(char32_t const* _data, size_t _size) noexcept :
         data_{ _data },
         offset_{ 0 },
@@ -38,6 +44,8 @@ class script_segmenter {
     };
 
     std::optional<result> consume();
+
+    using property_type = Script;
 
     bool consume(out<size_t> _size, out<Script> _script)
     {
@@ -103,9 +111,9 @@ class script_segmenter {
     }
 
   private:
-    char32_t const* data_;
-    size_t offset_;
-    size_t size_;
+    char32_t const* data_ = U"";
+    size_t offset_ = 0;
+    size_t size_ = 0;
 
     ScriptSet currentScriptSet_{};
     Script commonPreferredScript_ = Script::Common;

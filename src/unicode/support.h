@@ -25,7 +25,6 @@ class out {
     constexpr T const* operator->() const noexcept { return ref_; }
 
     constexpr void assign(T _value) { *ref_ = std::move(_value); }
-    constexpr void assign(T&& _value) { *ref_ = std::move(_value); }
 
   private:
     T* ref_;
