@@ -51,7 +51,7 @@ namespace {
         INFO(fmt::format("Testing emoji segmentation from line {}: {}", _lineNo, to_utf8(fullText)));
 
         size_t size{};
-        bool isEmoji{};
+        auto presentationStyle = PresentationStyle{};
         auto segmenter = unicode::emoji_segmenter{fullText};
         for (size_t i = 0; i < _expects.size(); ++i)
         {
@@ -61,14 +61,13 @@ namespace {
                 to_utf8(_expects[i].first),
                 _expects[i].second
             ));
-            bool const consumeSuccess = segmenter.consume(out(size), out(isEmoji));
-            auto const presentationStyle = isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text;
+            bool const consumeSuccess = segmenter.consume(out(size), out(presentationStyle));
             REQUIRE(consumeSuccess);
             CHECK(_expects[i].first == *segmenter);
             CHECK(size == expects[i].end);
             CHECK(presentationStyle == expects[i].presentationStyle);
         }
-        bool const consumeFail = segmenter.consume(out(size), out(isEmoji));
+        bool const consumeFail = segmenter.consume(out(size), out(presentationStyle));
         REQUIRE_FALSE(consumeFail);
     }
 }

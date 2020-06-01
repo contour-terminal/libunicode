@@ -69,15 +69,7 @@ class emoji_segmenter {
     constexpr size_t currentCursorBegin() const noexcept { return currentCursorBegin_; }
     constexpr size_t currentCursorEnd() const noexcept { return currentCursorEnd_; }
 
-    bool consume(out<size_t> _size, out<bool> _emoji) noexcept;
     bool consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept;
-
-    bool consume() noexcept
-    {
-        size_t size;
-        bool emoji;
-        return consume(out(size), out(emoji));
-    }
 
     /// @returns whether or not the currently segmented emoji is to be rendered in text-presentation or not.
     constexpr bool isText() const noexcept { return !isEmoji_; }

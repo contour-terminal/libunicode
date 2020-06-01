@@ -139,7 +139,7 @@ emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
         consume_once();
 }
 
-bool emoji_segmenter::consume(out<size_t> _size, out<bool> _emoji) noexcept
+bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept
 {
     // 01234567890123456
     // "A EMOJI"
@@ -174,7 +174,7 @@ bool emoji_segmenter::consume(out<size_t> _size, out<bool> _emoji) noexcept
     while (currentCursorEnd_ < size_);
 
     _size.assign(currentCursorEnd_);
-    _emoji.assign(isEmoji_);
+    _emoji.assign(isEmoji_ ? PresentationStyle::Emoji : PresentationStyle::Text);
     nextCursorBegin_ = currentCursorEnd_;
 
     return true;
@@ -186,14 +186,6 @@ size_t emoji_segmenter::consume_once()
     auto const e = RagelIterator(buffer_, size_, size_);
     auto const o = scan_emoji_presentation(i, e, &isNextEmoji_);
     return o.cursor();
-}
-
-bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept
-{
-    bool isEmoji{};
-    bool const result = consume(_size, out(isEmoji));
-    _emoji.assign(isEmoji ? PresentationStyle::Emoji : PresentationStyle::Text);
-    return result;
 }
 
 } // end namespace
