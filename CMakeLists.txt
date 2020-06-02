@@ -59,3 +59,4 @@ else()
 endif()
 
 add_subdirectory(src/unicode)
+add_subdirectory(src/tools)
