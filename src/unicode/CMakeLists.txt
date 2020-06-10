@@ -1,3 +1,17 @@
+add_custom_command(
+    OUTPUT
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    COMMAND
+        "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py"
+    DEPENDS mktables.py
+    COMMENT "Generating UCD files"
+    VERBATIM
+)
+
 add_library(unicode STATIC
 	utf8.h
 	width.h width.cpp
@@ -6,6 +20,8 @@ add_library(unicode STATIC
     run_segmenter.h
     script_segmenter.h script_segmenter.cpp
     ucd.h ucd.cpp
+    ucd_enums.h
+    ucd_ostream.h
     word_segmenter.h
 )
 add_library(unicode::core ALIAS unicode)

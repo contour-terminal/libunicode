@@ -20,6 +20,7 @@ import re
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
+SCRIPT_MTIME = os.stat(__file__).st_mtime
 
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
 UCD_DIR = PROJECT_ROOT + '/docs/ucd'
@@ -67,6 +68,33 @@ class EnumBuilderArray(EnumBuilder): # {{{
         for b in self.builders:
             b.end()
     # }}}
+class EnumClassWriter(EnumBuilder): # {{{
+    def __init__(self, header_filename: str):
+        self.filename = header_filename
+        self.file = open(header_filename, 'w')
+        self.member_count = 0
+
+        self.file.write(globals()['__doc__'])
+        self.file.write('#pragma once\n')
+        self.file.write('\n')
+        self.file.write('namespace unicode {\n\n')
+
+    def close(self):
+        self.file.write("} // end namespace\n")
+        self.file.close()
+
+    def begin(self, _enum_class):
+        self.enum_class = _enum_class
+        self.file.write('enum class {} {{\n'.format(_enum_class))
+
+    def member(self, _member):
+        self.file.write('    {0} = {1},\n'.format(_member, self.member_count))
+        self.member_count += 1
+
+    def end(self):
+        self.file.write("};\n\n")
+        self.member_count = 0
+    # }}}
 class EnumOstreamWriter(EnumBuilder): # {{{
     def __init__(self, header_filename: str):
         self.filename = header_filename
@@ -112,13 +140,16 @@ class UCDGenerator:
         self.general_category_map = dict()
         self.general_category = list()
         self.builder = EnumBuilderArray([
-            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h')
+            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h'),
+            EnumClassWriter(HEADER_ROOT + '/ucd_enums.h')
         ])
 
     def close(self):
         self.builder.close()
         self.header.close()
         self.impl.close()
+        os.utime(HEADER_ROOT + '/ucd_ostream.h', (SCRIPT_MTIME, SCRIPT_MTIME))
+        os.utime(HEADER_ROOT + '/ucd_enums.h', (SCRIPT_MTIME, SCRIPT_MTIME))
 
     def generate(self):
         self.load_property_value_aliases()
@@ -143,6 +174,8 @@ class UCDGenerator:
     def file_header(self): # {{{
         self.header.write(globals()['__doc__'])
         self.header.write("""#pragma once
+
+#include <unicode/ucd_enums.h>
 
 #include <array>
 #include <optional>
@@ -200,19 +233,23 @@ namespace unicode {
         # }}}
 
     def write_properties(self): # {{{
-        self.header.write('// {} General property enum classes\n'.format(FOLD_OPEN))
         for name in sorted(self.property_values.keys()):
             if len(self.property_values[name].keys()) == 0:
                 continue
 
+            # Do not create enums for primitive boolean classes.
             if (len(self.property_values[name].keys()) == 2
                     and ('Yes' in self.property_values[name].values())
                     and ('No'  in self.property_values[name].values())):
                 continue
 
-            if name in ['General_Category', 'Grapheme_Cluster_Break']:
+            # Filter some properties.
+            if name in ['Script', 'General_Category', 'Grapheme_Cluster_Break', 'EastAsianWidth']:
                 # XXX those properties are generated specifically
+                print("write_properties: Skip {}".format(name))
                 continue
+            else:
+                print("write_properties: Write {}".format(name))
 
             # Construct member valus
             values = list()
@@ -220,30 +257,11 @@ namespace unicode {
                 values.append(self.property_values[name][key])
             values.sort()
 
-            # TODO: Script property values Unknown, Common, and Inherited
-            # are special and thuse ensured to be first in list.
-
-            # enum class
-            i = 0
-            self.header.write('enum class {} {{\n'.format(name))
-            if name == 'Script':
-                for value in ('Unknown', 'Common', 'Inherited'):
-                    self.header.write('    {} = {},\n'.format(value, i))
-                    i += 1
+            # build enum class
+            self.builder.begin(name)
             for value in values:
-                if name == 'Script' and value in ('Unknown', 'Common', 'Inherited'):
-                    continue
-                self.header.write('    {} = {},\n'.format(value, i))
-                i += 1
-            self.header.write('};\n\n')
-
-            # # builder
-            # self.builder.begin(name)
-            # for value in values:
-            #     self.builder.member(value)
-            # self.builder.end()
-
-        self.header.write("// {}\n\n".format(FOLD_CLOSE))
+                self.builder.member(value)
+            self.builder.end()
         # }}}
 
     def load_general_category(self): # {{{
@@ -347,10 +365,6 @@ namespace unicode {
         self.impl.write("}\n\n")
 
         # API: write enum and tester
-        self.header.write("enum class Core_Property {\n")
-        for name in sorted(props.keys()):
-            self.header.write("    {},\n".format(name))
-        self.header.write("};\n\n")
         self.header.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept;\n\n")
         # }}}
 
@@ -435,15 +449,15 @@ namespace unicode {
                 self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
             self.impl.write("} // end namespace tables\n\n")
 
-            # write enums / signature
-            for name in sorted(props.keys()):
-                self.header.write('enum class {} {{\n'.format(name))
-                enum_set = set()
-                for enum in props[name]:
-                    enum_set.add(enum['property'])
-                for enum in sorted(enum_set):
-                    self.header.write("    {},\n".format(enum))
-                self.header.write("};\n\n")
+            # XXX write enums / signature
+            # for name in sorted(props.keys()):
+            #     self.header.write('enum class {} {{\n'.format(name))
+            #     enum_set = set()
+            #     for enum in props[name]:
+            #         enum_set.add(enum['property'])
+            #     for enum in sorted(enum_set):
+            #         self.header.write("    {},\n".format(enum))
+            #     self.header.write("};\n\n")
 
             # builder
             for name in sorted(props.keys()):
@@ -507,10 +521,12 @@ namespace unicode {
         self.impl.write("} // end namespace tables\n\n")
 
         self.builder.begin(name)
+        self.builder.member('Unknown')
         for p in sorted(pset):
             self.builder.member(p)
         self.builder.end()
 
+        # codepoint-to-script mapping function
         self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
 
         self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
@@ -691,12 +707,14 @@ namespace unicode {
         self.impl.write("};\n")
         self.impl.write("} // end namespace tables\n\n")
 
-        self.builder.begin(type_name)
+        # builder
+        self.builder.begin('General_Category')
         self.builder.member(UNSPECIFIED)
         for cat in sorted(cats):
             self.builder.member(cat)
         self.builder.end()
 
+        # getter impl
         self.impl.write("namespace {} {{\n".format(type_name.lower()))
         self.impl.write("    {} get(char32_t _value) noexcept {{\n".format(type_name))
         self.impl.write("        if (auto const p = search(tables::{}, _value); p.has_value())\n".format(type_name))
@@ -732,13 +750,7 @@ namespace unicode {
         self.impl.write("    return false;\n")
         self.impl.write("}\n\n")
 
-        # write enums / signature
-        self.header.write("enum class General_Category {\n")
-        self.header.write("    {},\n".format(UNSPECIFIED)) # special case for general purpose get() function
-        for name in sorted(cats.keys()):
-            self.header.write("    {},\n".format(name))
-        self.header.write("};\n\n")
-
+        # write signature
         self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
 
         self.header.write('namespace general_category {\n')
@@ -789,11 +801,6 @@ namespace unicode {
             table = self.collect_range_table_with_prop(f)
 
             # api: enum
-            self.header.write('enum class {} {{\n'.format(table_name))
-            for v in WIDTH_NAMES.values():
-                self.header.write('    {},\n'.format(v))
-            self.header.write('};\n\n')
-
             self.builder.begin(table_name)
             for v in WIDTH_NAMES.values():
                 self.builder.member(v)
