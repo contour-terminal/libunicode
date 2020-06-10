@@ -30,7 +30,8 @@ FOLD_CLOSE = '}}}'
 
 class EnumBuilder(ABC): # {{{
     @abstractmethod
-    def close(self):
+    def output(self):
+        """ Retrieves the output file name. """
         pass
 
     @abstractmethod
@@ -46,6 +47,10 @@ class EnumBuilder(ABC): # {{{
     @abstractmethod
     def end(self):
         """ finishes the current enum class scope """
+        pass
+
+    @abstractmethod
+    def close(self):
         pass
     # }}}
 class EnumBuilderArray(EnumBuilder): # {{{
@@ -67,21 +72,23 @@ class EnumBuilderArray(EnumBuilder): # {{{
     def end(self):
         for b in self.builders:
             b.end()
+
+    def output(self):
+        result = []
+        for b in self.builders:
+            result.append(b.output())
+        return result
     # }}}
 class EnumClassWriter(EnumBuilder): # {{{
-    def __init__(self, header_filename: str):
-        self.filename = header_filename
-        self.file = open(header_filename, 'w')
+    def __init__(self, _header_filename: str):
+        self.filename = _header_filename
+        self.file = open(_header_filename, 'w')
         self.member_count = 0
 
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
         self.file.write('namespace unicode {\n\n')
-
-    def close(self):
-        self.file.write("} // end namespace\n")
-        self.file.close()
 
     def begin(self, _enum_class):
         self.enum_class = _enum_class
@@ -94,11 +101,18 @@ class EnumClassWriter(EnumBuilder): # {{{
     def end(self):
         self.file.write("};\n\n")
         self.member_count = 0
+
+    def output(self):
+        return self.filename
+
+    def close(self):
+        self.file.write("} // end namespace\n")
+        self.file.close()
     # }}}
 class EnumOstreamWriter(EnumBuilder): # {{{
-    def __init__(self, header_filename: str):
-        self.filename = header_filename
-        self.file = open(header_filename, 'w')
+    def __init__(self, _header_filename: str):
+        self.filename = _header_filename
+        self.file = open(_header_filename, 'w')
 
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
@@ -107,10 +121,6 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write('#include <unicode/ucd.h>\n')
         self.file.write('\n')
         self.file.write('namespace unicode {\n\n')
-
-    def close(self):
-        self.file.write("} // end namespace\n")
-        self.file.close()
 
     def begin(self, _enum_class):
         self.enum_class = _enum_class
@@ -126,30 +136,35 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write('    return os << "(" << static_cast<unsigned>(_value) << ")";\n')
         self.file.write("}\n\n")
         pass
+
+    def output(self):
+        return self.filename
+
+    def close(self):
+        self.file.write("} // end namespace\n")
+        self.file.close()
     # }}}
 
 class UCDGenerator:
     def __init__(self, _ucd_dir, _header_file, _impl_file):
         self.ucd_dir = _ucd_dir
+        self.header_filename = _header_file
+        self.impl_filename = _impl_file
         self.header = open(_header_file, 'w')
         self.impl = open(_impl_file, 'w')
+
         self.singleValueRE = re.compile('([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
         self.rangeValueRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
         self.singleValueMultiRE = re.compile('([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
         self.rangeValueMultiRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
+
         self.general_category_map = dict()
         self.general_category = list()
-        self.builder = EnumBuilderArray([
-            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h'),
-            EnumClassWriter(HEADER_ROOT + '/ucd_enums.h')
-        ])
 
-    def close(self):
-        self.builder.close()
-        self.header.close()
-        self.impl.close()
-        os.utime(HEADER_ROOT + '/ucd_ostream.h', (SCRIPT_MTIME, SCRIPT_MTIME))
-        os.utime(HEADER_ROOT + '/ucd_enums.h', (SCRIPT_MTIME, SCRIPT_MTIME))
+        self.builder = EnumBuilderArray([
+            EnumClassWriter(HEADER_ROOT + '/ucd_enums.h'),
+            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h')
+        ])
 
     def generate(self):
         self.load_property_value_aliases()
@@ -170,6 +185,11 @@ class UCDGenerator:
         self.process_emoji_props()
 
         self.file_footer()
+
+    def close(self):
+        self.builder.close()
+        self.header.close()
+        self.impl.close()
 
     def file_header(self): # {{{
         self.header.write(globals()['__doc__'])
@@ -245,11 +265,8 @@ namespace unicode {
 
             # Filter some properties.
             if name in ['Script', 'General_Category', 'Grapheme_Cluster_Break', 'EastAsianWidth']:
-                # XXX those properties are generated specifically
-                print("write_properties: Skip {}".format(name))
+                # XXX those properties are generated somewhere else.
                 continue
-            else:
-                print("write_properties: Write {}".format(name))
 
             # Construct member valus
             values = list()
@@ -848,11 +865,24 @@ namespace unicode {
             )
             # }}}
 
+def needs_run():
+    try:
+        for filename in ['ucd.cpp', 'ucd.h', 'ucd_enums.h', 'ucd_ostream.h']:
+            st = os.stat(HEADER_ROOT + '/' + filename)
+            if st.st_mtime < SCRIPT_MTIME:
+                return True
+    except FileNotFoundError:
+        return True
+    return False
+
 def main():
-    header_file = PROJECT_ROOT + '/src/unicode/ucd.h'
-    impl_file = PROJECT_ROOT + '/src/unicode/ucd.cpp'
-    ucdgen = UCDGenerator(UCD_DIR, header_file, impl_file)
-    ucdgen.generate()
-    ucdgen.close()
+    if needs_run():
+        header_file = HEADER_ROOT + '/ucd.h'
+        impl_file = HEADER_ROOT + '/ucd.cpp'
+        ucdgen = UCDGenerator(UCD_DIR, header_file, impl_file)
+        ucdgen.generate()
+        ucdgen.close()
+    else:
+        print("Output files up-to-date.")
 
 main()
