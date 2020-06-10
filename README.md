@@ -20,7 +20,7 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 - [x] unit tests for most parts (wcwidth / segmentation)
 - [x] generic text run segmentation (top level segmentation API suitable for text shaping implementations)
 - [ ] word segmentation (UTS algorithm)
-- [ ] CLI tool: unicode-inspect for inspecting input files by code point properties, grapheme cluster, word, script, ...
+- [x] CLI tool: `uc-inspect` for inspecting input files by code point properties, grapheme cluster, word, script, ...
 
 # Unicode Technical Specifications
 
@@ -46,8 +46,8 @@ target_link_libraries(your_tool PUBLIC unicode::core)
 
 - for filing issues please visit: https://github.com/christianparpart/libunicode/issues
 - fork and create pull requests:  https://github.com/christianparpart/libunicode/pulls
-- I am also happy to just receive code reviews, of
-- your can help with documentation, or
+- I am also happy to just receive code reviews
+- you can help with documentation, or
 - general feedback is also very welcome
 
 ### Users of this library
