@@ -22,6 +22,15 @@ using namespace std;
 // Implement examples from table 1a) at:
 // http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
 
+TEST_CASE("latin_common", "[grapheme_segmenter]")
+{
+    //auto constexpr text = u32string_view{U"\u0067G\u0308"};
+
+    CHECK(grapheme_segmenter::breakable('a', 'b'));
+    CHECK(grapheme_segmenter::breakable('b', '!'));
+    CHECK(grapheme_segmenter::breakable('!', '.'));
+}
+
 TEST_CASE("combining character sequences", "[grapheme_segmenter]")
 {
     //auto constexpr text = u32string_view{U"\u0067G\u0308"};
