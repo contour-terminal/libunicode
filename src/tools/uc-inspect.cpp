@@ -1,6 +1,7 @@
 #include <unicode/width.h>
 #include <unicode/ucd.h>
 #include <unicode/ucd_ostream.h>
+#include <unicode/grapheme_segmenter.h>
 #include <unicode/utf8.h>
 
 #include <fmt/format.h>
@@ -72,9 +73,10 @@ bool isEmoji(char32_t ch)
 
 void codepoints(istream& _in)
 {
-    size_t lastOffset = 0;
-    size_t totalOffset = 0;
-    unicode::utf8_decoder_state utf8_state{};
+    auto lastOffset = 0;
+    auto totalOffset = 0;
+    auto utf8_state = unicode::utf8_decoder_state{};
+    auto last_wc = char32_t{};
 
     while (_in.good())
     {
@@ -83,19 +85,26 @@ void codepoints(istream& _in)
         totalOffset++;
 
         auto const convertResult = from_utf8(utf8_state, ch);
+
         if (holds_alternative<unicode::Success>(convertResult))
         {
             char32_t const wc = get<unicode::Success>(convertResult).value;
             int const width = unicode::width(wc);
+            bool breakable = !last_wc || unicode::grapheme_segmenter::breakable(last_wc, wc);
+            last_wc = wc;
+            // TODO: breakable buggy lol what?
             if (width >= 0)
             {
                 string const u8 = escape(unicode::to_utf8(wc));
 
-                cout << fmt::format("{:>3}: U+{:08X} [{}] [{:<10}] width:{} UTF8:{}\n",
+                cout << fmt::format("{:>3}: U+{:08X} [{}] [{:<10}] {} width:{} UTF8:{}\n",
                                     lastOffset,
                                     static_cast<uint32_t>(wc),
                                     isEmoji(wc) ? "EMOJI" : "TEXT ",
                                     unicode::script(wc),
+                                    breakable
+                                        ? "[breakable  ]"
+                                        : "[unbreakable]",
                                     width,
                                     u8);
             }
