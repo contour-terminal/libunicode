@@ -100,7 +100,7 @@ struct Success{ char32_t value; };
 using ConvertResult = std::variant<Invalid, Incomplete, Success>;
 
 /// Progressively decodes a UTF-8 codepoint.
-constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
+inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
 {
     if (!_state.expectedLength)
     {
@@ -144,7 +144,7 @@ constexpr ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
     return {Success{_state.character}};
 }
 
-constexpr unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
+inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
 {
     auto const result = from_utf8(_state, _byte);
 
@@ -157,7 +157,7 @@ constexpr unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
     return std::get<Success>(result).value;
 }
 
-constexpr ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
+inline ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
 {
     auto state = utf8_decoder_state{};
     auto result = ConvertResult{};
