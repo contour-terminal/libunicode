@@ -40,7 +40,7 @@ enum class EmojiSegmentationCategory
     TagTerm = 15,
 };
 
-constexpr inline EmojiSegmentationCategory toCategory(char32_t _codepoint)
+inline EmojiSegmentationCategory toCategory(char32_t _codepoint)
 {
     auto isEmojiKeycapBase = [](char32_t _codepoint) -> bool {
         return ('0' <= _codepoint && _codepoint <= '9')
@@ -88,7 +88,7 @@ class RagelIterator {
     size_t currentCursorEnd_;
 
   public:
-    constexpr RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept
+    RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept
       : category_{ EmojiSegmentationCategory::Invalid },
         buffer_{ _buffer },
         size_{ _size },
@@ -97,26 +97,26 @@ class RagelIterator {
         updateCategory();
     }
 
-    constexpr RagelIterator() noexcept : RagelIterator(U"", 0, 0) {}
+    RagelIterator() noexcept : RagelIterator(U"", 0, 0) {}
 
     constexpr char32_t codepoint() const noexcept { return buffer_[currentCursorEnd_]; }
     constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
     constexpr size_t cursor() const noexcept { return currentCursorEnd_; }
 
-    constexpr void updateCategory()
+    void updateCategory()
     {
         category_ = toCategory(codepoint());
     }
 
     constexpr int operator*() const noexcept { return static_cast<int>(category_); }
 
-    constexpr RagelIterator& operator++() noexcept { currentCursorEnd_++; updateCategory(); return *this; }
-    constexpr RagelIterator& operator--(int) noexcept { currentCursorEnd_--; updateCategory(); return *this; }
+    RagelIterator& operator++() noexcept { currentCursorEnd_++; updateCategory(); return *this; }
+    RagelIterator& operator--(int) noexcept { currentCursorEnd_--; updateCategory(); return *this; }
 
-    constexpr RagelIterator operator+(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ + v}; }
-    constexpr RagelIterator operator-(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ - v}; }
+    RagelIterator operator+(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ + v}; }
+    RagelIterator operator-(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ - v}; }
 
-    constexpr RagelIterator& operator=(int v) noexcept { currentCursorEnd_ = v; updateCategory(); return *this; }
+    RagelIterator& operator=(int v) noexcept { currentCursorEnd_ = v; updateCategory(); return *this; }
 
     constexpr bool operator==(RagelIterator const& _rhs) const noexcept
     {

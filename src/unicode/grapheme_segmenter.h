@@ -76,7 +76,7 @@ class grapheme_segmenter {
     ///
     /// @retval true both codepoints to not belong to the same grapheme cluster
     /// @retval false both codepoints belong to the same grapheme cluster
-    static constexpr bool breakable(char32_t a, char32_t b) noexcept
+    static bool breakable(char32_t a, char32_t b) noexcept
     {
         constexpr char32_t CR = 0x000D;
         constexpr char32_t LF = 0x000A;
@@ -138,7 +138,7 @@ class grapheme_segmenter {
         return true; // GB10
     }
 
-    static constexpr bool nonbreakable(char32_t a, char32_t b) noexcept
+    static bool nonbreakable(char32_t a, char32_t b) noexcept
     {
         return !breakable(a, b);
     }
