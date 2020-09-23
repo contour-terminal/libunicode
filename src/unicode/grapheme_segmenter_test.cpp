@@ -61,7 +61,6 @@ TEST_CASE("emoji.speaking-eye", "[grapheme_segmenter]")
     CHECK(grapheme_segmenter::nonbreakable(zwj[1], zwj[2]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[2], zwj[3]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[3], zwj[4]));
-    CHECK(grapheme_segmenter::nonbreakable(zwj[4], zwj[5]));
 }
 
 TEST_CASE("emoji", "[grapheme_segmenter]")
@@ -77,7 +76,6 @@ TEST_CASE("emoji", "[grapheme_segmenter]")
     CHECK(grapheme_segmenter::nonbreakable(zwj3[1], zwj3[2]));
     CHECK(grapheme_segmenter::nonbreakable(zwj3[2], zwj3[3]));
     CHECK(grapheme_segmenter::nonbreakable(zwj3[3], zwj3[4]));
-    CHECK(grapheme_segmenter::nonbreakable(zwj3[4], zwj3[5]));
 }
 
 TEST_CASE("emoji: Man Facepalming: Medium-Light Skin Tone", "[grapheme_segmenter]")
