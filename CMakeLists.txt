@@ -30,6 +30,7 @@ option(LIBUNICODE_EMBEDDED_FMTLIB "Uses embedded fmtlib [default: ${MASTER_PROJE
 option(LIBUNICODE_EMBEDDED_CATCH2 "Uses embedded catch2 for testing [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_EXAMPLES "Enables building of example programs. [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "Builds with codecov [default: OFF]" OFF)
+option(LIBUNICODE_TOOLS "Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 
 # ----------------------------------------------------------------------------
 # code coverage
@@ -60,3 +61,18 @@ endif()
 
 add_subdirectory(src/unicode)
 add_subdirectory(src/tools)
+
+if("${CCACHE}" STREQUAL "")
+    set(USING_CCACHE_STRING "OFF")
+else()
+    set(USING_CCACHE_STRING "${CCACHE}")
+endif()
+
+message(STATUS "------------------------------------------------------------------------------")
+message(STATUS "    libunicode (version ${libunicode_VERSION}${libunicode_VERSION_SUFFIX})")
+message(STATUS "------------------------------------------------------------------------------")
+message(STATUS "Build type:                  ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build unit tests:            ${LIBUNICODE_TESTING}")
+message(STATUS "Build tools:                 ${LIBUNICODE_TOOLS}")
+message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
+message(STATUS "------------------------------------------------------------------------------")

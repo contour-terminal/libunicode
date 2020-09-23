@@ -1,3 +1,5 @@
-add_executable(uc-inspect uc-inspect.cpp)
-target_link_libraries(uc-inspect fmt::fmt-header-only unicode)
-install(TARGETS uc-inspect DESTINATION bin)
+if(LIBUNICODE_TOOLS)
+    add_executable(uc-inspect uc-inspect.cpp)
+    target_link_libraries(uc-inspect fmt::fmt-header-only unicode)
+    install(TARGETS uc-inspect DESTINATION bin)
+endif()
