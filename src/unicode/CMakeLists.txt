@@ -1,15 +1,14 @@
-option(LIBUNICODE_UCD_PATH "libunicode: Path to UCD directory (an extracted UCD.zip)." "")
 if(IS_DIRECTORY "${LIBUNICODE_UCD_PATH}")
-    find_package(PythonInterp REQUIRED)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_custom_command(
         OUTPUT
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_PATH}"
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_PATH}"
         DEPENDS mktables.py
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
         COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_PATH}"
         VERBATIM
     )
@@ -51,4 +50,3 @@ if(LIBUNICODE_TESTING)
     target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)
     add_test(unicode_test ./unicode_test)
 endif()
-message(STATUS "[unicode] Compile unit tests: ${LIBUNICODE_TESTING}")
