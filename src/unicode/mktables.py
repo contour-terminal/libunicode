@@ -15,6 +15,7 @@
 """
 
 from abc import ABC, abstractmethod
+from sys import argv
 import os
 import re
 
@@ -23,7 +24,7 @@ HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
 SCRIPT_MTIME = os.stat(__file__).st_mtime
 
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
-UCD_DIR = PROJECT_ROOT + '/docs/ucd'
+UCD_DIR = argv[1]
 
 FOLD_OPEN = '{{{'
 FOLD_CLOSE = '}}}'

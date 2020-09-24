@@ -1,16 +1,19 @@
-add_custom_command(
-    OUTPUT
-        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMAND
-        "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py"
-    DEPENDS mktables.py
-    COMMENT "Generating UCD files"
-    VERBATIM
-)
+option(LIBUNICODE_UCD_PATH "libunicode: Path to UCD directory (an extracted UCD.zip)." "")
+if(IS_DIRECTORY "${LIBUNICODE_UCD_PATH}")
+    find_package(PythonInterp REQUIRED)
+    add_custom_command(
+        OUTPUT
+            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_PATH}"
+        DEPENDS mktables.py
+        COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_PATH}"
+        VERBATIM
+    )
+endif()
 
 add_library(unicode STATIC
 	utf8.h
@@ -49,5 +52,3 @@ if(LIBUNICODE_TESTING)
     add_test(unicode_test ./unicode_test)
 endif()
 message(STATUS "[unicode] Compile unit tests: ${LIBUNICODE_TESTING}")
-
-
