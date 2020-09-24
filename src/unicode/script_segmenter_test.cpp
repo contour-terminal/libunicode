@@ -18,6 +18,8 @@
 
 using namespace std::string_view_literals;
 using namespace std::string_view_literals;
+using std::optional;
+using unicode::script_segmenter;
 
 TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
 {
@@ -33,13 +35,13 @@ TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
 
 TEST_CASE("script_segmenter.greek_kanji_greek", "[script_segmenter]")
 {
-    auto constexpr str = U"λ 合気道 λ;"sv;
-    auto seg = unicode::script_segmenter{str.data(), str.size()};
+    char32_t const* str = U"λ 合気道 λ;";
+    auto seg = script_segmenter{str};
 
     // greek text
-    auto const r1 = seg.consume();
+    optional<script_segmenter::result> const r1 = seg.consume();
     REQUIRE(r1.has_value());
-    auto const res1 = r1.value();
+    script_segmenter::result const res1 = r1.value();
     CHECK(res1.size == 2);
     CHECK(res1.script == unicode::Script::Greek);
 
@@ -68,7 +70,7 @@ TEST_CASE("script_segmenter.latin_and_greek", "[script_segmenter]")
     auto seg = unicode::script_segmenter{str.data(), str.size()};
 
     // latin text
-    auto const r1 = seg.consume();
+    std::optional<unicode::script_segmenter::result> const r1 = seg.consume();
     REQUIRE(r1.has_value());
     auto const res1 = r1.value();
     CHECK(res1.size == 3);

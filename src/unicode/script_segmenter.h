@@ -30,6 +30,11 @@ class script_segmenter {
     constexpr script_segmenter(script_segmenter const&) noexcept = default;
     constexpr script_segmenter(script_segmenter&&) noexcept = default;
 
+    constexpr explicit script_segmenter(char32_t const* _data) noexcept :
+        script_segmenter{_data, getStringLength(_data)}
+    {
+    }
+
     constexpr script_segmenter(char32_t const* _data, size_t _size) noexcept :
         data_{ _data },
         offset_{ 0 },
@@ -60,6 +65,18 @@ class script_segmenter {
 
   private:
     using ScriptSet = fs_array<Script, 32>;
+
+    /// constexpr-version of strlen for UTF-32 strings
+    constexpr size_t getStringLength(char32_t const* _data) noexcept
+    {
+        size_t n = 0;
+        while (_data && *_data)
+        {
+            ++_data;
+            ++n;
+        }
+        return n;
+    }
 
     /// Returnes all scripts that this @p _codepoint
     ScriptSet getScriptsFor(char32_t _codepoint);

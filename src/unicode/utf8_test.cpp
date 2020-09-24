@@ -111,9 +111,9 @@ TEST_CASE("utf8.bytes_3_dash", "[utf8]")
     INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
 
     // decode
-    auto constexpr u8s = array<uint8_t, 4>{0xe2, 0x9e, 0x9c, 0x61 /*a*/};
+    auto constexpr u8s = array<uint8_t, 4>{0xe2, 0x94, 0x9c, 0x61 /*a*/};
     size_t len = 0;
-    auto const a = from_utf8(d3, &len);
+    auto const a = from_utf8(u8s.data(), &len);
 
     CHECK(len == 3);
     REQUIRE(holds_alternative<Success>(a));
