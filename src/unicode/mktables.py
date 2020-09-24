@@ -18,6 +18,7 @@ from abc import ABC, abstractmethod
 from sys import argv
 import os
 import re
+from codecs import open as codecs_open
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
@@ -28,6 +29,9 @@ UCD_DIR = argv[1]
 
 FOLD_OPEN = '{{{'
 FOLD_CLOSE = '}}}'
+
+def uopen(filename):
+    return codecs_open(filename, encoding = 'utf8')
 
 class EnumBuilder(ABC): # {{{
     @abstractmethod
@@ -83,7 +87,7 @@ class EnumBuilderArray(EnumBuilder): # {{{
 class EnumClassWriter(EnumBuilder): # {{{
     def __init__(self, _header_filename: str):
         self.filename = _header_filename
-        self.file = open(_header_filename, 'w')
+        self.file = open(_header_filename, 'w', encoding='utf-8', newline='\u000A')
         self.member_count = 0
 
         self.file.write(globals()['__doc__'])
@@ -113,7 +117,7 @@ class EnumClassWriter(EnumBuilder): # {{{
 class EnumOstreamWriter(EnumBuilder): # {{{
     def __init__(self, _header_filename: str):
         self.filename = _header_filename
-        self.file = open(_header_filename, 'w')
+        self.file = open(_header_filename, 'w', encoding='utf-8', newline='\u000A')
 
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
@@ -151,8 +155,8 @@ class UCDGenerator:
         self.ucd_dir = _ucd_dir
         self.header_filename = _header_file
         self.impl_filename = _impl_file
-        self.header = open(_header_file, 'w')
-        self.impl = open(_impl_file, 'w')
+        self.header = open(_header_file, 'w', encoding='utf-8', newline='\u000A')
+        self.impl = open(_impl_file, 'w', encoding='utf-8', newline='\u000A')
 
         self.singleValueRE = re.compile('([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
         self.rangeValueRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
@@ -226,7 +230,7 @@ namespace unicode {
 # }}}
 
     def load_property_value_aliases(self): # {{{
-        with open(self.ucd_dir + '/PropertyValueAliases.txt') as f:
+        with uopen(self.ucd_dir + '/PropertyValueAliases.txt') as f:
             # gc ; C   ; Other    # Cc | Cf | Cn | Co | Cs
             headerRE = re.compile('^#\s*(\w+) \((\w+)\)$')
             lineRE = re.compile('^(\w+)\s*;\s*([a-zA-Z0-9_\.]+)\s*;\s*([a-zA-Z0-9_]+).*$')
@@ -283,7 +287,7 @@ namespace unicode {
         # }}}
 
     def load_general_category(self): # {{{
-        with open(self.ucd_dir + '/extracted/DerivedGeneralCategory.txt', 'r') as f:
+        with uopen(self.ucd_dir + '/extracted/DerivedGeneralCategory.txt') as f:
             headerRE = re.compile('^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
             cat_name = ''
@@ -322,7 +326,7 @@ namespace unicode {
         # }}}
 
     def load_core_properties(self): # {{{
-        with open(self.ucd_dir + '/DerivedCoreProperties.txt', 'r') as f:
+        with uopen(self.ucd_dir + '/DerivedCoreProperties.txt') as f:
             # collect
             props = dict()
             while True:
@@ -362,7 +366,7 @@ namespace unicode {
         self.builder.begin('Core_Property')
         for name in sorted(props.keys()):
             self.builder.member(name)
-            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+            self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                 name,
                 'Interval',
                 len(props[name]),
@@ -387,7 +391,7 @@ namespace unicode {
         # }}}
 
     def load_generic_properties(self, filename): # {{{
-        with open(filename, 'r') as f:
+        with uopen(filename) as f:
             props = list()
             while True:
                 line = f.readline()
@@ -414,7 +418,7 @@ namespace unicode {
         # }}}
 
     def process_props(self, filename, prop_key): # {{{
-        with open(filename, 'r') as f:
+        with uopen(filename) as f:
             headerRE = re.compile('^#\s*{}:\s*(\w+)$'.format(prop_key))
 
             # collect
@@ -451,7 +455,7 @@ namespace unicode {
             self.impl.write("namespace tables {\n")
             for name in sorted(props.keys()):
                 element_type = 'Prop<::unicode::{}>'.format(name)
-                self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                     name,
                     element_type,
                     len(props[name]),
@@ -519,7 +523,7 @@ namespace unicode {
         element_type = 'Prop<unicode::{}>'.format(name)
 
         self.impl.write("namespace tables {\n")
-        self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+        self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
             name,
             element_type,
             len(props),
@@ -556,7 +560,7 @@ namespace unicode {
 
     def load_script_extensions(self): # {{{
         filename = self.ucd_dir + '/ScriptExtensions.txt'
-        with open(filename, 'r') as f:
+        with uopen(filename) as f:
             props = list()
             while True:
                 line = f.readline()
@@ -592,7 +596,7 @@ namespace unicode {
             if key in done_list:
                 continue
             done_list.append(key)
-            self.impl.write('auto constexpr {} = std::array<{}, {}>{{\n'.format(
+            self.impl.write('auto static const {} = std::array<{}, {}>{{\n'.format(
                             key,
                             'unicode::Script',
                             len(scripts)))
@@ -603,10 +607,10 @@ namespace unicode {
 
         # construct main lookup table
         element_type = 'Prop<std::pair<unicode::Script const*, std::size_t>>'
-        self.impl.write('auto constexpr {} = std::array<{}, {}>{{\n'.format(
-                        'sce',
+        self.impl.write('static const std::array<{}, {}> {} {{ {{\n'.format(
                         element_type,
-                        len(self.script_extensions)))
+                        len(self.script_extensions),
+                        'sce'))
         for sce in self.script_extensions:
             scripts = sce['property']
             key = 'sce_{}'.format('_'.join(scripts))
@@ -616,7 +620,7 @@ namespace unicode {
                             sce['end'],
                             '{{ {0}.data(), {0}.size() }}'.format(key),
                             sce['comment']))
-        self.impl.write('};\n')
+        self.impl.write('} };\n')
         self.impl.write("}} // {}\n\n".format(FOLD_CLOSE))
 
         # getter function
@@ -651,7 +655,7 @@ namespace unicode {
         # }}}
 
     def process_emoji_props(self): # {{{
-        with open(self.ucd_dir + '/emoji/emoji-data.txt', 'r') as f:
+        with uopen(self.ucd_dir + '/emoji/emoji-data.txt') as f:
             # collect
             props_name = ''
             props = dict()
@@ -673,7 +677,7 @@ namespace unicode {
             # write range tables
             self.impl.write("namespace tables {\n")
             for name in sorted(props.keys()):
-                self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+                self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                     name,
                     'Interval',
                     len(props[name]),
@@ -747,7 +751,7 @@ namespace unicode {
         # write range tables
         self.impl.write("namespace tables {\n")
         for name in sorted(cats.keys()):
-            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+            self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                 name,
                 'Interval',
                 len(cats[name]),
@@ -815,7 +819,7 @@ namespace unicode {
         table_name = type_name
         prop_type = '::unicode::{}'.format(type_name)
 
-        with open(self.ucd_dir + '/EastAsianWidth.txt') as f:
+        with uopen(self.ucd_dir + '/EastAsianWidth.txt') as f:
             table = self.collect_range_table_with_prop(f)
 
             # api: enum
@@ -839,7 +843,7 @@ namespace unicode {
             # impl: range tables
             self.impl.write("namespace tables {\n")
             element_type = 'Prop<{}>'.format(prop_type)
-            self.impl.write("auto constexpr {} = std::array<{}, {}>{{ // {}\n".format(
+            self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                 table_name,
                 element_type,
                 len(table),

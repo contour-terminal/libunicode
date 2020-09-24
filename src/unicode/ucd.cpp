@@ -22,7 +22,7 @@
 namespace unicode {
 
 namespace tables {
-auto constexpr Alphabetic = std::array<Interval, 1084>{ // {{{
+auto static const Alphabetic = std::array<Interval, 1084>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
@@ -1108,7 +1108,7 @@ auto constexpr Alphabetic = std::array<Interval, 1084>{ // {{{
     Interval{ 0x2F800, 0x2FA1D }, // Lo [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
 }; // }}}
-auto constexpr Case_Ignorable = std::array<Interval, 460>{ // {{{
+auto static const Case_Ignorable = std::array<Interval, 460>{ // {{{
     Interval{ 0x0027, 0x0027 }, // Po       APOSTROPHE
     Interval{ 0x002E, 0x002E }, // Po       FULL STOP
     Interval{ 0x003A, 0x003A }, // Po       COLON
@@ -1570,7 +1570,7 @@ auto constexpr Case_Ignorable = std::array<Interval, 460>{ // {{{
     Interval{ 0xE0020, 0xE007F }, // Cf  [96] TAG SPACE..CANCEL TAG
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto constexpr Cased = std::array<Interval, 155>{ // {{{
+auto static const Cased = std::array<Interval, 155>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
@@ -1727,7 +1727,7 @@ auto constexpr Cased = std::array<Interval, 155>{ // {{{
     Interval{ 0x1F150, 0x1F169 }, // So  [26] NEGATIVE CIRCLED LATIN CAPITAL LETTER A..NEGATIVE CIRCLED LATIN CAPITAL LETTER Z
     Interval{ 0x1F170, 0x1F189 }, // So  [26] NEGATIVE SQUARED LATIN CAPITAL LETTER A..NEGATIVE SQUARED LATIN CAPITAL LETTER Z
 }; // }}}
-auto constexpr Changes_When_Casefolded = std::array<Interval, 614>{ // {{{
+auto static const Changes_When_Casefolded = std::array<Interval, 614>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
     Interval{ 0x00C0, 0x00D6 }, // L&  [23] LATIN CAPITAL LETTER A WITH GRAVE..LATIN CAPITAL LETTER O WITH DIAERESIS
@@ -2343,7 +2343,7 @@ auto constexpr Changes_When_Casefolded = std::array<Interval, 614>{ // {{{
     Interval{ 0x16E40, 0x16E5F }, // L&  [32] MEDEFAIDRIN CAPITAL LETTER M..MEDEFAIDRIN CAPITAL LETTER Y
     Interval{ 0x1E900, 0x1E921 }, // L&  [34] ADLAM CAPITAL LETTER ALIF..ADLAM CAPITAL LETTER SHA
 }; // }}}
-auto constexpr Changes_When_Casemapped = std::array<Interval, 124>{ // {{{
+auto static const Changes_When_Casemapped = std::array<Interval, 124>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
@@ -2469,7 +2469,7 @@ auto constexpr Changes_When_Casemapped = std::array<Interval, 124>{ // {{{
     Interval{ 0x16E40, 0x16E7F }, // L&  [64] MEDEFAIDRIN CAPITAL LETTER M..MEDEFAIDRIN SMALL LETTER Y
     Interval{ 0x1E900, 0x1E943 }, // L&  [68] ADLAM CAPITAL LETTER ALIF..ADLAM SMALL LETTER SHA
 }; // }}}
-auto constexpr Changes_When_Lowercased = std::array<Interval, 601>{ // {{{
+auto static const Changes_When_Lowercased = std::array<Interval, 601>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x00C0, 0x00D6 }, // L&  [23] LATIN CAPITAL LETTER A WITH GRAVE..LATIN CAPITAL LETTER O WITH DIAERESIS
     Interval{ 0x00D8, 0x00DE }, // L&   [7] LATIN CAPITAL LETTER O WITH STROKE..LATIN CAPITAL LETTER THORN
@@ -3072,7 +3072,7 @@ auto constexpr Changes_When_Lowercased = std::array<Interval, 601>{ // {{{
     Interval{ 0x16E40, 0x16E5F }, // L&  [32] MEDEFAIDRIN CAPITAL LETTER M..MEDEFAIDRIN CAPITAL LETTER Y
     Interval{ 0x1E900, 0x1E921 }, // L&  [34] ADLAM CAPITAL LETTER ALIF..ADLAM CAPITAL LETTER SHA
 }; // }}}
-auto constexpr Changes_When_Titlecased = std::array<Interval, 618>{ // {{{
+auto static const Changes_When_Titlecased = std::array<Interval, 618>{ // {{{
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
     Interval{ 0x00DF, 0x00F6 }, // L&  [24] LATIN SMALL LETTER SHARP S..LATIN SMALL LETTER O WITH DIAERESIS
@@ -3692,7 +3692,7 @@ auto constexpr Changes_When_Titlecased = std::array<Interval, 618>{ // {{{
     Interval{ 0x16E60, 0x16E7F }, // L&  [32] MEDEFAIDRIN SMALL LETTER M..MEDEFAIDRIN SMALL LETTER Y
     Interval{ 0x1E922, 0x1E943 }, // L&  [34] ADLAM SMALL LETTER ALIF..ADLAM SMALL LETTER SHA
 }; // }}}
-auto constexpr Changes_When_Uppercased = std::array<Interval, 619>{ // {{{
+auto static const Changes_When_Uppercased = std::array<Interval, 619>{ // {{{
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
     Interval{ 0x00DF, 0x00F6 }, // L&  [24] LATIN SMALL LETTER SHARP S..LATIN SMALL LETTER O WITH DIAERESIS
@@ -4313,7 +4313,7 @@ auto constexpr Changes_When_Uppercased = std::array<Interval, 619>{ // {{{
     Interval{ 0x16E60, 0x16E7F }, // L&  [32] MEDEFAIDRIN SMALL LETTER M..MEDEFAIDRIN SMALL LETTER Y
     Interval{ 0x1E922, 0x1E943 }, // L&  [34] ADLAM SMALL LETTER ALIF..ADLAM SMALL LETTER SHA
 }; // }}}
-auto constexpr Default_Ignorable_Code_Point = std::array<Interval, 26>{ // {{{
+auto static const Default_Ignorable_Code_Point = std::array<Interval, 26>{ // {{{
     Interval{ 0x00AD, 0x00AD }, // Cf       SOFT HYPHEN
     Interval{ 0x034F, 0x034F }, // Mn       COMBINING GRAPHEME JOINER
     Interval{ 0x061C, 0x061C }, // Cf       ARABIC LETTER MARK
@@ -4341,7 +4341,7 @@ auto constexpr Default_Ignorable_Code_Point = std::array<Interval, 26>{ // {{{
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
     Interval{ 0xE01F0, 0xE0FFF }, // Cn [3600] <reserved-E01F0>..<reserved-E0FFF>
 }; // }}}
-auto constexpr Grapheme_Base = std::array<Interval, 1670>{ // {{{
+auto static const Grapheme_Base = std::array<Interval, 1670>{ // {{{
     Interval{ 0x0020, 0x0020 }, // Zs       SPACE
     Interval{ 0x0021, 0x0023 }, // Po   [3] EXCLAMATION MARK..NUMBER SIGN
     Interval{ 0x0024, 0x0024 }, // Sc       DOLLAR SIGN
@@ -6013,7 +6013,7 @@ auto constexpr Grapheme_Base = std::array<Interval, 1670>{ // {{{
     Interval{ 0x2F800, 0x2FA1D }, // Lo [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
 }; // }}}
-auto constexpr Grapheme_Extend = std::array<Interval, 357>{ // {{{
+auto static const Grapheme_Extend = std::array<Interval, 357>{ // {{{
     Interval{ 0x0300, 0x036F }, // Mn [112] COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
     Interval{ 0x0483, 0x0487 }, // Mn   [5] COMBINING CYRILLIC TITLO..COMBINING CYRILLIC POKRYTIE
     Interval{ 0x0488, 0x0489 }, // Me   [2] COMBINING CYRILLIC HUNDRED THOUSANDS SIGN..COMBINING CYRILLIC MILLIONS SIGN
@@ -6372,7 +6372,7 @@ auto constexpr Grapheme_Extend = std::array<Interval, 357>{ // {{{
     Interval{ 0xE0020, 0xE007F }, // Cf  [96] TAG SPACE..CANCEL TAG
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto constexpr Grapheme_Link = std::array<Interval, 56>{ // {{{
+auto static const Grapheme_Link = std::array<Interval, 56>{ // {{{
     Interval{ 0x094D, 0x094D }, // Mn       DEVANAGARI SIGN VIRAMA
     Interval{ 0x09CD, 0x09CD }, // Mn       BENGALI SIGN VIRAMA
     Interval{ 0x0A4D, 0x0A4D }, // Mn       GURMUKHI SIGN VIRAMA
@@ -6430,7 +6430,7 @@ auto constexpr Grapheme_Link = std::array<Interval, 56>{ // {{{
     Interval{ 0x11D44, 0x11D45 }, // Mn   [2] MASARAM GONDI SIGN HALANTA..MASARAM GONDI VIRAMA
     Interval{ 0x11D97, 0x11D97 }, // Mn       GUNJALA GONDI VIRAMA
 }; // }}}
-auto constexpr ID_Continue = std::array<Interval, 1269>{ // {{{
+auto static const ID_Continue = std::array<Interval, 1269>{ // {{{
     Interval{ 0x0030, 0x0039 }, // Nd  [10] DIGIT ZERO..DIGIT NINE
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x005F, 0x005F }, // Pc       LOW LINE
@@ -7701,7 +7701,7 @@ auto constexpr ID_Continue = std::array<Interval, 1269>{ // {{{
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto constexpr ID_Start = std::array<Interval, 697>{ // {{{
+auto static const ID_Start = std::array<Interval, 697>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
@@ -8400,7 +8400,7 @@ auto constexpr ID_Start = std::array<Interval, 697>{ // {{{
     Interval{ 0x2F800, 0x2FA1D }, // Lo [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
 }; // }}}
-auto constexpr Lowercase = std::array<Interval, 665>{ // {{{
+auto static const Lowercase = std::array<Interval, 665>{ // {{{
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
@@ -9067,7 +9067,7 @@ auto constexpr Lowercase = std::array<Interval, 665>{ // {{{
     Interval{ 0x1D7CB, 0x1D7CB }, // L&       MATHEMATICAL BOLD SMALL DIGAMMA
     Interval{ 0x1E922, 0x1E943 }, // L&  [34] ADLAM SMALL LETTER ALIF..ADLAM SMALL LETTER SHA
 }; // }}}
-auto constexpr Math = std::array<Interval, 240>{ // {{{
+auto static const Math = std::array<Interval, 240>{ // {{{
     Interval{ 0x002B, 0x002B }, // Sm       PLUS SIGN
     Interval{ 0x003C, 0x003E }, // Sm   [3] LESS-THAN SIGN..GREATER-THAN SIGN
     Interval{ 0x005E, 0x005E }, // Sk       CIRCUMFLEX ACCENT
@@ -9309,7 +9309,7 @@ auto constexpr Math = std::array<Interval, 240>{ // {{{
     Interval{ 0x1EEAB, 0x1EEBB }, // Lo  [17] ARABIC MATHEMATICAL DOUBLE-STRUCK LAM..ARABIC MATHEMATICAL DOUBLE-STRUCK GHAIN
     Interval{ 0x1EEF0, 0x1EEF1 }, // Sm   [2] ARABIC MATHEMATICAL OPERATOR MEEM WITH HAH WITH TATWEEL..ARABIC MATHEMATICAL OPERATOR HAH WITH DAL
 }; // }}}
-auto constexpr Uppercase = std::array<Interval, 643>{ // {{{
+auto static const Uppercase = std::array<Interval, 643>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x00C0, 0x00D6 }, // L&  [23] LATIN CAPITAL LETTER A WITH GRAVE..LATIN CAPITAL LETTER O WITH DIAERESIS
     Interval{ 0x00D8, 0x00DE }, // L&   [7] LATIN CAPITAL LETTER O WITH STROKE..LATIN CAPITAL LETTER THORN
@@ -9954,7 +9954,7 @@ auto constexpr Uppercase = std::array<Interval, 643>{ // {{{
     Interval{ 0x1F150, 0x1F169 }, // So  [26] NEGATIVE CIRCLED LATIN CAPITAL LETTER A..NEGATIVE CIRCLED LATIN CAPITAL LETTER Z
     Interval{ 0x1F170, 0x1F189 }, // So  [26] NEGATIVE SQUARED LATIN CAPITAL LETTER A..NEGATIVE SQUARED LATIN CAPITAL LETTER Z
 }; // }}}
-auto constexpr XID_Continue = std::array<Interval, 1273>{ // {{{
+auto static const XID_Continue = std::array<Interval, 1273>{ // {{{
     Interval{ 0x0030, 0x0039 }, // Nd  [10] DIGIT ZERO..DIGIT NINE
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x005F, 0x005F }, // Pc       LOW LINE
@@ -11229,7 +11229,7 @@ auto constexpr XID_Continue = std::array<Interval, 1273>{ // {{{
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto constexpr XID_Start = std::array<Interval, 700>{ // {{{
+auto static const XID_Start = std::array<Interval, 700>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
@@ -15848,7 +15848,7 @@ namespace general_category {
 }
 
 namespace tables {
-auto constexpr Close_Punctuation = std::array<Interval, 72>{ // {{{
+auto static const Close_Punctuation = std::array<Interval, 72>{ // {{{
     Interval{ 0x0029, 0x0029 }, // RIGHT PARENTHESIS
     Interval{ 0x005D, 0x005D }, // RIGHT SQUARE BRACKET
     Interval{ 0x007D, 0x007D }, // RIGHT CURLY BRACKET
@@ -15922,7 +15922,7 @@ auto constexpr Close_Punctuation = std::array<Interval, 72>{ // {{{
     Interval{ 0xFF60, 0xFF60 }, // FULLWIDTH RIGHT WHITE PARENTHESIS
     Interval{ 0xFF63, 0xFF63 }, // HALFWIDTH RIGHT CORNER BRACKET
 }; // }}}
-auto constexpr Connector_Punctuation = std::array<Interval, 6>{ // {{{
+auto static const Connector_Punctuation = std::array<Interval, 6>{ // {{{
     Interval{ 0x005F, 0x005F }, // LOW LINE
     Interval{ 0x203F, 0x2040 }, // [2] UNDERTIE..CHARACTER TIE
     Interval{ 0x2054, 0x2054 }, // INVERTED UNDERTIE
@@ -15930,11 +15930,11 @@ auto constexpr Connector_Punctuation = std::array<Interval, 6>{ // {{{
     Interval{ 0xFE4D, 0xFE4F }, // [3] DASHED LOW LINE..WAVY LOW LINE
     Interval{ 0xFF3F, 0xFF3F }, // FULLWIDTH LOW LINE
 }; // }}}
-auto constexpr Control = std::array<Interval, 2>{ // {{{
+auto static const Control = std::array<Interval, 2>{ // {{{
     Interval{ 0x0000, 0x001F }, // [32] <control-0000>..<control-001F>
     Interval{ 0x007F, 0x009F }, // [33] <control-007F>..<control-009F>
 }; // }}}
-auto constexpr Currency_Symbol = std::array<Interval, 21>{ // {{{
+auto static const Currency_Symbol = std::array<Interval, 21>{ // {{{
     Interval{ 0x0024, 0x0024 }, // DOLLAR SIGN
     Interval{ 0x00A2, 0x00A5 }, // [4] CENT SIGN..YEN SIGN
     Interval{ 0x058F, 0x058F }, // ARMENIAN DRAM SIGN
@@ -15957,7 +15957,7 @@ auto constexpr Currency_Symbol = std::array<Interval, 21>{ // {{{
     Interval{ 0x1E2FF, 0x1E2FF }, // WANCHO NGUN SIGN
     Interval{ 0x1ECB0, 0x1ECB0 }, // INDIC SIYAQ RUPEE MARK
 }; // }}}
-auto constexpr Dash_Punctuation = std::array<Interval, 18>{ // {{{
+auto static const Dash_Punctuation = std::array<Interval, 18>{ // {{{
     Interval{ 0x002D, 0x002D }, // HYPHEN-MINUS
     Interval{ 0x058A, 0x058A }, // ARMENIAN HYPHEN
     Interval{ 0x05BE, 0x05BE }, // HEBREW PUNCTUATION MAQAF
@@ -15977,7 +15977,7 @@ auto constexpr Dash_Punctuation = std::array<Interval, 18>{ // {{{
     Interval{ 0xFF0D, 0xFF0D }, // FULLWIDTH HYPHEN-MINUS
     Interval{ 0x10EAD, 0x10EAD }, // YEZIDI HYPHENATION MARK
 }; // }}}
-auto constexpr Decimal_Number = std::array<Interval, 61>{ // {{{
+auto static const Decimal_Number = std::array<Interval, 61>{ // {{{
     Interval{ 0x0030, 0x0039 }, // [10] DIGIT ZERO..DIGIT NINE
     Interval{ 0x0660, 0x0669 }, // [10] ARABIC-INDIC DIGIT ZERO..ARABIC-INDIC DIGIT NINE
     Interval{ 0x06F0, 0x06F9 }, // [10] EXTENDED ARABIC-INDIC DIGIT ZERO..EXTENDED ARABIC-INDIC DIGIT NINE
@@ -16040,14 +16040,14 @@ auto constexpr Decimal_Number = std::array<Interval, 61>{ // {{{
     Interval{ 0x1E950, 0x1E959 }, // [10] ADLAM DIGIT ZERO..ADLAM DIGIT NINE
     Interval{ 0x1FBF0, 0x1FBF9 }, // [10] SEGMENTED DIGIT ZERO..SEGMENTED DIGIT NINE
 }; // }}}
-auto constexpr Enclosing_Mark = std::array<Interval, 5>{ // {{{
+auto static const Enclosing_Mark = std::array<Interval, 5>{ // {{{
     Interval{ 0x0488, 0x0489 }, // [2] COMBINING CYRILLIC HUNDRED THOUSANDS SIGN..COMBINING CYRILLIC MILLIONS SIGN
     Interval{ 0x1ABE, 0x1ABE }, // COMBINING PARENTHESES OVERLAY
     Interval{ 0x20DD, 0x20E0 }, // [4] COMBINING ENCLOSING CIRCLE..COMBINING ENCLOSING CIRCLE BACKSLASH
     Interval{ 0x20E2, 0x20E4 }, // [3] COMBINING ENCLOSING SCREEN..COMBINING ENCLOSING UPWARD POINTING TRIANGLE
     Interval{ 0xA670, 0xA672 }, // [3] COMBINING CYRILLIC TEN MILLIONS SIGN..COMBINING CYRILLIC THOUSAND MILLIONS SIGN
 }; // }}}
-auto constexpr Final_Punctuation = std::array<Interval, 10>{ // {{{
+auto static const Final_Punctuation = std::array<Interval, 10>{ // {{{
     Interval{ 0x00BB, 0x00BB }, // RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
     Interval{ 0x2019, 0x2019 }, // RIGHT SINGLE QUOTATION MARK
     Interval{ 0x201D, 0x201D }, // RIGHT DOUBLE QUOTATION MARK
@@ -16059,7 +16059,7 @@ auto constexpr Final_Punctuation = std::array<Interval, 10>{ // {{{
     Interval{ 0x2E1D, 0x2E1D }, // RIGHT LOW PARAPHRASE BRACKET
     Interval{ 0x2E21, 0x2E21 }, // RIGHT VERTICAL BAR WITH QUILL
 }; // }}}
-auto constexpr Format = std::array<Interval, 20>{ // {{{
+auto static const Format = std::array<Interval, 20>{ // {{{
     Interval{ 0x00AD, 0x00AD }, // SOFT HYPHEN
     Interval{ 0x0600, 0x0605 }, // [6] ARABIC NUMBER SIGN..ARABIC NUMBER MARK ABOVE
     Interval{ 0x061C, 0x061C }, // ARABIC LETTER MARK
@@ -16081,7 +16081,7 @@ auto constexpr Format = std::array<Interval, 20>{ // {{{
     Interval{ 0xE0001, 0xE0001 }, // LANGUAGE TAG
     Interval{ 0xE0020, 0xE007F }, // [96] TAG SPACE..CANCEL TAG
 }; // }}}
-auto constexpr Initial_Punctuation = std::array<Interval, 11>{ // {{{
+auto static const Initial_Punctuation = std::array<Interval, 11>{ // {{{
     Interval{ 0x00AB, 0x00AB }, // LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
     Interval{ 0x2018, 0x2018 }, // LEFT SINGLE QUOTATION MARK
     Interval{ 0x201B, 0x201C }, // [2] SINGLE HIGH-REVERSED-9 QUOTATION MARK..LEFT DOUBLE QUOTATION MARK
@@ -16094,7 +16094,7 @@ auto constexpr Initial_Punctuation = std::array<Interval, 11>{ // {{{
     Interval{ 0x2E1C, 0x2E1C }, // LEFT LOW PARAPHRASE BRACKET
     Interval{ 0x2E20, 0x2E20 }, // LEFT VERTICAL BAR WITH QUILL
 }; // }}}
-auto constexpr Letter_Number = std::array<Interval, 12>{ // {{{
+auto static const Letter_Number = std::array<Interval, 12>{ // {{{
     Interval{ 0x16EE, 0x16F0 }, // [3] RUNIC ARLAUG SYMBOL..RUNIC BELGTHOR SYMBOL
     Interval{ 0x2160, 0x2182 }, // [35] ROMAN NUMERAL ONE..ROMAN NUMERAL TEN THOUSAND
     Interval{ 0x2185, 0x2188 }, // [4] ROMAN NUMERAL SIX LATE FORM..ROMAN NUMERAL ONE HUNDRED THOUSAND
@@ -16108,10 +16108,10 @@ auto constexpr Letter_Number = std::array<Interval, 12>{ // {{{
     Interval{ 0x103D1, 0x103D5 }, // [5] OLD PERSIAN NUMBER ONE..OLD PERSIAN NUMBER HUNDRED
     Interval{ 0x12400, 0x1246E }, // [111] CUNEIFORM NUMERIC SIGN TWO ASH..CUNEIFORM NUMERIC SIGN NINE U VARIANT FORM
 }; // }}}
-auto constexpr Line_Separator = std::array<Interval, 1>{ // {{{
+auto static const Line_Separator = std::array<Interval, 1>{ // {{{
     Interval{ 0x2028, 0x2028 }, // LINE SEPARATOR
 }; // }}}
-auto constexpr Lowercase_Letter = std::array<Interval, 645>{ // {{{
+auto static const Lowercase_Letter = std::array<Interval, 645>{ // {{{
     Interval{ 0x0061, 0x007A }, // [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00B5, 0x00B5 }, // MICRO SIGN
     Interval{ 0x00DF, 0x00F6 }, // [24] LATIN SMALL LETTER SHARP S..LATIN SMALL LETTER O WITH DIAERESIS
@@ -16758,7 +16758,7 @@ auto constexpr Lowercase_Letter = std::array<Interval, 645>{ // {{{
     Interval{ 0x1D7CB, 0x1D7CB }, // MATHEMATICAL BOLD SMALL DIGAMMA
     Interval{ 0x1E922, 0x1E943 }, // [34] ADLAM SMALL LETTER ALIF..ADLAM SMALL LETTER SHA
 }; // }}}
-auto constexpr Math_Symbol = std::array<Interval, 64>{ // {{{
+auto static const Math_Symbol = std::array<Interval, 64>{ // {{{
     Interval{ 0x002B, 0x002B }, // PLUS SIGN
     Interval{ 0x003C, 0x003E }, // [3] LESS-THAN SIGN..GREATER-THAN SIGN
     Interval{ 0x007C, 0x007C }, // VERTICAL LINE
@@ -16824,7 +16824,7 @@ auto constexpr Math_Symbol = std::array<Interval, 64>{ // {{{
     Interval{ 0x1D7C3, 0x1D7C3 }, // MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL
     Interval{ 0x1EEF0, 0x1EEF1 }, // [2] ARABIC MATHEMATICAL OPERATOR MEEM WITH HAH WITH TATWEEL..ARABIC MATHEMATICAL OPERATOR HAH WITH DAL
 }; // }}}
-auto constexpr Modifier_Letter = std::array<Interval, 61>{ // {{{
+auto static const Modifier_Letter = std::array<Interval, 61>{ // {{{
     Interval{ 0x02B0, 0x02C1 }, // [18] MODIFIER LETTER SMALL H..MODIFIER LETTER REVERSED GLOTTAL STOP
     Interval{ 0x02C6, 0x02D1 }, // [12] MODIFIER LETTER CIRCUMFLEX ACCENT..MODIFIER LETTER HALF TRIANGULAR COLON
     Interval{ 0x02E0, 0x02E4 }, // [5] MODIFIER LETTER SMALL GAMMA..MODIFIER LETTER SMALL REVERSED GLOTTAL STOP
@@ -16887,7 +16887,7 @@ auto constexpr Modifier_Letter = std::array<Interval, 61>{ // {{{
     Interval{ 0x1E137, 0x1E13D }, // [7] NYIAKENG PUACHUE HMONG SIGN FOR PERSON..NYIAKENG PUACHUE HMONG SYLLABLE LENGTHENER
     Interval{ 0x1E94B, 0x1E94B }, // ADLAM NASALIZATION MARK
 }; // }}}
-auto constexpr Modifier_Symbol = std::array<Interval, 30>{ // {{{
+auto static const Modifier_Symbol = std::array<Interval, 30>{ // {{{
     Interval{ 0x005E, 0x005E }, // CIRCUMFLEX ACCENT
     Interval{ 0x0060, 0x0060 }, // GRAVE ACCENT
     Interval{ 0x00A8, 0x00A8 }, // DIAERESIS
@@ -16919,7 +16919,7 @@ auto constexpr Modifier_Symbol = std::array<Interval, 30>{ // {{{
     Interval{ 0xFFE3, 0xFFE3 }, // FULLWIDTH MACRON
     Interval{ 0x1F3FB, 0x1F3FF }, // [5] EMOJI MODIFIER FITZPATRICK TYPE-1-2..EMOJI MODIFIER FITZPATRICK TYPE-6
 }; // }}}
-auto constexpr Nonspacing_Mark = std::array<Interval, 327>{ // {{{
+auto static const Nonspacing_Mark = std::array<Interval, 327>{ // {{{
     Interval{ 0x0300, 0x036F }, // [112] COMBINING GRAVE ACCENT..COMBINING LATIN SMALL LETTER X
     Interval{ 0x0483, 0x0487 }, // [5] COMBINING CYRILLIC TITLO..COMBINING CYRILLIC POKRYTIE
     Interval{ 0x0591, 0x05BD }, // [45] HEBREW ACCENT ETNAHTA..HEBREW POINT METEG
@@ -17248,7 +17248,7 @@ auto constexpr Nonspacing_Mark = std::array<Interval, 327>{ // {{{
     Interval{ 0x1E944, 0x1E94A }, // [7] ADLAM ALIF LENGTHENER..ADLAM NUKTA
     Interval{ 0xE0100, 0xE01EF }, // [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto constexpr Open_Punctuation = std::array<Interval, 75>{ // {{{
+auto static const Open_Punctuation = std::array<Interval, 75>{ // {{{
     Interval{ 0x0028, 0x0028 }, // LEFT PARENTHESIS
     Interval{ 0x005B, 0x005B }, // LEFT SQUARE BRACKET
     Interval{ 0x007B, 0x007B }, // LEFT CURLY BRACKET
@@ -17325,7 +17325,7 @@ auto constexpr Open_Punctuation = std::array<Interval, 75>{ // {{{
     Interval{ 0xFF5F, 0xFF5F }, // FULLWIDTH LEFT WHITE PARENTHESIS
     Interval{ 0xFF62, 0xFF62 }, // HALFWIDTH LEFT CORNER BRACKET
 }; // }}}
-auto constexpr Other_Letter = std::array<Interval, 489>{ // {{{
+auto static const Other_Letter = std::array<Interval, 489>{ // {{{
     Interval{ 0x00AA, 0x00AA }, // FEMININE ORDINAL INDICATOR
     Interval{ 0x00BA, 0x00BA }, // MASCULINE ORDINAL INDICATOR
     Interval{ 0x01BB, 0x01BB }, // LATIN LETTER TWO WITH STROKE
@@ -17816,7 +17816,7 @@ auto constexpr Other_Letter = std::array<Interval, 489>{ // {{{
     Interval{ 0x2F800, 0x2FA1D }, // [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
     Interval{ 0x30000, 0x3134A }, // [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
 }; // }}}
-auto constexpr Other_Number = std::array<Interval, 71>{ // {{{
+auto static const Other_Number = std::array<Interval, 71>{ // {{{
     Interval{ 0x00B2, 0x00B3 }, // [2] SUPERSCRIPT TWO..SUPERSCRIPT THREE
     Interval{ 0x00B9, 0x00B9 }, // SUPERSCRIPT ONE
     Interval{ 0x00BC, 0x00BE }, // [3] VULGAR FRACTION ONE QUARTER..VULGAR FRACTION THREE QUARTERS
@@ -17889,7 +17889,7 @@ auto constexpr Other_Number = std::array<Interval, 71>{ // {{{
     Interval{ 0x1ED2F, 0x1ED3D }, // [15] OTTOMAN SIYAQ ALTERNATE NUMBER TWO..OTTOMAN SIYAQ FRACTION ONE SIXTH
     Interval{ 0x1F100, 0x1F10C }, // [13] DIGIT ZERO FULL STOP..DINGBAT NEGATIVE CIRCLED SANS-SERIF DIGIT ZERO
 }; // }}}
-auto constexpr Other_Punctuation = std::array<Interval, 181>{ // {{{
+auto static const Other_Punctuation = std::array<Interval, 181>{ // {{{
     Interval{ 0x0021, 0x0023 }, // [3] EXCLAMATION MARK..NUMBER SIGN
     Interval{ 0x0025, 0x0027 }, // [3] PERCENT SIGN..APOSTROPHE
     Interval{ 0x002A, 0x002A }, // ASTERISK
@@ -18072,7 +18072,7 @@ auto constexpr Other_Punctuation = std::array<Interval, 181>{ // {{{
     Interval{ 0x1DA87, 0x1DA8B }, // [5] SIGNWRITING COMMA..SIGNWRITING PARENTHESIS
     Interval{ 0x1E95E, 0x1E95F }, // [2] ADLAM INITIAL EXCLAMATION MARK..ADLAM INITIAL QUESTION MARK
 }; // }}}
-auto constexpr Other_Symbol = std::array<Interval, 182>{ // {{{
+auto static const Other_Symbol = std::array<Interval, 182>{ // {{{
     Interval{ 0x00A6, 0x00A6 }, // BROKEN BAR
     Interval{ 0x00A9, 0x00A9 }, // COPYRIGHT SIGN
     Interval{ 0x00AE, 0x00AE }, // REGISTERED SIGN
@@ -18256,15 +18256,15 @@ auto constexpr Other_Symbol = std::array<Interval, 182>{ // {{{
     Interval{ 0x1FB00, 0x1FB92 }, // [147] BLOCK SEXTANT-1..UPPER HALF INVERSE MEDIUM SHADE AND LOWER HALF BLOCK
     Interval{ 0x1FB94, 0x1FBCA }, // [55] LEFT HALF INVERSE MEDIUM SHADE AND RIGHT HALF BLOCK..WHITE UP-POINTING CHEVRON
 }; // }}}
-auto constexpr Paragraph_Separator = std::array<Interval, 1>{ // {{{
+auto static const Paragraph_Separator = std::array<Interval, 1>{ // {{{
     Interval{ 0x2029, 0x2029 }, // PARAGRAPH SEPARATOR
 }; // }}}
-auto constexpr Private_Use = std::array<Interval, 3>{ // {{{
+auto static const Private_Use = std::array<Interval, 3>{ // {{{
     Interval{ 0xE000, 0xF8FF }, // [6400] <private-use-E000>..<private-use-F8FF>
     Interval{ 0xF0000, 0xFFFFD }, // [65534] <private-use-F0000>..<private-use-FFFFD>
     Interval{ 0x100000, 0x10FFFD }, // [65534] <private-use-100000>..<private-use-10FFFD>
 }; // }}}
-auto constexpr Space_Separator = std::array<Interval, 7>{ // {{{
+auto static const Space_Separator = std::array<Interval, 7>{ // {{{
     Interval{ 0x0020, 0x0020 }, // SPACE
     Interval{ 0x00A0, 0x00A0 }, // NO-BREAK SPACE
     Interval{ 0x1680, 0x1680 }, // OGHAM SPACE MARK
@@ -18273,7 +18273,7 @@ auto constexpr Space_Separator = std::array<Interval, 7>{ // {{{
     Interval{ 0x205F, 0x205F }, // MEDIUM MATHEMATICAL SPACE
     Interval{ 0x3000, 0x3000 }, // IDEOGRAPHIC SPACE
 }; // }}}
-auto constexpr Spacing_Mark = std::array<Interval, 175>{ // {{{
+auto static const Spacing_Mark = std::array<Interval, 175>{ // {{{
     Interval{ 0x0903, 0x0903 }, // DEVANAGARI SIGN VISARGA
     Interval{ 0x093B, 0x093B }, // DEVANAGARI VOWEL SIGN OOE
     Interval{ 0x093E, 0x0940 }, // [3] DEVANAGARI VOWEL SIGN AA..DEVANAGARI VOWEL SIGN II
@@ -18450,10 +18450,10 @@ auto constexpr Spacing_Mark = std::array<Interval, 175>{ // {{{
     Interval{ 0x1D165, 0x1D166 }, // [2] MUSICAL SYMBOL COMBINING STEM..MUSICAL SYMBOL COMBINING SPRECHGESANG STEM
     Interval{ 0x1D16D, 0x1D172 }, // [6] MUSICAL SYMBOL COMBINING AUGMENTATION DOT..MUSICAL SYMBOL COMBINING FLAG-5
 }; // }}}
-auto constexpr Surrogate = std::array<Interval, 1>{ // {{{
+auto static const Surrogate = std::array<Interval, 1>{ // {{{
     Interval{ 0xD800, 0xDFFF }, // [2048] <surrogate-D800>..<surrogate-DFFF>
 }; // }}}
-auto constexpr Titlecase_Letter = std::array<Interval, 10>{ // {{{
+auto static const Titlecase_Letter = std::array<Interval, 10>{ // {{{
     Interval{ 0x01C5, 0x01C5 }, // LATIN CAPITAL LETTER D WITH SMALL LETTER Z WITH CARON
     Interval{ 0x01C8, 0x01C8 }, // LATIN CAPITAL LETTER L WITH SMALL LETTER J
     Interval{ 0x01CB, 0x01CB }, // LATIN CAPITAL LETTER N WITH SMALL LETTER J
@@ -18465,7 +18465,7 @@ auto constexpr Titlecase_Letter = std::array<Interval, 10>{ // {{{
     Interval{ 0x1FCC, 0x1FCC }, // GREEK CAPITAL LETTER ETA WITH PROSGEGRAMMENI
     Interval{ 0x1FFC, 0x1FFC }, // GREEK CAPITAL LETTER OMEGA WITH PROSGEGRAMMENI
 }; // }}}
-auto constexpr Unassigned = std::array<Interval, 677>{ // {{{
+auto static const Unassigned = std::array<Interval, 677>{ // {{{
     Interval{ 0x0378, 0x0379 }, // [2] <reserved-0378>..<reserved-0379>
     Interval{ 0x0380, 0x0383 }, // [4] <reserved-0380>..<reserved-0383>
     Interval{ 0x038B, 0x038B }, // <reserved-038B>
@@ -19144,7 +19144,7 @@ auto constexpr Unassigned = std::array<Interval, 677>{ // {{{
     Interval{ 0xFFFFE, 0xFFFFF }, // [2] <noncharacter-FFFFE>..<noncharacter-FFFFF>
     Interval{ 0x10FFFE, 0x10FFFF }, // [2] <noncharacter-10FFFE>..<noncharacter-10FFFF>
 }; // }}}
-auto constexpr Uppercase_Letter = std::array<Interval, 638>{ // {{{
+auto static const Uppercase_Letter = std::array<Interval, 638>{ // {{{
     Interval{ 0x0041, 0x005A }, // [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x00C0, 0x00D6 }, // [23] LATIN CAPITAL LETTER A WITH GRAVE..LATIN CAPITAL LETTER O WITH DIAERESIS
     Interval{ 0x00D8, 0x00DE }, // [7] LATIN CAPITAL LETTER O WITH STROKE..LATIN CAPITAL LETTER THORN
@@ -19824,7 +19824,7 @@ bool contains(General_Category _cat, char32_t _codepoint) noexcept {
 }
 
 namespace tables {
-auto constexpr Script = std::array<Prop<unicode::Script>, 2095>{ // {{{
+auto static const Script = std::array<Prop<unicode::Script>, 2095>{ // {{{
     Prop<unicode::Script>{ { 0x0000, 0x001F }, unicode::Script::Common }, // Cc  [32] <control-0000>..<control-001F>
     Prop<unicode::Script>{ { 0x0020, 0x0020 }, unicode::Script::Common }, // Zs       SPACE
     Prop<unicode::Script>{ { 0x0021, 0x0023 }, unicode::Script::Common }, // Po   [3] EXCLAMATION MARK..NUMBER SIGN
@@ -21930,30 +21930,30 @@ Script script(char32_t _codepoint) noexcept {
 }
 
 namespace tables { // {{{ ScriptExtensions
-auto constexpr sce_Grek = std::array<unicode::Script, 1>{
+auto static const sce_Grek = std::array<unicode::Script, 1>{
     unicode::Script::Greek,
 };
 
-auto constexpr sce_Latn = std::array<unicode::Script, 1>{
+auto static const sce_Latn = std::array<unicode::Script, 1>{
     unicode::Script::Latin,
 };
 
-auto constexpr sce_Cyrl_Perm = std::array<unicode::Script, 2>{
+auto static const sce_Cyrl_Perm = std::array<unicode::Script, 2>{
     unicode::Script::Cyrillic,
     unicode::Script::Old_Permic,
 };
 
-auto constexpr sce_Cyrl_Glag = std::array<unicode::Script, 2>{
+auto static const sce_Cyrl_Glag = std::array<unicode::Script, 2>{
     unicode::Script::Cyrillic,
     unicode::Script::Glagolitic,
 };
 
-auto constexpr sce_Cyrl_Latn = std::array<unicode::Script, 2>{
+auto static const sce_Cyrl_Latn = std::array<unicode::Script, 2>{
     unicode::Script::Cyrillic,
     unicode::Script::Latin,
 };
 
-auto constexpr sce_Arab_Rohg_Syrc_Thaa_Yezi = std::array<unicode::Script, 5>{
+auto static const sce_Arab_Rohg_Syrc_Thaa_Yezi = std::array<unicode::Script, 5>{
     unicode::Script::Arabic,
     unicode::Script::Hanifi_Rohingya,
     unicode::Script::Syriac,
@@ -21961,13 +21961,13 @@ auto constexpr sce_Arab_Rohg_Syrc_Thaa_Yezi = std::array<unicode::Script, 5>{
     unicode::Script::Yezidi,
 };
 
-auto constexpr sce_Arab_Syrc_Thaa = std::array<unicode::Script, 3>{
+auto static const sce_Arab_Syrc_Thaa = std::array<unicode::Script, 3>{
     unicode::Script::Arabic,
     unicode::Script::Syriac,
     unicode::Script::Thaana,
 };
 
-auto constexpr sce_Adlm_Arab_Mand_Mani_Phlp_Rohg_Sogd_Syrc = std::array<unicode::Script, 8>{
+auto static const sce_Adlm_Arab_Mand_Mani_Phlp_Rohg_Sogd_Syrc = std::array<unicode::Script, 8>{
     unicode::Script::Adlam,
     unicode::Script::Arabic,
     unicode::Script::Mandaic,
@@ -21978,23 +21978,23 @@ auto constexpr sce_Adlm_Arab_Mand_Mani_Phlp_Rohg_Sogd_Syrc = std::array<unicode:
     unicode::Script::Syriac,
 };
 
-auto constexpr sce_Arab_Syrc = std::array<unicode::Script, 2>{
+auto static const sce_Arab_Syrc = std::array<unicode::Script, 2>{
     unicode::Script::Arabic,
     unicode::Script::Syriac,
 };
 
-auto constexpr sce_Arab_Thaa_Yezi = std::array<unicode::Script, 3>{
+auto static const sce_Arab_Thaa_Yezi = std::array<unicode::Script, 3>{
     unicode::Script::Arabic,
     unicode::Script::Thaana,
     unicode::Script::Yezidi,
 };
 
-auto constexpr sce_Arab_Rohg = std::array<unicode::Script, 2>{
+auto static const sce_Arab_Rohg = std::array<unicode::Script, 2>{
     unicode::Script::Arabic,
     unicode::Script::Hanifi_Rohingya,
 };
 
-auto constexpr sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Shrd_Taml_Telu_Tirh = std::array<unicode::Script, 13>{
+auto static const sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Shrd_Taml_Telu_Tirh = std::array<unicode::Script, 13>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
@@ -22010,7 +22010,7 @@ auto constexpr sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Shrd_Taml_Telu_T
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Taml_Telu_Tirh = std::array<unicode::Script, 12>{
+auto static const sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Taml_Telu_Tirh = std::array<unicode::Script, 12>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
@@ -22025,7 +22025,7 @@ auto constexpr sce_Beng_Deva_Gran_Gujr_Guru_Knda_Latn_Mlym_Orya_Taml_Telu_Tirh =
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Mahj_Mlym_Nand_Orya_Sind_Sinh_Sylo_Takr_Taml_Telu_Tirh = std::array<unicode::Script, 20>{
+auto static const sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Mahj_Mlym_Nand_Orya_Sind_Sinh_Sylo_Takr_Taml_Telu_Tirh = std::array<unicode::Script, 20>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
@@ -22048,7 +22048,7 @@ auto constexpr sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Mahj_Mlym_Nand_O
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Limb_Mahj_Mlym_Nand_Orya_Sind_Sinh_Sylo_Takr_Taml_Telu_Tirh = std::array<unicode::Script, 21>{
+auto static const sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Limb_Mahj_Mlym_Nand_Orya_Sind_Sinh_Sylo_Takr_Taml_Telu_Tirh = std::array<unicode::Script, 21>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
@@ -22072,89 +22072,89 @@ auto constexpr sce_Beng_Deva_Dogr_Gong_Gonm_Gran_Gujr_Guru_Knda_Limb_Mahj_Mlym_N
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Deva_Dogr_Kthi_Mahj = std::array<unicode::Script, 4>{
+auto static const sce_Deva_Dogr_Kthi_Mahj = std::array<unicode::Script, 4>{
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
     unicode::Script::Kaithi,
     unicode::Script::Mahajani,
 };
 
-auto constexpr sce_Beng_Cakm_Sylo = std::array<unicode::Script, 3>{
+auto static const sce_Beng_Cakm_Sylo = std::array<unicode::Script, 3>{
     unicode::Script::Bengali,
     unicode::Script::Chakma,
     unicode::Script::Syloti_Nagri,
 };
 
-auto constexpr sce_Guru_Mult = std::array<unicode::Script, 2>{
+auto static const sce_Guru_Mult = std::array<unicode::Script, 2>{
     unicode::Script::Gurmukhi,
     unicode::Script::Multani,
 };
 
-auto constexpr sce_Gujr_Khoj = std::array<unicode::Script, 2>{
+auto static const sce_Gujr_Khoj = std::array<unicode::Script, 2>{
     unicode::Script::Gujarati,
     unicode::Script::Khojki,
 };
 
-auto constexpr sce_Gran_Taml = std::array<unicode::Script, 2>{
+auto static const sce_Gran_Taml = std::array<unicode::Script, 2>{
     unicode::Script::Grantha,
     unicode::Script::Tamil,
 };
 
-auto constexpr sce_Knda_Nand = std::array<unicode::Script, 2>{
+auto static const sce_Knda_Nand = std::array<unicode::Script, 2>{
     unicode::Script::Kannada,
     unicode::Script::Nandinagari,
 };
 
-auto constexpr sce_Cakm_Mymr_Tale = std::array<unicode::Script, 3>{
+auto static const sce_Cakm_Mymr_Tale = std::array<unicode::Script, 3>{
     unicode::Script::Chakma,
     unicode::Script::Myanmar,
     unicode::Script::Tai_Le,
 };
 
-auto constexpr sce_Geor_Latn = std::array<unicode::Script, 2>{
+auto static const sce_Geor_Latn = std::array<unicode::Script, 2>{
     unicode::Script::Georgian,
     unicode::Script::Latin,
 };
 
-auto constexpr sce_Buhd_Hano_Tagb_Tglg = std::array<unicode::Script, 4>{
+auto static const sce_Buhd_Hano_Tagb_Tglg = std::array<unicode::Script, 4>{
     unicode::Script::Buhid,
     unicode::Script::Hanunoo,
     unicode::Script::Tagbanwa,
     unicode::Script::Tagalog,
 };
 
-auto constexpr sce_Mong_Phag = std::array<unicode::Script, 2>{
+auto static const sce_Mong_Phag = std::array<unicode::Script, 2>{
     unicode::Script::Mongolian,
     unicode::Script::Phags_Pa,
 };
 
-auto constexpr sce_Beng_Deva_Gran_Knda = std::array<unicode::Script, 4>{
+auto static const sce_Beng_Deva_Gran_Knda = std::array<unicode::Script, 4>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
     unicode::Script::Kannada,
 };
 
-auto constexpr sce_Deva = std::array<unicode::Script, 1>{
+auto static const sce_Deva = std::array<unicode::Script, 1>{
     unicode::Script::Devanagari,
 };
 
-auto constexpr sce_Deva_Gran = std::array<unicode::Script, 2>{
+auto static const sce_Deva_Gran = std::array<unicode::Script, 2>{
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
 };
 
-auto constexpr sce_Beng_Deva = std::array<unicode::Script, 2>{
+auto static const sce_Beng_Deva = std::array<unicode::Script, 2>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
 };
 
-auto constexpr sce_Deva_Shrd = std::array<unicode::Script, 2>{
+auto static const sce_Deva_Shrd = std::array<unicode::Script, 2>{
     unicode::Script::Devanagari,
     unicode::Script::Sharada,
 };
 
-auto constexpr sce_Deva_Knda_Mlym_Orya_Taml_Telu = std::array<unicode::Script, 6>{
+auto static const sce_Deva_Knda_Mlym_Orya_Taml_Telu = std::array<unicode::Script, 6>{
     unicode::Script::Devanagari,
     unicode::Script::Kannada,
     unicode::Script::Malayalam,
@@ -22163,12 +22163,12 @@ auto constexpr sce_Deva_Knda_Mlym_Orya_Taml_Telu = std::array<unicode::Script, 6
     unicode::Script::Telugu,
 };
 
-auto constexpr sce_Deva_Nand = std::array<unicode::Script, 2>{
+auto static const sce_Deva_Nand = std::array<unicode::Script, 2>{
     unicode::Script::Devanagari,
     unicode::Script::Nandinagari,
 };
 
-auto constexpr sce_Beng_Deva_Gran_Knda_Nand_Orya_Telu_Tirh = std::array<unicode::Script, 8>{
+auto static const sce_Beng_Deva_Gran_Knda_Nand_Orya_Telu_Tirh = std::array<unicode::Script, 8>{
     unicode::Script::Bengali,
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
@@ -22179,37 +22179,37 @@ auto constexpr sce_Beng_Deva_Gran_Knda_Nand_Orya_Telu_Tirh = std::array<unicode:
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Deva_Gran_Knda = std::array<unicode::Script, 3>{
+auto static const sce_Deva_Gran_Knda = std::array<unicode::Script, 3>{
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
     unicode::Script::Kannada,
 };
 
-auto constexpr sce_Beng = std::array<unicode::Script, 1>{
+auto static const sce_Beng = std::array<unicode::Script, 1>{
     unicode::Script::Bengali,
 };
 
-auto constexpr sce_Nand = std::array<unicode::Script, 1>{
+auto static const sce_Nand = std::array<unicode::Script, 1>{
     unicode::Script::Nandinagari,
 };
 
-auto constexpr sce_Cyrl_Syrc = std::array<unicode::Script, 2>{
+auto static const sce_Cyrl_Syrc = std::array<unicode::Script, 2>{
     unicode::Script::Cyrillic,
     unicode::Script::Syriac,
 };
 
-auto constexpr sce_Latn_Mong = std::array<unicode::Script, 2>{
+auto static const sce_Latn_Mong = std::array<unicode::Script, 2>{
     unicode::Script::Latin,
     unicode::Script::Mongolian,
 };
 
-auto constexpr sce_Deva_Gran_Latn = std::array<unicode::Script, 3>{
+auto static const sce_Deva_Gran_Latn = std::array<unicode::Script, 3>{
     unicode::Script::Devanagari,
     unicode::Script::Grantha,
     unicode::Script::Latin,
 };
 
-auto constexpr sce_Bopo_Hang_Hani_Hira_Kana_Yiii = std::array<unicode::Script, 6>{
+auto static const sce_Bopo_Hang_Hani_Hira_Kana_Yiii = std::array<unicode::Script, 6>{
     unicode::Script::Bopomofo,
     unicode::Script::Hangul,
     unicode::Script::Han,
@@ -22218,7 +22218,7 @@ auto constexpr sce_Bopo_Hang_Hani_Hira_Kana_Yiii = std::array<unicode::Script, 6
     unicode::Script::Yi,
 };
 
-auto constexpr sce_Bopo_Hang_Hani_Hira_Kana = std::array<unicode::Script, 5>{
+auto static const sce_Bopo_Hang_Hani_Hira_Kana = std::array<unicode::Script, 5>{
     unicode::Script::Bopomofo,
     unicode::Script::Hangul,
     unicode::Script::Han,
@@ -22226,32 +22226,32 @@ auto constexpr sce_Bopo_Hang_Hani_Hira_Kana = std::array<unicode::Script, 5>{
     unicode::Script::Katakana,
 };
 
-auto constexpr sce_Hani = std::array<unicode::Script, 1>{
+auto static const sce_Hani = std::array<unicode::Script, 1>{
     unicode::Script::Han,
 };
 
-auto constexpr sce_Bopo_Hani = std::array<unicode::Script, 2>{
+auto static const sce_Bopo_Hani = std::array<unicode::Script, 2>{
     unicode::Script::Bopomofo,
     unicode::Script::Han,
 };
 
-auto constexpr sce_Hira_Kana = std::array<unicode::Script, 2>{
+auto static const sce_Hira_Kana = std::array<unicode::Script, 2>{
     unicode::Script::Hiragana,
     unicode::Script::Katakana,
 };
 
-auto constexpr sce_Hani_Hira_Kana = std::array<unicode::Script, 3>{
+auto static const sce_Hani_Hira_Kana = std::array<unicode::Script, 3>{
     unicode::Script::Han,
     unicode::Script::Hiragana,
     unicode::Script::Katakana,
 };
 
-auto constexpr sce_Hani_Latn = std::array<unicode::Script, 2>{
+auto static const sce_Hani_Latn = std::array<unicode::Script, 2>{
     unicode::Script::Han,
     unicode::Script::Latin,
 };
 
-auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Mlym_Modi_Nand_Sind_Takr_Tirh = std::array<unicode::Script, 14>{
+auto static const sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Mlym_Modi_Nand_Sind_Takr_Tirh = std::array<unicode::Script, 14>{
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
     unicode::Script::Gujarati,
@@ -22268,7 +22268,7 @@ auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Mlym_Modi_Nand_Sind_T
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Modi_Nand_Sind_Takr_Tirh = std::array<unicode::Script, 13>{
+auto static const sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Modi_Nand_Sind_Takr_Tirh = std::array<unicode::Script, 13>{
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
     unicode::Script::Gujarati,
@@ -22284,7 +22284,7 @@ auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Knda_Kthi_Mahj_Modi_Nand_Sind_Takr_T
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Kthi_Mahj_Modi_Sind_Takr_Tirh = std::array<unicode::Script, 11>{
+auto static const sce_Deva_Dogr_Gujr_Guru_Khoj_Kthi_Mahj_Modi_Sind_Takr_Tirh = std::array<unicode::Script, 11>{
     unicode::Script::Devanagari,
     unicode::Script::Dogra,
     unicode::Script::Gujarati,
@@ -22298,48 +22298,48 @@ auto constexpr sce_Deva_Dogr_Gujr_Guru_Khoj_Kthi_Mahj_Modi_Sind_Takr_Tirh = std:
     unicode::Script::Tirhuta,
 };
 
-auto constexpr sce_Deva_Taml = std::array<unicode::Script, 2>{
+auto static const sce_Deva_Taml = std::array<unicode::Script, 2>{
     unicode::Script::Devanagari,
     unicode::Script::Tamil,
 };
 
-auto constexpr sce_Kali_Latn_Mymr = std::array<unicode::Script, 3>{
+auto static const sce_Kali_Latn_Mymr = std::array<unicode::Script, 3>{
     unicode::Script::Kayah_Li,
     unicode::Script::Latin,
     unicode::Script::Myanmar,
 };
 
-auto constexpr sce_Bugi_Java = std::array<unicode::Script, 2>{
+auto static const sce_Bugi_Java = std::array<unicode::Script, 2>{
     unicode::Script::Buginese,
     unicode::Script::Javanese,
 };
 
-auto constexpr sce_Arab_Thaa = std::array<unicode::Script, 2>{
+auto static const sce_Arab_Thaa = std::array<unicode::Script, 2>{
     unicode::Script::Arabic,
     unicode::Script::Thaana,
 };
 
-auto constexpr sce_Cprt_Linb = std::array<unicode::Script, 2>{
+auto static const sce_Cprt_Linb = std::array<unicode::Script, 2>{
     unicode::Script::Cypriot,
     unicode::Script::Linear_B,
 };
 
-auto constexpr sce_Cprt_Lina_Linb = std::array<unicode::Script, 3>{
+auto static const sce_Cprt_Lina_Linb = std::array<unicode::Script, 3>{
     unicode::Script::Cypriot,
     unicode::Script::Linear_A,
     unicode::Script::Linear_B,
 };
 
-auto constexpr sce_Arab_Copt = std::array<unicode::Script, 2>{
+auto static const sce_Arab_Copt = std::array<unicode::Script, 2>{
     unicode::Script::Arabic,
     unicode::Script::Coptic,
 };
 
-auto constexpr sce_Dupl = std::array<unicode::Script, 1>{
+auto static const sce_Dupl = std::array<unicode::Script, 1>{
     unicode::Script::Duployan,
 };
 
-auto constexpr sce = std::array<Prop<std::pair<unicode::Script const*, std::size_t>>, 149>{
+static const std::array<Prop<std::pair<unicode::Script const*, std::size_t>>, 149> sce { {
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x0342, 0x0342 }, { sce_Grek.data(), sce_Grek.size() } }, // Mn       COMBINING GREEK PERISPOMENI
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x0345, 0x0345 }, { sce_Grek.data(), sce_Grek.size() } }, // Mn       COMBINING GREEK YPOGEGRAMMENI
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x0363, 0x036F }, { sce_Latn.data(), sce_Latn.size() } }, // Mn  [13] COMBINING LATIN SMALL LETTER A..COMBINING LATIN SMALL LETTER X
@@ -22489,7 +22489,7 @@ auto constexpr sce = std::array<Prop<std::pair<unicode::Script const*, std::size
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x1BCA0, 0x1BCA3 }, { sce_Dupl.data(), sce_Dupl.size() } }, // Cf   [4] SHORTHAND FORMAT LETTER OVERLAP..SHORTHAND FORMAT UP STEP
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x1D360, 0x1D371 }, { sce_Hani.data(), sce_Hani.size() } }, // No  [18] COUNTING ROD UNIT DIGIT ONE..COUNTING ROD TENS DIGIT NINE
     Prop<std::pair<unicode::Script const*, std::size_t>>{ { 0x1F250, 0x1F251 }, { sce_Hani.data(), sce_Hani.size() } }, // So   [2] CIRCLED IDEOGRAPH ADVANTAGE..CIRCLED IDEOGRAPH ACCEPT
-};
+} };
 } // }}}
 
 size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {
@@ -22504,7 +22504,7 @@ size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity)
 }
 
 namespace tables {
-auto constexpr Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_Cluster_Break>, 1364>{ // {{{
+auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_Cluster_Break>, 1364>{ // {{{
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x0000, 0x0009 }, ::unicode::Grapheme_Cluster_Break::Control }, // Cc  [10] <control-0000>..<control-0009>
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x000A, 0x000A }, ::unicode::Grapheme_Cluster_Break::LF }, // Cc       <control-000A>
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x000B, 0x000C }, ::unicode::Grapheme_Cluster_Break::Control }, // Cc   [2] <control-000B>..<control-000C>
@@ -23954,7 +23954,7 @@ namespace grapheme_cluster_break {
 }
 
 namespace tables {
-auto constexpr EastAsianWidth = std::array<Prop<::unicode::EastAsianWidth>, 2478>{ // {{{
+auto static const EastAsianWidth = std::array<Prop<::unicode::EastAsianWidth>, 2478>{ // {{{
     Prop<::unicode::EastAsianWidth>{ { 0x0000, 0x001F }, ::unicode::EastAsianWidth::Neutral }, // Cc    [32] <control-0000>..<control-001F>
     Prop<::unicode::EastAsianWidth>{ { 0x0020, 0x0020 }, ::unicode::EastAsianWidth::Narrow }, // Zs         SPACE
     Prop<::unicode::EastAsianWidth>{ { 0x0021, 0x0023 }, ::unicode::EastAsianWidth::Narrow }, // Po     [3] EXCLAMATION MARK..NUMBER SIGN
@@ -26443,7 +26443,7 @@ EastAsianWidth east_asian_width(char32_t _codepoint) noexcept {
 }
 
 namespace tables {
-auto constexpr Emoji = std::array<Interval, 383>{ // {{{
+auto static const Emoji = std::array<Interval, 383>{ // {{{
     Interval{ 0x0023, 0x0023 }, // E0.0   [1] (#️)       number sign
     Interval{ 0x002A, 0x002A }, // E0.0   [1] (*️)       asterisk
     Interval{ 0x0030, 0x0039 }, // E0.0  [10] (0️..9️)    digit zero..digit nine
@@ -26828,7 +26828,7 @@ auto constexpr Emoji = std::array<Interval, 383>{ // {{{
     Interval{ 0x1FAC0, 0x1FAC2 }, // E13.0  [3] (🫀..🫂)    anatomical heart..people hugging
     Interval{ 0x1FAD0, 0x1FAD6 }, // E13.0  [7] (🫐..🫖)    blueberries..teapot
 }; // }}}
-auto constexpr Emoji_Component = std::array<Interval, 10>{ // {{{
+auto static const Emoji_Component = std::array<Interval, 10>{ // {{{
     Interval{ 0x0023, 0x0023 }, // E0.0   [1] (#️)       number sign
     Interval{ 0x002A, 0x002A }, // E0.0   [1] (*️)       asterisk
     Interval{ 0x0030, 0x0039 }, // E0.0  [10] (0️..9️)    digit zero..digit nine
@@ -26840,10 +26840,10 @@ auto constexpr Emoji_Component = std::array<Interval, 10>{ // {{{
     Interval{ 0x1F9B0, 0x1F9B3 }, // E11.0  [4] (🦰..🦳)    red hair..white hair
     Interval{ 0xE0020, 0xE007F }, // E0.0  [96] (󠀠..󠁿)      tag space..cancel tag
 }; // }}}
-auto constexpr Emoji_Modifier = std::array<Interval, 1>{ // {{{
+auto static const Emoji_Modifier = std::array<Interval, 1>{ // {{{
     Interval{ 0x1F3FB, 0x1F3FF }, // E1.0   [5] (🏻..🏿)    light skin tone..dark skin tone
 }; // }}}
-auto constexpr Emoji_Modifier_Base = std::array<Interval, 47>{ // {{{
+auto static const Emoji_Modifier_Base = std::array<Interval, 47>{ // {{{
     Interval{ 0x261D, 0x261D }, // E0.6   [1] (☝️)       index pointing up
     Interval{ 0x26F9, 0x26F9 }, // E0.7   [1] (⛹️)       person bouncing ball
     Interval{ 0x270A, 0x270C }, // E0.6   [3] (✊..✌️)    raised fist..victory hand
@@ -26892,7 +26892,7 @@ auto constexpr Emoji_Modifier_Base = std::array<Interval, 47>{ // {{{
     Interval{ 0x1F9CD, 0x1F9CF }, // E12.0  [3] (🧍..🧏)    person standing..deaf person
     Interval{ 0x1F9D1, 0x1F9DD }, // E5.0  [13] (🧑..🧝)    person..elf
 }; // }}}
-auto constexpr Emoji_Presentation = std::array<Interval, 261>{ // {{{
+auto static const Emoji_Presentation = std::array<Interval, 261>{ // {{{
     Interval{ 0x231A, 0x231B }, // E0.6   [2] (⌚..⌛)    watch..hourglass done
     Interval{ 0x23E9, 0x23EC }, // E0.6   [4] (⏩..⏬)    fast-forward button..fast down button
     Interval{ 0x23F0, 0x23F0 }, // E0.6   [1] (⏰)       alarm clock
@@ -27155,7 +27155,7 @@ auto constexpr Emoji_Presentation = std::array<Interval, 261>{ // {{{
     Interval{ 0x1FAC0, 0x1FAC2 }, // E13.0  [3] (🫀..🫂)    anatomical heart..people hugging
     Interval{ 0x1FAD0, 0x1FAD6 }, // E13.0  [7] (🫐..🫖)    blueberries..teapot
 }; // }}}
-auto constexpr Extended_Pictographic = std::array<Interval, 491>{ // {{{
+auto static const Extended_Pictographic = std::array<Interval, 491>{ // {{{
     Interval{ 0x00A9, 0x00A9 }, // E0.6   [1] (©️)       copyright
     Interval{ 0x00AE, 0x00AE }, // E0.6   [1] (®️)       registered
     Interval{ 0x203C, 0x203C }, // E0.6   [1] (‼️)       double exclamation mark
