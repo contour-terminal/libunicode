@@ -16,6 +16,7 @@
 
 #include <fmt/format.h>
 
+#include <array>
 #include <cassert>
 #include <cstdlib>
 #include <variant>
@@ -97,24 +98,26 @@ TEST_CASE("utf8.bytes_3", "[utf8]")
 
 TEST_CASE("utf8.bytes_3_dash", "[utf8]")
 {
-    auto constexpr codepoint = 0x251C;
-    // decode
-    size_t len = 0;
-    auto const a = from_utf8(u8"\xE2\x94\x9C", &len);
-
-    REQUIRE(holds_alternative<Success>(a));
-    REQUIRE(get<Success>(a).value == codepoint);
-
     // encode
-    uint8_t d3[3];
+    auto constexpr codepoint = 0x251C;
+    uint8_t d3[3]{0, 0, 0};
     auto const len3 = to_utf8(codepoint, d3);
     REQUIRE(len3 == 3);
-    REQUIRE(d3[0] == 0xE2);
-    REQUIRE(d3[1] == 0x94);
-    REQUIRE(d3[2] == 0x9C);
+    CHECK(d3[0] == 0xE2);
+    CHECK(d3[1] == 0x94);
+    CHECK(d3[2] == 0x9C);
 
     INFO(fmt::format("{:02X} {:02X} {:02X}", d3[0], d3[1], d3[2]));
     INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
+
+    // decode
+    auto constexpr u8s = array<uint8_t, 4>{0xe2, 0x9e, 0x9c, 0x61 /*a*/};
+    size_t len = 0;
+    auto const a = from_utf8(d3, &len);
+
+    CHECK(len == 3);
+    REQUIRE(holds_alternative<Success>(a));
+    CHECK(get<Success>(a).value == codepoint);
 }
 
 TEST_CASE("utf8.from_utf8", "[utf8]")
@@ -123,7 +126,7 @@ TEST_CASE("utf8.from_utf8", "[utf8]")
     auto const a32 = from_utf8(a8);
     CHECK(a32 == U"Hello, World!");
 
-    auto const b8 = string{"😖:-)"};
+    auto const b8 = string{u8"😖:-)"};
     auto const b32 = from_utf8(b8);
     CHECK(b32 == U"😖:-)");
 }
