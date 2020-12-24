@@ -156,7 +156,7 @@ class basic_run_segmenter {
         if (*_position > lastSplit_)
             return;
 
-        if (*_position > size_)
+        if (*_position >= size_)
             return;
 
         for (;;)
