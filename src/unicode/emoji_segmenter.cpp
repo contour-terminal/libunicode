@@ -103,9 +103,12 @@ class RagelIterator {
     constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
     constexpr size_t cursor() const noexcept { return currentCursorEnd_; }
 
-    void updateCategory()
+    void updateCategory() noexcept
     {
-        category_ = toCategory(codepoint());
+        if (currentCursorEnd_ < size_)
+            category_ = toCategory(codepoint());
+        else
+            category_ = EmojiSegmentationCategory::Invalid;
     }
 
     constexpr int operator*() const noexcept { return static_cast<int>(category_); }
