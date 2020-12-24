@@ -24,9 +24,9 @@ optional<script_segmenter::result> script_segmenter::consume()
     if (offset_ >= size_)
         return nullopt;
 
-    for (auto ch = currentChar(); offset_ < size_; ch = advanceAndGetChar())
+    while (offset_ < size_)
     {
-        ScriptSet const nextScriptSet = getScriptsFor(ch);
+        ScriptSet const nextScriptSet = getScriptsFor(currentChar());
 
         if (!mergeSets(nextScriptSet, currentScriptSet_))
         {
@@ -35,6 +35,8 @@ optional<script_segmenter::result> script_segmenter::consume()
             currentScriptSet_ = nextScriptSet;
             return res;
         }
+
+        offset_++;
     }
 
     auto const res = result{ resolveScript(), offset_ };
