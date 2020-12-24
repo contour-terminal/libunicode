@@ -178,7 +178,7 @@ class basic_run_segmenter {
     position_list positions_{};
     property_tuple properties_{};
     segmenter_tuple segmenter_;
-    size_t size_;
+    size_t const size_;
 };
 
 using run_segmenter = basic_run_segmenter<script_segmenter, emoji_segmenter>;

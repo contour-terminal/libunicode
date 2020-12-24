@@ -40,9 +40,9 @@ enum class EmojiSegmentationCategory
     TagTerm = 15,
 };
 
-inline EmojiSegmentationCategory toCategory(char32_t _codepoint)
+inline EmojiSegmentationCategory toCategory(char32_t _codepoint) noexcept
 {
-    auto isEmojiKeycapBase = [](char32_t _codepoint) -> bool {
+    auto isEmojiKeycapBase = [](char32_t _codepoint) constexpr noexcept -> bool {
         return ('0' <= _codepoint && _codepoint <= '9')
             || _codepoint == '#' || _codepoint == '*';
     };

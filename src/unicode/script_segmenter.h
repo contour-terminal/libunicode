@@ -78,7 +78,7 @@ class script_segmenter {
         return n;
     }
 
-    /// Returnes all scripts that this @p _codepoint
+    /// Returnes all scripts that this @p _codepoint is associated with.
     ScriptSet getScriptsFor(char32_t _codepoint);
 
     /// Intersects @p _nextSet into @p _currentSet.
@@ -100,31 +100,6 @@ class script_segmenter {
     constexpr char32_t currentChar() const noexcept
     {
         return data_[offset_];
-    }
-
-    constexpr bool advanceChar() noexcept
-    {
-        if (offset_ == size_)
-            return false;
-
-        offset_++;
-        return true;
-    }
-
-    constexpr char32_t advanceAndGetChar() noexcept
-    {
-        return data_[++offset_];
-    }
-
-    constexpr std::optional<char32_t> peekAndAdvanceChar() noexcept
-    {
-        if (offset_ == size_)
-            return std::nullopt;
-
-        auto const currentChar = data_[offset_];
-        ++offset_;
-
-        return {currentChar};
     }
 
   private:
