@@ -78,10 +78,13 @@ void codepoints(istream& _in)
     auto utf8_state = unicode::utf8_decoder_state{};
     auto last_wc = char32_t{};
 
-    while (_in.good())
+    for (;;)
     {
-        uint8_t ch;
+        uint8_t ch{};
         _in.read((char*) &ch, sizeof(ch));
+        if (!_in.good())
+            break;
+
         totalOffset++;
 
         auto const convertResult = from_utf8(utf8_state, ch);
