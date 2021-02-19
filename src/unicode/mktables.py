@@ -770,11 +770,11 @@ namespace unicode {
         self.impl.write("} // end namespace tables {}\n\n")
 
         # write out search function
-        self.impl.write("std::optional<Block> block(char32_t _codepoint) noexcept {\n")
+        self.impl.write("Block block(char32_t _codepoint) noexcept {\n")
         self.impl.write("    return search(tables::Block, _codepoint).value_or(::unicode::Block::Unspecified);\n")
         self.impl.write("}\n\n")
 
-        self.header.write("std::optional<Block> block(char32_t _codepoint) noexcept;\n\n")
+        self.header.write("Block block(char32_t _codepoint) noexcept;\n\n")
 
         # }}}
 

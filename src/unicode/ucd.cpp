@@ -22816,7 +22816,7 @@ auto static const Block = std::array<Prop<::unicode::Block>, 308>{ // {{{
 };
 } // end namespace tables {}
 
-std::optional<Block> block(char32_t _codepoint) noexcept {
+Block block(char32_t _codepoint) noexcept {
     return search(tables::Block, _codepoint).value_or(::unicode::Block::Unspecified);
 }
 
