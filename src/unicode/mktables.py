@@ -172,6 +172,51 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write("} // end namespace\n")
         self.file.close()
     # }}}
+class EnumFmtWriter(EnumBuilder): # {{{
+    def __init__(self, _header_filename: str):
+        self.filename = _header_filename
+        self.file = open(_header_filename, 'w', encoding='utf-8', newline='\u000A')
+
+        self.file.write(globals()['__doc__'])
+        self.file.write('#pragma once\n')
+        self.file.write('\n')
+        self.file.write('#include <unicode/ucd_enums.h>\n')
+        self.file.write('#include <fmt/format.h>\n')
+        self.file.write('\n')
+        self.file.write('namespace fmt {\n\n')
+
+    def begin(self, _enum_class):
+        self.enum_class = 'unicode::' + _enum_class
+        self.file.write('template <>\n')
+        self.file.write('struct formatter<{}> {{\n'.format(self.enum_class))
+
+        self.file.write('    template <typename ParseContext>\n')
+        self.file.write('    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }\n')
+
+        self.file.write('    template <typename FormatContext>\n')
+        self.file.write('    auto format({} _value, FormatContext& ctx)\n'.format(self.enum_class))
+        self.file.write('    {\n')
+        self.file.write('        switch (_value) {\n')
+
+    def member(self, _member):
+        self.file.write(
+                '            case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
+            self.enum_class, sanitize_identifier(_member), _member)
+        )
+
+    def end(self):
+        self.file.write("        }\n")
+        self.file.write('        return format_to(ctx.out(), "({})", unsigned(_value));\n')
+        self.file.write("    }\n")
+        self.file.write("};\n\n")
+
+    def output(self):
+        return self.filename
+
+    def close(self):
+        self.file.write("} // end namespace\n")
+        self.file.close()
+    # }}}
 
 class UCDGenerator:
     def __init__(self, _ucd_dir, _header_file, _impl_file):
@@ -192,7 +237,8 @@ class UCDGenerator:
 
         self.builder = EnumBuilderArray([ # TODO: rename to enum_builder
             EnumClassWriter(HEADER_ROOT + '/ucd_enums.h'),
-            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h')
+            EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h'),
+            EnumFmtWriter(HEADER_ROOT + '/ucd_fmt.h')
         ])
 
     def generate(self):
