@@ -1,6 +1,6 @@
 /**
  * This file is part of the "libunicode" project
- *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
+ *   Copyright (c) 2020-2021 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 #include <utility>
 
 namespace unicode {
+
+Plane plane(char32_t _codepoint) noexcept;
 
 bool contains(Core_Property _prop, char32_t _codepoint) noexcept;
 

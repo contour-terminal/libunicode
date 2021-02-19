@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 """/**
  * This file is part of the "libunicode" project
- *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
+ *   Copyright (c) 2020-2021 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,26 @@ from codecs import open as codecs_open
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
 SCRIPT_MTIME = os.stat(__file__).st_mtime
+
+PLANES = [
+    {'plane':  0, 'start':   0x0000, 'end':  0x0FFFF, 'short':    'BMP', 'name': 'Basic Multilingual Plane'},
+    {'plane':  1, 'start':  0x10000, 'end':  0x1FFFF, 'short':    'SMP', 'name': 'Supplementary Multilingual Plane'},
+    {'plane':  2, 'start':  0x20000, 'end':  0x2FFFF, 'short':    'SIP', 'name': 'Supplementary Ideographic Plane'},
+    {'plane':  3, 'start':  0x30000, 'end':  0x3FFFF, 'short':    'TIP', 'name': 'Tertiary Ideographic Plane'},
+    {'plane':  4, 'start':  0x40000, 'end':  0x4FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane':  5, 'start':  0x50000, 'end':  0x5FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane':  6, 'start':  0x60000, 'end':  0x6FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane':  7, 'start':  0x70000, 'end':  0x7FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane':  8, 'start':  0x80000, 'end':  0x8FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane':  9, 'start':  0x90000, 'end':  0x9FFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane': 10, 'start':  0xA0000, 'end':  0xAFFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane': 11, 'start':  0xB0000, 'end':  0xBFFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane': 12, 'start':  0xC0000, 'end':  0xCFFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane': 13, 'start':  0xD0000, 'end':  0xDFFFF, 'short':       '', 'name': 'Unassigned'},
+    {'plane': 14, 'start':  0xE0000, 'end':  0xEFFFF, 'short':    'SSP', 'name': 'Supplementary Special-purpose Plane'},
+    {'plane': 15, 'start':  0xF0000, 'end':  0xFFFFF, 'short': 'SPUA-A', 'name': 'Supplementary Private Use Area Plane'},
+    {'plane': 16, 'start': 0x100000, 'end': 0x10FFFF, 'short': 'SPUA-B', 'name': 'Supplementary Private Use Area Plane'},
+]
 
 # unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
 UCD_DIR = argv[1]
@@ -184,6 +204,7 @@ class UCDGenerator:
         self.load_blocks()
 
         self.file_header()
+        self.write_planes()
         self.write_properties()
         self.write_core_properties()
         self.write_general_categories()
@@ -267,6 +288,65 @@ namespace unicode {
 
             self.property_values = property_values
         # }}}
+
+    def write_planes(self): # {{{
+        names = set()
+        for plane in PLANES:
+            names.add(plane['name'])
+
+        self.builder.begin('Plane')
+        for name in names:
+            self.builder.member(sanitize_identifier(name))
+        self.builder.end()
+
+        element_type = 'Prop<::unicode::{}>'.format('Plane')
+        self.table_prop_start('Plane', 'Plane', len(PLANES))
+        for plane in PLANES:
+            self.table_prop_element(
+                element_type,
+                plane['start'],
+                plane['end'],
+                'Plane',
+                sanitize_identifier(plane['name']),
+                'Plane {} {}'.format(plane['plane'], plane['short'])
+            )
+        self.table_prop_end()
+        self.table_prop_mapping('Plane', 'Unassigned')
+        # }}})
+
+    # {{{ array<Prop<Key>, N> writer
+    def table_prop_mapping(self, _name, _default):
+        self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(_name, _name.lower()))
+        self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(_name, _name.lower()))
+        self.impl.write('    return search(tables::{0}, _codepoint).value_or({0}::{1});\n'.format(_name, _default))
+        self.impl.write('}\n\n')
+
+    def table_prop_start(self, _element_type, _name, _count):
+        element_type = 'Prop<::unicode::{}>'.format(_element_type)
+        self.impl.write('namespace tables {\n')
+        self.impl.write("    auto static const {} = std::array<{}, {}>{{ // {}\n".format(
+            _name,
+            element_type,
+            _count,
+            FOLD_OPEN))
+        pass
+
+    def table_prop_element(self, _element_type, _start, _end, _name, _prop, _comment = ''):
+        self.impl.write('        {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }},'.format(
+                        _element_type,
+                        _start,
+                        _end,
+                        _name,
+                        _prop))
+        if _comment != '':
+            self.impl.write(' // {}'.format(_comment.strip()))
+        self.impl.write('\n')
+        pass
+
+    def table_prop_end(self):
+        self.impl.write("    }}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
+    # }}}
 
     def write_properties(self): # {{{
         for name in sorted(self.property_values.keys()):

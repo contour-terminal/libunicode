@@ -1,6 +1,6 @@
 /**
  * This file is part of the "libunicode" project
- *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
+ *   Copyright (c) 2020-2021 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,16 @@
 #pragma once
 
 namespace unicode {
+
+enum class Plane {
+    Supplementary_Special_purpose_Plane = 0,
+    Supplementary_Multilingual_Plane = 1,
+    Supplementary_Private_Use_Area_Plane = 2,
+    Tertiary_Ideographic_Plane = 3,
+    Unassigned = 4,
+    Supplementary_Ideographic_Plane = 5,
+    Basic_Multilingual_Plane = 6,
+};
 
 enum class Age {
     Unassigned = 0,

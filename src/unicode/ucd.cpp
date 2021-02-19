@@ -1,6 +1,6 @@
 /**
  * This file is part of the "libunicode" project
- *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
+ *   Copyright (c) 2020-2021 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,32 @@
 #include <string>
 
 namespace unicode {
+
+namespace tables {
+    auto static const Plane = std::array<Prop<::unicode::Plane>, 17>{ // {{{
+        Prop<::unicode::Plane>{ { 0x0000, 0xFFFF }, unicode::Plane::Basic_Multilingual_Plane }, // Plane 0 BMP
+        Prop<::unicode::Plane>{ { 0x10000, 0x1FFFF }, unicode::Plane::Supplementary_Multilingual_Plane }, // Plane 1 SMP
+        Prop<::unicode::Plane>{ { 0x20000, 0x2FFFF }, unicode::Plane::Supplementary_Ideographic_Plane }, // Plane 2 SIP
+        Prop<::unicode::Plane>{ { 0x30000, 0x3FFFF }, unicode::Plane::Tertiary_Ideographic_Plane }, // Plane 3 TIP
+        Prop<::unicode::Plane>{ { 0x40000, 0x4FFFF }, unicode::Plane::Unassigned }, // Plane 4
+        Prop<::unicode::Plane>{ { 0x50000, 0x5FFFF }, unicode::Plane::Unassigned }, // Plane 5
+        Prop<::unicode::Plane>{ { 0x60000, 0x6FFFF }, unicode::Plane::Unassigned }, // Plane 6
+        Prop<::unicode::Plane>{ { 0x70000, 0x7FFFF }, unicode::Plane::Unassigned }, // Plane 7
+        Prop<::unicode::Plane>{ { 0x80000, 0x8FFFF }, unicode::Plane::Unassigned }, // Plane 8
+        Prop<::unicode::Plane>{ { 0x90000, 0x9FFFF }, unicode::Plane::Unassigned }, // Plane 9
+        Prop<::unicode::Plane>{ { 0xA0000, 0xAFFFF }, unicode::Plane::Unassigned }, // Plane 10
+        Prop<::unicode::Plane>{ { 0xB0000, 0xBFFFF }, unicode::Plane::Unassigned }, // Plane 11
+        Prop<::unicode::Plane>{ { 0xC0000, 0xCFFFF }, unicode::Plane::Unassigned }, // Plane 12
+        Prop<::unicode::Plane>{ { 0xD0000, 0xDFFFF }, unicode::Plane::Unassigned }, // Plane 13
+        Prop<::unicode::Plane>{ { 0xE0000, 0xEFFFF }, unicode::Plane::Supplementary_Special_purpose_Plane }, // Plane 14 SSP
+        Prop<::unicode::Plane>{ { 0xF0000, 0xFFFFF }, unicode::Plane::Supplementary_Private_Use_Area_Plane }, // Plane 15 SPUA-A
+        Prop<::unicode::Plane>{ { 0x100000, 0x10FFFF }, unicode::Plane::Supplementary_Private_Use_Area_Plane }, // Plane 16 SPUA-B
+    }; // }}}
+} // end namespace tables
+
+Plane plane(char32_t _codepoint) noexcept {
+    return search(tables::Plane, _codepoint).value_or(Plane::Unassigned);
+}
 
 namespace tables {
 auto static const Alphabetic = std::array<Interval, 1084>{ // {{{
