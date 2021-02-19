@@ -65,6 +65,8 @@ Script script(char32_t _codepoint) noexcept;
 
 size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept;
 
+std::optional<Block> block(char32_t _codepoint) noexcept;
+
 namespace grapheme_cluster_break {
     bool cr(char32_t _codepoint) noexcept;
     bool control(char32_t _codepoint) noexcept;

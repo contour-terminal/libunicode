@@ -33,6 +33,9 @@ FOLD_CLOSE = '}}}'
 def uopen(filename):
     return codecs_open(filename, encoding = 'utf8')
 
+def sanitize_identifier(_identifier):
+    return _identifier.replace(' ', '_').replace('-', '_')
+
 class EnumBuilder(ABC): # {{{
     @abstractmethod
     def output(self):
@@ -100,7 +103,7 @@ class EnumClassWriter(EnumBuilder): # {{{
         self.file.write('enum class {} {{\n'.format(_enum_class))
 
     def member(self, _member):
-        self.file.write('    {0} = {1},\n'.format(_member, self.member_count))
+        self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.member_count))
         self.member_count += 1
 
     def end(self):
@@ -133,7 +136,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write('    switch (_value) {\n')
 
     def member(self, _member):
-        self.file.write('        case {0}::{1}: return os << "{1}";\n'.format(self.enum_class, _member))
+        self.file.write('        case {0}::{1}: return os << "{2}";\n'.format(self.enum_class, sanitize_identifier(_member), _member))
         return
 
     def end(self):
@@ -165,8 +168,9 @@ class UCDGenerator:
 
         self.general_category_map = dict()
         self.general_category = list()
+        self.blocks = list()
 
-        self.builder = EnumBuilderArray([
+        self.builder = EnumBuilderArray([ # TODO: rename to enum_builder
             EnumClassWriter(HEADER_ROOT + '/ucd_enums.h'),
             EnumOstreamWriter(HEADER_ROOT + '/ucd_ostream.h')
         ])
@@ -177,6 +181,7 @@ class UCDGenerator:
         self.load_core_properties()
         self.load_scripts()
         self.load_script_extensions()
+        self.load_blocks()
 
         self.file_header()
         self.write_properties()
@@ -184,6 +189,7 @@ class UCDGenerator:
         self.write_general_categories()
         self.write_scripts()
         self.write_script_extensions()
+        self.write_blocks()
 
         self.process_grapheme_break_props()
         self.process_east_asian_width()
@@ -230,6 +236,9 @@ namespace unicode {
 # }}}
 
     def load_property_value_aliases(self): # {{{
+        black_list = set()
+        black_list.add('Block')
+
         with uopen(self.ucd_dir + '/PropertyValueAliases.txt') as f:
             # gc ; C   ; Other    # Cc | Cf | Cn | Co | Cs
             headerRE = re.compile('^#\s*(\w+) \((\w+)\)$')
@@ -244,7 +253,8 @@ namespace unicode {
                 if m:
                     name = m.group(1)
                     name_abbrev = m.group(2)
-                    property_values[name] = dict()
+                    if not name in black_list:
+                        property_values[name] = dict()
                     continue
                 # TODO: treat Canonical_Combining_Class differently (see .txt file)
                 m = lineRE.match(line)
@@ -252,7 +262,8 @@ namespace unicode {
                     a = m.group(1)
                     value_abbrev = m.group(2)
                     value = m.group(3)
-                    property_values[name][value_abbrev] = value
+                    if not name in black_list:
+                        property_values[name][value_abbrev] = value
 
             self.property_values = property_values
         # }}}
@@ -558,6 +569,29 @@ namespace unicode {
         self.impl.write('}\n\n')
         # }}}
 
+    def load_blocks(self): # {{{
+        filename = self.ucd_dir + "/Blocks.txt"
+        with uopen(filename) as f:
+            line_regex = re.compile('^([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+);\s*(.*)$')
+            blocks = list()
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                m = line_regex.match(line)
+                if m:
+                    range_start = int(m.group(1), 16)
+                    range_end = int(m.group(2), 16)
+                    block_title = m.group(3)
+                    blocks.append({
+                        'start': range_start,
+                        'end': range_end,
+                        'title': block_title
+                    })
+            self.blocks = blocks
+        return
+    # }}}
+
     def load_script_extensions(self): # {{{
         filename = self.ucd_dir + '/ScriptExtensions.txt'
         with uopen(filename) as f:
@@ -701,6 +735,47 @@ namespace unicode {
             for name in sorted(props.keys()):
                 self.header.write('bool {}(char32_t _codepoint) noexcept;\n'.format(name.lower()))
             self.header.write('\n')
+        # }}}
+
+    def write_blocks(self): # {{{
+        UNSPECIFIED = 'Unspecified'
+        element_type = 'Prop<{}>'.format('::unicode::Block')
+
+        # Construct enum class:
+        block_titles = set()
+        for block in self.blocks:
+            block_titles.add(block['title'])
+        self.builder.begin('Block')
+        self.builder.member(UNSPECIFIED)
+        for block_title in sorted(block_titles):
+            self.builder.member(sanitize_identifier(block_title))
+        self.builder.end()
+
+        # Constract Table definition for associating codepoint ranges with a block:
+        self.impl.write("namespace tables {\n")
+        self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
+            'Block',
+            element_type,
+            len(self.blocks),
+            FOLD_OPEN))
+        for block in self.blocks:
+            self.impl.write(
+                '    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},\n'.format(
+                element_type,
+                block['start'],
+                block['end'],
+                '::unicode::Block',
+                sanitize_identifier(block['title'])))
+        self.impl.write("};\n") # close table
+        self.impl.write("} // end namespace tables {}\n\n")
+
+        # write out search function
+        self.impl.write("std::optional<Block> block(char32_t _codepoint) noexcept {\n")
+        self.impl.write("    return search(tables::Block, _codepoint).value_or(::unicode::Block::Unspecified);\n")
+        self.impl.write("}\n\n")
+
+        self.header.write("std::optional<Block> block(char32_t _codepoint) noexcept;\n\n")
+
         # }}}
 
     def write_general_categories(self): # {{{
@@ -869,6 +944,7 @@ namespace unicode {
                 '}\n\n'
             )
             # }}}
+# }}}
 
 def needs_run():
     try:
