@@ -80,6 +80,13 @@ TEST_CASE("run_segmenter.empty", "[run_segmenter]")
     CHECK(get<PresentationStyle>(result.properties) == PresentationStyle::Text);
 }
 
+TEST_CASE("run_segmenter.Emoji_VS15", "[emoji_segmenter]")
+{
+    test_run_segmentation(__LINE__, {
+        {U"\U0001F600\uFE0E", Script::Common, PresentationStyle::Text},
+    });
+}
+
 TEST_CASE("run_segmenter.LatinEmoji", "[run_segmenter]")
 {
     test_run_segmentation(__LINE__, {

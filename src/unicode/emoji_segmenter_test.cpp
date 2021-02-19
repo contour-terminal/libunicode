@@ -79,6 +79,13 @@ TEST_CASE("emoji_segmenter.Emoji", "[emoji_segmenter]")
     });
 }
 
+TEST_CASE("emoji_segmenter.Emoji_VS15", "[emoji_segmenter]")
+{
+    test_segments(__LINE__, {
+        {U"\U0001F600\uFE0E", PresentationStyle::Text}
+    });
+}
+
 TEST_CASE("emoji_segmenter.LatinEmoji", "[emoji_segmenter]")
 {
     test_segments(__LINE__, {
