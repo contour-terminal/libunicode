@@ -15,6 +15,7 @@ if(IS_DIRECTORY "${LIBUNICODE_UCD_PATH}")
 endif()
 
 add_library(unicode STATIC
+    convert.h
 	utf8.h
 	utf16.h
 	width.h width.cpp
@@ -38,6 +39,7 @@ target_link_libraries(unicode PUBLIC fmt::fmt-header-only)
 if(LIBUNICODE_TESTING)
     enable_testing()
     add_executable(unicode_test
+        convert_test.cpp
 		utf8_test.cpp
         utf16_test.cpp
         emoji_segmenter_test.cpp

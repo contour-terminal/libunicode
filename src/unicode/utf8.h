@@ -183,16 +183,18 @@ inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 }
 #endif
 
-inline std::u32string from_utf8(std::string const& _bytes)
+template <typename T = char32_t>
+inline std::basic_string<T> from_utf8(std::string_view const& _bytes)
 {
-    std::u32string s;
+    static_assert(sizeof(T) == 4);
+    std::basic_string<T> s;
     size_t offset = 0;
     while (offset < _bytes.size())
     {
         size_t i{};
         ConvertResult const result = from_utf8(_bytes.data() + offset, &i);
         if (std::holds_alternative<Success>(result))
-            s += (std::get<Success>(result).value);
+            s += T(std::get<Success>(result).value);
         offset += i;
     }
     return s;
