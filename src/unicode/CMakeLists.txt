@@ -16,6 +16,7 @@ endif()
 
 add_library(unicode STATIC
 	utf8.h
+	utf16.h
 	width.h width.cpp
     emoji_segmenter.h emoji_segmenter.cpp
     grapheme_segmenter.h
@@ -38,12 +39,14 @@ if(LIBUNICODE_TESTING)
     enable_testing()
     add_executable(unicode_test
 		utf8_test.cpp
+        utf16_test.cpp
         emoji_segmenter_test.cpp
         grapheme_segmenter_test.cpp
         run_segmenter_test.cpp
         script_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp
+        wchar_test.cpp
         width_test.cpp
         word_segmenter_test.cpp
     )
