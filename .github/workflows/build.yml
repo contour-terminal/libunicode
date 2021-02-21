@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+      - wip
+  pull_request:
+    branches:
+      - master
+
+jobs:
+
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "initialize sub modules"
+        run: git submodule update --init --recursive
+      - name: "install dependencies"
+        run: |
+          set -ex
+          cat /etc/apt/sources.list
+          sudo apt -q update
+          sudo apt install -y "g++-9"
+      - name: "create build directory"
+        run: mkdir build
+      - name: "cmake"
+        run: |
+          cd build && cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-9
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/unicode/unicode_test
+
+  build_osx:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Initialize sub modules"
+        run: git submodule update --init --recursive
+      - name: "Install dependencies"
+        run: |
+          set -ex
+          brew update
+          brew install pkg-config
+      - name: "Create build directory"
+        run: mkdir build
+      - name: "Generate build files"
+        run: |
+          cmake . \
+                -DCMAKE_BUILD_TYPE=Release \
+                -B build/
+      - name: "Build"
+        run: cmake --build build/
+      - name: "test: libunicode"
+        run: ./build/src/unicode/unicode_test
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: "Initialize sub modules"
+        run: git submodule update --init --recursive
+      - name: "create build directory"
+        run: mkdir build
+      - name: "Generate build files"
+        run: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -B build .
+      - name: "Build"
+        run: cmake --build build/
+      - name: "test"
+        run: .\build\src\unicode\Debug\unicode_test.exe
+        # FIXME: Github Actions timeout? TODO: still?
+
