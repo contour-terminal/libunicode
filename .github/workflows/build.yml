@@ -12,7 +12,7 @@ on:
 jobs:
 
   build_ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
       - name: "initialize sub modules"
@@ -22,12 +22,12 @@ jobs:
           set -ex
           cat /etc/apt/sources.list
           sudo apt -q update
-          sudo apt install -y "g++-9"
+          sudo apt install -y "g++-10"
       - name: "create build directory"
         run: mkdir build
       - name: "cmake"
         run: |
-          cd build && cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-9
+          cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-10
       - name: "build"
         run: cmake --build build/ -- -j3
       - name: "test"
