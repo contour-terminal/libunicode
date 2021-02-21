@@ -21,15 +21,13 @@
 
 namespace unicode {
 
-template <typename T>
-struct converter;
+template <typename T> struct decoder;
+template <typename T> struct encoder;
 
-template<> struct converter<char> // {{{
+template<> struct encoder<char> // {{{
 {
-    using char_type = char;
-
     template <typename OutputIterator>
-    constexpr size_t write(char32_t _input, OutputIterator& _output)
+    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
     {
         if (_input <= 0x7F)
         {
@@ -58,9 +56,62 @@ template<> struct converter<char> // {{{
             return 4;
         }
     }
+}; // }}}
+template<> struct decoder<char> // {{{
+{
+    char32_t character = 0;
+    unsigned expectedLength = 0;
+    unsigned currentLength = 0;
 
-    template <typename InputIterator>
-    constexpr std::optional<char32_t> read(InputIterator& _input)
+    constexpr std::optional<char32_t> operator()(uint8_t _byte)
+    {
+        if (!expectedLength)
+        {
+            if ((_byte & 0b1000'0000) == 0)
+            {
+                currentLength = 1;
+                return char32_t(_byte);
+            }
+            else if ((_byte & 0b1110'0000) == 0b1100'0000)
+            {
+                currentLength = 1;
+                expectedLength = 2;
+                character = _byte & 0b0001'1111;
+            }
+            else if ((_byte & 0b1111'0000) == 0b1110'0000)
+            {
+                currentLength = 1;
+                expectedLength = 3;
+                character = _byte & 0b0000'1111;
+            }
+            else if ((_byte & 0b1111'1000) == 0b1111'0000)
+            {
+                currentLength = 1;
+                expectedLength = 4;
+                character = _byte & 0b0000'0111;
+            }
+            else
+                return std::nullopt; // invalid
+        }
+        else
+        {
+            character <<= 6;
+            character |= _byte & 0b0011'1111;
+            currentLength++;
+        }
+
+        if  (currentLength < expectedLength)
+            return std::nullopt; // incomplete
+
+        expectedLength = 0; // reset state
+        return character;
+    }
+
+    template <
+        typename InputIterator,
+        std::enable_if_t<sizeof(decltype(*std::declval<InputIterator>())) == 1, int> = 0
+    >
+    constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
         using std::nullopt;
 
@@ -140,12 +191,12 @@ template<> struct converter<char> // {{{
         return nullopt;
     }
 }; // }}}
-template<> struct converter<char16_t> // {{{
+template<> struct encoder<char16_t> // {{{
 {
     using char_type = char16_t;
 
     template <typename OutputIterator>
-    constexpr size_t write(char32_t _input, OutputIterator& _output)
+    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
     {
         if (_input < 0xD800) // [0x0000 .. 0xD7FF]
         {
@@ -170,9 +221,11 @@ template<> struct converter<char16_t> // {{{
         else
             return 0; // Too large the UTF-16  code point.
     }
-
+}; // }}}
+template<> struct decoder<char16_t> // {{{
+{
     template <typename InputIterator>
-    constexpr std::optional<char32_t> read(InputIterator& _input)
+    constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
         auto const ch0 = *_input++;
 
@@ -195,47 +248,52 @@ template<> struct converter<char16_t> // {{{
         return ch0;
     }
 }; // }}}
-template<> struct converter<char32_t> // {{{ (no-op)
+template<> struct encoder<char32_t> // {{{ (no-op)
 {
     using char_type = char32_t;
 
     template <typename OutputIterator>
-    constexpr size_t write(char32_t _input, OutputIterator& _output)
+    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
     {
         *_output++ = _input;
         return 1;
     }
+}; // }}}
+template<> struct decoder<char32_t> // {{{ (no-op)
+{
 
     template <typename InputIterator>
-    constexpr std::optional<char32_t> read(InputIterator& _input)
+    constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
         return *_input++;
     }
 }; // }}}
-template<> struct converter<wchar_t> // {{{
+template<> struct encoder<wchar_t> // {{{
 {
     using char_type = wchar_t;
 
     template <typename OutputIterator>
-    constexpr size_t write(char32_t _input, OutputIterator&& _output)
+    constexpr size_t operator()(char32_t _input, OutputIterator&& _output)
     {
         static_assert(sizeof(wchar_t) == 2 || sizeof(wchar_t) == 4);
 
         if constexpr (sizeof(wchar_t) == 2)
-            return converter<char16_t>{}.write(_input, _output);
+            return encoder<char16_t>{}(_input, _output);
         else
-            return converter<char32_t>{}.write(_input, _output);
+            return encoder<char32_t>{}(_input, _output);
     }
-
+}; // }}}
+template<> struct decoder<wchar_t> // {{{
+{
     template <typename InputIterator>
-    constexpr std::optional<char32_t> read(InputIterator& _input)
+    constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
         static_assert(sizeof(wchar_t) == 2 || sizeof(wchar_t) == 4);
 
         if constexpr (sizeof(wchar_t) == 2)
-            return converter<char16_t>{}.read(_input);
+            return decoder<char16_t>{}(_input);
         else
-            return converter<char32_t>{}.write(_input);
+            return decoder<char32_t>{}(_input);
     }
 }; // }}}
 
@@ -259,11 +317,13 @@ void convert_to(std::basic_string_view<S> _input, OutputIterator&& _output)
     {
         auto i = begin(_input);
         auto e = end(_input);
+        decoder<S> read{};
+        encoder<T> write{};
         while (i != e)
         {
-            auto const outChar = converter<S>{}.read(i);
+            auto const outChar = read(i);
             if (outChar.has_value())
-                converter<T>{}.write(outChar.value(), _output);
+                write(outChar.value(), _output);
         }
     }
 }

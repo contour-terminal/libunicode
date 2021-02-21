@@ -52,7 +52,6 @@ TEST_CASE("convert.8_to_16", "[convert]")
     unicode::convert_to<char16_t>(input, bi); // back_inserter(output));
     CHECK(output.size() == 5);
     CHECK(output == u"[ö€😀");
-    // TODO
 }
 
 TEST_CASE("convert.8_to_32", "[convert]")
@@ -68,5 +67,48 @@ TEST_CASE("convert.8_to_32", "[convert]")
     unicode::convert_to<char32_t>(input, bi); // back_inserter(output));
     CHECK(output.size() == 4);
     CHECK(output == U"[ö€😀");
-    // TODO
+}
+
+TEST_CASE("convert.utf8.incremental_decode", "[utf8]")
+{
+    auto constexpr values = string_view{
+        "["
+        "\xC3\xB6"          // ö  - german o-umlaut
+        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+    };
+    char const* p = values.data();
+    auto decode = unicode::decoder<char>{};
+
+    // single-byte
+    auto result = decode(*p++);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == '[');
+
+    // double-byte
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == U'\u00F6'); // ö
+
+    // 3 bytes
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == U'\u20AC'); // €
+
+    // 4 bytes
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(!result.has_value());
+    result = decode(*p++);
+    REQUIRE(result.has_value());
+    REQUIRE(result.value() == U'\U0001F600'); // 😀
 }
