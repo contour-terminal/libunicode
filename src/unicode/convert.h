@@ -149,7 +149,7 @@ template<> struct converter<char16_t> // {{{
     {
         if (_input < 0xD800) // [0x0000 .. 0xD7FF]
         {
-            *_output++ = _input;
+            *_output++ = char_type(_input);
             return 1;
         }
         else if (_input < 0x10000)
@@ -158,13 +158,13 @@ template<> struct converter<char16_t> // {{{
                 return 0; // The UTF-16 code point can not be in surrogate range.
 
             // [0xE000 .. 0xFFFF]
-            *_output++ = _input;
+            *_output++ = char_type(_input);
             return 1;
         }
         else if (_input < 0x110000) // [0xD800 .. 0xDBFF] [0xDC00 .. 0xDFFF]
         {
-            *_output++ = 0xD7C0 + (_input >> 10);
-            *_output++ = 0xDC00 + (_input & 0x3FF);
+            *_output++ = char_type(0xD7C0 + (_input >> 10));
+            *_output++ = char_type(0xDC00 + (_input & 0x3FF));
             return 2;
         }
         else
