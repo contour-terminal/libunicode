@@ -109,7 +109,7 @@ template<> struct decoder<char> // {{{
 
     template <
         typename InputIterator,
-        std::enable_if_t<sizeof(decltype(*std::declval<InputIterator>())) == 1, int> = 0
+        std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0
     >
     constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
