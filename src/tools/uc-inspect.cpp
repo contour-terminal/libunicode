@@ -33,7 +33,7 @@ namespace {
             case '"':
                 return "\\\"";
             default:
-                if (ch <= 0xFF && std::isprint(static_cast<char>(ch)))
+                if (std::isprint(static_cast<char>(ch)))
                     return fmt::format("{}", static_cast<char>(ch));
                 else
                     return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
