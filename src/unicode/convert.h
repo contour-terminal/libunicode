@@ -27,25 +27,22 @@ template <typename T> struct encoder;
 template<> struct encoder<char> // {{{
 {
     template <typename OutputIterator>
-    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
+    constexpr OutputIterator operator()(char32_t _input, OutputIterator _output)
     {
         if (_input <= 0x7F)
         {
             *_output++ = static_cast<uint8_t>(_input & 0b0111'1111);
-            return 1;
         }
         else if (_input <= 0x07FF)
         {
             *_output++ = static_cast<uint8_t>(((_input >> 6) & 0b0001'1111) | 0b1100'0000);
             *_output++ = static_cast<uint8_t>(((_input >> 0) & 0b0011'1111) | 0b1000'0000);
-            return 2;
         }
-        if (_input <= 0xFFFF)
+        else if (_input <= 0xFFFF)
         {
             *_output++ = static_cast<uint8_t>(((_input >> 12) & 0b0000'1111) | 0b1110'0000);
             *_output++ = static_cast<uint8_t>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
             *_output++ = static_cast<uint8_t>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
-            return 3;
         }
         else
         {
@@ -53,8 +50,8 @@ template<> struct encoder<char> // {{{
             *_output++ = static_cast<uint8_t>(((_input >> 12) & 0b0011'1111) | 0b1000'0000);
             *_output++ = static_cast<uint8_t>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
             *_output++ = static_cast<uint8_t>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
-            return 4;
         }
+        return _output;
     }
 }; // }}}
 template<> struct decoder<char> // {{{
@@ -196,30 +193,30 @@ template<> struct encoder<char16_t> // {{{
     using char_type = char16_t;
 
     template <typename OutputIterator>
-    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
+    constexpr OutputIterator operator()(char32_t _input, OutputIterator _output)
     {
         if (_input < 0xD800) // [0x0000 .. 0xD7FF]
         {
             *_output++ = char_type(_input);
-            return 1;
+            return _output;
         }
         else if (_input < 0x10000)
         {
             if (_input < 0xE000)
-                return 0; // The UTF-16 code point can not be in surrogate range.
+                return _output; // The UTF-16 code point can not be in surrogate range.
 
             // [0xE000 .. 0xFFFF]
             *_output++ = char_type(_input);
-            return 1;
+            return _output;
         }
         else if (_input < 0x110000) // [0xD800 .. 0xDBFF] [0xDC00 .. 0xDFFF]
         {
             *_output++ = char_type(0xD7C0 + (_input >> 10));
             *_output++ = char_type(0xDC00 + (_input & 0x3FF));
-            return 2;
+            return _output;
         }
         else
-            return 0; // Too large the UTF-16  code point.
+            return _output; // Too large the UTF-16  code point.
     }
 }; // }}}
 template<> struct decoder<char16_t> // {{{
@@ -253,10 +250,10 @@ template<> struct encoder<char32_t> // {{{ (no-op)
     using char_type = char32_t;
 
     template <typename OutputIterator>
-    constexpr size_t operator()(char32_t _input, OutputIterator& _output)
+    constexpr OutputIterator operator()(char32_t _input, OutputIterator _output)
     {
         *_output++ = _input;
-        return 1;
+        return _output;
     }
 }; // }}}
 template<> struct decoder<char32_t> // {{{ (no-op)
@@ -273,7 +270,7 @@ template<> struct encoder<wchar_t> // {{{
     using char_type = wchar_t;
 
     template <typename OutputIterator>
-    constexpr size_t operator()(char32_t _input, OutputIterator&& _output)
+    constexpr OutputIterator operator()(char32_t _input, OutputIterator _output)
     {
         static_assert(sizeof(wchar_t) == 2 || sizeof(wchar_t) == 4);
 
@@ -300,19 +297,20 @@ template<> struct decoder<wchar_t> // {{{
 namespace detail // {{{
 {
     template <typename SourceRange, typename OutputIterator>
-    void convert_identity(SourceRange&& s, OutputIterator&& t)
+    OutputIterator  convert_identity(SourceRange&& s, OutputIterator t)
     {
         for (auto const c : s)
             *t++ = c;
+        return t;
     }
 } // }}}
 
 /// @p _input with element type @p S to the appropricate type of @p _output.
 template <typename T, typename OutputIterator, typename S>
-void convert_to(std::basic_string_view<S> _input, OutputIterator&& _output)
+OutputIterator convert_to(std::basic_string_view<S> _input, OutputIterator _output)
 {
     if constexpr (std::is_same_v<S, T>)
-        detail::convert_identity(_input, _output);
+        return detail::convert_identity(_input, _output);
     else
     {
         auto i = begin(_input);
@@ -323,8 +321,9 @@ void convert_to(std::basic_string_view<S> _input, OutputIterator&& _output)
         {
             auto const outChar = read(i);
             if (outChar.has_value())
-                write(outChar.value(), _output);
+                _output = write(outChar.value(), _output);
         }
+        return _output;
     }
 }
 
@@ -332,6 +331,22 @@ void convert_to(std::basic_string_view<S> _input, OutputIterator&& _output)
 template <typename T, typename S>
 std::basic_string<T> convert_to(std::basic_string_view<S> in)
 {
+    std::basic_string<T> out;
+    convert_to<T>(in, std::back_inserter(out));
+    return out;
+}
+
+template <typename T, typename S,
+    std::enable_if_t<
+        std::is_same_v<S, char> ||
+        std::is_same_v<S, char16_t> ||
+        std::is_same_v<S, char32_t>
+        , int
+    > = 0
+>
+std::basic_string<T> convert_to(S _in)
+{
+    std::basic_string_view<S> in(&_in, 1);
     std::basic_string<T> out;
     convert_to<T>(in, std::back_inserter(out));
     return out;
