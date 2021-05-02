@@ -275,3 +275,7 @@ TEST_CASE("run_segmenter.NonEmojiPresentationSymbols", "[run_segmenter]")
         PresentationStyle::Text
     }}); // Orientation::Keep
 }
+
+TEST_CASE("run_segmenter.bug-1", "[run_segmenter]")
+{
+}

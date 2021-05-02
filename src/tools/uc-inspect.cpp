@@ -2,7 +2,9 @@
 #include <unicode/ucd.h>
 #include <unicode/ucd_ostream.h>
 #include <unicode/grapheme_segmenter.h>
+#include <unicode/run_segmenter.h>
 #include <unicode/utf8.h>
+#include <unicode/convert.h>
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>
@@ -10,13 +12,36 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <numeric>
 
-using namespace std;
+using namespace std::string_literals;
+using namespace std::string_view_literals;
+
+using std::basic_string;
+using std::basic_string_view;
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::get;
+using std::holds_alternative;
+using std::ifstream;
+using std::ios;
+using std::istream;
+using std::istreambuf_iterator;
+using std::make_unique;
+using std::optional;
+using std::pair;
+using std::string;
+using std::string_view;
+using std::u32string;
+using std::u32string_view;
+using std::unique_ptr;
+using std::variant;
 
 // {{{ escape(...)
 namespace {
-    inline std::string escape(uint8_t ch)
+    inline string escape(uint8_t ch)
     {
         switch (ch)
         {
@@ -41,16 +66,16 @@ namespace {
     }
 
     template <typename T>
-    inline std::string escape(T begin, T end)
+    inline string escape(T begin, T end)
     {
-        return std::accumulate(begin, end, std::string{}, [](auto const& a, auto ch) { return a + escape(ch); });
-        // auto result = std::string{};
+        return std::accumulate(begin, end, string{}, [](auto const& a, auto ch) { return a + escape(ch); });
+        // auto result = string{};
         // for (T cur = begin; cur != end; ++cur)
         //     result += *cur;
         // return result;
     }
 
-    inline std::string escape(std::string const& s)
+    inline string escape(string const& s)
     {
         return escape(begin(s), end(s));
     }
@@ -120,15 +145,113 @@ void codepoints(istream& _in)
     }
 }
 
+template<typename T>
+basic_string<T> replaceAll(basic_string_view<T> _what,
+                           basic_string_view<T> _with,
+                           basic_string_view<T> _text)
+{
+    basic_string<T> s;
+    size_t a = 0;
+    size_t b = _text.find(_what);
+    while (b != basic_string_view<T>::npos)
+    {
+        s += _text.substr(a, b - a);
+        s += _with;
+        a = b + _what.size();
+        b = _text.find(_what, a + 1);
+    }
+    s += _text.substr(a);
+    return s;
+}
+
+using unicode::convert_to;
+using unicode::out;
+using unicode::run_segmenter;
+
+int runs(istream& _in)
+{
+    string bytes((istreambuf_iterator<char>(_in)),
+                  istreambuf_iterator<char>());
+    u32string const codepoints = convert_to<char32_t>(string_view(bytes));
+
+    run_segmenter rs(codepoints);
+    run_segmenter::range run;
+
+    while (rs.consume(out(run)))
+    {
+        auto const script = get<unicode::Script>(run.properties);
+        auto const presentationStyle = get<unicode::PresentationStyle>(run.properties);
+
+        cout << fmt::format(
+            "{}-{} ({}): {} {}\n",
+            run.start,
+            run.end - 1,
+            run.end - run.start,
+            script,
+            presentationStyle
+        );
+        cout << replaceAll("\033"sv, "\\033"sv, string_view(convert_to<char>(u32string_view(codepoints.data() + run.start, run.end - run.start))))
+             << "\n\n";
+    }
+
+    return EXIT_SUCCESS;
+}
+
+enum class Cmd {
+    Codepoints,
+    Runs,
+};
+
+using InputStream = variant<istream*, unique_ptr<istream>>;
+
+auto parseArgs(int argc, char const* argv[]) -> optional<pair<Cmd, InputStream>>
+{
+    auto constexpr DefaultCmd = Cmd::Codepoints;
+
+    if (argc != 3)
+        return {{DefaultCmd, &cin}};
+
+    string_view const arg = argv[1];
+
+    if (arg == "codepoints"sv || arg == "cp"sv)
+        return {{Cmd::Codepoints, make_unique<ifstream>(argv[2], ios::binary)}};
+
+    if (arg == "runs"sv)
+        return {{Cmd::Runs, make_unique<ifstream>(argv[2], ios::binary)}};
+
+    return {{DefaultCmd, make_unique<ifstream>(argv[2], ios::binary)}};
+}
+
 int main([[maybe_unused]] int argc, char const* argv[])
 {
-    // TODO: hb-inspect --codepoints FILE           Inspects source by UTF-32 codepoints
-    // TODO: hb-inspect --grapheme-clusters FILE    Inspects source by grapheme cluster
-    // TODO: hb-inspect --script-clusters FILE      Inspects source by script cluster
+    // TODO: hb-inspect codepoints FILE           Inspects source by UTF-32 codepoints
+    // TODO: hb-inspect grapheme-clusters FILE    Inspects source by grapheme cluster
+    // TODO: hb-inspect script-clusters FILE      Inspects source by script cluster
 
-    auto in = ifstream(argv[1], ios::binary);
+    auto args = parseArgs(argc, argv);
+    if (!args.has_value())
+    {
+        cerr << "Usage error.\n"
+             << "Usage:\n"
+             << "    uc-inspect codepoints FILE\n"
+             << "    uc-inspect runs FILE\n";
+        return EXIT_FAILURE;
+    }
 
-    codepoints(in);
+    auto& [cmd, inputStreamVar] = args.value();
+    istream& in = holds_alternative<istream*>(inputStreamVar)
+        ? *get<istream*>(inputStreamVar)
+        : *get<unique_ptr<istream>>(inputStreamVar);
+
+    switch (cmd)
+    {
+        case Cmd::Codepoints:
+            codepoints(in);
+            break;
+        case Cmd::Runs:
+            runs(in);
+            break;
+    }
 
     return EXIT_SUCCESS;
 }
