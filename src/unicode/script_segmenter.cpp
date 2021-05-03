@@ -92,7 +92,7 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
     {
         while (currentSetIter != currentSetEnd)
         {
-            auto const sc = *currentSetIter;
+            auto const sc = *currentSetIter++;
             if (find(nextSetIter, nextSetEnd, sc) != nextSetEnd)
                 *currentWriteIter++ = sc;
         }
