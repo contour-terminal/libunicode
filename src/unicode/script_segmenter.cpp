@@ -54,10 +54,10 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
 
     Script priorityScript = *currentSetIter++;
 
-    if (_nextSet[0] == Script::Common || _nextSet[0] == Script::Inherited)
+    if (_nextSet.at(0) == Script::Common || _nextSet.at(0) == Script::Inherited)
     {
         if (_nextSet.size() == 2 && priorityScript == Script::Inherited && commonPreferredScript_ == Script::Common)
-            commonPreferredScript_ = _nextSet[1];
+            commonPreferredScript_ = _nextSet.at(1);
         return true;
     }
 
@@ -70,7 +70,7 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
 
     // If the current set is only one script and it does contain in the next, take a quick route.
     if (_currentSet.size() == 1)
-        return find(_nextSet.begin(), _nextSet.end(), _currentSet[0]) != _nextSet.end();
+        return find(_nextSet.begin(), _nextSet.end(), _currentSet.at(0)) != _nextSet.end();
 
     auto nextSetIter = _nextSet.begin();
     auto const nextSetEnd = _nextSet.end();
