@@ -9,6 +9,7 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
+#include <array>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -18,6 +19,7 @@
 using namespace std::string_literals;
 using namespace std::string_view_literals;
 
+using std::array;
 using std::basic_string;
 using std::basic_string_view;
 using std::cerr;
@@ -168,6 +170,25 @@ using unicode::convert_to;
 using unicode::out;
 using unicode::run_segmenter;
 
+int scripts(istream& _in)
+{
+    string bytes((istreambuf_iterator<char>(_in)),
+                  istreambuf_iterator<char>());
+    u32string const codepoints = convert_to<char32_t>(string_view(bytes));
+
+    unicode::script_segmenter segmenter(codepoints);
+
+    size_t position{};
+    unicode::Script script{};
+
+    while (segmenter.consume(out(position), out(script)))
+    {
+        cout << fmt::format("{}: {}\n", position, script);
+    }
+
+    return EXIT_SUCCESS;
+}
+
 int runs(istream& _in)
 {
     string bytes((istreambuf_iterator<char>(_in)),
@@ -200,6 +221,7 @@ int runs(istream& _in)
 enum class Cmd {
     Codepoints,
     Runs,
+    Scripts,
 };
 
 using InputStream = variant<istream*, unique_ptr<istream>>;
@@ -213,11 +235,16 @@ auto parseArgs(int argc, char const* argv[]) -> optional<pair<Cmd, InputStream>>
 
     string_view const arg = argv[1];
 
-    if (arg == "codepoints"sv || arg == "cp"sv)
-        return {{Cmd::Codepoints, make_unique<ifstream>(argv[2], ios::binary)}};
+    static auto constexpr mappings = array<pair<string_view, Cmd>, 4>{
+        pair{"codepoints"sv, Cmd::Codepoints},
+        pair{"cp"sv, Cmd::Codepoints},
+        pair{"runs"sv, Cmd::Runs},
+        pair{"scripts"sv, Cmd::Scripts}
+    };
 
-    if (arg == "runs"sv)
-        return {{Cmd::Runs, make_unique<ifstream>(argv[2], ios::binary)}};
+    for (auto const& mapping: mappings)
+        if (mapping.first == arg)
+            return {{mapping.second, make_unique<ifstream>(argv[2], ios::binary)}};
 
     return {{DefaultCmd, make_unique<ifstream>(argv[2], ios::binary)}};
 }
@@ -234,7 +261,8 @@ int main([[maybe_unused]] int argc, char const* argv[])
         cerr << "Usage error.\n"
              << "Usage:\n"
              << "    uc-inspect codepoints FILE\n"
-             << "    uc-inspect runs FILE\n";
+             << "    uc-inspect runs FILE\n"
+             << "    uc-inspect scripts FILE\n";
         return EXIT_FAILURE;
     }
 
@@ -250,6 +278,9 @@ int main([[maybe_unused]] int argc, char const* argv[])
             break;
         case Cmd::Runs:
             runs(in);
+            break;
+        case Cmd::Scripts:
+            scripts(in);
             break;
     }
 

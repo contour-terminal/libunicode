@@ -43,6 +43,14 @@ class script_segmenter {
         currentScriptSet_.push_back(Script::Common);
     }
 
+    constexpr script_segmenter(std::u32string_view _data) noexcept :
+        data_{ _data.data() },
+        offset_{ 0 },
+        size_{ _data.size() }
+    {
+        currentScriptSet_.push_back(Script::Common);
+    }
+
     struct result {
         Script script;
         size_t size;
