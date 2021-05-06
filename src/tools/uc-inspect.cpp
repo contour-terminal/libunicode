@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <numeric>
+#include <sstream>
 
 using namespace std::string_literals;
 using namespace std::string_view_literals;
@@ -171,6 +172,20 @@ using unicode::convert_to;
 using unicode::out;
 using unicode::run_segmenter;
 
+string scriptExtensionsString(char32_t _codepoint)
+{
+    array<unicode::Script, 32> scripts{};
+    size_t count = unicode::script_extensions(_codepoint, scripts.data(), scripts.size());
+    std::stringstream sstr;
+    for (size_t i = 0; i < count; ++i)
+    {
+        if (i)
+            sstr << ", ";
+        sstr << fmt::format("{}", scripts[i]);
+    }
+    return sstr.str();
+}
+
 int scripts(istream& _in) // {{{
 {
     string bytes((istreambuf_iterator<char>(_in)),
@@ -183,14 +198,22 @@ int scripts(istream& _in) // {{{
     size_t nextPosition{};
     unicode::Script script{};
 
+    cout << "   INDEX     CODEPOINT    TEXT  WIDTH   SCRIPT          SCRIPT EXTS\n";
     while (segmenter.consume(out(nextPosition), out(script)))
     {
-        cout << fmt::format("{}-{}: {}\n", frontPosition, nextPosition, script);
+        cout << fmt::format("{}-{}: {}\n", frontPosition, nextPosition - 1, script);
         for (size_t i = frontPosition; i < nextPosition; ++i)
         {
             auto const cp = codepoints[i];
-            cout << fmt::format("    {:>04}:    U+{:08X}   {}\t{}\n",
-                                i, unsigned(cp), convert_to<char>(cp), unicode::script(cp));
+            cout << fmt::format(
+                "    {:>04}:    U+{:08X}   {}\t∆ {}\t{:<12}\t({})\n",
+                i,
+                unsigned(cp),
+                convert_to<char>(cp),
+                unicode::width(cp),
+                unicode::script(cp),
+                scriptExtensionsString(cp)
+            );
         }
         frontPosition = nextPosition;
     }
