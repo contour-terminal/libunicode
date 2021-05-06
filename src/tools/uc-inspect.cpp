@@ -179,12 +179,20 @@ int scripts(istream& _in) // {{{
 
     unicode::script_segmenter segmenter(codepoints);
 
-    size_t position{};
+    size_t frontPosition{};
+    size_t nextPosition{};
     unicode::Script script{};
 
-    while (segmenter.consume(out(position), out(script)))
+    while (segmenter.consume(out(nextPosition), out(script)))
     {
-        cout << fmt::format("{}: {}\n", position, script);
+        cout << fmt::format("{}-{}: {}\n", frontPosition, nextPosition, script);
+        for (size_t i = frontPosition; i < nextPosition; ++i)
+        {
+            auto const cp = codepoints[i];
+            cout << fmt::format("    {:>04}:    U+{:08X}   {}\t{}\n",
+                                i, unsigned(cp), convert_to<char>(cp), unicode::script(cp));
+        }
+        frontPosition = nextPosition;
     }
 
     return EXIT_SUCCESS;
@@ -212,8 +220,10 @@ int runs(istream& _in) // {{{
             script,
             presentationStyle
         );
-        cout << replaceAll("\033"sv, "\\033"sv, string_view(convert_to<char>(u32string_view(codepoints.data() + run.start, run.end - run.start))))
-             << "\n\n";
+        auto const text32 = u32string_view(codepoints.data() + run.start, run.end - run.start);
+        auto const text8 = convert_to<char>(text32);
+        auto const textEscaped = replaceAll("\033"sv, "\\033"sv, string_view(text8));
+        cout << '"' << "\033[32m" << textEscaped << "\033[m" << "\"\n\n";
     }
 
     return EXIT_SUCCESS;
