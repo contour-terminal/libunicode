@@ -82,13 +82,19 @@ class fs_array {
     constexpr T const& at(size_t i) const noexcept { return values_.at(i); }
 
     constexpr iterator begin() noexcept { return values_.begin(); }
-    constexpr iterator end() noexcept { return values_.end(); }
+    constexpr iterator end() noexcept { return std::next(values_.begin(), size_); }
 
     constexpr const_iterator begin() const noexcept { return values_.begin(); }
-    constexpr const_iterator end() const noexcept { return values_.end(); }
+    constexpr const_iterator end() const noexcept { return std::next(values_.end(), size_); }
 
     constexpr T* data() noexcept { return values_.data(); }
     constexpr T const* data() const noexcept { return values_.data(); }
+
+    constexpr T& front() noexcept { return at(0); }
+    constexpr T const& front() const noexcept { return at(0); }
+
+    constexpr T& back() noexcept { return at(size_ - 1); }
+    constexpr T const& back() const noexcept { return at(size_ - 1); }
 
   private:
     array_type values_;
