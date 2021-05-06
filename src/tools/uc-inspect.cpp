@@ -42,7 +42,32 @@ using std::unique_ptr;
 using std::variant;
 
 // {{{ escape(...)
-namespace {
+namespace
+{
+    bool isEmoji(char32_t ch)
+    {
+        return unicode::emoji(ch) && !unicode::emoji_component(ch);
+    }
+
+    template<typename T>
+    basic_string<T> replaceAll(basic_string_view<T> _what,
+                               basic_string_view<T> _with,
+                               basic_string_view<T> _text)
+    {
+        basic_string<T> s;
+        size_t a = 0;
+        size_t b = _text.find(_what);
+        while (b != basic_string_view<T>::npos)
+        {
+            s += _text.substr(a, b - a);
+            s += _with;
+            a = b + _what.size();
+            b = _text.find(_what, a + 1);
+        }
+        s += _text.substr(a);
+        return s;
+    }
+
     inline string escape(uint8_t ch)
     {
         switch (ch)
@@ -85,11 +110,6 @@ namespace {
 }
 // }}}
 
-bool isEmoji(char32_t ch)
-{
-    return unicode::emoji(ch) && !unicode::emoji_component(ch);
-}
-
 // TODO
 // void grapheme_clusters(istream& _in)
 // {
@@ -98,7 +118,7 @@ bool isEmoji(char32_t ch)
 //     }
 // }
 
-void codepoints(istream& _in)
+void codepoints(istream& _in) // {{{
 {
     auto lastOffset = 0;
     auto totalOffset = 0;
@@ -145,32 +165,13 @@ void codepoints(istream& _in)
             lastOffset = totalOffset;
         }
     }
-}
-
-template<typename T>
-basic_string<T> replaceAll(basic_string_view<T> _what,
-                           basic_string_view<T> _with,
-                           basic_string_view<T> _text)
-{
-    basic_string<T> s;
-    size_t a = 0;
-    size_t b = _text.find(_what);
-    while (b != basic_string_view<T>::npos)
-    {
-        s += _text.substr(a, b - a);
-        s += _with;
-        a = b + _what.size();
-        b = _text.find(_what, a + 1);
-    }
-    s += _text.substr(a);
-    return s;
-}
+} // }}}
 
 using unicode::convert_to;
 using unicode::out;
 using unicode::run_segmenter;
 
-int scripts(istream& _in)
+int scripts(istream& _in) // {{{
 {
     string bytes((istreambuf_iterator<char>(_in)),
                   istreambuf_iterator<char>());
@@ -187,9 +188,9 @@ int scripts(istream& _in)
     }
 
     return EXIT_SUCCESS;
-}
+} // }}}
 
-int runs(istream& _in)
+int runs(istream& _in) // {{{
 {
     string bytes((istreambuf_iterator<char>(_in)),
                   istreambuf_iterator<char>());
@@ -216,7 +217,7 @@ int runs(istream& _in)
     }
 
     return EXIT_SUCCESS;
-}
+} // }}}
 
 enum class Cmd {
     Codepoints,
