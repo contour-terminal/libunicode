@@ -26,13 +26,13 @@ struct formatter<unicode::Plane> {
     auto format(unicode::Plane _value, FormatContext& ctx)
     {
         switch (_value) {
-            case unicode::Plane::Supplementary_Special_purpose_Plane: return format_to(ctx.out(), "Supplementary_Special_purpose_Plane");
+            case unicode::Plane::Basic_Multilingual_Plane: return format_to(ctx.out(), "Basic_Multilingual_Plane");
+            case unicode::Plane::Supplementary_Ideographic_Plane: return format_to(ctx.out(), "Supplementary_Ideographic_Plane");
             case unicode::Plane::Supplementary_Multilingual_Plane: return format_to(ctx.out(), "Supplementary_Multilingual_Plane");
             case unicode::Plane::Supplementary_Private_Use_Area_Plane: return format_to(ctx.out(), "Supplementary_Private_Use_Area_Plane");
+            case unicode::Plane::Supplementary_Special_purpose_Plane: return format_to(ctx.out(), "Supplementary_Special_purpose_Plane");
             case unicode::Plane::Tertiary_Ideographic_Plane: return format_to(ctx.out(), "Tertiary_Ideographic_Plane");
             case unicode::Plane::Unassigned: return format_to(ctx.out(), "Unassigned");
-            case unicode::Plane::Supplementary_Ideographic_Plane: return format_to(ctx.out(), "Supplementary_Ideographic_Plane");
-            case unicode::Plane::Basic_Multilingual_Plane: return format_to(ctx.out(), "Basic_Multilingual_Plane");
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }

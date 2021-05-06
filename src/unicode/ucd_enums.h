@@ -16,13 +16,13 @@
 namespace unicode {
 
 enum class Plane {
-    Supplementary_Special_purpose_Plane = 0,
-    Supplementary_Multilingual_Plane = 1,
-    Supplementary_Private_Use_Area_Plane = 2,
-    Tertiary_Ideographic_Plane = 3,
-    Unassigned = 4,
-    Supplementary_Ideographic_Plane = 5,
-    Basic_Multilingual_Plane = 6,
+    Basic_Multilingual_Plane = 0,
+    Supplementary_Ideographic_Plane = 1,
+    Supplementary_Multilingual_Plane = 2,
+    Supplementary_Private_Use_Area_Plane = 3,
+    Supplementary_Special_purpose_Plane = 4,
+    Tertiary_Ideographic_Plane = 5,
+    Unassigned = 6,
 };
 
 enum class Age {

@@ -341,7 +341,7 @@ namespace unicode {
             names.add(plane['name'])
 
         self.builder.begin('Plane')
-        for name in names:
+        for name in sorted(names):
             self.builder.member(sanitize_identifier(name))
         self.builder.end()
 

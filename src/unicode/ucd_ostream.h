@@ -20,13 +20,13 @@ namespace unicode {
 
 inline std::ostream& operator<<(std::ostream& os, Plane _value) noexcept {
     switch (_value) {
-        case Plane::Supplementary_Special_purpose_Plane: return os << "Supplementary_Special_purpose_Plane";
+        case Plane::Basic_Multilingual_Plane: return os << "Basic_Multilingual_Plane";
+        case Plane::Supplementary_Ideographic_Plane: return os << "Supplementary_Ideographic_Plane";
         case Plane::Supplementary_Multilingual_Plane: return os << "Supplementary_Multilingual_Plane";
         case Plane::Supplementary_Private_Use_Area_Plane: return os << "Supplementary_Private_Use_Area_Plane";
+        case Plane::Supplementary_Special_purpose_Plane: return os << "Supplementary_Special_purpose_Plane";
         case Plane::Tertiary_Ideographic_Plane: return os << "Tertiary_Ideographic_Plane";
         case Plane::Unassigned: return os << "Unassigned";
-        case Plane::Supplementary_Ideographic_Plane: return os << "Supplementary_Ideographic_Plane";
-        case Plane::Basic_Multilingual_Plane: return os << "Basic_Multilingual_Plane";
     }
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
