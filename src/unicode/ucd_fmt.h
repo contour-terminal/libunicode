@@ -814,7 +814,9 @@ struct formatter<unicode::Script> {
     auto format(unicode::Script _value, FormatContext& ctx)
     {
         switch (_value) {
+            case unicode::Script::Invalid: return format_to(ctx.out(), "Invalid");
             case unicode::Script::Unknown: return format_to(ctx.out(), "Unknown");
+            case unicode::Script::Common: return format_to(ctx.out(), "Common");
             case unicode::Script::Adlam: return format_to(ctx.out(), "Adlam");
             case unicode::Script::Ahom: return format_to(ctx.out(), "Ahom");
             case unicode::Script::Anatolian_Hieroglyphs: return format_to(ctx.out(), "Anatolian_Hieroglyphs");
@@ -839,7 +841,6 @@ struct formatter<unicode::Script> {
             case unicode::Script::Cham: return format_to(ctx.out(), "Cham");
             case unicode::Script::Cherokee: return format_to(ctx.out(), "Cherokee");
             case unicode::Script::Chorasmian: return format_to(ctx.out(), "Chorasmian");
-            case unicode::Script::Common: return format_to(ctx.out(), "Common");
             case unicode::Script::Coptic: return format_to(ctx.out(), "Coptic");
             case unicode::Script::Cuneiform: return format_to(ctx.out(), "Cuneiform");
             case unicode::Script::Cypriot: return format_to(ctx.out(), "Cypriot");

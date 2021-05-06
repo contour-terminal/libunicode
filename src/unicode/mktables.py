@@ -680,9 +680,12 @@ namespace unicode {
         self.impl.write("} // end namespace tables\n\n")
 
         self.builder.begin(name)
+        self.builder.member('Invalid')
         self.builder.member('Unknown')
+        self.builder.member('Common')
         for p in sorted(pset):
-            self.builder.member(p)
+            if p != 'Common':
+                self.builder.member(p)
         self.builder.end()
 
         # codepoint-to-script mapping function

@@ -654,7 +654,9 @@ inline std::ostream& operator<<(std::ostream& os, General_Category _value) noexc
 
 inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
     switch (_value) {
+        case Script::Invalid: return os << "Invalid";
         case Script::Unknown: return os << "Unknown";
+        case Script::Common: return os << "Common";
         case Script::Adlam: return os << "Adlam";
         case Script::Ahom: return os << "Ahom";
         case Script::Anatolian_Hieroglyphs: return os << "Anatolian_Hieroglyphs";
@@ -679,7 +681,6 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
         case Script::Cham: return os << "Cham";
         case Script::Cherokee: return os << "Cherokee";
         case Script::Chorasmian: return os << "Chorasmian";
-        case Script::Common: return os << "Common";
         case Script::Coptic: return os << "Coptic";
         case Script::Cuneiform: return os << "Cuneiform";
         case Script::Cypriot: return os << "Cypriot";
