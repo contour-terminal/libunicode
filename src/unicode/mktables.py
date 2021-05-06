@@ -63,7 +63,7 @@ class EnumBuilder(ABC): # {{{
         pass
 
     @abstractmethod
-    def begin(self, _enum_class: str):
+    def begin(self, _enum_class: str, _first_value: int = 0):
         """ starts a new enum class scope """
         pass
 
@@ -89,9 +89,9 @@ class EnumBuilderArray(EnumBuilder): # {{{
         for b in self.builders:
             b.close()
 
-    def begin(self, _enum_class):
+    def begin(self, _enum_class, _first = 0):
         for b in self.builders:
-            b.begin(_enum_class)
+            b.begin(_enum_class, _first)
 
     def member(self, _member):
         for b in self.builders:
@@ -111,24 +111,24 @@ class EnumClassWriter(EnumBuilder): # {{{
     def __init__(self, _header_filename: str):
         self.filename = _header_filename
         self.file = open(_header_filename, 'w', encoding='utf-8', newline='\u000A')
-        self.member_count = 0
+        self.next_value = 0
 
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
         self.file.write('namespace unicode {\n\n')
 
-    def begin(self, _enum_class):
+    def begin(self, _enum_class, _first_value):
         self.enum_class = _enum_class
+        self.next_value = _first_value
         self.file.write('enum class {} {{\n'.format(_enum_class))
 
     def member(self, _member):
-        self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.member_count))
-        self.member_count += 1
+        self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.next_value))
+        self.next_value += 1
 
     def end(self):
         self.file.write("};\n\n")
-        self.member_count = 0
 
     def output(self):
         return self.filename
@@ -150,7 +150,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write('\n')
         self.file.write('namespace unicode {\n\n')
 
-    def begin(self, _enum_class):
+    def begin(self, _enum_class, _first):
         self.enum_class = _enum_class
         self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept {{\n'.format(_enum_class))
         self.file.write('    switch (_value) {\n')
@@ -185,7 +185,7 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('\n')
         self.file.write('namespace fmt {\n\n')
 
-    def begin(self, _enum_class):
+    def begin(self, _enum_class, _first):
         self.enum_class = 'unicode::' + _enum_class
         self.file.write('template <>\n')
         self.file.write('struct formatter<{}> {{\n'.format(self.enum_class))
@@ -679,7 +679,7 @@ namespace unicode {
         self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
         self.impl.write("} // end namespace tables\n\n")
 
-        self.builder.begin(name)
+        self.builder.begin(name, -1)
         self.builder.member('Invalid')
         self.builder.member('Unknown')
         self.builder.member('Common')
