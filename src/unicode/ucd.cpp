@@ -15867,9 +15867,7 @@ auto const General_Category = std::array<Prop<::unicode::General_Category>, 3876
 
 namespace general_category {
     General_Category get(char32_t _value) noexcept {
-        if (auto const p = search(tables::General_Category, _value); p.has_value())
-            return p.value();
-        return General_Category::Unspecified;
+        return search(tables::General_Category, _value).value_or(General_Category::Unspecified);
     }
 }
 
@@ -21950,9 +21948,7 @@ auto static const Script = std::array<Prop<unicode::Script>, 2095>{ // {{{
 } // end namespace tables
 
 Script script(char32_t _codepoint) noexcept {
-    if (auto const p = search(tables::Script, _codepoint); p.has_value())
-        return p.value();
-    return Script::Unknown;
+    return search(tables::Script, _codepoint).value_or(Script::Unknown);
 }
 
 namespace tables { // {{{ ScriptExtensions
@@ -22519,14 +22515,15 @@ static const std::array<Prop<std::pair<unicode::Script const*, std::size_t>>, 14
 } // }}}
 
 size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {
-    if (auto const p = search(tables::sce, _codepoint); p.has_value()) {
-        auto const cap = std::min(_capacity, p.value().second);
-        for (size_t i = 0; i < cap; ++i)
-            _result[i] = p.value().first[i];
-        return cap;
+    auto const p = search(tables::sce, _codepoint);
+    if (!p.has_value()) {
+        *_result = script(_codepoint);
+        return 1;
     }
-    *_result = script(_codepoint);
-    return 1;
+    auto const cap = std::min(_capacity, p.value().second);
+    for (size_t i = 0; i < cap; ++i)
+        _result[i] = p->first[i];
+    return cap;
 }
 
 namespace tables {
@@ -24218,79 +24215,79 @@ auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_C
 namespace grapheme_cluster_break {
     bool cr(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::CR;
+            return *p == Grapheme_Cluster_Break::CR;
         return false;
     }
 
     bool control(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::Control;
+            return *p == Grapheme_Cluster_Break::Control;
         return false;
     }
 
     bool extend(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::Extend;
+            return *p == Grapheme_Cluster_Break::Extend;
         return false;
     }
 
     bool l(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::L;
+            return *p == Grapheme_Cluster_Break::L;
         return false;
     }
 
     bool lf(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::LF;
+            return *p == Grapheme_Cluster_Break::LF;
         return false;
     }
 
     bool lv(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::LV;
+            return *p == Grapheme_Cluster_Break::LV;
         return false;
     }
 
     bool lvt(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::LVT;
+            return *p == Grapheme_Cluster_Break::LVT;
         return false;
     }
 
     bool prepend(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::Prepend;
+            return *p == Grapheme_Cluster_Break::Prepend;
         return false;
     }
 
     bool regional_indicator(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::Regional_Indicator;
+            return *p == Grapheme_Cluster_Break::Regional_Indicator;
         return false;
     }
 
     bool spacingmark(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::SpacingMark;
+            return *p == Grapheme_Cluster_Break::SpacingMark;
         return false;
     }
 
     bool t(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::T;
+            return *p == Grapheme_Cluster_Break::T;
         return false;
     }
 
     bool v(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::V;
+            return *p == Grapheme_Cluster_Break::V;
         return false;
     }
 
     bool zwj(char32_t _codepoint) noexcept {
         if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
-            return p.value() == Grapheme_Cluster_Break::ZWJ;
+            return *p == Grapheme_Cluster_Break::ZWJ;
         return false;
     }
 
@@ -26780,9 +26777,7 @@ auto static const EastAsianWidth = std::array<Prop<::unicode::EastAsianWidth>, 2
 } // end namespace tables
 
 EastAsianWidth east_asian_width(char32_t _codepoint) noexcept {
-    if (auto const p = search(tables::EastAsianWidth, _codepoint); p.has_value())
-        return p.value();
-    return EastAsianWidth::Unspecified;
+    return search(tables::EastAsianWidth, _codepoint).value_or(EastAsianWidth::Unspecified);
 }
 
 namespace tables {

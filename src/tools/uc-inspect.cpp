@@ -283,7 +283,7 @@ auto parseArgs(int argc, char const* argv[]) -> optional<pair<Cmd, InputStream>>
     return {{DefaultCmd, make_unique<ifstream>(argv[2], ios::binary)}};
 }
 
-int main([[maybe_unused]] int argc, char const* argv[])
+int run(int argc, char const* argv[])
 {
     // TODO: hb-inspect codepoints FILE           Inspects source by UTF-32 codepoints
     // TODO: hb-inspect grapheme-clusters FILE    Inspects source by grapheme cluster
@@ -300,7 +300,7 @@ int main([[maybe_unused]] int argc, char const* argv[])
         return EXIT_FAILURE;
     }
 
-    auto& [cmd, inputStreamVar] = args.value();
+    auto& [cmd, inputStreamVar] = *args;
     istream& in = holds_alternative<istream*>(inputStreamVar)
         ? *get<istream*>(inputStreamVar)
         : *get<unique_ptr<istream>>(inputStreamVar);
@@ -320,3 +320,22 @@ int main([[maybe_unused]] int argc, char const* argv[])
 
     return EXIT_SUCCESS;
 }
+
+int main(int argc, char const* argv[])
+{
+    try
+    {
+        return run(argc, argv);
+    }
+    catch (std::exception const& e)
+    {
+        std::cerr << fmt::format("Unhandled exception caught ({}). {}\n", typeid(e).name(), e.what());
+        return EXIT_FAILURE;
+    }
+    catch (...)
+    {
+        std::cerr << "Unhandled exception caught.\n";
+        return EXIT_FAILURE;
+    }
+}
+

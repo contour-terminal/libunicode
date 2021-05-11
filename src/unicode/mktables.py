@@ -639,7 +639,7 @@ namespace unicode {
                     self.header.write('    bool {}(char32_t _codepoint) noexcept;\n'.format(enum.lower()))
                     self.impl.write('    bool {}(char32_t _codepoint) noexcept {{\n'.format(enum.lower()))
                     self.impl.write("        if (auto p = search(tables::{}, _codepoint); p.has_value())\n".format(name))
-                    self.impl.write('            return p.value() == {}::{};\n'.format(name, enum))
+                    self.impl.write('            return *p == {}::{};\n'.format(name, enum))
                     self.impl.write('        return false;\n')
                     self.impl.write('    }\n\n')
                 self.header.write('}\n')
@@ -692,9 +692,7 @@ namespace unicode {
         self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
 
         self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
-        self.impl.write('    if (auto const p = search(tables::{}, _codepoint); p.has_value())\n'.format(name))
-        self.impl.write('        return p.value();\n')
-        self.impl.write('    return Script::Unknown;\n')
+        self.impl.write('    return search(tables::{}, _codepoint).value_or(Script::Unknown);\n'.format(name))
         self.impl.write('}\n\n')
         # }}}
 
@@ -789,14 +787,15 @@ namespace unicode {
         # getter function
         self.header.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept;\n\n")
         self.impl.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {\n")
-        self.impl.write("    if (auto const p = search(tables::{}, _codepoint); p.has_value()) {{\n".format('sce'))
-        self.impl.write('        auto const cap = std::min(_capacity, p.value().second);\n')
-        self.impl.write('        for (size_t i = 0; i < cap; ++i)\n')
-        self.impl.write('            _result[i] = p.value().first[i];\n')
-        self.impl.write('        return cap;\n')
-        self.impl.write("    }\n")
-        self.impl.write('    *_result = script(_codepoint);\n')
-        self.impl.write('    return 1;\n')
+        self.impl.write("    auto const p = search(tables::{}, _codepoint);\n".format('sce'))
+        self.impl.write("    if (!p.has_value()) {{\n".format('sce'))
+        self.impl.write('        *_result = script(_codepoint);\n')
+        self.impl.write('        return 1;\n')
+        self.impl.write('    }\n')
+        self.impl.write('    auto const cap = std::min(_capacity, p.value().second);\n')
+        self.impl.write('    for (size_t i = 0; i < cap; ++i)\n')
+        self.impl.write('        _result[i] = p->first[i];\n')
+        self.impl.write('    return cap;\n')
         self.impl.write("}\n\n")
     # }}}
 
@@ -943,9 +942,7 @@ namespace unicode {
         # getter impl
         self.impl.write("namespace {} {{\n".format(type_name.lower()))
         self.impl.write("    {} get(char32_t _value) noexcept {{\n".format(type_name))
-        self.impl.write("        if (auto const p = search(tables::{}, _value); p.has_value())\n".format(type_name))
-        self.impl.write('            return p.value();\n')
-        self.impl.write('        return {}::{};\n'.format(type_name, UNSPECIFIED))
+        self.impl.write("        return search(tables::{}, _value).value_or({}::{});\n".format(type_name, type_name, UNSPECIFIED))
         self.impl.write("    }\n")
         self.impl.write("}\n\n")
         # -----------------------------------------------------------------------------------------------
@@ -1067,9 +1064,7 @@ namespace unicode {
             # impl: function
             self.impl.write(
                 'EastAsianWidth east_asian_width(char32_t _codepoint) noexcept {\n' +
-                '    if (auto const p = search(tables::EastAsianWidth, _codepoint); p.has_value())\n'
-                '        return p.value();\n' +
-                '    return EastAsianWidth::Unspecified;\n' +
+                '    return search(tables::EastAsianWidth, _codepoint).value_or(EastAsianWidth::Unspecified);\n'
                 '}\n\n'
             )
             # }}}
