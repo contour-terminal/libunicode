@@ -176,12 +176,12 @@ inline ConvertResult from_utf8(char8_t const* _bytes, size_t* _size)
 {
     return from_utf8((uint8_t const*)(_bytes), _size);
 }
-#else
+#endif
+
 inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 {
     return from_utf8((uint8_t const*)(_bytes), _size);
 }
-#endif
 
 template <typename T = char32_t>
 inline std::basic_string<T> from_utf8(std::string_view const& _bytes)

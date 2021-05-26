@@ -126,7 +126,7 @@ TEST_CASE("utf8.from_utf8", "[utf8]")
     auto const a32 = from_utf8(a8);
     CHECK(a32 == U"Hello, World!");
 
-    auto const b8 = string{u8"😖:-)"};
+    auto const b8 = string{(char const*) u8"😖:-)"};
     auto const b32 = from_utf8(b8);
     CHECK(b32 == U"😖:-)");
 }
