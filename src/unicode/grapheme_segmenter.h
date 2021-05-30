@@ -83,16 +83,22 @@ class grapheme_segmenter {
         constexpr char32_t ZWJ = 0x200D;
 
         // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
-        if (a == CR && b == LF) // GB3
+        if (a == CR && b == LF)
             return false;
 
-        // GB4
-        if (a == CR || a == LF || control(a))
-            return false;
+        // GB4 (a) + GB5 (b) part 1 (C0 characers) + US-ASCII shortcut
+        // The US-ASCII part is a pure optimization improving performance
+        // in standard Latin text.
+        if (a < 128 && b < 128)
+            return true;
 
-        // GB5
-        if (b == CR || b == LF || control(b))
-            return false;
+        // GB4: (part 2)
+        if (control(a))
+            return true;
+
+        // GB5: (part 2)
+        if (control(b))
+            return true;
 
         // Do not break Hangul syllable sequences.
         // GB6:
