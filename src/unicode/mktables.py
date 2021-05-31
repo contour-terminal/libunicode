@@ -217,8 +217,58 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write("} // end namespace\n")
         self.file.close()
     # }}}
+class MergedRange: # {{{
+    def __init__(self, _from, _to, _value, _comments, _count):
+        self.range_from = _from
+        self.range_to = _to
+        self.value = _value
+        self.comments = _comments
+        self.count = _count
+# }}}
+class RangeTableGenerator: # {{{
+    def __init__(self):
+        self.range_from = 0
+        self.range_to = 0
+        self.value = ""
+        self.comments = []
+        self.count = 0
+        self.result = []
 
-class UCDGenerator:
+    def flush(self):
+        # Do not flush on initial state
+        if self.value != '':
+            self.result.append(MergedRange(self.range_from,
+                                           self.range_to,
+                                           self.value,
+                                           self.comments,
+                                           self.count))
+        self.value = ''
+        self.range_from = 0
+        self.range_to = 0
+        self.comments = []
+        self.count = 0
+
+    def append(self, _from, _to, _value, _comment):
+        RANGE_COMMENT_FMT = '0x{:>04X} .. 0x{:>04X}: {}'
+        if self.range_to + 1 == _from and self.value == _value:
+            # This is a direct upper neighbor of the current range.
+            if len(self.comments) == 1:
+                # We are adding a second range, so modify the first range's comment.
+                self.comments[0] = RANGE_COMMENT_FMT.format(self.range_from,
+                                                            self.range_to,
+                                                            self.comments[0])
+            if len(self.comments) != 0:
+                _comment = RANGE_COMMENT_FMT.format(_from, _to, _comment)
+            self.range_to = _to
+        else:
+            self.flush()
+            self.range_from = _from
+            self.range_to = _to
+            self.value = _value
+        self.comments.append(_comment)
+        self.count += 1
+# }}}
+class UCDGenerator: # {{{
     def __init__(self, _ucd_dir, _header_file, _impl_file):
         self.ucd_dir = _ucd_dir
         self.header_filename = _header_file
@@ -909,6 +959,7 @@ namespace unicode {
     def write_general_categories(self): # {{{
         UNSPECIFIED = 'Unspecified'
         gcats = self.general_category
+
         self.impl.write("namespace tables {\n")
         type_name = "General_Category"
         fqdn_type_name = "::unicode::{}".format(type_name)
@@ -1006,6 +1057,16 @@ namespace unicode {
         table.sort(key = lambda a: a['start'])
         return table # }}}
 
+    def range_table_merge_siblings(self, _table):
+        m = RangeTableGenerator()
+        for propRange in _table:
+            m.append(int(propRange['start']),
+                     int(propRange['end']),
+                     propRange['property'],
+                     propRange['comment'])
+        m.flush()
+        return m.result
+
     def process_east_asian_width(self): # {{{
         WIDTH_NAMES = {
             'A': "Ambiguous",
@@ -1020,8 +1081,11 @@ namespace unicode {
         table_name = type_name
         prop_type = '::unicode::{}'.format(type_name)
 
+        # TODO: Merge sequentially directly connected neighbors that have the same value
+
         with uopen(self.ucd_dir + '/EastAsianWidth.txt') as f:
             table = self.collect_range_table_with_prop(f)
+            compact_ranges = self.range_table_merge_siblings(table)
 
             # api: enum
             self.builder.begin(table_name)
@@ -1047,17 +1111,24 @@ namespace unicode {
             self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                 table_name,
                 element_type,
-                len(table),
+                len(compact_ranges),
                 FOLD_OPEN
             ))
-            for propRange in table:
-                self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
+            for range in compact_ranges:
+                if len(range.comments) > 1:
+                    for comment in range.comments:
+                        self.impl.write("    // {}\n".format(comment))
+                self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},".format(
                                 element_type,
-                                propRange['start'],
-                                propRange['end'],
+                                range.range_from,
+                                range.range_to,
                                 prop_type,
-                                WIDTH_NAMES[propRange['property']],
-                                propRange['comment']))
+                                WIDTH_NAMES[range.value]))
+                if range.count == 1 and len(range.comments) == 1:
+                    self.impl.write(" // {}".format(range.comments[0]))
+                elif range.count > 1:
+                    self.impl.write(" // #{}".format(range.count))
+                self.impl.write('\n')
             self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
             self.impl.write("} // end namespace tables\n\n")
 
