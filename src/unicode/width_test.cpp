@@ -19,6 +19,10 @@ TEST_CASE("random test", "[width]")
     // C0
     CHECK(unicode::width(0x07) == 0);
 
+    // US-ASCII
+    for (int i = 0x20; i <= 0x7E; ++i)
+        CHECK(unicode::width(i) == 1);
+
     CHECK(unicode::width(U'\u00A9') == 1); // Copyright symbol
 
     CHECK(unicode::width(U'\u200D') == 0); // ZWJ

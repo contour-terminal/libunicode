@@ -16,10 +16,12 @@
 
 namespace unicode {
 
-// -> width = 1
-
 int width(char32_t _codepoint)
 {
+    // Small optimization to speadup US-ASCII width calculation.
+    if (0x20 <= _codepoint && _codepoint <= 0xA0)
+        return 1;
+
     // TODO: make this at most one lookup
 
     switch (general_category::get(_codepoint))
