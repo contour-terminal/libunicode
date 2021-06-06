@@ -85,7 +85,7 @@ class fs_array {
     constexpr iterator end() noexcept { return std::next(values_.begin(), size_); }
 
     constexpr const_iterator begin() const noexcept { return values_.begin(); }
-    constexpr const_iterator end() const noexcept { return std::next(values_.end(), size_); }
+    constexpr const_iterator end() const noexcept { return std::next(values_.begin(), size_); }
 
     constexpr T* data() noexcept { return values_.data(); }
     constexpr T const* data() const noexcept { return values_.data(); }
