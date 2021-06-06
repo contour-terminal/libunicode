@@ -94,19 +94,16 @@ class emoji_segmenter {
     size_t consume_once();
 };
 
-} // end namespace
-
-namespace std
+inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 {
-    inline ostream& operator<<(ostream& os, unicode::PresentationStyle ps)
+    switch (ps)
     {
-        switch (ps)
-        {
-            case unicode::PresentationStyle::Text:
-                return os << "Text";
-            case unicode::PresentationStyle::Emoji:
-                return os << "Emoji";
-        }
-        return os;
+        case PresentationStyle::Text:
+            return os << "Text";
+        case PresentationStyle::Emoji:
+            return os << "Emoji";
     }
+    return os;
 }
+
+} // end namespace
