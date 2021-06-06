@@ -117,7 +117,7 @@ template<> struct decoder<char> // {{{
             return char32_t(ch0);
 
         if (ch0 < 0xC0)
-            throw nullopt;
+            return nullopt;
 
         if (ch0 < 0xE0) // 110x_xxxx 10xx_xxxx
         {
