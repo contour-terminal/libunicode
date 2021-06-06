@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - wip
+      - improvement/*
+      - feature/*
+      - fix/*
   pull_request:
     branches:
       - master
@@ -65,10 +68,10 @@ jobs:
       - name: "create build directory"
         run: mkdir build
       - name: "Generate build files"
-        run: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -B build .
+        # /EHsc enables unwind semantics
+        run: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="/EHsc" -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -B build .
       - name: "Build"
         run: cmake --build build/
       - name: "test"
-        run: .\build\src\unicode\Debug\unicode_test.exe
-        # FIXME: Github Actions timeout? TODO: still?
+        run: .\build\src\unicode\Debug\unicode_test.exe -s
 
