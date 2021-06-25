@@ -15,78 +15,79 @@
  * limitations under the License.
  */
 
+#pragma GCC diagnostic ignored "-Wsign-conversion"
 
 #line 20 "emoji_presentation_scanner.c"
 static const char _emoji_presentation_actions[] = {
-	0, 1, 0, 1, 1, 1, 5, 1, 
-	6, 1, 7, 1, 8, 1, 9, 1, 
-	10, 1, 11, 2, 2, 3, 2, 2, 
+	0, 1, 0, 1, 1, 1, 5, 1,
+	6, 1, 7, 1, 8, 1, 9, 1,
+	10, 1, 11, 2, 2, 3, 2, 2,
 	4
 };
 
 static const char _emoji_presentation_key_offsets[] = {
-	0, 5, 7, 14, 18, 20, 21, 24, 
+	0, 5, 7, 14, 18, 20, 21, 24,
 	29, 30, 34, 36
 };
 
 static const unsigned char _emoji_presentation_trans_keys[] = {
-	3u, 7u, 13u, 0u, 2u, 14u, 15u, 2u, 
-	3u, 6u, 7u, 13u, 0u, 1u, 9u, 10u, 
-	11u, 12u, 10u, 12u, 10u, 4u, 10u, 12u, 
-	4u, 9u, 10u, 11u, 12u, 6u, 9u, 10u, 
-	11u, 12u, 8u, 10u, 9u, 10u, 11u, 12u, 
+	3u, 7u, 13u, 0u, 2u, 14u, 15u, 2u,
+	3u, 6u, 7u, 13u, 0u, 1u, 9u, 10u,
+	11u, 12u, 10u, 12u, 10u, 4u, 10u, 12u,
+	4u, 9u, 10u, 11u, 12u, 6u, 9u, 10u,
+	11u, 12u, 8u, 10u, 9u, 10u, 11u, 12u,
 	14u, 0
 };
 
 static const char _emoji_presentation_single_lengths[] = {
-	3, 2, 5, 4, 2, 1, 3, 5, 
+	3, 2, 5, 4, 2, 1, 3, 5,
 	1, 4, 2, 5
 };
 
 static const char _emoji_presentation_range_lengths[] = {
-	1, 0, 1, 0, 0, 0, 0, 0, 
+	1, 0, 1, 0, 0, 0, 0, 0,
 	0, 0, 0, 0
 };
 
 static const char _emoji_presentation_index_offsets[] = {
-	0, 5, 8, 15, 20, 23, 25, 29, 
+	0, 5, 8, 15, 20, 23, 25, 29,
 	35, 37, 42, 45
 };
 
 static const char _emoji_presentation_indicies[] = {
-	2, 1, 1, 1, 0, 4, 5, 3, 
-	7, 8, 10, 11, 12, 6, 9, 5, 
-	13, 14, 15, 0, 13, 15, 16, 13, 
-	16, 15, 13, 15, 16, 15, 5, 13, 
-	14, 15, 16, 5, 17, 5, 13, 14, 
-	18, 17, 5, 13, 16, 5, 13, 14, 
+	2, 1, 1, 1, 0, 4, 5, 3,
+	7, 8, 10, 11, 12, 6, 9, 5,
+	13, 14, 15, 0, 13, 15, 16, 13,
+	16, 15, 13, 15, 16, 15, 5, 13,
+	14, 15, 16, 5, 17, 5, 13, 14,
+	18, 17, 5, 13, 16, 5, 13, 14,
 	15, 4, 16, 0
 };
 
 static const char _emoji_presentation_trans_targs[] = {
-	2, 4, 6, 2, 1, 2, 3, 3, 
-	7, 2, 8, 9, 11, 0, 2, 5, 
+	2, 4, 6, 2, 1, 2, 3, 3,
+	7, 2, 8, 9, 11, 0, 2, 5,
 	2, 2, 10
 };
 
 static const char _emoji_presentation_trans_actions[] = {
-	17, 19, 19, 15, 0, 7, 22, 19, 
-	19, 9, 0, 22, 19, 0, 5, 19, 
+	17, 19, 19, 15, 0, 7, 22, 19,
+	19, 9, 0, 22, 19, 0, 5, 19,
 	11, 13, 19
 };
 
 static const char _emoji_presentation_to_state_actions[] = {
-	0, 0, 1, 0, 0, 0, 0, 0, 
+	0, 0, 1, 0, 0, 0, 0, 0,
 	0, 0, 0, 0
 };
 
 static const char _emoji_presentation_from_state_actions[] = {
-	0, 0, 3, 0, 0, 0, 0, 0, 
+	0, 0, 3, 0, 0, 0, 0, 0,
 	0, 0, 0, 0
 };
 
 static const char _emoji_presentation_eof_trans[] = {
-	1, 4, 0, 1, 17, 17, 17, 17, 
+	1, 4, 0, 1, 17, 17, 17, 17,
 	18, 18, 17, 17
 };
 
@@ -111,7 +112,7 @@ scan_emoji_presentation (emoji_text_iter_t p,
   unsigned act;
   int cs;
 
-  
+
 #line 116 "emoji_presentation_scanner.c"
 	{
 	cs = emoji_presentation_start;

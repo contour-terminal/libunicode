@@ -149,10 +149,10 @@ inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
     auto const result = from_utf8(_state, _byte);
 
     if (std::holds_alternative<Incomplete>(result))
-        return -1;
+        return static_cast<unsigned>(-1);
 
     if (std::holds_alternative<Invalid>(result))
-        return -2;
+        return static_cast<unsigned>(-2);
 
     return std::get<Success>(result).value;
 }

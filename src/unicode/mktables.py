@@ -1100,7 +1100,7 @@ namespace unicode {
                 self.header.write('        case {}::{}: return "{}";\n'.format(type_name, v, v))
             self.header.write('    }\n');
             self.header.write('    return "Unknown";\n');
-            self.header.write('};\n\n')
+            self.header.write('}\n\n')
 
             # api: signature
             self.header.write('EastAsianWidth east_asian_width(char32_t _codepoint) noexcept;\n\n')

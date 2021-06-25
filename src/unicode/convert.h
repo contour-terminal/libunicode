@@ -31,25 +31,25 @@ template<> struct encoder<char> // {{{
     {
         if (_input <= 0x7F)
         {
-            *_output++ = static_cast<uint8_t>(_input & 0b0111'1111);
+            *_output++ = static_cast<char>(_input & 0b0111'1111);
         }
         else if (_input <= 0x07FF)
         {
-            *_output++ = static_cast<uint8_t>(((_input >> 6) & 0b0001'1111) | 0b1100'0000);
-            *_output++ = static_cast<uint8_t>(((_input >> 0) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 6) & 0b0001'1111) | 0b1100'0000);
+            *_output++ = static_cast<char>(((_input >> 0) & 0b0011'1111) | 0b1000'0000);
         }
         else if (_input <= 0xFFFF)
         {
-            *_output++ = static_cast<uint8_t>(((_input >> 12) & 0b0000'1111) | 0b1110'0000);
-            *_output++ = static_cast<uint8_t>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<uint8_t>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 12) & 0b0000'1111) | 0b1110'0000);
+            *_output++ = static_cast<char>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
         }
         else
         {
-            *_output++ = static_cast<uint8_t>(((_input >> 18) & 0b0000'0111) | 0b1111'0000);
-            *_output++ = static_cast<uint8_t>(((_input >> 12) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<uint8_t>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<uint8_t>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 18) & 0b0000'0111) | 0b1111'0000);
+            *_output++ = static_cast<char>(((_input >> 12) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
         }
         return _output;
     }
@@ -114,7 +114,7 @@ template<> struct decoder<char> // {{{
 
         auto const ch0 = uint8_t(*_input++);
         if (ch0 < 0x80) // 0xxx_xxxx
-            return char32_t(ch0);
+            return static_cast<char32_t>(ch0);
 
         if (ch0 < 0xC0)
             return nullopt;
@@ -124,7 +124,7 @@ template<> struct decoder<char> // {{{
             auto const ch1 = uint8_t(*_input++);
             if ((ch1 >> 6) != 2)
                 return nullopt;
-            return char32_t((ch0 << 6) + ch1 - 0x3080);
+            return static_cast<char32_t>((ch0 << 6) + ch1 - 0x3080);
         }
 
         if (ch0 < 0xF0) // 1110_xxxx 10xx_xxxx 10xx_xxxx
@@ -135,7 +135,7 @@ template<> struct decoder<char> // {{{
             auto const ch2 = uint8_t(*_input++);
             if (ch2 >> 6 != 2)
                 return nullopt;
-            return char32_t((ch0 << 12) + (ch1 << 6) + ch2 - 0xE2080);
+            return static_cast<char32_t>((ch0 << 12) + (ch1 << 6) + ch2 - 0xE2080);
         }
         if (ch0 < 0xF8) // 1111_0xxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
         {
@@ -148,7 +148,7 @@ template<> struct decoder<char> // {{{
             auto const ch3 = uint8_t(*_input++);
             if (ch3 >> 6 != 2)
                 return nullopt;
-            return char32_t((ch0 << 18) + (ch1 << 12) + (ch2 << 6) + ch3 - 0x3C82080);
+            return static_cast<char32_t>((ch0 << 18) + (ch1 << 12) + (ch2 << 6) + ch3 - 0x3C82080);
         }
         if (ch0 < 0xFC) // 1111_10xx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
         {
@@ -164,7 +164,8 @@ template<> struct decoder<char> // {{{
             auto const ch4 = uint8_t(*_input++);
             if (ch4 >> 6 != 2)
                 return nullopt;
-            return char32_t((ch0 << 24) + (ch1 << 18) + (ch2 << 12) + (ch3 << 6) + ch4 - 0xFA082080);
+            auto const a = static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
+            return static_cast<char32_t>(a - 0xFA082080lu);
         }
         if (ch0 < 0xFE) // 1111_110x 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
         {
@@ -183,7 +184,8 @@ template<> struct decoder<char> // {{{
             auto const ch5 = uint8_t(*_input++);
             if (ch5 >> 6 != 2)
                 return nullopt;
-            return char32_t((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12) + (ch4 << 6) + ch5 - 0x82082080);
+            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12) + (ch4 << 6) + ch5);
+            return static_cast<char32_t>(a - 0x82082080);
         }
         return nullopt;
     }

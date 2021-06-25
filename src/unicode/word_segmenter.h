@@ -24,15 +24,6 @@ class word_segmenter
     using iterator = char_type const*;
     using view_type = std::basic_string_view<char_type>;
 
-    constexpr word_segmenter(iterator _begin, iterator _end)
-      : left_{ _begin },
-        right_{ _begin },
-        state_{ _begin != _end ? (isDelimiter(*right_) ? State::NoWord : State::Word) : State::NoWord },
-        end_{ _end }
-    {
-        ++*this;
-    }
-
     constexpr word_segmenter(std::basic_string_view<char_type> const& _str)
       : word_segmenter(_str.data(), _str.data() + _str.size())
     {}
@@ -42,8 +33,8 @@ class word_segmenter
     {}
 
     constexpr bool empty() const noexcept { return size() == 0; }
-    constexpr std::size_t size() const noexcept { return right_ - left_; }
-    constexpr view_type operator*() const noexcept { return view_type(left_, right_ - left_); }
+    constexpr std::size_t size() const noexcept { return static_cast<size_t>(right_ - left_); }
+    constexpr view_type operator*() const noexcept { return view_type(left_, size()); }
 
     constexpr word_segmenter& operator++() noexcept
     {
@@ -83,6 +74,15 @@ class word_segmenter
     }
 
   private:
+    constexpr word_segmenter(iterator _begin, iterator _end)
+      : left_{ _begin },
+        right_{ _begin },
+        state_{ _begin != _end ? (isDelimiter(*right_) ? State::NoWord : State::Word) : State::NoWord },
+        end_{ _end }
+    {
+        ++*this;
+    }
+
     constexpr bool isDelimiter(char_type _char) const noexcept
     {
         switch (_char)
@@ -97,7 +97,8 @@ class word_segmenter
         }
     }
 
-  private:
+    // private fields
+    //
     enum class State { Word, NoWord };
 
     iterator left_;

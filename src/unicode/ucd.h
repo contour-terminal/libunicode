@@ -96,7 +96,7 @@ inline std::string to_string(EastAsianWidth _value) {
         case EastAsianWidth::Unspecified: return "Unspecified";
     }
     return "Unknown";
-};
+}
 
 EastAsianWidth east_asian_width(char32_t _codepoint) noexcept;
 

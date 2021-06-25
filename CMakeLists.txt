@@ -27,6 +27,7 @@ endif()
 
 include(EnableCcache)
 include(ClangTidy)
+include(PedanticCompiler)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)

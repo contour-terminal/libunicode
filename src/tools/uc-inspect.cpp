@@ -96,7 +96,7 @@ namespace
     template <typename T>
     inline string escape(T begin, T end)
     {
-        return std::accumulate(begin, end, string{}, [](auto const& a, auto ch) { return a + escape(ch); });
+        return std::accumulate(begin, end, string{}, [](auto const& a, auto ch) { return a + escape(static_cast<uint8_t>(ch)); });
         // auto result = string{};
         // for (T cur = begin; cur != end; ++cur)
         //     result += *cur;

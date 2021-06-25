@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+
 %%{
   machine emoji_presentation;
   alphtype unsigned char;

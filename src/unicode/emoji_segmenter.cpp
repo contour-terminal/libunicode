@@ -15,6 +15,7 @@
 #include <unicode/emoji_segmenter.h>
 #include <unicode/ucd.h>
 #include <iostream>
+#include <cassert>
 
 namespace unicode {
 
@@ -116,10 +117,32 @@ class RagelIterator {
     RagelIterator& operator++() noexcept { currentCursorEnd_++; updateCategory(); return *this; }
     RagelIterator& operator--(int) noexcept { currentCursorEnd_--; updateCategory(); return *this; }
 
-    RagelIterator operator+(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ + v}; }
-    RagelIterator operator-(int v) const noexcept { return {buffer_, size_, currentCursorEnd_ - v}; }
+    RagelIterator operator+(int v) const noexcept
+    {
+        // TODO: assert() on integer overflow
+        return {buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v)};
+    }
 
-    RagelIterator& operator=(int v) noexcept { currentCursorEnd_ = v; updateCategory(); return *this; }
+    RagelIterator operator-(int v) const noexcept
+    {
+        if (v >= 0)
+        {
+            assert(currentCursorEnd_ >= static_cast<size_t>(v));
+            return {buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v)};
+        }
+        else
+        {
+            return *this + (-v);
+        }
+    }
+
+    RagelIterator& operator=(int v) noexcept
+    {
+        assert(v >= 0);
+        currentCursorEnd_ = static_cast<size_t>(v);
+        updateCategory();
+        return *this;
+    }
 
     constexpr bool operator==(RagelIterator const& _rhs) const noexcept
     {

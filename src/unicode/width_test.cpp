@@ -20,7 +20,7 @@ TEST_CASE("random test", "[width]")
     CHECK(unicode::width(0x07) == 0);
 
     // US-ASCII
-    for (int i = 0x20; i <= 0x7E; ++i)
+    for (char32_t i = 0x20; i <= 0x7E; ++i)
         CHECK(unicode::width(i) == 1);
 
     CHECK(unicode::width(U'\u00A9') == 1); // Copyright symbol

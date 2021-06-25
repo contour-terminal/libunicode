@@ -21,7 +21,7 @@ namespace unicode {
 
 /// Implements http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
 class grapheme_segmenter {
-  public:
+  private:
     constexpr grapheme_segmenter(char32_t const* _begin, char32_t const* _end) noexcept
       : left_{ _begin },
         right_{ _begin },
@@ -30,6 +30,7 @@ class grapheme_segmenter {
         ++*this;
     }
 
+  public:
     constexpr grapheme_segmenter(std::u32string_view const& _sv) noexcept
       : grapheme_segmenter(_sv.data(), _sv.data() + _sv.size())
     {}
@@ -53,7 +54,7 @@ class grapheme_segmenter {
 
     constexpr std::u32string_view operator*() const noexcept
     {
-        return std::u32string_view(left_, right_ - left_);
+        return std::u32string_view(left_, static_cast<size_t>(right_ - left_));
     }
 
     constexpr bool codepointsAvailable() const noexcept

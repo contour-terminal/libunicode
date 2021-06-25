@@ -13,6 +13,7 @@
  */
 #include <unicode/convert.h>
 #include <unicode/utf8.h>
+#include <unicode/support.h>
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 #include <iterator>
@@ -77,7 +78,7 @@ TEST_CASE("convert.utf8.incremental_decode", "[utf8]")
         "\xE2\x82\xAC"      // €  - EURO sign U+20AC
         "\xF0\x9F\x98\x80"  // 😀 - U+1F600
     };
-    char const* p = values.data();
+    auto const* p = (char8_type const*) (values.data());
     auto decode = unicode::decoder<char>{};
 
     // single-byte

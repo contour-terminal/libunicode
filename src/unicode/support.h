@@ -13,9 +13,16 @@
  */
 #pragma once
 
+#include <cstdint>
 #include <functional>
 
 namespace unicode {
+
+#if defined(__cpp_char8_t)
+using char8_type = char8_t;
+#else
+using char8_type = uint8_t;
+#endif
 
 // Helper API solely for use of function parameters to visually denote output parameters.
 template <typename T>
@@ -58,7 +65,7 @@ class fs_array {
         for (size_t i = 0; i < size_; ++i)
             values_[i].~T();
         size_ = 0;
-    };
+    }
 
     constexpr size_t capacity() const noexcept { return N; }
     constexpr size_t size() const noexcept { return size_; }
@@ -82,10 +89,18 @@ class fs_array {
     constexpr T const& at(size_t i) const noexcept { return values_.at(i); }
 
     constexpr iterator begin() noexcept { return values_.begin(); }
-    constexpr iterator end() noexcept { return std::next(values_.begin(), size_); }
+    constexpr iterator end() noexcept
+    {
+        using SizeT = typename std::iterator_traits<decltype(values_.begin())>::difference_type;
+        return std::next(values_.begin(), static_cast<SizeT>(size_));
+    }
 
     constexpr const_iterator begin() const noexcept { return values_.begin(); }
-    constexpr const_iterator end() const noexcept { return std::next(values_.begin(), size_); }
+    constexpr const_iterator end() const noexcept
+    {
+        using SizeT = typename std::iterator_traits<decltype(values_.begin())>::difference_type;
+        return std::next(values_.begin(), static_cast<SizeT>(size_));
+    }
 
     constexpr T* data() noexcept { return values_.data(); }
     constexpr T const* data() const noexcept { return values_.data(); }
