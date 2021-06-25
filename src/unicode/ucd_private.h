@@ -31,12 +31,16 @@ constexpr bool contains(std::array<Interval, N> const& _ranges, char32_t _codepo
 	auto b = static_cast<size_t>(_ranges.size()) - 1;
 	while (a < b)
 	{
-		auto const i = static_cast<size_t>((b + a) / 2);
+		auto const i = ((b + a) / 2);
 		auto const& I = _ranges[i];
 		if (I.to < _codepoint)
 			a = i + 1;
 		else if (I.from > _codepoint)
+        {
+            if (i == 0)
+                return false;
 			b = i - 1;
+        }
 		else
 			return true;
 	}
