@@ -23,6 +23,15 @@ from codecs import open as codecs_open
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
 SCRIPT_MTIME = os.stat(__file__).st_mtime
+PropertyValueAliases_fname = 'PropertyValueAliases-14.0.0d13.txt'
+DerivedGeneralCategory_fname = 'DerivedGeneralCategory-14.0.0d18.txt'
+DerivedCoreProperties_fname = 'DerivedCoreProperties-14.0.0d18.txt'
+GraphemeBreakProperty_fname = 'GraphemeBreakProperty-14.0.0d16.txt'
+Scripts_fname = 'Scripts-14.0.0d18.txt'
+Blocks_fname = 'Blocks-14.0.0d4.txt'
+ScriptExtensions_fname = 'ScriptExtensions-14.0.0d17.txt'
+Emoji_data_fname = 'emoji-data.txt'
+EastAsianWidth_fname = 'EastAsianWidth-14.0.0d8.txt'
 
 PLANES = [
     {'plane':  0, 'start':   0x0000, 'end':  0x0FFFF, 'short':    'BMP', 'name': 'Basic Multilingual Plane'},
@@ -356,7 +365,7 @@ namespace unicode {
         black_list = set()
         black_list.add('Block')
 
-        with uopen(self.ucd_dir + '/PropertyValueAliases.txt') as f:
+        with uopen(self.ucd_dir + '/' + PropertyValueAliases_fname) as f:
             # gc ; C   ; Other    # Cc | Cf | Cn | Co | Cs
             headerRE = re.compile('^#\s*(\w+) \((\w+)\)$')
             lineRE = re.compile('^(\w+)\s*;\s*([a-zA-Z0-9_\.]+)\s*;\s*([a-zA-Z0-9_]+).*$')
@@ -474,7 +483,7 @@ namespace unicode {
         # }}}
 
     def load_general_category(self): # {{{
-        with uopen(self.ucd_dir + '/extracted/DerivedGeneralCategory.txt') as f:
+        with uopen(self.ucd_dir + '/extracted/' + DerivedGeneralCategory_fname) as f:
             headerRE = re.compile('^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
             cat_name = ''
@@ -513,7 +522,7 @@ namespace unicode {
         # }}}
 
     def load_core_properties(self): # {{{
-        with uopen(self.ucd_dir + '/DerivedCoreProperties.txt') as f:
+        with uopen(self.ucd_dir + '/' + DerivedCoreProperties_fname) as f:
             # collect
             props = dict()
             while True:
@@ -699,10 +708,10 @@ namespace unicode {
         # }}}
 
     def process_grapheme_break_props(self):
-        self.process_props(self.ucd_dir + '/auxiliary/GraphemeBreakProperty.txt', 'Property')
+        self.process_props(self.ucd_dir + '/auxiliary/' + GraphemeBreakProperty_fname, 'Property')
 
     def load_scripts(self):
-        self.scripts = self.load_generic_properties(self.ucd_dir + '/Scripts.txt')
+        self.scripts = self.load_generic_properties(self.ucd_dir + '/' + Scripts_fname)
 
     def write_scripts(self): # {{{
         name = 'Script'
@@ -747,7 +756,7 @@ namespace unicode {
         # }}}
 
     def load_blocks(self): # {{{
-        filename = self.ucd_dir + "/Blocks.txt"
+        filename = self.ucd_dir + '/' + Blocks_fname
         with uopen(filename) as f:
             line_regex = re.compile('^([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+);\s*(.*)$')
             blocks = list()
@@ -770,7 +779,7 @@ namespace unicode {
     # }}}
 
     def load_script_extensions(self): # {{{
-        filename = self.ucd_dir + '/ScriptExtensions.txt'
+        filename = self.ucd_dir + '/' + ScriptExtensions_fname
         with uopen(filename) as f:
             props = list()
             while True:
@@ -867,7 +876,7 @@ namespace unicode {
         # }}}
 
     def process_emoji_props(self): # {{{
-        with uopen(self.ucd_dir + '/emoji/emoji-data.txt') as f:
+        with uopen(self.ucd_dir + '/emoji/' + Emoji_data_fname) as f:
             # collect
             props_name = ''
             props = dict()
@@ -1083,7 +1092,7 @@ namespace unicode {
 
         # TODO: Merge sequentially directly connected neighbors that have the same value
 
-        with uopen(self.ucd_dir + '/EastAsianWidth.txt') as f:
+        with uopen(self.ucd_dir + '/' + EastAsianWidth_fname) as f:
             table = self.collect_range_table_with_prop(f)
             compact_ranges = self.range_table_merge_siblings(table)
 

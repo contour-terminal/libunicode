@@ -14,7 +14,7 @@
 #include <unicode/convert.h>
 #include <unicode/utf8.h>
 #include <unicode/support.h>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <fmt/format.h>
 #include <iterator>
 
