@@ -53,7 +53,7 @@ PLANES = [
     {'plane': 16, 'start': 0x100000, 'end': 0x10FFFF, 'short': 'SPUA-B', 'name': 'Supplementary Private Use Area Plane'},
 ]
 
-# unicode database (extracted zip file): https://www.unicode.org/Public/UCD/latest/ucd/
+# Unicode 14.0 Beta database: https://www.unicode.org/Public/14.0.0/ucd/
 UCD_DIR = argv[1]
 
 FOLD_OPEN = '{{{'
