@@ -15,7 +15,7 @@
 #include <unicode/grapheme_segmenter.h>
 #include <unicode/run_segmenter.h>
 #include <unicode/utf8.h>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <fmt/format.h>
 
 using namespace unicode;

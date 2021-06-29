@@ -39,6 +39,7 @@ inline std::ostream& operator<<(std::ostream& os, Age _value) noexcept {
         case Age::V12_0: return os << "V12_0";
         case Age::V12_1: return os << "V12_1";
         case Age::V13_0: return os << "V13_0";
+        case Age::V14_0: return os << "V14_0";
         case Age::V1_1: return os << "V1_1";
         case Age::V2_0: return os << "V2_0";
         case Age::V2_1: return os << "V2_1";
@@ -429,6 +430,8 @@ inline std::ostream& operator<<(std::ostream& os, Joining_Group _value) noexcept
         case Joining_Group::Taw: return os << "Taw";
         case Joining_Group::Teh_Marbuta: return os << "Teh_Marbuta";
         case Joining_Group::Teth: return os << "Teth";
+        case Joining_Group::Thin_Yeh: return os << "Thin_Yeh";
+        case Joining_Group::Vertical_Tail: return os << "Vertical_Tail";
         case Joining_Group::Waw: return os << "Waw";
         case Joining_Group::Yeh: return os << "Yeh";
         case Joining_Group::Yeh_Barree: return os << "Yeh_Barree";
@@ -684,6 +687,7 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
         case Script::Coptic: return os << "Coptic";
         case Script::Cuneiform: return os << "Cuneiform";
         case Script::Cypriot: return os << "Cypriot";
+        case Script::Cypro_Minoan: return os << "Cypro_Minoan";
         case Script::Cyrillic: return os << "Cyrillic";
         case Script::Deseret: return os << "Deseret";
         case Script::Devanagari: return os << "Devanagari";
@@ -767,6 +771,7 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
         case Script::Old_Sogdian: return os << "Old_Sogdian";
         case Script::Old_South_Arabian: return os << "Old_South_Arabian";
         case Script::Old_Turkic: return os << "Old_Turkic";
+        case Script::Old_Uyghur: return os << "Old_Uyghur";
         case Script::Oriya: return os << "Oriya";
         case Script::Osage: return os << "Osage";
         case Script::Osmanya: return os << "Osmanya";
@@ -798,6 +803,7 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
         case Script::Tai_Viet: return os << "Tai_Viet";
         case Script::Takri: return os << "Takri";
         case Script::Tamil: return os << "Tamil";
+        case Script::Tangsa: return os << "Tangsa";
         case Script::Tangut: return os << "Tangut";
         case Script::Telugu: return os << "Telugu";
         case Script::Thaana: return os << "Thaana";
@@ -805,8 +811,10 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept {
         case Script::Tibetan: return os << "Tibetan";
         case Script::Tifinagh: return os << "Tifinagh";
         case Script::Tirhuta: return os << "Tirhuta";
+        case Script::Toto: return os << "Toto";
         case Script::Ugaritic: return os << "Ugaritic";
         case Script::Vai: return os << "Vai";
+        case Script::Vithkuqi: return os << "Vithkuqi";
         case Script::Wancho: return os << "Wancho";
         case Script::Warang_Citi: return os << "Warang_Citi";
         case Script::Yezidi: return os << "Yezidi";
@@ -830,6 +838,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Ancient_Symbols: return os << "Ancient_Symbols";
         case Block::Arabic: return os << "Arabic";
         case Block::Arabic_Extended_A: return os << "Arabic_Extended_A";
+        case Block::Arabic_Extended_B: return os << "Arabic_Extended_B";
         case Block::Arabic_Mathematical_Alphabetic_Symbols: return os << "Arabic_Mathematical_Alphabetic_Symbols";
         case Block::Arabic_Presentation_Forms_A: return os << "Arabic_Presentation_Forms_A";
         case Block::Arabic_Presentation_Forms_B: return os << "Arabic_Presentation_Forms_B";
@@ -891,6 +900,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Cuneiform_Numbers_and_Punctuation: return os << "Cuneiform_Numbers_and_Punctuation";
         case Block::Currency_Symbols: return os << "Currency_Symbols";
         case Block::Cypriot_Syllabary: return os << "Cypriot_Syllabary";
+        case Block::Cypro_Minoan: return os << "Cypro_Minoan";
         case Block::Cyrillic: return os << "Cyrillic";
         case Block::Cyrillic_Extended_A: return os << "Cyrillic_Extended_A";
         case Block::Cyrillic_Extended_B: return os << "Cyrillic_Extended_B";
@@ -917,6 +927,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Ethiopic: return os << "Ethiopic";
         case Block::Ethiopic_Extended: return os << "Ethiopic_Extended";
         case Block::Ethiopic_Extended_A: return os << "Ethiopic_Extended_A";
+        case Block::Ethiopic_Extended_B: return os << "Ethiopic_Extended_B";
         case Block::Ethiopic_Supplement: return os << "Ethiopic_Supplement";
         case Block::General_Punctuation: return os << "General_Punctuation";
         case Block::Geometric_Shapes: return os << "Geometric_Shapes";
@@ -956,6 +967,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Javanese: return os << "Javanese";
         case Block::Kaithi: return os << "Kaithi";
         case Block::Kana_Extended_A: return os << "Kana_Extended_A";
+        case Block::Kana_Extended_B: return os << "Kana_Extended_B";
         case Block::Kana_Supplement: return os << "Kana_Supplement";
         case Block::Kanbun: return os << "Kanbun";
         case Block::Kangxi_Radicals: return os << "Kangxi_Radicals";
@@ -976,6 +988,8 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Latin_Extended_C: return os << "Latin_Extended_C";
         case Block::Latin_Extended_D: return os << "Latin_Extended_D";
         case Block::Latin_Extended_E: return os << "Latin_Extended_E";
+        case Block::Latin_Extended_F: return os << "Latin_Extended_F";
+        case Block::Latin_Extended_G: return os << "Latin_Extended_G";
         case Block::Latin_1_Supplement: return os << "Latin_1_Supplement";
         case Block::Lepcha: return os << "Lepcha";
         case Block::Letterlike_Symbols: return os << "Letterlike_Symbols";
@@ -1040,6 +1054,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Old_Sogdian: return os << "Old_Sogdian";
         case Block::Old_South_Arabian: return os << "Old_South_Arabian";
         case Block::Old_Turkic: return os << "Old_Turkic";
+        case Block::Old_Uyghur: return os << "Old_Uyghur";
         case Block::Optical_Character_Recognition: return os << "Optical_Character_Recognition";
         case Block::Oriya: return os << "Oriya";
         case Block::Ornamental_Dingbats: return os << "Ornamental_Dingbats";
@@ -1102,6 +1117,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Takri: return os << "Takri";
         case Block::Tamil: return os << "Tamil";
         case Block::Tamil_Supplement: return os << "Tamil_Supplement";
+        case Block::Tangsa: return os << "Tangsa";
         case Block::Tangut: return os << "Tangut";
         case Block::Tangut_Components: return os << "Tangut_Components";
         case Block::Tangut_Supplement: return os << "Tangut_Supplement";
@@ -1111,15 +1127,18 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Tibetan: return os << "Tibetan";
         case Block::Tifinagh: return os << "Tifinagh";
         case Block::Tirhuta: return os << "Tirhuta";
+        case Block::Toto: return os << "Toto";
         case Block::Transport_and_Map_Symbols: return os << "Transport_and_Map_Symbols";
         case Block::Ugaritic: return os << "Ugaritic";
         case Block::Unified_Canadian_Aboriginal_Syllabics: return os << "Unified_Canadian_Aboriginal_Syllabics";
         case Block::Unified_Canadian_Aboriginal_Syllabics_Extended: return os << "Unified_Canadian_Aboriginal_Syllabics_Extended";
+        case Block::Unified_Canadian_Aboriginal_Syllabics_Extended_A: return os << "Unified_Canadian_Aboriginal_Syllabics_Extended_A";
         case Block::Vai: return os << "Vai";
         case Block::Variation_Selectors: return os << "Variation_Selectors";
         case Block::Variation_Selectors_Supplement: return os << "Variation_Selectors_Supplement";
         case Block::Vedic_Extensions: return os << "Vedic_Extensions";
         case Block::Vertical_Forms: return os << "Vertical_Forms";
+        case Block::Vithkuqi: return os << "Vithkuqi";
         case Block::Wancho: return os << "Wancho";
         case Block::Warang_Citi: return os << "Warang_Citi";
         case Block::Yezidi: return os << "Yezidi";
@@ -1127,6 +1146,7 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept {
         case Block::Yi_Syllables: return os << "Yi_Syllables";
         case Block::Yijing_Hexagram_Symbols: return os << "Yijing_Hexagram_Symbols";
         case Block::Zanabazar_Square: return os << "Zanabazar_Square";
+        case Block::Znamenny_Musical_Notation: return os << "Znamenny_Musical_Notation";
     }
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }

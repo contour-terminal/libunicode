@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/grapheme_segmenter.h>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 using namespace unicode;
 using namespace std::string_literals;
