@@ -51,19 +51,12 @@ endif()
 
 # ----------------------------------------------------------------------------
 # 3rdparty dependencies
+include(ThirdParties)
 
-if(LIBUNICODE_EMBEDDED_FMTLIB)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/fmt" EXCLUDE_FROM_ALL)
-    add_definitions(-DFMT_USE_WINDOWS_H=0)
-else()
-    # master project must provide its own fmtlib
-endif()
+ThirdPartiesAdd_Catch2()
+ThirdPartiesAdd_fmtlib()
 
-if(LIBUNICODE_TESTING AND LIBUNICODE_EMBEDDED_CATCH2)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/catch2")
-else()
-    # master project must provide its own fmtlib
-endif()
+# ----------------------------------------------------------------------------
 
 add_subdirectory(src/unicode)
 add_subdirectory(src/tools)
