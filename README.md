@@ -1,5 +1,5 @@
 [![C++17](https://img.shields.io/badge/standard-C%2B%2B%2017-blue.svg?logo=C%2B%2B)](https://isocpp.org/)
-[![CI Build](https://github.com/christianparpart/libunicode/workflows/Build/badge.svg)](https://github.com/christianparpart/libunicode/actions?query=workflow%3ABuild)
+[![CI Build](https://github.com/contour-terminal/libunicode/workflows/Build/badge.svg)](https://github.com/contour-terminal/libunicode/actions?query=workflow%3ABuild)
 
 # Modern C++17 Unicode Library
 
@@ -30,7 +30,7 @@ The API naming conventions are chosen to look familiar to those using the C++ st
 ### Integrate with your CMake project
 
 ```sh
-git submodule add --name libunicode https://github.com/christianparpart/libunicode 3rdparty/libunicode
+git submodule add --name libunicode https://github.com/contour-terminal/libunicode 3rdparty/libunicode
 ```
 
 ```cmake
@@ -42,15 +42,15 @@ target_link_libraries(your_tool PUBLIC unicode::core)
 
 ### Contributing
 
-- for filing issues please visit: https://github.com/christianparpart/libunicode/issues
-- fork and create pull requests:  https://github.com/christianparpart/libunicode/pulls
+- for filing issues please visit: https://github.com/contour-terminal/libunicode/issues
+- fork and create pull requests:  https://github.com/contour-terminal/libunicode/pulls
 - I am also happy to just receive code reviews
 - you can help with documentation, or
 - general feedback is also very welcome
 
 ### Users of this library
 
-* [Contour Terminal Emulator](https://github.com/christianparpart/contour/)
+* [Contour Terminal Emulator](https://github.com/contour-terminal/contour/)
 
 ### Disclaimer
 
