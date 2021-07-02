@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -52,9 +52,6 @@ endif()
 # ----------------------------------------------------------------------------
 # 3rdparty dependencies
 include(ThirdParties)
-
-ThirdPartiesAdd_Catch2()
-ThirdPartiesAdd_fmtlib()
 
 # ----------------------------------------------------------------------------
 
