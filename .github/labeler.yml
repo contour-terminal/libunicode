@@ -1,6 +1,7 @@
 CI:
   - .github/**
 CMake:
+  - **CMakeLists.txt
   - cmake/**
 test:
   - src/**/*_test.cpp
