@@ -17,9 +17,7 @@ jobs:
   build_ubuntu:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
-      - name: "initialize sub modules"
-        run: git submodule update --init --recursive
+      - uses: actions/checkout@v2
       - name: "install dependencies"
         run: |
           set -ex
@@ -39,9 +37,7 @@ jobs:
   build_osx:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: "Initialize sub modules"
-        run: git submodule update --init --recursive
+      - uses: actions/checkout@v2
       - name: "Install dependencies"
         run: |
           set -ex
@@ -62,9 +58,7 @@ jobs:
   build_windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: "Initialize sub modules"
-        run: git submodule update --init --recursive
+      - uses: actions/checkout@v2
       - name: "create build directory"
         run: mkdir build
       - name: "Generate build files"
