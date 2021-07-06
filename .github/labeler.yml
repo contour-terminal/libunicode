@@ -1,7 +1,7 @@
 CI:
-  - .github/**/*
+  - .github/**
 CMake:
-  - cmake/**/*
+  - cmake/**
 test:
   - src/**/*_test.cpp
 ucd:
