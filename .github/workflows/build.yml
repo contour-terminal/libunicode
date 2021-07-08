@@ -29,7 +29,7 @@ jobs:
             compiler: cl
           - os: ubuntu
             compiler: cl
-    name: ${{matrix.os}}/${{matrix.compiler}}
+    name: ${{matrix.os}} / ${{matrix.compiler}}
     runs-on: ${{matrix.os}}-latest
     steps:
       - uses: actions/checkout@v2
