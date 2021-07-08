@@ -34,7 +34,6 @@ target_link_libraries(unicode PUBLIC fmt::fmt-header-only)
 
 # --------------------------------------------------------------------------------------------------------
 # unicode_test
-
 if(LIBUNICODE_TESTING)
     enable_testing()
     add_executable(unicode_test
@@ -50,5 +49,5 @@ if(LIBUNICODE_TESTING)
         word_segmenter_test.cpp
     )
     target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)
-    add_test(unicode_test ./unicode_test)
+    add_test(unicode_test unicode_test)
 endif()
