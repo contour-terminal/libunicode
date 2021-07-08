@@ -12,60 +12,38 @@ on:
     branches:
       - master
 
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
 jobs:
-
-  build_ubuntu:
-    runs-on: ubuntu-20.04
+  unix:
+    strategy:
+      matrix:
+        os: [ubuntu, macos, windows]
+        compiler: [g++, clang++, cl]
+        exclude:
+          - os: macos
+            compiler: g++
+          - os: macos
+            compiler: cl
+          - os: ubuntu
+            compiler: cl
+    name: ${{matrix.os}}/${{matrix.compiler}}
+    runs-on: ${{matrix.os}}-latest
     steps:
       - uses: actions/checkout@v2
-      - name: "install dependencies"
-        run: |
-          set -ex
-          cat /etc/apt/sources.list
-          sudo apt -q update
-          sudo apt install -y "g++-10"
-      - name: "create build directory"
-        run: mkdir build
-      - name: "cmake"
-        run: |
-          cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-10
-      - name: "build"
-        run: cmake --build build/ -- -j3
-      - name: "test"
-        run: ./build/src/unicode/unicode_test
 
-  build_osx:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: "Install dependencies"
-        run: |
-          set -ex
-          brew update
-          brew install pkg-config
-      - name: "Create build directory"
-        run: mkdir build
-      - name: "Generate build files"
-        run: |
-          cmake . \
-                -DCMAKE_BUILD_TYPE=Release \
-                -B build/
-      - name: "Build"
-        run: cmake --build build/
-      - name: "test: libunicode"
-        run: ./build/src/unicode/unicode_test
+      - uses: actions/cache@v2
+        with:
+          path: "**/cpm_modules"
+          key: ${{github.workflow}}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
-  build_windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: "create build directory"
-        run: mkdir build
-      - name: "Generate build files"
-        # /EHsc enables unwind semantics
-        run: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="/EHsc" -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -B build .
-      - name: "Build"
-        run: cmake --build build/
-      - name: "test"
-        run: .\build\src\unicode\Debug\unicode_test.exe -s
+      - name: configure
+        run: cmake -S . -B build -DLIBUNICODE_TESTING=ON -DCMAKE_CXX_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=Debug
 
+      - name: build
+        run: cmake --build build -j4
+
+      - name: test
+        run: ctest --test-dir build/src/unicode --build-config Debug
