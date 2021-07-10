@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/capi.h>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <fmt/format.h>
 
