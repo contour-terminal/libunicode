@@ -13,11 +13,28 @@
  */
 #pragma once
 
+#include <unicode/detail/convert-common.hpp>
+#include <unicode/detail/convert-naive.hpp>
+#include <unicode/detail/convert-sse.hpp>
+#include <unicode/detail/convert-avx512bw.hpp>
+//#include <unicode/detail/convert-avx512.hpp>
+
 #include <string_view>
 #include <array>
 #include <type_traits>
 #include <iterator>
 #include <optional>
+
+namespace unicode::accelerator
+{
+#if defined(__AVX512BW__)
+    using optimal = avx512bw;
+#elif defined(__SSE__)
+    using optimal = sse;
+#else
+    using optimal = naive;
+#endif
+}
 
 namespace unicode {
 
@@ -60,7 +77,60 @@ template<> struct decoder<char> // {{{
     unsigned expectedLength = 0;
     unsigned currentLength = 0;
 
+    LIBUNICODE_ALIGNED_FUNC
+    LIBUNICODE_FORCE_INLINE
+    decoder_status operator()(uint8_t const* _begin,
+                              uint8_t const* _end,
+                              char32_t* _output)
+    {
+        return consume<accelerator::optimal>(_begin, _end, _output);
+    }
+
+    template <typename Accelerator>
+    LIBUNICODE_ALIGNED_FUNC
+    LIBUNICODE_FORCE_INLINE
+    decoder_status consume(uint8_t const* _begin,
+                           uint8_t const* _end,
+                           char32_t* _output)
+    {
+        uint8_t const* inputBegin = _begin;
+        char32_t const* outputBegin = _output;
+
+        if (!consumeUntilAligned<Accelerator>(_begin, _end, _output))
+            return decoder_status{
+                false,
+                static_cast<size_t>(_begin - inputBegin),
+                static_cast<size_t>(_output - outputBegin),
+            };
+
+        // Accelerated processing (128-bit aligned blocks)
+        while (_begin <= _end - Accelerator::alignment)
+        {
+            if (*_begin < 0x80)
+                detail::convertAsciiBlockOnce<Accelerator>(_begin, _output);
+            else if (auto const opt = consumeCodepoint(_begin, _end))
+                *_output++ = *opt;
+            else
+                return decoder_status{
+                    false,
+                    static_cast<size_t>(_begin - inputBegin),
+                    static_cast<size_t>(_output - outputBegin),
+                };
+        }
+
+        return decoder_status{
+            consumeTrailingBytes(_begin, _end, _output),
+            static_cast<size_t>(_begin - inputBegin),
+            static_cast<size_t>(_output - outputBegin),
+        };
+    }
+
     constexpr std::optional<char32_t> operator()(uint8_t _byte)
+    {
+        return consumeCodeunit(_byte);
+    }
+
+    constexpr std::optional<char32_t> consumeCodeunit(uint8_t _byte)
     {
         if (!expectedLength)
         {
@@ -88,7 +158,10 @@ template<> struct decoder<char> // {{{
                 character = _byte & 0b0000'0111;
             }
             else
+            {
+                expectedLength = 0; // reset state
                 return std::nullopt; // invalid
+            }
         }
         else
         {
@@ -106,88 +179,62 @@ template<> struct decoder<char> // {{{
 
     template <
         typename InputIterator,
+        typename InputSentinel,
         std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0
     >
-    constexpr std::optional<char32_t> operator()(InputIterator& _input)
+    constexpr std::optional<char32_t> operator()(InputIterator& _input, InputSentinel _end)
     {
-        using std::nullopt;
+        return consumeCodepoint(_input, _end);
+    }
 
-        auto const ch0 = uint8_t(*_input++);
-        if (ch0 < 0x80) // 0xxx_xxxx
-            return static_cast<char32_t>(ch0);
+    template <
+        typename InputIterator,
+        typename InputSentinel,
+        std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0
+    >
+    LIBUNICODE_FORCE_INLINE
+    constexpr std::optional<char32_t> consumeCodepoint(InputIterator& _input, InputSentinel _end)
+    {
+        while (_input < _end)
+            if (auto codepoint = consumeCodeunit(*_input++))
+                return codepoint;
 
-        if (ch0 < 0xC0)
-            return nullopt;
+        return std::nullopt;
+    }
 
-        if (ch0 < 0xE0) // 110x_xxxx 10xx_xxxx
+private:
+    template <typename Accelerator>
+    LIBUNICODE_FORCE_INLINE
+    bool consumeUntilAligned(uint8_t const*& _begin,
+                             uint8_t const* _end,
+                             char32_t*& _output)
+    {
+        // Consume until 128-bit aligned.
+        while (_begin < _end && !detail::is_aligned(_begin, Accelerator::alignment))
         {
-            auto const ch1 = uint8_t(*_input++);
-            if ((ch1 >> 6) != 2)
-                return nullopt;
-            return static_cast<char32_t>((ch0 << 6) + ch1 - 0x3080);
+            if (auto const opt = consumeCodepoint(_begin, _end))
+                *_output++ = *opt;
+            else
+                return false;
         }
+        return true;
+    }
 
-        if (ch0 < 0xF0) // 1110_xxxx 10xx_xxxx 10xx_xxxx
+    LIBUNICODE_FORCE_INLINE
+    bool consumeTrailingBytes(uint8_t const*& _begin,
+                              uint8_t const* _end,
+                              char32_t*& _output)
+    {
+        while (_begin < _end)
         {
-            auto const ch1 = uint8_t(*_input++);
-            if (ch1 >> 6 != 2)
-                return nullopt;
-            auto const ch2 = uint8_t(*_input++);
-            if (ch2 >> 6 != 2)
-                return nullopt;
-            return static_cast<char32_t>((ch0 << 12) + (ch1 << 6) + ch2 - 0xE2080);
+            if (*_begin < 0x80)
+                *_output++ = *_begin++;
+            else if (auto const opt = consumeCodepoint(_begin, _end))
+                *_output++ = *opt;
+            else
+                return false;
         }
-        if (ch0 < 0xF8) // 1111_0xxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
-        {
-            auto const ch1 = uint8_t(*_input++);
-            if (ch1 >> 6 != 2)
-                return nullopt;
-            auto const ch2 = uint8_t(*_input++);
-            if (ch2 >> 6 != 2)
-                return nullopt;
-            auto const ch3 = uint8_t(*_input++);
-            if (ch3 >> 6 != 2)
-                return nullopt;
-            return static_cast<char32_t>((ch0 << 18) + (ch1 << 12) + (ch2 << 6) + ch3 - 0x3C82080);
-        }
-        if (ch0 < 0xFC) // 1111_10xx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
-        {
-            auto const ch1 = uint8_t(*_input++);
-            if (ch1 >> 6 != 2)
-                return nullopt;
-            auto const ch2 = uint8_t(*_input++);
-            if (ch2 >> 6 != 2)
-                return nullopt;
-            auto const ch3 = uint8_t(*_input++);
-            if (ch3 >> 6 != 2)
-                return nullopt;
-            auto const ch4 = uint8_t(*_input++);
-            if (ch4 >> 6 != 2)
-                return nullopt;
-            auto const a = static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
-            return static_cast<char32_t>(a - 0xFA082080lu);
-        }
-        if (ch0 < 0xFE) // 1111_110x 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
-        {
-            auto const ch1 = uint8_t(*_input++);
-            if (ch1 >> 6 != 2)
-                return nullopt;
-            auto const ch2 = uint8_t(*_input++);
-            if (ch2 >> 6 != 2)
-                return nullopt;
-            auto const ch3 = uint8_t(*_input++);
-            if (ch3 >> 6 != 2)
-                return nullopt;
-            auto const ch4 = uint8_t(*_input++);
-            if (ch4 >> 6 != 2)
-                return nullopt;
-            auto const ch5 = uint8_t(*_input++);
-            if (ch5 >> 6 != 2)
-                return nullopt;
-            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12) + (ch4 << 6) + ch5);
-            return static_cast<char32_t>(a - 0x82082080);
-        }
-        return nullopt;
+        return true;
     }
 }; // }}}
 template<> struct encoder<char16_t> // {{{
@@ -261,10 +308,13 @@ template<> struct encoder<char32_t> // {{{ (no-op)
 template<> struct decoder<char32_t> // {{{ (no-op)
 {
 
-    template <typename InputIterator>
-    constexpr std::optional<char32_t> operator()(InputIterator& _input)
+    template <typename InputIterator, typename InputSentinel>
+    constexpr std::optional<char32_t> operator()(InputIterator& _input, InputSentinel _end)
     {
-        return *_input++;
+        if (_input != _end)
+            return *_input++;
+        else
+            return std::nullopt;
     }
 }; // }}}
 template<> struct encoder<wchar_t> // {{{
@@ -321,7 +371,7 @@ OutputIterator convert_to(std::basic_string_view<S> _input, OutputIterator _outp
         encoder<T> write{};
         while (i != e)
         {
-            auto const outChar = read(i);
+            auto const outChar = read(i, e);
             if (outChar.has_value())
                 _output = write(outChar.value(), _output);
         }
