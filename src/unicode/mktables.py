@@ -23,15 +23,15 @@ from codecs import open as codecs_open
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
 SCRIPT_MTIME = os.stat(__file__).st_mtime
-PropertyValueAliases_fname = 'PropertyValueAliases-14.0.0d13.txt'
-DerivedGeneralCategory_fname = 'DerivedGeneralCategory-14.0.0d18.txt'
-DerivedCoreProperties_fname = 'DerivedCoreProperties-14.0.0d18.txt'
-GraphemeBreakProperty_fname = 'GraphemeBreakProperty-14.0.0d16.txt'
-Scripts_fname = 'Scripts-14.0.0d18.txt'
-Blocks_fname = 'Blocks-14.0.0d4.txt'
-ScriptExtensions_fname = 'ScriptExtensions-14.0.0d17.txt'
-Emoji_data_fname = 'emoji-data.txt'
-EastAsianWidth_fname = 'EastAsianWidth-14.0.0d8.txt'
+PropertyValueAliases_fname = 'PropertyValueAliases.txt'
+DerivedGeneralCategory_fname = '/extracted/DerivedGeneralCategory.txt'
+DerivedCoreProperties_fname = 'DerivedCoreProperties.txt'
+GraphemeBreakProperty_fname = '/auxiliary/GraphemeBreakProperty.txt'
+Scripts_fname = 'Scripts.txt'
+Blocks_fname = 'Blocks.txt'
+ScriptExtensions_fname = 'ScriptExtensions.txt'
+Emoji_data_fname = '/emoji/emoji-data.txt'
+EastAsianWidth_fname = 'EastAsianWidth.txt'
 
 PLANES = [
     {'plane':  0, 'start':   0x0000, 'end':  0x0FFFF, 'short':    'BMP', 'name': 'Basic Multilingual Plane'},
@@ -483,7 +483,7 @@ namespace unicode {
         # }}}
 
     def load_general_category(self): # {{{
-        with uopen(self.ucd_dir + '/extracted/' + DerivedGeneralCategory_fname) as f:
+        with uopen(self.ucd_dir + DerivedGeneralCategory_fname) as f:
             headerRE = re.compile('^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
             cat_name = ''
@@ -708,7 +708,7 @@ namespace unicode {
         # }}}
 
     def process_grapheme_break_props(self):
-        self.process_props(self.ucd_dir + '/auxiliary/' + GraphemeBreakProperty_fname, 'Property')
+        self.process_props(self.ucd_dir + GraphemeBreakProperty_fname, 'Property')
 
     def load_scripts(self):
         self.scripts = self.load_generic_properties(self.ucd_dir + '/' + Scripts_fname)
@@ -876,7 +876,7 @@ namespace unicode {
         # }}}
 
     def process_emoji_props(self): # {{{
-        with uopen(self.ucd_dir + '/emoji/' + Emoji_data_fname) as f:
+        with uopen(self.ucd_dir + Emoji_data_fname) as f:
             # collect
             props_name = ''
             props = dict()

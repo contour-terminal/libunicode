@@ -1116,7 +1116,7 @@ auto static const Alphabetic = std::array<Interval, 1117>{ // {{{
     Interval{ 0x1E290, 0x1E2AD }, // Lo  [30] TOTO LETTER PA..TOTO LETTER A
     Interval{ 0x1E2C0, 0x1E2EB }, // Lo  [44] WANCHO LETTER AA..WANCHO LETTER YIH
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -1648,7 +1648,7 @@ auto static const Case_Ignorable = std::array<Interval, 479>{ // {{{
     Interval{ 0xE0020, 0xE007F }, // Cf  [96] TAG SPACE..CANCEL TAG
     Interval{ 0xE0100, 0xE01EF }, // Mn [240] VARIATION SELECTOR-17..VARIATION SELECTOR-256
 }; // }}}
-auto static const Cased = std::array<Interval, 165>{ // {{{
+auto static const Cased = std::array<Interval, 169>{ // {{{
     Interval{ 0x0041, 0x005A }, // L&  [26] LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER Z
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
@@ -1774,6 +1774,10 @@ auto static const Cased = std::array<Interval, 165>{ // {{{
     Interval{ 0x105A3, 0x105B1 }, // L&  [15] VITHKUQI SMALL LETTER HA..VITHKUQI SMALL LETTER RE
     Interval{ 0x105B3, 0x105B9 }, // L&   [7] VITHKUQI SMALL LETTER SE..VITHKUQI SMALL LETTER XE
     Interval{ 0x105BB, 0x105BC }, // L&   [2] VITHKUQI SMALL LETTER Y..VITHKUQI SMALL LETTER ZE
+    Interval{ 0x10780, 0x10780 }, // Lm       MODIFIER LETTER SMALL CAPITAL AA
+    Interval{ 0x10783, 0x10785 }, // Lm   [3] MODIFIER LETTER SMALL AE..MODIFIER LETTER SMALL B WITH HOOK
+    Interval{ 0x10787, 0x107B0 }, // Lm  [42] MODIFIER LETTER SMALL DZ DIGRAPH..MODIFIER LETTER SMALL V WITH RIGHT HOOK
+    Interval{ 0x107B2, 0x107BA }, // Lm   [9] MODIFIER LETTER SMALL CAPITAL Y..MODIFIER LETTER SMALL S WITH CURL
     Interval{ 0x10C80, 0x10CB2 }, // L&  [51] OLD HUNGARIAN CAPITAL LETTER A..OLD HUNGARIAN CAPITAL LETTER US
     Interval{ 0x10CC0, 0x10CF2 }, // L&  [51] OLD HUNGARIAN SMALL LETTER A..OLD HUNGARIAN SMALL LETTER US
     Interval{ 0x118A0, 0x118DF }, // L&  [64] WARANG CITI CAPITAL LETTER NGAA..WARANG CITI SMALL LETTER VIYO
@@ -6091,7 +6095,7 @@ auto static const Grapheme_Base = std::array<Interval, 1721>{ // {{{
     Interval{ 0x1E2F0, 0x1E2F9 }, // Nd  [10] WANCHO DIGIT ZERO..WANCHO DIGIT NINE
     Interval{ 0x1E2FF, 0x1E2FF }, // Sc       WANCHO NGUN SIGN
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -7881,7 +7885,7 @@ auto static const ID_Continue = std::array<Interval, 1311>{ // {{{
     Interval{ 0x1E2EC, 0x1E2EF }, // Mn   [4] WANCHO TONE TUP..WANCHO TONE KOINI
     Interval{ 0x1E2F0, 0x1E2F9 }, // Nd  [10] WANCHO DIGIT ZERO..WANCHO DIGIT NINE
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -8615,7 +8619,7 @@ auto static const ID_Start = std::array<Interval, 727>{ // {{{
     Interval{ 0x1E290, 0x1E2AD }, // Lo  [30] TOTO LETTER PA..TOTO LETTER A
     Interval{ 0x1E2C0, 0x1E2EB }, // Lo  [44] WANCHO LETTER AA..WANCHO LETTER YIH
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -8662,7 +8666,7 @@ auto static const ID_Start = std::array<Interval, 727>{ // {{{
     Interval{ 0x2F800, 0x2FA1D }, // Lo [542] CJK COMPATIBILITY IDEOGRAPH-2F800..CJK COMPATIBILITY IDEOGRAPH-2FA1D
     Interval{ 0x30000, 0x3134A }, // Lo [4939] CJK UNIFIED IDEOGRAPH-30000..CJK UNIFIED IDEOGRAPH-3134A
 }; // }}}
-auto static const Lowercase = std::array<Interval, 677>{ // {{{
+auto static const Lowercase = std::array<Interval, 681>{ // {{{
     Interval{ 0x0061, 0x007A }, // L&  [26] LATIN SMALL LETTER A..LATIN SMALL LETTER Z
     Interval{ 0x00AA, 0x00AA }, // Lo       FEMININE ORDINAL INDICATOR
     Interval{ 0x00B5, 0x00B5 }, // L&       MICRO SIGN
@@ -9306,6 +9310,10 @@ auto static const Lowercase = std::array<Interval, 677>{ // {{{
     Interval{ 0x105A3, 0x105B1 }, // L&  [15] VITHKUQI SMALL LETTER HA..VITHKUQI SMALL LETTER RE
     Interval{ 0x105B3, 0x105B9 }, // L&   [7] VITHKUQI SMALL LETTER SE..VITHKUQI SMALL LETTER XE
     Interval{ 0x105BB, 0x105BC }, // L&   [2] VITHKUQI SMALL LETTER Y..VITHKUQI SMALL LETTER ZE
+    Interval{ 0x10780, 0x10780 }, // Lm       MODIFIER LETTER SMALL CAPITAL AA
+    Interval{ 0x10783, 0x10785 }, // Lm   [3] MODIFIER LETTER SMALL AE..MODIFIER LETTER SMALL B WITH HOOK
+    Interval{ 0x10787, 0x107B0 }, // Lm  [42] MODIFIER LETTER SMALL DZ DIGRAPH..MODIFIER LETTER SMALL V WITH RIGHT HOOK
+    Interval{ 0x107B2, 0x107BA }, // Lm   [9] MODIFIER LETTER SMALL CAPITAL Y..MODIFIER LETTER SMALL S WITH CURL
     Interval{ 0x10CC0, 0x10CF2 }, // L&  [51] OLD HUNGARIAN SMALL LETTER A..OLD HUNGARIAN SMALL LETTER US
     Interval{ 0x118C0, 0x118DF }, // L&  [32] WARANG CITI SMALL LETTER NGAA..WARANG CITI SMALL LETTER VIYO
     Interval{ 0x16E60, 0x16E7F }, // L&  [32] MEDEFAIDRIN SMALL LETTER M..MEDEFAIDRIN SMALL LETTER Y
@@ -11501,7 +11509,7 @@ auto static const XID_Continue = std::array<Interval, 1315>{ // {{{
     Interval{ 0x1E2EC, 0x1E2EF }, // Mn   [4] WANCHO TONE TUP..WANCHO TONE KOINI
     Interval{ 0x1E2F0, 0x1E2F9 }, // Nd  [10] WANCHO DIGIT ZERO..WANCHO DIGIT NINE
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -12238,7 +12246,7 @@ auto static const XID_Start = std::array<Interval, 730>{ // {{{
     Interval{ 0x1E290, 0x1E2AD }, // Lo  [30] TOTO LETTER PA..TOTO LETTER A
     Interval{ 0x1E2C0, 0x1E2EB }, // Lo  [44] WANCHO LETTER AA..WANCHO LETTER YIH
     Interval{ 0x1E7E0, 0x1E7E6 }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -16079,7 +16087,7 @@ auto const General_Category = std::array<Prop<::unicode::General_Category>, 3968
     Prop<::unicode::General_Category>{ { 0x1E300, 0x1E7DF }, ::unicode::General_Category::Unassigned }, // [1248] <reserved-1E300>..<reserved-1E7DF>
     Prop<::unicode::General_Category>{ { 0x1E7E0, 0x1E7E6 }, ::unicode::General_Category::Other_Letter }, // [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
     Prop<::unicode::General_Category>{ { 0x1E7E7, 0x1E7E7 }, ::unicode::General_Category::Unassigned }, // <reserved-1E7E7>
-    Prop<::unicode::General_Category>{ { 0x1E7E8, 0x1E7EB }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Prop<::unicode::General_Category>{ { 0x1E7E8, 0x1E7EB }, ::unicode::General_Category::Other_Letter }, // [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Prop<::unicode::General_Category>{ { 0x1E7EC, 0x1E7EC }, ::unicode::General_Category::Unassigned }, // <reserved-1E7EC>
     Prop<::unicode::General_Category>{ { 0x1E7ED, 0x1E7EE }, ::unicode::General_Category::Other_Letter }, // [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Prop<::unicode::General_Category>{ { 0x1E7EF, 0x1E7EF }, ::unicode::General_Category::Unassigned }, // <reserved-1E7EF>
@@ -18268,7 +18276,7 @@ auto static const Other_Letter = std::array<Interval, 501>{ // {{{
     Interval{ 0x1E290, 0x1E2AD }, // [30] TOTO LETTER PA..TOTO LETTER A
     Interval{ 0x1E2C0, 0x1E2EB }, // [44] WANCHO LETTER AA..WANCHO LETTER YIH
     Interval{ 0x1E7E0, 0x1E7E6 }, // [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Interval{ 0x1E7E8, 0x1E7EB }, // [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Interval{ 0x1E7E8, 0x1E7EB }, // [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Interval{ 0x1E7ED, 0x1E7EE }, // [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Interval{ 0x1E7F0, 0x1E7FE }, // [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Interval{ 0x1E800, 0x1E8C4 }, // [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -22415,7 +22423,7 @@ auto static const Script = std::array<Prop<unicode::Script>, 2161>{ // {{{
     Prop<unicode::Script>{ { 0x1E2F0, 0x1E2F9 }, unicode::Script::Wancho }, // Nd  [10] WANCHO DIGIT ZERO..WANCHO DIGIT NINE
     Prop<unicode::Script>{ { 0x1E2FF, 0x1E2FF }, unicode::Script::Wancho }, // Sc       WANCHO NGUN SIGN
     Prop<unicode::Script>{ { 0x1E7E0, 0x1E7E6 }, unicode::Script::Ethiopic }, // Lo   [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Prop<unicode::Script>{ { 0x1E7E8, 0x1E7EB }, unicode::Script::Ethiopic }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Prop<unicode::Script>{ { 0x1E7E8, 0x1E7EB }, unicode::Script::Ethiopic }, // Lo   [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Prop<unicode::Script>{ { 0x1E7ED, 0x1E7EE }, unicode::Script::Ethiopic }, // Lo   [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Prop<unicode::Script>{ { 0x1E7F0, 0x1E7FE }, unicode::Script::Ethiopic }, // Lo  [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Prop<unicode::Script>{ { 0x1E800, 0x1E8C4 }, unicode::Script::Mende_Kikakui }, // Lo [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -23471,7 +23479,7 @@ Block block(char32_t _codepoint) noexcept {
 }
 
 namespace tables {
-auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_Cluster_Break>, 1376>{ // {{{
+auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_Cluster_Break>, 1375>{ // {{{
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x0000, 0x0009 }, ::unicode::Grapheme_Cluster_Break::Control }, // Cc  [10] <control-0000>..<control-0009>
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x000A, 0x000A }, ::unicode::Grapheme_Cluster_Break::LF }, // Cc       <control-000A>
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x000B, 0x000C }, ::unicode::Grapheme_Cluster_Break::Control }, // Cc   [2] <control-000B>..<control-000C>
@@ -24737,7 +24745,6 @@ auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_C
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x116B6, 0x116B6 }, ::unicode::Grapheme_Cluster_Break::SpacingMark }, // Mc       TAKRI SIGN VIRAMA
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x116B7, 0x116B7 }, ::unicode::Grapheme_Cluster_Break::Extend }, // Mn       TAKRI SIGN NUKTA
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x1171D, 0x1171F }, ::unicode::Grapheme_Cluster_Break::Extend }, // Mn   [3] AHOM CONSONANT SIGN MEDIAL LA..AHOM CONSONANT SIGN MEDIAL LIGATING RA
-    Prop<::unicode::Grapheme_Cluster_Break>{ { 0x11720, 0x11721 }, ::unicode::Grapheme_Cluster_Break::SpacingMark }, // Mc   [2] AHOM VOWEL SIGN A..AHOM VOWEL SIGN AA
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x11722, 0x11725 }, ::unicode::Grapheme_Cluster_Break::Extend }, // Mn   [4] AHOM VOWEL SIGN I..AHOM VOWEL SIGN UU
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x11726, 0x11726 }, ::unicode::Grapheme_Cluster_Break::SpacingMark }, // Mc       AHOM VOWEL SIGN E
     Prop<::unicode::Grapheme_Cluster_Break>{ { 0x11727, 0x1172B }, ::unicode::Grapheme_Cluster_Break::Extend }, // Mn   [5] AHOM VOWEL SIGN AW..AHOM SIGN KILLER
@@ -27597,7 +27604,7 @@ auto static const EastAsianWidth = std::array<Prop<::unicode::EastAsianWidth>, 1
     Prop<::unicode::EastAsianWidth>{ { 0x1E2C0, 0x1E2F9 }, ::unicode::EastAsianWidth::Neutral }, // #3
     Prop<::unicode::EastAsianWidth>{ { 0x1E2FF, 0x1E2FF }, ::unicode::EastAsianWidth::Neutral }, // Sc         WANCHO NGUN SIGN
     Prop<::unicode::EastAsianWidth>{ { 0x1E7E0, 0x1E7E6 }, ::unicode::EastAsianWidth::Neutral }, // Lo     [7] ETHIOPIC SYLLABLE HHYA..ETHIOPIC SYLLABLE HHYO
-    Prop<::unicode::EastAsianWidth>{ { 0x1E7E8, 0x1E7EB }, ::unicode::EastAsianWidth::Neutral }, // Lo     [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HWE
+    Prop<::unicode::EastAsianWidth>{ { 0x1E7E8, 0x1E7EB }, ::unicode::EastAsianWidth::Neutral }, // Lo     [4] ETHIOPIC SYLLABLE GURAGE HHWA..ETHIOPIC SYLLABLE HHWE
     Prop<::unicode::EastAsianWidth>{ { 0x1E7ED, 0x1E7EE }, ::unicode::EastAsianWidth::Neutral }, // Lo     [2] ETHIOPIC SYLLABLE GURAGE MWI..ETHIOPIC SYLLABLE GURAGE MWEE
     Prop<::unicode::EastAsianWidth>{ { 0x1E7F0, 0x1E7FE }, ::unicode::EastAsianWidth::Neutral }, // Lo    [15] ETHIOPIC SYLLABLE GURAGE QWI..ETHIOPIC SYLLABLE GURAGE PWEE
     Prop<::unicode::EastAsianWidth>{ { 0x1E800, 0x1E8C4 }, ::unicode::EastAsianWidth::Neutral }, // Lo   [197] MENDE KIKAKUI SYLLABLE M001 KI..MENDE KIKAKUI SYLLABLE M060 NYON
@@ -28069,7 +28076,7 @@ auto static const Emoji = std::array<Interval, 394>{ // {{{
     Interval{ 0x1F62E, 0x1F62F }, // E1.0   [2] (😮..😯)    face with open mouth..hushed face
     Interval{ 0x1F630, 0x1F633 }, // E0.6   [4] (😰..😳)    anxious face with sweat..flushed face
     Interval{ 0x1F634, 0x1F634 }, // E1.0   [1] (😴)       sleeping face
-    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       knocked-out face
+    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       face with crossed-out eyes
     Interval{ 0x1F636, 0x1F636 }, // E1.0   [1] (😶)       face without mouth
     Interval{ 0x1F637, 0x1F640 }, // E0.6  [10] (😷..🙀)    face with medical mask..weary cat
     Interval{ 0x1F641, 0x1F644 }, // E1.0   [4] (🙁..🙄)    slightly frowning face..face with rolling eyes
@@ -28415,7 +28422,7 @@ auto static const Emoji_Presentation = std::array<Interval, 272>{ // {{{
     Interval{ 0x1F62E, 0x1F62F }, // E1.0   [2] (😮..😯)    face with open mouth..hushed face
     Interval{ 0x1F630, 0x1F633 }, // E0.6   [4] (😰..😳)    anxious face with sweat..flushed face
     Interval{ 0x1F634, 0x1F634 }, // E1.0   [1] (😴)       sleeping face
-    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       knocked-out face
+    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       face with crossed-out eyes
     Interval{ 0x1F636, 0x1F636 }, // E1.0   [1] (😶)       face without mouth
     Interval{ 0x1F637, 0x1F640 }, // E0.6  [10] (😷..🙀)    face with medical mask..weary cat
     Interval{ 0x1F641, 0x1F644 }, // E1.0   [4] (🙁..🙄)    slightly frowning face..face with rolling eyes
@@ -28886,7 +28893,7 @@ auto static const Extended_Pictographic = std::array<Interval, 503>{ // {{{
     Interval{ 0x1F62E, 0x1F62F }, // E1.0   [2] (😮..😯)    face with open mouth..hushed face
     Interval{ 0x1F630, 0x1F633 }, // E0.6   [4] (😰..😳)    anxious face with sweat..flushed face
     Interval{ 0x1F634, 0x1F634 }, // E1.0   [1] (😴)       sleeping face
-    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       knocked-out face
+    Interval{ 0x1F635, 0x1F635 }, // E0.6   [1] (😵)       face with crossed-out eyes
     Interval{ 0x1F636, 0x1F636 }, // E1.0   [1] (😶)       face without mouth
     Interval{ 0x1F637, 0x1F640 }, // E0.6  [10] (😷..🙀)    face with medical mask..weary cat
     Interval{ 0x1F641, 0x1F644 }, // E1.0   [4] (🙁..🙄)    slightly frowning face..face with rolling eyes
