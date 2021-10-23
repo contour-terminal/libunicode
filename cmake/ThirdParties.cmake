@@ -1,13 +1,13 @@
 include(CPM)
 
-set(3rdparty_catch2_version "6f21a3609cea360846a0ca93be55877cca14c86d" CACHE STRING "catch2: commit hash")
-set(3rdparty_fmt_version "7a604cdd98eff2883b9dbd7d1ca1ddd8c147b80e" CACHE STRING "fmt: commit hash")
+set(3rdparty_catch2_version "22750cde0e0d2c02ab447e2500422f2711356053" CACHE STRING "catch2: commit hash")
+set(3rdparty_fmt_version "3b6e409cd8573f63e4acad7717d9082bd898ec87" CACHE STRING "fmt: commit hash")
 
 CPMAddPackage(
   NAME fmt
   VERSION ${3rdparty_fmt_version}
   URL https://github.com/fmtlib/fmt/archive/${3rdparty_fmt_version}.zip
-  URL_HASH SHA256=3e2745554689c34fe23b6d5575c7ee0c74d2e2b83da15e2326263f6fec8ed409
+  URL_HASH SHA256=d5a6f6e3431fec6332021dc69a14dd11b85b0103b6317d33b2e5e5a91fd08add
 )
 
 if(LIBUNICODE_TESTING)
@@ -15,7 +15,7 @@ if(LIBUNICODE_TESTING)
     NAME catch2
     VERSION ${3rdparty_catch2_version}
     URL https://github.com/catchorg/Catch2/archive/${3rdparty_catch2_version}.zip
-    URL_HASH SHA256=8aec86bc5ccfd963caf3dc4cd137001a7f80bf54d44c69b187cc92b40851399a
+    URL_HASH SHA256=ab21f8c8804f3c9987d21a731440611d8dfecf8a80efcd2e46bf67a3d9bdf967
   )
 endif()
 
