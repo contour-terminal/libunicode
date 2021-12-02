@@ -32,7 +32,7 @@ using segmenter_property_t = typename T::property_type;
 template <typename... Ts>
 using segmenter_property_tuple = std::tuple<segmenter_property_t<Ts>...>;
 
-namespace
+namespace detail
 {
     template <typename Prepend, typename... Ts>
     inline void _continuePrintList(std::ostream& os, Prepend const& prep, std::tuple<Ts...> const& p)
@@ -67,28 +67,28 @@ class basic_run_segmenter {
         /// presentation style of the underlying segment
         property_tuple properties;
 
-        constexpr bool operator==(range const& other) const noexcept
+        constexpr bool operator==(range other) const noexcept
         {
             return start == other.start
                 && end == other.end
                 && properties == other.properties;
         }
 
-        constexpr bool operator!=(range const& other) const noexcept
+        constexpr bool operator!=(range other) const noexcept
         {
             return !(*this == other);
         }
 
-        friend inline std::ostream& operator<<(std::ostream& os, range const& r)
+        friend inline std::ostream& operator<<(std::ostream& os, range r)
         {
             os << '(' << r.start << ".." << r.end;
-            _continuePrintList(os, ", ", r.properties);
+            detail::_continuePrintList(os, ", ", r.properties);
             os << ')';
             return os;
         }
     };
 
-    basic_run_segmenter(std::u32string_view const& _sv)
+    explicit basic_run_segmenter(std::u32string_view _sv)
         : basic_run_segmenter(_sv.data(), _sv.size()) {}
 
     basic_run_segmenter(char32_t const* _text, size_t _size)
