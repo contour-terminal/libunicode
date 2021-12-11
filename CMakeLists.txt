@@ -31,8 +31,6 @@ include(PedanticCompiler)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
-option(LIBUNICODE_EMBEDDED_CATCH2 "libunicode: Uses embedded catch2 for testing [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
-option(LIBUNICODE_EMBEDDED_FMTLIB "libunicode: Uses embedded fmtlib [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
@@ -52,7 +50,13 @@ endif()
 # ----------------------------------------------------------------------------
 # 3rdparty dependencies
 
-find_package(fmt REQUIRED)
+if(NOT TARGET fmt)
+    find_package(fmt REQUIRED)
+endif()
+
+if(LIBUNICODE_TESTING)
+    find_package(Catch2 REQUIRED)
+endif()
 
 # ----------------------------------------------------------------------------
 
