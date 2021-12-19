@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/width.h>
-#include <catch2/catch_all.hpp>
+#include <catch2/catch.hpp>
 
 TEST_CASE("random test", "[width]")
 {

@@ -54,7 +54,7 @@ if(NOT TARGET fmt)
     find_package(fmt REQUIRED)
 endif()
 
-if(LIBUNICODE_TESTING)
+if(LIBUNICODE_TESTING AND NOT TARGET Catch2::Catch2)
     find_package(Catch2 REQUIRED)
 endif()
 
