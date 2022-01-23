@@ -171,7 +171,7 @@ inline ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
     return result;
 }
 
-#if __cplusplus > 201703L // C++20 (char8_t)
+#if 0 // TODO(do that later) __cplusplus > 201703L // C++20 (char8_t)
 inline ConvertResult from_utf8(char8_t const* _bytes, size_t* _size)
 {
     return from_utf8((uint8_t const*)(_bytes), _size);
