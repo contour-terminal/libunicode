@@ -59,7 +59,7 @@ namespace {
                 "run segmentation for part {}: \"{}\" to be {}",
                 i,
                 to_utf8(_expects[i].first),
-                _expects[i].second
+                (unsigned) _expects[i].second
             ));
             bool const consumeSuccess = segmenter.consume(out(size), out(presentationStyle));
             REQUIRE(consumeSuccess);
