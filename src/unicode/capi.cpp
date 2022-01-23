@@ -98,7 +98,7 @@ u8u32_stream_state_t u8u32_stream_convert_create()
 
 int u8u32_stream_convert_run(u8u32_stream_state_t _handle, u8_char_t _input, u32_char_t* _output)
 {
-    if (auto const codepoint = _handle->conv(_input); codepoint.has_value())
+    if (auto const codepoint = _handle->conv(static_cast<uint8_t>(_input)); codepoint.has_value())
     {
         *_output = codepoint.value();
         return 1;
