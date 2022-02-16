@@ -131,7 +131,7 @@ int u32u8_convert(u32_char_t const* _source, size_t _slen,
 
         for (size_t k = 0; k < bufLength; ++k)
             _dest[k] = buf[k];
-        nwritten += bufLength;
+        nwritten += static_cast<int>(bufLength);
         _dest += bufLength;
         _dlen -= bufLength;
     }
