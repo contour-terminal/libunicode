@@ -18,7 +18,7 @@ function(try_add_compile_options FLAG)
     endif()
 endfunction()
 
-option(PEDANTIC_COMPILER "Compile the project with almost all warnings turned on." OFF)
+option(PEDANTIC_COMPILER "Compile the project with almost all warnings turned on." ON)
 option(PEDANTIC_COMPILER_WERROR "Enables -Werror to force warnings to be treated as errors." OFF)
 
 # Always show diagnostics in colored output.
