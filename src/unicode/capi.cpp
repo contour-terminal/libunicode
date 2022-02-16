@@ -74,10 +74,13 @@ int u32_gc_width(u32_char_t const* _codepoints, size_t _size, int _mode)
     return totalWidth;
 }
 
-int u8_gc_width(u8_char_t const* _codepoints, size_t _size)
+
+int u8_gc_width(u8_char_t const* codepoints, size_t count, int allowMod)
 {
-    (void) _codepoints;
-    (void) _size;
+    (void) codepoints;
+    (void) count;
+    (void) allowMod;
+
     return -1; // TODO
 }
 
