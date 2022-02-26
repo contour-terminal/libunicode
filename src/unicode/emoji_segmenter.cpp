@@ -128,7 +128,7 @@ class RagelIterator {
         if (v >= 0)
         {
             assert(currentCursorEnd_ >= static_cast<size_t>(v));
-            return {buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v)};
+            return {buffer_, size_, currentCursorEnd_ - static_cast<size_t>(v)};
         }
         else
         {
