@@ -30,6 +30,7 @@ endif()
 include(EnableCcache)
 include(ClangTidy)
 include(PedanticCompiler)
+include(ThirdParties)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
@@ -47,17 +48,6 @@ if(LIBUNICODE_COVERAGE AND NOT MSVC)
     message("-- [code coverage] Enabled.")
 else()
     message("-- [code coverage] Disabled.")
-endif()
-
-# ----------------------------------------------------------------------------
-# 3rdparty dependencies
-
-if(NOT TARGET fmt)
-    find_package(fmt REQUIRED)
-endif()
-
-if(LIBUNICODE_TESTING AND NOT TARGET Catch2::Catch2)
-    find_package(Catch2 REQUIRED)
 endif()
 
 # ----------------------------------------------------------------------------

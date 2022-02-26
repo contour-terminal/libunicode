@@ -1,11 +1,8 @@
 CI:
-  - .github/**
+    - .github/**
 CMake:
-  - "**CMakeLists.txt"
-  - cmake/**
-test:
-  - src/**/*_test.cpp
-ucd:
-  - src/unicode/ucd.cpp
-  - src/unicode/ucd.h
-  - src/unicode/mktables.py
+    - "**CMakeLists.txt"
+    - cmake/**
+documentation:
+    - "**/*.md"
+    - docs/**

@@ -30,7 +30,7 @@ std::string binstr(unsigned n)
 {
     string ss;
     for (int i = 7; i >= 0; --i)
-        ss += ((n & (1 << i)) != 0) ? '1' : '0';
+        ss += ((n & (1u << i)) != 0) ? '1' : '0';
     return ss;
 }
 

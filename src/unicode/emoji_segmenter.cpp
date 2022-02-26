@@ -130,18 +130,18 @@ class RagelIterator
         return *this;
     }
 
-    RagelIterator operator+(int v) const noexcept
+    RagelIterator operator+(long v) const noexcept
     {
         // TODO: assert() on integer overflow
-        return { buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v) };
+        return { buffer_, size_, currentCursorEnd_ + (size_t) v };
     }
 
-    RagelIterator operator-(int v) const noexcept
+    RagelIterator operator-(long v) const noexcept
     {
         if (v >= 0)
         {
             assert(currentCursorEnd_ >= static_cast<size_t>(v));
-            return { buffer_, size_, currentCursorEnd_ - static_cast<size_t>(v) };
+            return { buffer_, size_, currentCursorEnd_ - (size_t) v };
         }
         else
         {
