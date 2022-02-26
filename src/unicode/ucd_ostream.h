@@ -22,8 +22,9 @@ namespace unicode
 
 inline std::ostream& operator<<(std::ostream& os, Plane _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Plane::Basic_Multilingual_Plane: return os << "Basic_Multilingual_Plane";
     case Plane::Supplementary_Ideographic_Plane: return os << "Supplementary_Ideographic_Plane";
     case Plane::Supplementary_Multilingual_Plane: return os << "Supplementary_Multilingual_Plane";
@@ -32,13 +33,15 @@ inline std::ostream& operator<<(std::ostream& os, Plane _value) noexcept
     case Plane::Tertiary_Ideographic_Plane: return os << "Tertiary_Ideographic_Plane";
     case Plane::Unassigned: return os << "Unassigned";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Age _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Age::Unassigned: return os << "Unassigned";
     case Age::V10_0: return os << "V10_0";
     case Age::V11_0: return os << "V11_0";
@@ -64,13 +67,15 @@ inline std::ostream& operator<<(std::ostream& os, Age _value) noexcept
     case Age::V8_0: return os << "V8_0";
     case Age::V9_0: return os << "V9_0";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Bidi_Class _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Bidi_Class::Arabic_Letter: return os << "Arabic_Letter";
     case Bidi_Class::Arabic_Number: return os << "Arabic_Number";
     case Bidi_Class::Boundary_Neutral: return os << "Boundary_Neutral";
@@ -95,24 +100,28 @@ inline std::ostream& operator<<(std::ostream& os, Bidi_Class _value) noexcept
     case Bidi_Class::Segment_Separator: return os << "Segment_Separator";
     case Bidi_Class::White_Space: return os << "White_Space";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Bidi_Paired_Bracket_Type _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Bidi_Paired_Bracket_Type::Close: return os << "Close";
     case Bidi_Paired_Bracket_Type::None: return os << "None";
     case Bidi_Paired_Bracket_Type::Open: return os << "Open";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Canonical_Combining_Class _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Canonical_Combining_Class::A: return os << "A";
     case Canonical_Combining_Class::AL: return os << "AL";
     case Canonical_Combining_Class::AR: return os << "AR";
@@ -172,13 +181,15 @@ inline std::ostream& operator<<(std::ostream& os, Canonical_Combining_Class _val
     case Canonical_Combining_Class::R: return os << "R";
     case Canonical_Combining_Class::VR: return os << "VR";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Decomposition_Type _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Decomposition_Type::Canonical: return os << "Canonical";
     case Decomposition_Type::Circle: return os << "Circle";
     case Decomposition_Type::Compat: return os << "Compat";
@@ -198,13 +209,15 @@ inline std::ostream& operator<<(std::ostream& os, Decomposition_Type _value) noe
     case Decomposition_Type::Vertical: return os << "Vertical";
     case Decomposition_Type::Wide: return os << "Wide";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, East_Asian_Width _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case East_Asian_Width::Ambiguous: return os << "Ambiguous";
     case East_Asian_Width::Fullwidth: return os << "Fullwidth";
     case East_Asian_Width::Halfwidth: return os << "Halfwidth";
@@ -212,13 +225,15 @@ inline std::ostream& operator<<(std::ostream& os, East_Asian_Width _value) noexc
     case East_Asian_Width::Neutral: return os << "Neutral";
     case East_Asian_Width::Wide: return os << "Wide";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Hangul_Syllable_Type _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Hangul_Syllable_Type::LVT_Syllable: return os << "LVT_Syllable";
     case Hangul_Syllable_Type::LV_Syllable: return os << "LV_Syllable";
     case Hangul_Syllable_Type::Leading_Jamo: return os << "Leading_Jamo";
@@ -226,13 +241,15 @@ inline std::ostream& operator<<(std::ostream& os, Hangul_Syllable_Type _value) n
     case Hangul_Syllable_Type::Trailing_Jamo: return os << "Trailing_Jamo";
     case Hangul_Syllable_Type::Vowel_Jamo: return os << "Vowel_Jamo";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Indic_Positional_Category _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Indic_Positional_Category::Bottom: return os << "Bottom";
     case Indic_Positional_Category::Bottom_And_Left: return os << "Bottom_And_Left";
     case Indic_Positional_Category::Bottom_And_Right: return os << "Bottom_And_Right";
@@ -250,13 +267,15 @@ inline std::ostream& operator<<(std::ostream& os, Indic_Positional_Category _val
     case Indic_Positional_Category::Top_And_Right: return os << "Top_And_Right";
     case Indic_Positional_Category::Visual_Order_Left: return os << "Visual_Order_Left";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Indic_Syllabic_Category _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Indic_Syllabic_Category::Avagraha: return os << "Avagraha";
     case Indic_Syllabic_Category::Bindu: return os << "Bindu";
     case Indic_Syllabic_Category::Brahmi_Joining_Number: return os << "Brahmi_Joining_Number";
@@ -294,13 +313,15 @@ inline std::ostream& operator<<(std::ostream& os, Indic_Syllabic_Category _value
     case Indic_Syllabic_Category::Vowel_Dependent: return os << "Vowel_Dependent";
     case Indic_Syllabic_Category::Vowel_Independent: return os << "Vowel_Independent";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Jamo_Short_Name _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Jamo_Short_Name::A: return os << "A";
     case Jamo_Short_Name::AE: return os << "AE";
     case Jamo_Short_Name::B: return os << "B";
@@ -354,13 +375,15 @@ inline std::ostream& operator<<(std::ostream& os, Jamo_Short_Name _value) noexce
     case Jamo_Short_Name::YO: return os << "YO";
     case Jamo_Short_Name::YU: return os << "YU";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Joining_Group _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Joining_Group::African_Feh: return os << "African_Feh";
     case Joining_Group::African_Noon: return os << "African_Noon";
     case Joining_Group::African_Qaf: return os << "African_Qaf";
@@ -464,13 +487,15 @@ inline std::ostream& operator<<(std::ostream& os, Joining_Group _value) noexcept
     case Joining_Group::Zain: return os << "Zain";
     case Joining_Group::Zhain: return os << "Zhain";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Joining_Type _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Joining_Type::Dual_Joining: return os << "Dual_Joining";
     case Joining_Type::Join_Causing: return os << "Join_Causing";
     case Joining_Type::Left_Joining: return os << "Left_Joining";
@@ -478,13 +503,15 @@ inline std::ostream& operator<<(std::ostream& os, Joining_Type _value) noexcept
     case Joining_Type::Right_Joining: return os << "Right_Joining";
     case Joining_Type::Transparent: return os << "Transparent";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Line_Break _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Line_Break::Alphabetic: return os << "Alphabetic";
     case Line_Break::Ambiguous: return os << "Ambiguous";
     case Line_Break::Break_After: return os << "Break_After";
@@ -529,47 +556,55 @@ inline std::ostream& operator<<(std::ostream& os, Line_Break _value) noexcept
     case Line_Break::ZWJ: return os << "ZWJ";
     case Line_Break::ZWSpace: return os << "ZWSpace";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, NFC_Quick_Check _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case NFC_Quick_Check::Maybe: return os << "Maybe";
     case NFC_Quick_Check::No: return os << "No";
     case NFC_Quick_Check::Yes: return os << "Yes";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, NFKC_Quick_Check _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case NFKC_Quick_Check::Maybe: return os << "Maybe";
     case NFKC_Quick_Check::No: return os << "No";
     case NFKC_Quick_Check::Yes: return os << "Yes";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Numeric_Type _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Numeric_Type::Decimal: return os << "Decimal";
     case Numeric_Type::Digit: return os << "Digit";
     case Numeric_Type::None: return os << "None";
     case Numeric_Type::Numeric: return os << "Numeric";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Sentence_Break _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Sentence_Break::ATerm: return os << "ATerm";
     case Sentence_Break::CR: return os << "CR";
     case Sentence_Break::Close: return os << "Close";
@@ -586,25 +621,29 @@ inline std::ostream& operator<<(std::ostream& os, Sentence_Break _value) noexcep
     case Sentence_Break::Sp: return os << "Sp";
     case Sentence_Break::Upper: return os << "Upper";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Vertical_Orientation _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Vertical_Orientation::Rotated: return os << "Rotated";
     case Vertical_Orientation::Transformed_Rotated: return os << "Transformed_Rotated";
     case Vertical_Orientation::Transformed_Upright: return os << "Transformed_Upright";
     case Vertical_Orientation::Upright: return os << "Upright";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Word_Break _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Word_Break::ALetter: return os << "ALetter";
     case Word_Break::CR: return os << "CR";
     case Word_Break::Double_Quote: return os << "Double_Quote";
@@ -629,13 +668,15 @@ inline std::ostream& operator<<(std::ostream& os, Word_Break _value) noexcept
     case Word_Break::WSegSpace: return os << "WSegSpace";
     case Word_Break::ZWJ: return os << "ZWJ";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Core_Property _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Core_Property::Alphabetic: return os << "Alphabetic";
     case Core_Property::Case_Ignorable: return os << "Case_Ignorable";
     case Core_Property::Cased: return os << "Cased";
@@ -656,13 +697,15 @@ inline std::ostream& operator<<(std::ostream& os, Core_Property _value) noexcept
     case Core_Property::XID_Continue: return os << "XID_Continue";
     case Core_Property::XID_Start: return os << "XID_Start";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, General_Category _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case General_Category::Unspecified: return os << "Unspecified";
     case General_Category::Close_Punctuation: return os << "Close_Punctuation";
     case General_Category::Connector_Punctuation: return os << "Connector_Punctuation";
@@ -695,13 +738,15 @@ inline std::ostream& operator<<(std::ostream& os, General_Category _value) noexc
     case General_Category::Unassigned: return os << "Unassigned";
     case General_Category::Uppercase_Letter: return os << "Uppercase_Letter";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Script::Invalid: return os << "Invalid";
     case Script::Unknown: return os << "Unknown";
     case Script::Common: return os << "Common";
@@ -861,13 +906,15 @@ inline std::ostream& operator<<(std::ostream& os, Script _value) noexcept
     case Script::Yi: return os << "Yi";
     case Script::Zanabazar_Square: return os << "Zanabazar_Square";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Block::Unspecified: return os << "Unspecified";
     case Block::Adlam: return os << "Adlam";
     case Block::Aegean_Numbers: return os << "Aegean_Numbers";
@@ -1178,13 +1225,15 @@ inline std::ostream& operator<<(std::ostream& os, Block _value) noexcept
     case Block::Yijing_Hexagram_Symbols: return os << "Yijing_Hexagram_Symbols";
     case Block::Zanabazar_Square: return os << "Zanabazar_Square";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, Grapheme_Cluster_Break _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case Grapheme_Cluster_Break::CR: return os << "CR";
     case Grapheme_Cluster_Break::Control: return os << "Control";
     case Grapheme_Cluster_Break::Extend: return os << "Extend";
@@ -1199,13 +1248,15 @@ inline std::ostream& operator<<(std::ostream& os, Grapheme_Cluster_Break _value)
     case Grapheme_Cluster_Break::V: return os << "V";
     case Grapheme_Cluster_Break::ZWJ: return os << "ZWJ";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 
 inline std::ostream& operator<<(std::ostream& os, EastAsianWidth _value) noexcept
 {
+    // clang-format off
     switch (_value)
-{
+    {
     case EastAsianWidth::Ambiguous: return os << "Ambiguous";
     case EastAsianWidth::FullWidth: return os << "FullWidth";
     case EastAsianWidth::HalfWidth: return os << "HalfWidth";
@@ -1214,6 +1265,7 @@ inline std::ostream& operator<<(std::ostream& os, EastAsianWidth _value) noexcep
     case EastAsianWidth::Wide: return os << "Wide";
     case EastAsianWidth::Unspecified: return os << "Unspecified";
     }
+    // clang-format on
     return os << "(" << static_cast<unsigned>(_value) << ")";
 }
 

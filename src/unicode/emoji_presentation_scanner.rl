@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+// clang-format off
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 
 %%{
@@ -110,3 +111,5 @@ scan_emoji_presentation (emoji_text_iter_t p,
   *is_emoji = false;
   return pe;
 }
+
+// clang-format on

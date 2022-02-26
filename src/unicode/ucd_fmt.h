@@ -24,12 +24,16 @@ template <>
 struct formatter<unicode::Plane>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Plane _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Plane::Basic_Multilingual_Plane: return format_to(ctx.out(), "Basic_Multilingual_Plane");
         case unicode::Plane::Supplementary_Ideographic_Plane: return format_to(ctx.out(), "Supplementary_Ideographic_Plane");
         case unicode::Plane::Supplementary_Multilingual_Plane: return format_to(ctx.out(), "Supplementary_Multilingual_Plane");
@@ -37,6 +41,7 @@ struct formatter<unicode::Plane>
         case unicode::Plane::Supplementary_Special_purpose_Plane: return format_to(ctx.out(), "Supplementary_Special_purpose_Plane");
         case unicode::Plane::Tertiary_Ideographic_Plane: return format_to(ctx.out(), "Tertiary_Ideographic_Plane");
         case unicode::Plane::Unassigned: return format_to(ctx.out(), "Unassigned");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -46,12 +51,16 @@ template <>
 struct formatter<unicode::Age>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Age _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Age::Unassigned: return format_to(ctx.out(), "Unassigned");
         case unicode::Age::V10_0: return format_to(ctx.out(), "V10_0");
         case unicode::Age::V11_0: return format_to(ctx.out(), "V11_0");
@@ -76,6 +85,7 @@ struct formatter<unicode::Age>
         case unicode::Age::V7_0: return format_to(ctx.out(), "V7_0");
         case unicode::Age::V8_0: return format_to(ctx.out(), "V8_0");
         case unicode::Age::V9_0: return format_to(ctx.out(), "V9_0");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -85,12 +95,16 @@ template <>
 struct formatter<unicode::Bidi_Class>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Bidi_Class _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Bidi_Class::Arabic_Letter: return format_to(ctx.out(), "Arabic_Letter");
         case unicode::Bidi_Class::Arabic_Number: return format_to(ctx.out(), "Arabic_Number");
         case unicode::Bidi_Class::Boundary_Neutral: return format_to(ctx.out(), "Boundary_Neutral");
@@ -114,6 +128,7 @@ struct formatter<unicode::Bidi_Class>
         case unicode::Bidi_Class::Right_To_Left_Override: return format_to(ctx.out(), "Right_To_Left_Override");
         case unicode::Bidi_Class::Segment_Separator: return format_to(ctx.out(), "Segment_Separator");
         case unicode::Bidi_Class::White_Space: return format_to(ctx.out(), "White_Space");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -123,15 +138,20 @@ template <>
 struct formatter<unicode::Bidi_Paired_Bracket_Type>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Bidi_Paired_Bracket_Type _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Bidi_Paired_Bracket_Type::Close: return format_to(ctx.out(), "Close");
         case unicode::Bidi_Paired_Bracket_Type::None: return format_to(ctx.out(), "None");
         case unicode::Bidi_Paired_Bracket_Type::Open: return format_to(ctx.out(), "Open");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -141,12 +161,16 @@ template <>
 struct formatter<unicode::Canonical_Combining_Class>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Canonical_Combining_Class _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Canonical_Combining_Class::A: return format_to(ctx.out(), "A");
         case unicode::Canonical_Combining_Class::AL: return format_to(ctx.out(), "AL");
         case unicode::Canonical_Combining_Class::AR: return format_to(ctx.out(), "AR");
@@ -205,6 +229,7 @@ struct formatter<unicode::Canonical_Combining_Class>
         case unicode::Canonical_Combining_Class::OV: return format_to(ctx.out(), "OV");
         case unicode::Canonical_Combining_Class::R: return format_to(ctx.out(), "R");
         case unicode::Canonical_Combining_Class::VR: return format_to(ctx.out(), "VR");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -214,12 +239,16 @@ template <>
 struct formatter<unicode::Decomposition_Type>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Decomposition_Type _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Decomposition_Type::Canonical: return format_to(ctx.out(), "Canonical");
         case unicode::Decomposition_Type::Circle: return format_to(ctx.out(), "Circle");
         case unicode::Decomposition_Type::Compat: return format_to(ctx.out(), "Compat");
@@ -238,6 +267,7 @@ struct formatter<unicode::Decomposition_Type>
         case unicode::Decomposition_Type::Super: return format_to(ctx.out(), "Super");
         case unicode::Decomposition_Type::Vertical: return format_to(ctx.out(), "Vertical");
         case unicode::Decomposition_Type::Wide: return format_to(ctx.out(), "Wide");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -247,18 +277,23 @@ template <>
 struct formatter<unicode::East_Asian_Width>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::East_Asian_Width _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::East_Asian_Width::Ambiguous: return format_to(ctx.out(), "Ambiguous");
         case unicode::East_Asian_Width::Fullwidth: return format_to(ctx.out(), "Fullwidth");
         case unicode::East_Asian_Width::Halfwidth: return format_to(ctx.out(), "Halfwidth");
         case unicode::East_Asian_Width::Narrow: return format_to(ctx.out(), "Narrow");
         case unicode::East_Asian_Width::Neutral: return format_to(ctx.out(), "Neutral");
         case unicode::East_Asian_Width::Wide: return format_to(ctx.out(), "Wide");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -268,18 +303,23 @@ template <>
 struct formatter<unicode::Hangul_Syllable_Type>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Hangul_Syllable_Type _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Hangul_Syllable_Type::LVT_Syllable: return format_to(ctx.out(), "LVT_Syllable");
         case unicode::Hangul_Syllable_Type::LV_Syllable: return format_to(ctx.out(), "LV_Syllable");
         case unicode::Hangul_Syllable_Type::Leading_Jamo: return format_to(ctx.out(), "Leading_Jamo");
         case unicode::Hangul_Syllable_Type::Not_Applicable: return format_to(ctx.out(), "Not_Applicable");
         case unicode::Hangul_Syllable_Type::Trailing_Jamo: return format_to(ctx.out(), "Trailing_Jamo");
         case unicode::Hangul_Syllable_Type::Vowel_Jamo: return format_to(ctx.out(), "Vowel_Jamo");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -289,12 +329,16 @@ template <>
 struct formatter<unicode::Indic_Positional_Category>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Indic_Positional_Category _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Indic_Positional_Category::Bottom: return format_to(ctx.out(), "Bottom");
         case unicode::Indic_Positional_Category::Bottom_And_Left: return format_to(ctx.out(), "Bottom_And_Left");
         case unicode::Indic_Positional_Category::Bottom_And_Right: return format_to(ctx.out(), "Bottom_And_Right");
@@ -311,6 +355,7 @@ struct formatter<unicode::Indic_Positional_Category>
         case unicode::Indic_Positional_Category::Top_And_Left_And_Right: return format_to(ctx.out(), "Top_And_Left_And_Right");
         case unicode::Indic_Positional_Category::Top_And_Right: return format_to(ctx.out(), "Top_And_Right");
         case unicode::Indic_Positional_Category::Visual_Order_Left: return format_to(ctx.out(), "Visual_Order_Left");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -320,12 +365,16 @@ template <>
 struct formatter<unicode::Indic_Syllabic_Category>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Indic_Syllabic_Category _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Indic_Syllabic_Category::Avagraha: return format_to(ctx.out(), "Avagraha");
         case unicode::Indic_Syllabic_Category::Bindu: return format_to(ctx.out(), "Bindu");
         case unicode::Indic_Syllabic_Category::Brahmi_Joining_Number: return format_to(ctx.out(), "Brahmi_Joining_Number");
@@ -362,6 +411,7 @@ struct formatter<unicode::Indic_Syllabic_Category>
         case unicode::Indic_Syllabic_Category::Vowel: return format_to(ctx.out(), "Vowel");
         case unicode::Indic_Syllabic_Category::Vowel_Dependent: return format_to(ctx.out(), "Vowel_Dependent");
         case unicode::Indic_Syllabic_Category::Vowel_Independent: return format_to(ctx.out(), "Vowel_Independent");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -371,12 +421,16 @@ template <>
 struct formatter<unicode::Jamo_Short_Name>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Jamo_Short_Name _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Jamo_Short_Name::A: return format_to(ctx.out(), "A");
         case unicode::Jamo_Short_Name::AE: return format_to(ctx.out(), "AE");
         case unicode::Jamo_Short_Name::B: return format_to(ctx.out(), "B");
@@ -429,6 +483,7 @@ struct formatter<unicode::Jamo_Short_Name>
         case unicode::Jamo_Short_Name::YI: return format_to(ctx.out(), "YI");
         case unicode::Jamo_Short_Name::YO: return format_to(ctx.out(), "YO");
         case unicode::Jamo_Short_Name::YU: return format_to(ctx.out(), "YU");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -438,12 +493,16 @@ template <>
 struct formatter<unicode::Joining_Group>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Joining_Group _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Joining_Group::African_Feh: return format_to(ctx.out(), "African_Feh");
         case unicode::Joining_Group::African_Noon: return format_to(ctx.out(), "African_Noon");
         case unicode::Joining_Group::African_Qaf: return format_to(ctx.out(), "African_Qaf");
@@ -546,6 +605,7 @@ struct formatter<unicode::Joining_Group>
         case unicode::Joining_Group::Yudh_He: return format_to(ctx.out(), "Yudh_He");
         case unicode::Joining_Group::Zain: return format_to(ctx.out(), "Zain");
         case unicode::Joining_Group::Zhain: return format_to(ctx.out(), "Zhain");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -555,18 +615,23 @@ template <>
 struct formatter<unicode::Joining_Type>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Joining_Type _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Joining_Type::Dual_Joining: return format_to(ctx.out(), "Dual_Joining");
         case unicode::Joining_Type::Join_Causing: return format_to(ctx.out(), "Join_Causing");
         case unicode::Joining_Type::Left_Joining: return format_to(ctx.out(), "Left_Joining");
         case unicode::Joining_Type::Non_Joining: return format_to(ctx.out(), "Non_Joining");
         case unicode::Joining_Type::Right_Joining: return format_to(ctx.out(), "Right_Joining");
         case unicode::Joining_Type::Transparent: return format_to(ctx.out(), "Transparent");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -576,12 +641,16 @@ template <>
 struct formatter<unicode::Line_Break>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Line_Break _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Line_Break::Alphabetic: return format_to(ctx.out(), "Alphabetic");
         case unicode::Line_Break::Ambiguous: return format_to(ctx.out(), "Ambiguous");
         case unicode::Line_Break::Break_After: return format_to(ctx.out(), "Break_After");
@@ -625,6 +694,7 @@ struct formatter<unicode::Line_Break>
         case unicode::Line_Break::Word_Joiner: return format_to(ctx.out(), "Word_Joiner");
         case unicode::Line_Break::ZWJ: return format_to(ctx.out(), "ZWJ");
         case unicode::Line_Break::ZWSpace: return format_to(ctx.out(), "ZWSpace");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -634,15 +704,20 @@ template <>
 struct formatter<unicode::NFC_Quick_Check>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::NFC_Quick_Check _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::NFC_Quick_Check::Maybe: return format_to(ctx.out(), "Maybe");
         case unicode::NFC_Quick_Check::No: return format_to(ctx.out(), "No");
         case unicode::NFC_Quick_Check::Yes: return format_to(ctx.out(), "Yes");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -652,15 +727,20 @@ template <>
 struct formatter<unicode::NFKC_Quick_Check>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::NFKC_Quick_Check _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::NFKC_Quick_Check::Maybe: return format_to(ctx.out(), "Maybe");
         case unicode::NFKC_Quick_Check::No: return format_to(ctx.out(), "No");
         case unicode::NFKC_Quick_Check::Yes: return format_to(ctx.out(), "Yes");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -670,16 +750,21 @@ template <>
 struct formatter<unicode::Numeric_Type>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Numeric_Type _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Numeric_Type::Decimal: return format_to(ctx.out(), "Decimal");
         case unicode::Numeric_Type::Digit: return format_to(ctx.out(), "Digit");
         case unicode::Numeric_Type::None: return format_to(ctx.out(), "None");
         case unicode::Numeric_Type::Numeric: return format_to(ctx.out(), "Numeric");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -689,12 +774,16 @@ template <>
 struct formatter<unicode::Sentence_Break>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Sentence_Break _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Sentence_Break::ATerm: return format_to(ctx.out(), "ATerm");
         case unicode::Sentence_Break::CR: return format_to(ctx.out(), "CR");
         case unicode::Sentence_Break::Close: return format_to(ctx.out(), "Close");
@@ -710,6 +799,7 @@ struct formatter<unicode::Sentence_Break>
         case unicode::Sentence_Break::Sep: return format_to(ctx.out(), "Sep");
         case unicode::Sentence_Break::Sp: return format_to(ctx.out(), "Sp");
         case unicode::Sentence_Break::Upper: return format_to(ctx.out(), "Upper");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -719,16 +809,21 @@ template <>
 struct formatter<unicode::Vertical_Orientation>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Vertical_Orientation _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Vertical_Orientation::Rotated: return format_to(ctx.out(), "Rotated");
         case unicode::Vertical_Orientation::Transformed_Rotated: return format_to(ctx.out(), "Transformed_Rotated");
         case unicode::Vertical_Orientation::Transformed_Upright: return format_to(ctx.out(), "Transformed_Upright");
         case unicode::Vertical_Orientation::Upright: return format_to(ctx.out(), "Upright");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -738,12 +833,16 @@ template <>
 struct formatter<unicode::Word_Break>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Word_Break _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Word_Break::ALetter: return format_to(ctx.out(), "ALetter");
         case unicode::Word_Break::CR: return format_to(ctx.out(), "CR");
         case unicode::Word_Break::Double_Quote: return format_to(ctx.out(), "Double_Quote");
@@ -767,6 +866,7 @@ struct formatter<unicode::Word_Break>
         case unicode::Word_Break::Single_Quote: return format_to(ctx.out(), "Single_Quote");
         case unicode::Word_Break::WSegSpace: return format_to(ctx.out(), "WSegSpace");
         case unicode::Word_Break::ZWJ: return format_to(ctx.out(), "ZWJ");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -776,12 +876,16 @@ template <>
 struct formatter<unicode::Core_Property>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Core_Property _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Core_Property::Alphabetic: return format_to(ctx.out(), "Alphabetic");
         case unicode::Core_Property::Case_Ignorable: return format_to(ctx.out(), "Case_Ignorable");
         case unicode::Core_Property::Cased: return format_to(ctx.out(), "Cased");
@@ -801,6 +905,7 @@ struct formatter<unicode::Core_Property>
         case unicode::Core_Property::Uppercase: return format_to(ctx.out(), "Uppercase");
         case unicode::Core_Property::XID_Continue: return format_to(ctx.out(), "XID_Continue");
         case unicode::Core_Property::XID_Start: return format_to(ctx.out(), "XID_Start");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -810,12 +915,16 @@ template <>
 struct formatter<unicode::General_Category>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::General_Category _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::General_Category::Unspecified: return format_to(ctx.out(), "Unspecified");
         case unicode::General_Category::Close_Punctuation: return format_to(ctx.out(), "Close_Punctuation");
         case unicode::General_Category::Connector_Punctuation: return format_to(ctx.out(), "Connector_Punctuation");
@@ -847,6 +956,7 @@ struct formatter<unicode::General_Category>
         case unicode::General_Category::Titlecase_Letter: return format_to(ctx.out(), "Titlecase_Letter");
         case unicode::General_Category::Unassigned: return format_to(ctx.out(), "Unassigned");
         case unicode::General_Category::Uppercase_Letter: return format_to(ctx.out(), "Uppercase_Letter");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -856,12 +966,16 @@ template <>
 struct formatter<unicode::Script>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Script _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Script::Invalid: return format_to(ctx.out(), "Invalid");
         case unicode::Script::Unknown: return format_to(ctx.out(), "Unknown");
         case unicode::Script::Common: return format_to(ctx.out(), "Common");
@@ -1020,6 +1134,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Yezidi: return format_to(ctx.out(), "Yezidi");
         case unicode::Script::Yi: return format_to(ctx.out(), "Yi");
         case unicode::Script::Zanabazar_Square: return format_to(ctx.out(), "Zanabazar_Square");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -1029,12 +1144,16 @@ template <>
 struct formatter<unicode::Block>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Block _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Block::Unspecified: return format_to(ctx.out(), "Unspecified");
         case unicode::Block::Adlam: return format_to(ctx.out(), "Adlam");
         case unicode::Block::Aegean_Numbers: return format_to(ctx.out(), "Aegean_Numbers");
@@ -1344,6 +1463,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Yi_Syllables: return format_to(ctx.out(), "Yi_Syllables");
         case unicode::Block::Yijing_Hexagram_Symbols: return format_to(ctx.out(), "Yijing_Hexagram_Symbols");
         case unicode::Block::Zanabazar_Square: return format_to(ctx.out(), "Zanabazar_Square");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -1353,12 +1473,16 @@ template <>
 struct formatter<unicode::Grapheme_Cluster_Break>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::Grapheme_Cluster_Break _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::Grapheme_Cluster_Break::CR: return format_to(ctx.out(), "CR");
         case unicode::Grapheme_Cluster_Break::Control: return format_to(ctx.out(), "Control");
         case unicode::Grapheme_Cluster_Break::Extend: return format_to(ctx.out(), "Extend");
@@ -1372,6 +1496,7 @@ struct formatter<unicode::Grapheme_Cluster_Break>
         case unicode::Grapheme_Cluster_Break::T: return format_to(ctx.out(), "T");
         case unicode::Grapheme_Cluster_Break::V: return format_to(ctx.out(), "V");
         case unicode::Grapheme_Cluster_Break::ZWJ: return format_to(ctx.out(), "ZWJ");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
@@ -1381,12 +1506,16 @@ template <>
 struct formatter<unicode::EastAsianWidth>
 {
     template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
     template <typename FormatContext>
     auto format(unicode::EastAsianWidth _value, FormatContext& ctx)
     {
         switch (_value)
-{
+        {
+        // clang-format off
         case unicode::EastAsianWidth::Ambiguous: return format_to(ctx.out(), "Ambiguous");
         case unicode::EastAsianWidth::FullWidth: return format_to(ctx.out(), "FullWidth");
         case unicode::EastAsianWidth::HalfWidth: return format_to(ctx.out(), "HalfWidth");
@@ -1394,6 +1523,7 @@ struct formatter<unicode::EastAsianWidth>
         case unicode::EastAsianWidth::Narrow: return format_to(ctx.out(), "Narrow");
         case unicode::EastAsianWidth::Wide: return format_to(ctx.out(), "Wide");
         case unicode::EastAsianWidth::Unspecified: return format_to(ctx.out(), "Unspecified");
+        // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(_value));
     }
