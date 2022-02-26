@@ -15,7 +15,8 @@
 
 #include <string_view>
 
-namespace unicode {
+namespace unicode
+{
 
 class word_segmenter
 {
@@ -24,13 +25,12 @@ class word_segmenter
     using iterator = char_type const*;
     using view_type = std::basic_string_view<char_type>;
 
-    constexpr word_segmenter(std::basic_string_view<char_type> const& _str)
-      : word_segmenter(_str.data(), _str.data() + _str.size())
-    {}
+    constexpr word_segmenter(std::basic_string_view<char_type> const& _str):
+        word_segmenter(_str.data(), _str.data() + _str.size())
+    {
+    }
 
-    constexpr word_segmenter()
-      : word_segmenter({}, {})
-    {}
+    constexpr word_segmenter(): word_segmenter({}, {}) {}
 
     constexpr bool empty() const noexcept { return size() == 0; }
     constexpr std::size_t size() const noexcept { return static_cast<size_t>(right_ - left_); }
@@ -43,20 +43,20 @@ class word_segmenter
         {
             switch (state_)
             {
-                case State::NoWord:
-                    if (!isDelimiter(*right_))
-                    {
-                        state_ = State::Word;
-                        return *this;
-                    }
-                    break;
-                case State::Word:
-                    if (isDelimiter(*right_))
-                    {
-                        state_ = State::NoWord;
-                        return *this;
-                    }
-                    break;
+            case State::NoWord:
+                if (!isDelimiter(*right_))
+                {
+                    state_ = State::Word;
+                    return *this;
+                }
+                break;
+            case State::Word:
+                if (isDelimiter(*right_))
+                {
+                    state_ = State::NoWord;
+                    return *this;
+                }
+                break;
             }
             ++right_;
         }
@@ -68,17 +68,14 @@ class word_segmenter
         return left_ == _rhs.left_ && right_ == _rhs.right_;
     }
 
-    constexpr bool operator!=(word_segmenter const& _rhs) const noexcept
-    {
-        return !(*this == _rhs);
-    }
+    constexpr bool operator!=(word_segmenter const& _rhs) const noexcept { return !(*this == _rhs); }
 
   private:
-    constexpr word_segmenter(iterator _begin, iterator _end)
-      : left_{ _begin },
-        right_{ _begin },
-        state_{ _begin != _end ? (isDelimiter(*right_) ? State::NoWord : State::Word) : State::NoWord },
-        end_{ _end }
+    constexpr word_segmenter(iterator _begin, iterator _end):
+        left_ { _begin },
+        right_ { _begin },
+        state_ { _begin != _end ? (isDelimiter(*right_) ? State::NoWord : State::Word) : State::NoWord },
+        end_ { _end }
     {
         ++*this;
     }
@@ -87,19 +84,21 @@ class word_segmenter
     {
         switch (_char)
         {
-            case ' ':
-            case '\r':
-            case '\n':
-            case '\t':
-                return true;
-            default:
-                return false;
+        case ' ':
+        case '\r':
+        case '\n':
+        case '\t': return true;
+        default: return false;
         }
     }
 
     // private fields
     //
-    enum class State { Word, NoWord };
+    enum class State
+    {
+        Word,
+        NoWord
+    };
 
     iterator left_;
     iterator right_;
@@ -107,4 +106,4 @@ class word_segmenter
     iterator end_;
 };
 
-} // end namespace
+} // namespace unicode

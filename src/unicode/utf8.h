@@ -13,13 +13,14 @@
  */
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <string_view>
 #include <variant>
 
-namespace unicode {
+namespace unicode
+{
 
 /// Converts an UTF-32 codepoint into a UTF-8 sequence.
 ///
@@ -43,16 +44,16 @@ constexpr inline unsigned to_utf8(char32_t _character, uint8_t* _result)
     if (_character <= 0xFFFF)
     {
         _result[0] = static_cast<uint8_t>(((_character >> 12) & 0b0000'1111) | 0b1110'0000);
-        _result[1] = static_cast<uint8_t>(((_character >>  6) & 0b0011'1111) | 0b1000'0000);
-        _result[2] = static_cast<uint8_t>(((_character >>  0) & 0b0011'1111) | 0b1000'0000);
+        _result[1] = static_cast<uint8_t>(((_character >> 6) & 0b0011'1111) | 0b1000'0000);
+        _result[2] = static_cast<uint8_t>(((_character >> 0) & 0b0011'1111) | 0b1000'0000);
         return 3;
     }
     else
     {
         _result[0] = static_cast<uint8_t>(((_character >> 18) & 0b0000'0111) | 0b1111'0000);
         _result[1] = static_cast<uint8_t>(((_character >> 12) & 0b0011'1111) | 0b1000'0000);
-        _result[2] = static_cast<uint8_t>(((_character >>  6) & 0b0011'1111) | 0b1000'0000);
-        _result[3] = static_cast<uint8_t>(((_character >>  0) & 0b0011'1111) | 0b1000'0000);
+        _result[2] = static_cast<uint8_t>(((_character >> 6) & 0b0011'1111) | 0b1000'0000);
+        _result[3] = static_cast<uint8_t>(((_character >> 0) & 0b0011'1111) | 0b1000'0000);
         return 4;
     }
 }
@@ -87,15 +88,23 @@ inline std::string to_utf8(std::u32string_view const& _characters)
     return to_utf8(_characters.data(), _characters.size());
 }
 
-struct utf8_decoder_state {
+struct utf8_decoder_state
+{
     char32_t character = 0;
     unsigned expectedLength = 0;
     unsigned currentLength = 0;
 };
 
-struct Invalid{};
-struct Incomplete{};
-struct Success{ char32_t value; };
+struct Invalid
+{
+};
+struct Incomplete
+{
+};
+struct Success
+{
+    char32_t value;
+};
 
 using ConvertResult = std::variant<Invalid, Incomplete, Success>;
 
@@ -107,7 +116,7 @@ inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
         if ((_byte & 0b1000'0000) == 0)
         {
             _state.currentLength = 1;
-            return Success{_byte};
+            return Success { _byte };
         }
         else if ((_byte & 0b1110'0000) == 0b1100'0000)
         {
@@ -128,7 +137,7 @@ inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
             _state.character = _byte & 0b0000'0111;
         }
         else
-            return Invalid{};
+            return Invalid {};
     }
     else
     {
@@ -137,11 +146,11 @@ inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
         _state.currentLength++;
     }
 
-    if  (_state.currentLength < _state.expectedLength)
-        return {Incomplete{}};
+    if (_state.currentLength < _state.expectedLength)
+        return { Incomplete {} };
 
     _state.expectedLength = 0; // reset state
-    return {Success{_state.character}};
+    return { Success { _state.character } };
 }
 
 inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
@@ -159,10 +168,11 @@ inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
 
 inline ConvertResult from_utf8(uint8_t const* _bytes, size_t* _size)
 {
-    auto state = utf8_decoder_state{};
-    auto result = ConvertResult{};
+    auto state = utf8_decoder_state {};
+    auto result = ConvertResult {};
 
-    do result = from_utf8(state, *_bytes++);
+    do
+        result = from_utf8(state, *_bytes++);
     while (std::holds_alternative<Incomplete>(result));
 
     if (_size)
@@ -180,7 +190,7 @@ inline ConvertResult from_utf8(char8_t const* _bytes, size_t* _size)
 
 inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 {
-    return from_utf8((uint8_t const*)(_bytes), _size);
+    return from_utf8((uint8_t const*) (_bytes), _size);
 }
 
 template <typename T = char32_t>
@@ -191,7 +201,7 @@ inline std::basic_string<T> from_utf8(std::string_view const& _bytes)
     size_t offset = 0;
     while (offset < _bytes.size())
     {
-        size_t i{};
+        size_t i {};
         ConvertResult const result = from_utf8(_bytes.data() + offset, &i);
         if (std::holds_alternative<Success>(result))
             s += T(std::get<Success>(result).value);
@@ -200,4 +210,4 @@ inline std::basic_string<T> from_utf8(std::string_view const& _bytes)
     return s;
 }
 
-} // end namespace
+} // namespace unicode

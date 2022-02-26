@@ -125,12 +125,12 @@ class EnumClassWriter(EnumBuilder): # {{{
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
-        self.file.write('namespace unicode {\n\n')
+        self.file.write('namespace unicode\n{\n\n')
 
     def begin(self, _enum_class, _first_value):
         self.enum_class = _enum_class
         self.next_value = _first_value
-        self.file.write('enum class {} {{\n'.format(_enum_class))
+        self.file.write('enum class {}\n{{\n'.format(_enum_class))
 
     def member(self, _member):
         self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.next_value))
@@ -143,7 +143,7 @@ class EnumClassWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace unicode\n")
         self.file.close()
     # }}}
 class EnumOstreamWriter(EnumBuilder): # {{{
@@ -154,18 +154,19 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
-        self.file.write('#include <ostream>\n')
         self.file.write('#include <unicode/ucd.h>\n')
         self.file.write('\n')
-        self.file.write('namespace unicode {\n\n')
+        self.file.write('#include <ostream>\n')
+        self.file.write('\n')
+        self.file.write('namespace unicode\n{\n\n')
 
     def begin(self, _enum_class, _first):
         self.enum_class = _enum_class
-        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept {{\n'.format(_enum_class))
-        self.file.write('    switch (_value) {\n')
+        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept\n{{\n'.format(_enum_class))
+        self.file.write('    switch (_value)\n{\n')
 
     def member(self, _member):
-        self.file.write('        case {0}::{1}: return os << "{2}";\n'.format(self.enum_class, sanitize_identifier(_member), _member))
+        self.file.write('    case {0}::{1}: return os << "{2}";\n'.format(self.enum_class, sanitize_identifier(_member), _member))
         return
 
     def end(self):
@@ -178,7 +179,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace unicode\n")
         self.file.close()
     # }}}
 class EnumFmtWriter(EnumBuilder): # {{{
@@ -190,14 +191,15 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('#pragma once\n')
         self.file.write('\n')
         self.file.write('#include <unicode/ucd_enums.h>\n')
+        self.file.write('\n')
         self.file.write('#include <fmt/format.h>\n')
         self.file.write('\n')
-        self.file.write('namespace fmt {\n\n')
+        self.file.write('namespace fmt\n{\n\n')
 
     def begin(self, _enum_class, _first):
         self.enum_class = 'unicode::' + _enum_class
         self.file.write('template <>\n')
-        self.file.write('struct formatter<{}> {{\n'.format(self.enum_class))
+        self.file.write('struct formatter<{}>\n{{\n'.format(self.enum_class))
 
         self.file.write('    template <typename ParseContext>\n')
         self.file.write('    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }\n')
@@ -205,11 +207,11 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('    template <typename FormatContext>\n')
         self.file.write('    auto format({} _value, FormatContext& ctx)\n'.format(self.enum_class))
         self.file.write('    {\n')
-        self.file.write('        switch (_value) {\n')
+        self.file.write('        switch (_value)\n{\n')
 
     def member(self, _member):
         self.file.write(
-                '            case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
+                '        case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
             self.enum_class, sanitize_identifier(_member), _member)
         )
 
@@ -223,7 +225,7 @@ class EnumFmtWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace fmt\n")
         self.file.close()
     # }}}
 class MergedRange: # {{{
@@ -357,8 +359,8 @@ namespace unicode {
 """) # }}}
 
     def file_footer(self): # {{{
-        self.header.write("} // end namespace\n")
-        self.impl.write("} // end namespace\n")
+        self.header.write("} // namespace unicode\n")
+        self.impl.write("} // namespace unicode\n")
 # }}}
 
     def load_property_value_aliases(self): # {{{
@@ -428,7 +430,7 @@ namespace unicode {
 
     def table_prop_start(self, _element_type, _name, _count):
         element_type = 'Prop<::unicode::{}>'.format(_element_type)
-        self.impl.write('namespace tables {\n')
+        self.impl.write('namespace tables\n{\n')
         self.impl.write("    auto static const {} = std::array<{}, {}>{{ // {}\n".format(
             _name,
             element_type,
@@ -450,7 +452,7 @@ namespace unicode {
 
     def table_prop_end(self):
         self.impl.write("    }}; // {}\n".format(FOLD_CLOSE))
-        self.impl.write("} // end namespace tables\n\n")
+        self.impl.write("} // namespace tables\n\n")
     # }}}
 
     def write_properties(self): # {{{

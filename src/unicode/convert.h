@@ -21,8 +21,10 @@
 
 namespace unicode {
 
+// clang-format off
 template <typename T> struct decoder;
 template <typename T> struct encoder;
+// clang-format on
 
 template<> struct encoder<char> // {{{
 {

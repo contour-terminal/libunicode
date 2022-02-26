@@ -11,11 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <unicode/utf8.h>
 #include <unicode/support.h>
-#include <catch2/catch.hpp>
+#include <unicode/utf8.h>
 
 #include <fmt/format.h>
+
+#include <catch2/catch.hpp>
 
 #include <array>
 #include <cassert>
@@ -38,24 +39,24 @@ TEST_CASE("utf8.bytes_1", "[utf8]")
     uint8_t constexpr C = '[';
 
     // encode
-    uint8_t encoded{};
+    uint8_t encoded {};
     unsigned const count = to_utf8(C, &encoded);
     REQUIRE(count == 1);
     CHECK(encoded == C);
 
     // decode
-    auto state = utf8_decoder_state{};
+    auto state = utf8_decoder_state {};
     auto const r1 = from_utf8(state, C);
     REQUIRE(holds_alternative<Success>(r1));
     char32_t const b = get<Success>(r1).value;
-    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned)b));
+    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned) b));
     REQUIRE(b == C);
 }
 
 TEST_CASE("utf8.bytes_2", "[utf8]")
 {
-    char32_t constexpr C{ 0xF6 }; // 0xC3 0xB6, 'ö'
-    INFO(fmt::format("codepoint : 0x{:04X}", (unsigned)C));
+    char32_t constexpr C { 0xF6 }; // 0xC3 0xB6, 'ö'
+    INFO(fmt::format("codepoint : 0x{:04X}", (unsigned) C));
 
     // encode
     uint8_t actual[2] = {};
@@ -71,7 +72,7 @@ TEST_CASE("utf8.bytes_2", "[utf8]")
     auto const a = from_utf8(actual, &len);
     REQUIRE(holds_alternative<Success>(a));
     char32_t b = get<Success>(a).value;
-    INFO(fmt::format("char32_t : 0x{:04X} ==? 0x{:04X}", (unsigned)b, (unsigned)C));
+    INFO(fmt::format("char32_t : 0x{:04X} ==? 0x{:04X}", (unsigned) b, (unsigned) C));
     REQUIRE(b == C);
 }
 
@@ -93,7 +94,7 @@ TEST_CASE("utf8.bytes_3", "[utf8]")
     auto const a = from_utf8(b3, &len);
     REQUIRE(holds_alternative<Success>(a));
     char32_t const b = get<Success>(a).value;
-    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned)b));
+    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned) b));
     REQUIRE(b == 0x20AC);
 }
 
@@ -101,7 +102,7 @@ TEST_CASE("utf8.bytes_3_dash", "[utf8]")
 {
     // encode
     auto constexpr codepoint = 0x251C;
-    uint8_t d3[3]{0, 0, 0};
+    uint8_t d3[3] { 0, 0, 0 };
     auto const len3 = to_utf8(codepoint, d3);
     REQUIRE(len3 == 3);
     CHECK(d3[0] == 0xE2);
@@ -112,7 +113,7 @@ TEST_CASE("utf8.bytes_3_dash", "[utf8]")
     INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
 
     // decode
-    auto constexpr u8s = array<uint8_t, 4>{0xe2, 0x94, 0x9c, 0x61 /*a*/};
+    auto constexpr u8s = array<uint8_t, 4> { 0xe2, 0x94, 0x9c, 0x61 /*a*/ };
     size_t len = 0;
     auto const a = from_utf8(u8s.data(), &len);
 
@@ -123,25 +124,25 @@ TEST_CASE("utf8.bytes_3_dash", "[utf8]")
 
 TEST_CASE("utf8.from_utf8", "[utf8]")
 {
-    auto const a8 = string{"Hello, World!"};
+    auto const a8 = string { "Hello, World!" };
     auto const a32 = from_utf8(a8);
     CHECK(a32 == U"Hello, World!");
 
-    auto const b8 = string{(char const*) u8"😖:-)"};
+    auto const b8 = string { (char const*) u8"😖:-)" };
     auto const b32 = from_utf8(b8);
     CHECK(b32 == U"😖:-)");
 }
 
 TEST_CASE("utf8.iter", "[utf8]")
 {
-    auto constexpr values = string_view{
+    auto constexpr values = string_view {
         "["
-        "\xC3\xB6"          // ö  - german o-umlaut
-        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
-        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+        "\xC3\xB6"         // ö  - german o-umlaut
+        "\xE2\x82\xAC"     // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80" // 😀 - U+1F600
     };
     auto const* p = (char8_type const*) (values.data());
-    auto state = utf8_decoder_state{};
+    auto state = utf8_decoder_state {};
 
     // single-byte
     auto result = from_utf8(state, *p++);

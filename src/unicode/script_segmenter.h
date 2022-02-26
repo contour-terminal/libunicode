@@ -13,16 +13,18 @@
  */
 #pragma once
 
-#include <unicode/ucd.h>
 #include <unicode/support.h>
+#include <unicode/ucd.h>
 
 #include <optional>
 #include <string_view>
 #include <vector>
 
-namespace unicode {
+namespace unicode
+{
 
-class script_segmenter {
+class script_segmenter
+{
   public:
     constexpr script_segmenter() noexcept = default;
     constexpr script_segmenter& operator=(script_segmenter const&) noexcept = default;
@@ -30,28 +32,25 @@ class script_segmenter {
     constexpr script_segmenter(script_segmenter const&) noexcept = default;
     constexpr script_segmenter(script_segmenter&&) noexcept = default;
 
-    constexpr explicit script_segmenter(char32_t const* _data) noexcept :
-        script_segmenter{_data, getStringLength(_data)}
+    constexpr explicit script_segmenter(char32_t const* _data) noexcept:
+        script_segmenter { _data, getStringLength(_data) }
     {
     }
 
-    constexpr script_segmenter(char32_t const* _data, size_t _size) noexcept :
-        data_{ _data },
-        offset_{ 0 },
-        size_{ _size }
+    constexpr script_segmenter(char32_t const* _data, size_t _size) noexcept:
+        data_ { _data }, offset_ { 0 }, size_ { _size }
     {
         currentScriptSet_.push_back(Script::Common);
     }
 
-    constexpr script_segmenter(std::u32string_view _data) noexcept :
-        data_{ _data.data() },
-        offset_{ 0 },
-        size_{ _data.size() }
+    constexpr script_segmenter(std::u32string_view _data) noexcept:
+        data_ { _data.data() }, offset_ { 0 }, size_ { _data.size() }
     {
         currentScriptSet_.push_back(Script::Common);
     }
 
-    struct result {
+    struct result
+    {
         Script script;
         size_t size;
     };
@@ -105,18 +104,15 @@ class script_segmenter {
         return result == Script::Common ? commonPreferredScript_ : result;
     }
 
-    constexpr char32_t currentChar() const noexcept
-    {
-        return data_[offset_];
-    }
+    constexpr char32_t currentChar() const noexcept { return data_[offset_]; }
 
   private:
     char32_t const* data_ = U"";
     size_t offset_ = 0;
     size_t size_ = 0;
 
-    ScriptSet currentScriptSet_{};
+    ScriptSet currentScriptSet_ {};
     Script commonPreferredScript_ = Script::Common;
 };
 
-} // end namespace
+} // namespace unicode

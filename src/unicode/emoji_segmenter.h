@@ -13,18 +13,20 @@
  */
 #pragma once
 
-#include <unicode/ucd.h>
 #include <unicode/support.h>
+#include <unicode/ucd.h>
 
 #include <algorithm>
 #include <array>
 #include <ostream>
 #include <utility>
 
-namespace unicode {
+namespace unicode
+{
 
 /// Used to distinguish between standard text and emoji text.
-enum class PresentationStyle {
+enum class PresentationStyle
+{
     Text,
     Emoji
 };
@@ -37,7 +39,8 @@ enum class PresentationStyle {
  *
  * It must be segmenting only emojis and not any other codepoints.
  */
-class emoji_segmenter {
+class emoji_segmenter
+{
   private:
     char32_t const* buffer_ = U"";
     size_t size_ = 0;
@@ -60,9 +63,7 @@ class emoji_segmenter {
 
     emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept;
 
-    emoji_segmenter(std::u32string_view const& _sv) noexcept
-      : emoji_segmenter(_sv.data(), _sv.size())
-    {}
+    emoji_segmenter(std::u32string_view const& _sv) noexcept: emoji_segmenter(_sv.data(), _sv.size()) {}
 
     constexpr char32_t const* buffer() const noexcept { return buffer_; }
     constexpr size_t size() const noexcept { return size_; }
@@ -82,9 +83,10 @@ class emoji_segmenter {
     {
         // TODO: provide such an accessor in text_run_segmenter
         if (currentCursorEnd_ > 0)
-            return std::u32string_view(buffer_ + currentCursorBegin_, currentCursorEnd_ - currentCursorBegin_);
+            return std::u32string_view(buffer_ + currentCursorBegin_,
+                                       currentCursorEnd_ - currentCursorBegin_);
         else
-            return std::u32string_view{};
+            return std::u32string_view {};
     }
 
     /// @returns the underlying current segment that has been processed the last.
@@ -98,12 +100,10 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 {
     switch (ps)
     {
-        case PresentationStyle::Text:
-            return os << "Text";
-        case PresentationStyle::Emoji:
-            return os << "Emoji";
+    case PresentationStyle::Text: return os << "Text";
+    case PresentationStyle::Emoji: return os << "Emoji";
     }
     return os;
 }
 
-} // end namespace
+} // namespace unicode

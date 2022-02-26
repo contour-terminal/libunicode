@@ -13,11 +13,13 @@
  */
 #include <unicode/script_segmenter.h>
 #include <unicode/ucd.h>
+
 #include <algorithm>
 
 using namespace std;
 
-namespace unicode {
+namespace unicode
+{
 
 namespace
 {
@@ -25,15 +27,13 @@ namespace
     {
         switch (_script)
         {
-            case Script::Invalid:
-            case Script::Common:
-            case Script::Inherited:
-                return false;
-            default:
-                return true;
+        case Script::Invalid:
+        case Script::Common:
+        case Script::Inherited: return false;
+        default: return true;
         }
     }
-}
+} // namespace
 
 optional<script_segmenter::result> script_segmenter::consume()
 {
@@ -47,7 +47,7 @@ optional<script_segmenter::result> script_segmenter::consume()
         if (!mergeSets(nextScriptSet, currentScriptSet_))
         {
             // If merging failed, then we have found a script segmeent boundary.
-            auto const res = result{ resolveScript(), offset_ };
+            auto const res = result { resolveScript(), offset_ };
             currentScriptSet_ = nextScriptSet;
             return res;
         }
@@ -55,7 +55,7 @@ optional<script_segmenter::result> script_segmenter::consume()
         offset_++;
     }
 
-    auto const res = result{ resolveScript(), offset_ };
+    auto const res = result { resolveScript(), offset_ };
     currentScriptSet_.clear();
     return res;
 }
@@ -144,5 +144,4 @@ script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t _codepoint)
     return scriptSet;
 }
 
-
-} // end namespace
+} // namespace unicode

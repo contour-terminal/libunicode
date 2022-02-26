@@ -12,7 +12,9 @@
  * limitations under the License.
  */
 #include <unicode/script_segmenter.h>
+
 #include <catch2/catch.hpp>
+
 #include <string>
 #include <string_view>
 
@@ -24,7 +26,7 @@ using unicode::script_segmenter;
 TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
 {
     auto constexpr str = U"\uE0B0"sv; // some PUA codepoint
-    auto seg = unicode::script_segmenter{str.data(), str.size()};
+    auto seg = unicode::script_segmenter { str.data(), str.size() };
 
     auto const r1 = seg.consume();
     REQUIRE(r1.has_value());
@@ -36,7 +38,7 @@ TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
 TEST_CASE("script_segmenter.greek_kanji_greek", "[script_segmenter]")
 {
     char32_t const* str = U"λ 合気道 λ;";
-    auto seg = script_segmenter{str};
+    auto seg = script_segmenter { str };
 
     // greek text
     optional<script_segmenter::result> const r1 = seg.consume();
@@ -67,7 +69,7 @@ TEST_CASE("script_segmenter.greek_kanji_greek", "[script_segmenter]")
 TEST_CASE("script_segmenter.latin_and_greek", "[script_segmenter]")
 {
     auto constexpr str = U"AB λ;"sv;
-    auto seg = unicode::script_segmenter{str.data(), str.size()};
+    auto seg = unicode::script_segmenter { str.data(), str.size() };
 
     // latin text
     std::optional<unicode::script_segmenter::result> const r1 = seg.consume();

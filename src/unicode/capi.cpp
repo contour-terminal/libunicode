@@ -25,7 +25,8 @@ int u32_gc_count(u32_char_t const* _codepoints, size_t _size)
         return 0;
 
     int count = 1;
-    auto segmenter = unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
+    auto segmenter =
+        unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
     while (segmenter.codepointsAvailable())
     {
         ++segmenter;
@@ -43,7 +44,8 @@ int u8_gc_count(u8_char_t const* _codepoints, size_t _size)
 int u32_gc_width(u32_char_t const* _codepoints, size_t _size, int _mode)
 {
     int totalWidth = 0;
-    auto segmenter = unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
+    auto segmenter =
+        unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
     while (segmenter.codepointsAvailable())
     {
         auto const cluster = *segmenter;
@@ -56,15 +58,12 @@ int u32_gc_width(u32_char_t const* _codepoints, size_t _size, int _mode)
                 auto const width = [&]() {
                     switch (codepoint)
                     {
-                        case 0xFE0E:
-                            return 1;
-                        case 0xFE0F:
-                            return 2;
-                        default:
-                            return unicode::width(codepoint);
+                    case 0xFE0E: return 1;
+                    case 0xFE0F: return 2;
+                    default: return unicode::width(codepoint);
                     }
                 }();
-                if (width  && width != thisWidth)
+                if (width && width != thisWidth)
                     thisWidth = width;
             }
         }
@@ -73,7 +72,6 @@ int u32_gc_width(u32_char_t const* _codepoints, size_t _size, int _mode)
     }
     return totalWidth;
 }
-
 
 int u8_gc_width(u8_char_t const* codepoints, size_t count, int allowMod)
 {
@@ -91,7 +89,7 @@ int u32_grapheme_unbreakable(u32_char_t a, u32_char_t b)
 
 struct u8u32_stream_state
 {
-    unicode::decoder<char> conv{};
+    unicode::decoder<char> conv {};
 };
 
 u8u32_stream_state_t u8u32_stream_convert_create()
@@ -115,10 +113,9 @@ void u8u32_stream_convert_destroy(u8u32_stream_state_t* handle)
     *handle = nullptr;
 }
 
-int u32u8_convert(u32_char_t const* _source, size_t _slen,
-                  u8_char_t* _dest, size_t _dlen)
+int u32u8_convert(u32_char_t const* _source, size_t _slen, u8_char_t* _dest, size_t _dlen)
 {
-    auto conv = unicode::encoder<u8_char_t>{};
+    auto conv = unicode::encoder<u8_char_t> {};
     auto nwritten = 0;
 
     for (size_t i = 0; i < _slen; ++i)
@@ -138,4 +135,3 @@ int u32u8_convert(u32_char_t const* _source, size_t _slen,
 
     return nwritten;
 }
-

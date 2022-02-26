@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 #include <unicode/capi.h>
-#include <catch2/catch.hpp>
 
 #include <fmt/format.h>
+
+#include <catch2/catch.hpp>
 
 #include <array>
 #include <utility>
@@ -42,7 +43,7 @@ TEST_CASE("capi.u8u32_stream_convert_and_inverse")
     u32string output;
     for (size_t i = 0; i < input.size(); ++i)
     {
-        u32_char_t out{};
+        u32_char_t out {};
         if (u8u32_stream_convert_run(conv, input.at(i), &out))
             output.push_back(out);
     }
@@ -50,11 +51,11 @@ TEST_CASE("capi.u8u32_stream_convert_and_inverse")
     u8u32_stream_convert_destroy(&conv);
 
     // Verify inverse conversion (UTF-32 to UTF-8) works, too.
-    array<u8_char_t, 32> inverse{};
-    auto const ilen = u32u8_convert((u32_char_t const*) expected.data(), expected.size(),
-                                    inverse.data(), inverse.size());
-    CHECK(ilen == (int)input.size());
-    auto const inverseSV = string_view{inverse.data(), static_cast<size_t>(ilen)};
+    array<u8_char_t, 32> inverse {};
+    auto const ilen =
+        u32u8_convert((u32_char_t const*) expected.data(), expected.size(), inverse.data(), inverse.size());
+    CHECK(ilen == (int) input.size());
+    auto const inverseSV = string_view { inverse.data(), static_cast<size_t>(ilen) };
     CHECK(inverseSV == input);
 }
 

@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/grapheme_segmenter.h>
+
 #include <catch2/catch.hpp>
 
 using namespace unicode;
@@ -24,7 +25,7 @@ using namespace std;
 
 TEST_CASE("latin_common", "[grapheme_segmenter]")
 {
-    //auto constexpr text = u32string_view{U"\u0067G\u0308"};
+    // auto constexpr text = u32string_view{U"\u0067G\u0308"};
 
     CHECK(grapheme_segmenter::breakable('a', 'b'));
     CHECK(grapheme_segmenter::breakable('b', '!'));
@@ -33,7 +34,7 @@ TEST_CASE("latin_common", "[grapheme_segmenter]")
 
 TEST_CASE("combining character sequences", "[grapheme_segmenter]")
 {
-    //auto constexpr text = u32string_view{U"\u0067G\u0308"};
+    // auto constexpr text = u32string_view{U"\u0067G\u0308"};
 
     CHECK(grapheme_segmenter::nonbreakable('g', U'\u0308'));
 }
@@ -56,7 +57,7 @@ TEST_CASE("emoji.speaking-eye", "[grapheme_segmenter]")
     🗨 U+1F5E8     Left Speech Bubble
      ️ U+FE0F      VS16
      */
-    auto const zwj = u32string_view{U"\U0001F441\uFE0F\u200D\U0001F5E8\uFE0F"};
+    auto const zwj = u32string_view { U"\U0001F441\uFE0F\u200D\U0001F5E8\uFE0F" };
     CHECK(grapheme_segmenter::nonbreakable(zwj[0], zwj[1]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[1], zwj[2]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[2], zwj[3]));
@@ -66,12 +67,12 @@ TEST_CASE("emoji.speaking-eye", "[grapheme_segmenter]")
 TEST_CASE("emoji", "[grapheme_segmenter]")
 {
     // 👨‍🦰
-    auto const zwj = u32string_view{U"\U0001F468\u200D\U0001F9B0"};
+    auto const zwj = u32string_view { U"\U0001F468\u200D\U0001F9B0" };
     CHECK(grapheme_segmenter::nonbreakable(zwj[0], zwj[1]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[1], zwj[2]));
 
     // 👨‍👩‍👧
-    auto const zwj3 = u32string_view{U"\U0001F468\u200D\U0001F469\u200D\U0001F467"};
+    auto const zwj3 = u32string_view { U"\U0001F468\u200D\U0001F469\u200D\U0001F467" };
     CHECK(grapheme_segmenter::nonbreakable(zwj3[0], zwj3[1]));
     CHECK(grapheme_segmenter::nonbreakable(zwj3[1], zwj3[2]));
     CHECK(grapheme_segmenter::nonbreakable(zwj3[2], zwj3[3]));
@@ -81,7 +82,7 @@ TEST_CASE("emoji", "[grapheme_segmenter]")
 TEST_CASE("emoji: Man Facepalming: Medium-Light Skin Tone", "[grapheme_segmenter]")
 {
 
-    auto const zwj = u32string_view{U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F"};
+    auto const zwj = u32string_view { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F" };
     CHECK(grapheme_segmenter::nonbreakable(zwj[0], zwj[1]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[1], zwj[2]));
     CHECK(grapheme_segmenter::nonbreakable(zwj[2], zwj[3]));
@@ -90,8 +91,8 @@ TEST_CASE("emoji: Man Facepalming: Medium-Light Skin Tone", "[grapheme_segmenter
 
 TEST_CASE("grapheme_segmenter.iterator_1", "[grapheme_segmenter]")
 {
-    auto const codepoints = u32string_view{U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F"};
-    auto gs = grapheme_segmenter{ codepoints };
+    auto const codepoints = u32string_view { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F" };
+    auto gs = grapheme_segmenter { codepoints };
 
     // initially first token already process
     CHECK(*gs == codepoints);
@@ -100,9 +101,9 @@ TEST_CASE("grapheme_segmenter.iterator_1", "[grapheme_segmenter]")
 
 TEST_CASE("grapheme_segmenter.iterator_2", "[grapheme_segmenter]")
 {
-    auto const grapheme_cluster2 = u32string_view{U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F"};
-    auto const codepoints = u32string_view{U"X\U0001F926\U0001F3FC\u200D\u2642\uFE0F5"};
-    auto gs = grapheme_segmenter{ codepoints };
+    auto const grapheme_cluster2 = u32string_view { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F" };
+    auto const codepoints = u32string_view { U"X\U0001F926\U0001F3FC\u200D\u2642\uFE0F5" };
+    auto gs = grapheme_segmenter { codepoints };
 
     // first grapheme cluster
     CHECK(*gs == U"X");

@@ -107,4 +107,4 @@ bool emoji_modifier_base(char32_t _codepoint) noexcept;
 bool emoji_presentation(char32_t _codepoint) noexcept;
 bool extended_pictographic(char32_t _codepoint) noexcept;
 
-} // end namespace
+} // namespace unicode
