@@ -1,10 +1,24 @@
-#include <unicode/width.h>
-#include <unicode/ucd.h>
-#include <unicode/ucd_ostream.h>
+/**
+ * This file is part of the "libunicode" project
+ *   Copyright (c) 2021 Christian Parpart <christian@parpart.family>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <unicode/convert.h>
 #include <unicode/grapheme_segmenter.h>
 #include <unicode/run_segmenter.h>
+#include <unicode/ucd.h>
+#include <unicode/ucd_ostream.h>
 #include <unicode/utf8.h>
-#include <unicode/convert.h>
+#include <unicode/width.h>
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>
@@ -45,70 +59,63 @@ using std::variant;
 // {{{ escape(...)
 namespace
 {
-    bool isEmoji(char32_t ch)
-    {
-        return unicode::emoji(ch) && !unicode::emoji_component(ch);
-    }
-
-    template<typename T>
-    basic_string<T> replaceAll(basic_string_view<T> _what,
-                               basic_string_view<T> _with,
-                               basic_string_view<T> _text)
-    {
-        basic_string<T> s;
-        size_t a = 0;
-        size_t b = _text.find(_what);
-        while (b != basic_string_view<T>::npos)
-        {
-            s += _text.substr(a, b - a);
-            s += _with;
-            a = b + _what.size();
-            b = _text.find(_what, a + 1);
-        }
-        s += _text.substr(a);
-        return s;
-    }
-
-    inline string escape(uint8_t ch)
-    {
-        switch (ch)
-        {
-            case '\\':
-                return "\\\\";
-            case 0x1B:
-                return "\\033";
-            case '\t':
-                return "\\t";
-            case '\r':
-                return "\\r";
-            case '\n':
-                return "\\n";
-            case '"':
-                return "\\\"";
-            default:
-                if (std::isprint(static_cast<char>(ch)))
-                    return fmt::format("{}", static_cast<char>(ch));
-                else
-                    return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
-        }
-    }
-
-    template <typename T>
-    inline string escape(T begin, T end)
-    {
-        return std::accumulate(begin, end, string{}, [](auto const& a, auto ch) { return a + escape(static_cast<uint8_t>(ch)); });
-        // auto result = string{};
-        // for (T cur = begin; cur != end; ++cur)
-        //     result += *cur;
-        // return result;
-    }
-
-    inline string escape(string const& s)
-    {
-        return escape(begin(s), end(s));
-    }
-
+bool isEmoji(char32_t ch)
+{
+    return unicode::emoji(ch) && !unicode::emoji_component(ch);
 }
+
+template <typename T>
+basic_string<T> replaceAll(basic_string_view<T> _what, basic_string_view<T> _with, basic_string_view<T> _text)
+{
+    basic_string<T> s;
+    size_t a = 0;
+    size_t b = _text.find(_what);
+    while (b != basic_string_view<T>::npos)
+    {
+        s += _text.substr(a, b - a);
+        s += _with;
+        a = b + _what.size();
+        b = _text.find(_what, a + 1);
+    }
+    s += _text.substr(a);
+    return s;
+}
+
+inline string escape(uint8_t ch)
+{
+    switch (ch)
+    {
+    case '\\': return "\\\\";
+    case 0x1B: return "\\033";
+    case '\t': return "\\t";
+    case '\r': return "\\r";
+    case '\n': return "\\n";
+    case '"': return "\\\"";
+    default:
+        if (std::isprint(static_cast<char>(ch)))
+            return fmt::format("{}", static_cast<char>(ch));
+        else
+            return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
+    }
+}
+
+template <typename T>
+inline string escape(T begin, T end)
+{
+    return std::accumulate(
+        begin, end, string {}, [](auto const& a, auto ch) { return a + escape(static_cast<uint8_t>(ch)); });
+    // auto result = string{};
+    // for (T cur = begin; cur != end; ++cur)
+    //     result += *cur;
+    // return result;
+}
+
+inline string escape(string const& s)
+{
+    return escape(begin(s), end(s));
+}
+
+} // namespace
 // }}}
 
 // TODO
@@ -123,12 +130,12 @@ void codepoints(istream& _in) // {{{
 {
     auto lastOffset = 0;
     auto totalOffset = 0;
-    auto utf8_state = unicode::utf8_decoder_state{};
-    auto last_wc = char32_t{};
+    auto utf8_state = unicode::utf8_decoder_state {};
+    auto last_wc = char32_t {};
 
     for (;;)
     {
-        uint8_t ch{};
+        uint8_t ch {};
         _in.read((char*) &ch, sizeof(ch));
         if (!_in.good())
             break;
@@ -153,9 +160,7 @@ void codepoints(istream& _in) // {{{
                                     static_cast<uint32_t>(wc),
                                     isEmoji(wc) ? "EMOJI" : "TEXT ",
                                     unicode::script(wc),
-                                    breakable
-                                        ? "[breakable  ]"
-                                        : "[unbreakable]",
+                                    breakable ? "[breakable  ]" : "[unbreakable]",
                                     width,
                                     u8);
             }
@@ -174,7 +179,7 @@ using unicode::run_segmenter;
 
 string scriptExtensionsString(char32_t _codepoint)
 {
-    array<unicode::Script, 32> scripts{};
+    array<unicode::Script, 32> scripts {};
     size_t count = unicode::script_extensions(_codepoint, scripts.data(), scripts.size());
     std::stringstream sstr;
     for (size_t i = 0; i < count; ++i)
@@ -188,15 +193,14 @@ string scriptExtensionsString(char32_t _codepoint)
 
 int scripts(istream& _in) // {{{
 {
-    string bytes((istreambuf_iterator<char>(_in)),
-                  istreambuf_iterator<char>());
+    string bytes((istreambuf_iterator<char>(_in)), istreambuf_iterator<char>());
     u32string const codepoints = convert_to<char32_t>(string_view(bytes));
 
     unicode::script_segmenter segmenter(codepoints);
 
-    size_t frontPosition{};
-    size_t nextPosition{};
-    unicode::Script script{};
+    size_t frontPosition {};
+    size_t nextPosition {};
+    unicode::Script script {};
 
     cout << "   INDEX     CODEPOINT    TEXT  WIDTH   SCRIPT          SCRIPT EXTS\n";
     while (segmenter.consume(out(nextPosition), out(script)))
@@ -205,15 +209,13 @@ int scripts(istream& _in) // {{{
         for (size_t i = frontPosition; i < nextPosition; ++i)
         {
             auto const cp = codepoints[i];
-            cout << fmt::format(
-                "    {:>04}:    U+{:08X}   {}\t∆ {}\t{:<12}\t({})\n",
-                i,
-                unsigned(cp),
-                convert_to<char>(cp),
-                unicode::width(cp),
-                unicode::script(cp),
-                scriptExtensionsString(cp)
-            );
+            cout << fmt::format("    {:>04}:    U+{:08X}   {}\t∆ {}\t{:<12}\t({})\n",
+                                i,
+                                unsigned(cp),
+                                convert_to<char>(cp),
+                                unicode::width(cp),
+                                unicode::script(cp),
+                                scriptExtensionsString(cp));
         }
         frontPosition = nextPosition;
     }
@@ -223,8 +225,7 @@ int scripts(istream& _in) // {{{
 
 int runs(istream& _in) // {{{
 {
-    string bytes((istreambuf_iterator<char>(_in)),
-                  istreambuf_iterator<char>());
+    string bytes((istreambuf_iterator<char>(_in)), istreambuf_iterator<char>());
     u32string const codepoints = convert_to<char32_t>(string_view(bytes));
 
     run_segmenter rs(codepoints);
@@ -236,23 +237,19 @@ int runs(istream& _in) // {{{
         auto const presentationStyle = get<unicode::PresentationStyle>(run.properties);
 
         cout << fmt::format(
-            "{}-{} ({}): {} {}\n",
-            run.start,
-            run.end - 1,
-            run.end - run.start,
-            script,
-            presentationStyle
-        );
+            "{}-{} ({}): {} {}\n", run.start, run.end - 1, run.end - run.start, script, presentationStyle);
         auto const text32 = u32string_view(codepoints.data() + run.start, run.end - run.start);
         auto const text8 = convert_to<char>(text32);
         auto const textEscaped = replaceAll("\033"sv, "\\033"sv, string_view(text8));
-        cout << '"' << "\033[32m" << textEscaped << "\033[m" << "\"\n\n";
+        cout << '"' << "\033[32m" << textEscaped << "\033[m"
+             << "\"\n\n";
     }
 
     return EXIT_SUCCESS;
 } // }}}
 
-enum class Cmd {
+enum class Cmd
+{
     Codepoints,
     Runs,
     Scripts,
@@ -265,22 +262,21 @@ auto parseArgs(int argc, char const* argv[]) -> optional<pair<Cmd, InputStream>>
     auto constexpr DefaultCmd = Cmd::Codepoints;
 
     if (argc != 3)
-        return {{DefaultCmd, &cin}};
+        return { { DefaultCmd, &cin } };
 
     string_view const arg = argv[1];
 
-    static auto constexpr mappings = array<pair<string_view, Cmd>, 4>{
-        pair{"codepoints"sv, Cmd::Codepoints},
-        pair{"cp"sv, Cmd::Codepoints},
-        pair{"runs"sv, Cmd::Runs},
-        pair{"scripts"sv, Cmd::Scripts}
-    };
+    static auto constexpr mappings =
+        array<pair<string_view, Cmd>, 4> { pair { "codepoints"sv, Cmd::Codepoints },
+                                           pair { "cp"sv, Cmd::Codepoints },
+                                           pair { "runs"sv, Cmd::Runs },
+                                           pair { "scripts"sv, Cmd::Scripts } };
 
     for (auto const& mapping: mappings)
         if (mapping.first == arg)
-            return {{mapping.second, make_unique<ifstream>(argv[2], ios::binary)}};
+            return { { mapping.second, make_unique<ifstream>(argv[2], ios::binary) } };
 
-    return {{DefaultCmd, make_unique<ifstream>(argv[2], ios::binary)}};
+    return { { DefaultCmd, make_unique<ifstream>(argv[2], ios::binary) } };
 }
 
 int run(int argc, char const* argv[])
@@ -301,21 +297,14 @@ int run(int argc, char const* argv[])
     }
 
     auto& [cmd, inputStreamVar] = *args;
-    istream& in = holds_alternative<istream*>(inputStreamVar)
-        ? *get<istream*>(inputStreamVar)
-        : *get<unique_ptr<istream>>(inputStreamVar);
+    istream& in = holds_alternative<istream*>(inputStreamVar) ? *get<istream*>(inputStreamVar)
+                                                              : *get<unique_ptr<istream>>(inputStreamVar);
 
     switch (cmd)
     {
-        case Cmd::Codepoints:
-            codepoints(in);
-            break;
-        case Cmd::Runs:
-            runs(in);
-            break;
-        case Cmd::Scripts:
-            scripts(in);
-            break;
+    case Cmd::Codepoints: codepoints(in); break;
+    case Cmd::Runs: runs(in); break;
+    case Cmd::Scripts: scripts(in); break;
     }
 
     return EXIT_SUCCESS;
@@ -338,4 +327,3 @@ int main(int argc, char const* argv[])
         return EXIT_FAILURE;
     }
 }
-

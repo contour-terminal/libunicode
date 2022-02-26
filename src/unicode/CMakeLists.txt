@@ -50,6 +50,6 @@ if(LIBUNICODE_TESTING)
         width_test.cpp
         word_segmenter_test.cpp
     )
-    target_link_libraries(unicode_test fmt::fmt-header-only Catch2::Catch2 unicode)
+    target_link_libraries(unicode_test unicode Catch2::Catch2)
     add_test(unicode_test unicode_test)
 endif()

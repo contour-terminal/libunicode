@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/word_segmenter.h>
+
 #include <catch2/catch.hpp>
 
 using namespace unicode;

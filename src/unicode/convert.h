@@ -13,18 +13,22 @@
  */
 #pragma once
 
-#include <string_view>
 #include <array>
-#include <type_traits>
 #include <iterator>
 #include <optional>
+#include <string_view>
+#include <type_traits>
 
-namespace unicode {
+namespace unicode
+{
 
+// clang-format off
 template <typename T> struct decoder;
 template <typename T> struct encoder;
+// clang-format on
 
-template<> struct encoder<char> // {{{
+template <>
+struct encoder<char> // {{{
 {
     template <typename OutputIterator>
     constexpr OutputIterator operator()(char32_t _input, OutputIterator _output)
@@ -41,20 +45,21 @@ template<> struct encoder<char> // {{{
         else if (_input <= 0xFFFF)
         {
             *_output++ = static_cast<char>(((_input >> 12) & 0b0000'1111) | 0b1110'0000);
-            *_output++ = static_cast<char>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<char>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 6) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 0) & 0b0011'1111) | 0b1000'0000);
         }
         else
         {
             *_output++ = static_cast<char>(((_input >> 18) & 0b0000'0111) | 0b1111'0000);
             *_output++ = static_cast<char>(((_input >> 12) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<char>(((_input >>  6) & 0b0011'1111) | 0b1000'0000);
-            *_output++ = static_cast<char>(((_input >>  0) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 6) & 0b0011'1111) | 0b1000'0000);
+            *_output++ = static_cast<char>(((_input >> 0) & 0b0011'1111) | 0b1000'0000);
         }
         return _output;
     }
 }; // }}}
-template<> struct decoder<char> // {{{
+template <>
+struct decoder<char> // {{{
 {
     char32_t character = 0;
     unsigned expectedLength = 0;
@@ -97,7 +102,7 @@ template<> struct decoder<char> // {{{
             currentLength++;
         }
 
-        if  (currentLength < expectedLength)
+        if (currentLength < expectedLength)
             return std::nullopt; // incomplete
 
         expectedLength = 0; // reset state
@@ -106,8 +111,7 @@ template<> struct decoder<char> // {{{
 
     template <
         typename InputIterator,
-        std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0
-    >
+        std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0>
     constexpr std::optional<char32_t> operator()(InputIterator& _input)
     {
         using std::nullopt;
@@ -164,7 +168,8 @@ template<> struct decoder<char> // {{{
             auto const ch4 = uint8_t(*_input++);
             if (ch4 >> 6 != 2)
                 return nullopt;
-            auto const a = static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
+            auto const a =
+                static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
             return static_cast<char32_t>(a - 0xFA082080lu);
         }
         if (ch0 < 0xFE) // 1111_110x 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
@@ -184,13 +189,15 @@ template<> struct decoder<char> // {{{
             auto const ch5 = uint8_t(*_input++);
             if (ch5 >> 6 != 2)
                 return nullopt;
-            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12) + (ch4 << 6) + ch5);
+            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12)
+                                                 + (ch4 << 6) + ch5);
             return static_cast<char32_t>(a - 0x82082080);
         }
         return nullopt;
     }
 }; // }}}
-template<> struct encoder<char16_t> // {{{
+template <>
+struct encoder<char16_t> // {{{
 {
     using char_type = char16_t;
 
@@ -221,7 +228,8 @@ template<> struct encoder<char16_t> // {{{
             return _output; // Too large the UTF-16  code point.
     }
 }; // }}}
-template<> struct decoder<char16_t> // {{{
+template <>
+struct decoder<char16_t> // {{{
 {
     template <typename InputIterator>
     constexpr std::optional<char32_t> operator()(InputIterator& _input)
@@ -247,7 +255,8 @@ template<> struct decoder<char16_t> // {{{
         return ch0;
     }
 }; // }}}
-template<> struct encoder<char32_t> // {{{ (no-op)
+template <>
+struct encoder<char32_t> // {{{ (no-op)
 {
     using char_type = char32_t;
 
@@ -258,7 +267,8 @@ template<> struct encoder<char32_t> // {{{ (no-op)
         return _output;
     }
 }; // }}}
-template<> struct decoder<char32_t> // {{{ (no-op)
+template <>
+struct decoder<char32_t> // {{{ (no-op)
 {
 
     template <typename InputIterator>
@@ -267,7 +277,8 @@ template<> struct decoder<char32_t> // {{{ (no-op)
         return *_input++;
     }
 }; // }}}
-template<> struct encoder<wchar_t> // {{{
+template <>
+struct encoder<wchar_t> // {{{
 {
     using char_type = wchar_t;
 
@@ -277,12 +288,13 @@ template<> struct encoder<wchar_t> // {{{
         static_assert(sizeof(wchar_t) == 2 || sizeof(wchar_t) == 4);
 
         if constexpr (sizeof(wchar_t) == 2)
-            return encoder<char16_t>{}(_input, _output);
+            return encoder<char16_t> {}(_input, _output);
         else
-            return encoder<char32_t>{}(_input, _output);
+            return encoder<char32_t> {}(_input, _output);
     }
 }; // }}}
-template<> struct decoder<wchar_t> // {{{
+template <>
+struct decoder<wchar_t> // {{{
 {
     template <typename InputIterator>
     constexpr std::optional<char32_t> operator()(InputIterator& _input)
@@ -290,22 +302,22 @@ template<> struct decoder<wchar_t> // {{{
         static_assert(sizeof(wchar_t) == 2 || sizeof(wchar_t) == 4);
 
         if constexpr (sizeof(wchar_t) == 2)
-            return decoder<char16_t>{}(_input);
+            return decoder<char16_t> {}(_input);
         else
-            return decoder<char32_t>{}(_input);
+            return decoder<char32_t> {}(_input);
     }
 }; // }}}
 
 namespace detail // {{{
 {
     template <typename SourceRange, typename OutputIterator>
-    OutputIterator  convert_identity(SourceRange&& s, OutputIterator t)
+    OutputIterator convert_identity(SourceRange&& s, OutputIterator t)
     {
-        for (auto const c : s)
+        for (auto const c: s)
             *t++ = c;
         return t;
     }
-} // }}}
+} // namespace detail
 
 /// @p _input with element type @p S to the appropricate type of @p _output.
 template <typename T, typename OutputIterator, typename S>
@@ -317,8 +329,8 @@ OutputIterator convert_to(std::basic_string_view<S> _input, OutputIterator _outp
     {
         auto i = begin(_input);
         auto e = end(_input);
-        decoder<S> read{};
-        encoder<T> write{};
+        decoder<S> read {};
+        encoder<T> write {};
         while (i != e)
         {
             auto const outChar = read(i);
@@ -338,14 +350,11 @@ std::basic_string<T> convert_to(std::basic_string_view<S> in)
     return out;
 }
 
-template <typename T, typename S,
-    std::enable_if_t<
-        std::is_same_v<S, char> ||
-        std::is_same_v<S, char16_t> ||
-        std::is_same_v<S, char32_t>
-        , int
-    > = 0
->
+template <
+    typename T,
+    typename S,
+    std::enable_if_t<std::is_same_v<S, char> || std::is_same_v<S, char16_t> || std::is_same_v<S, char32_t>,
+                     int> = 0>
 std::basic_string<T> convert_to(S _in)
 {
     std::basic_string_view<S> in(&_in, 1);
@@ -354,4 +363,4 @@ std::basic_string<T> convert_to(S _in)
     return out;
 }
 
-}
+} // namespace unicode

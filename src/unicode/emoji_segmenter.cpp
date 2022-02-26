@@ -14,10 +14,12 @@
 
 #include <unicode/emoji_segmenter.h>
 #include <unicode/ucd.h>
-#include <iostream>
-#include <cassert>
 
-namespace unicode {
+#include <cassert>
+#include <iostream>
+
+namespace unicode
+{
 
 enum class EmojiSegmentationCategory
 {
@@ -43,9 +45,9 @@ enum class EmojiSegmentationCategory
 
 inline EmojiSegmentationCategory toCategory(char32_t _codepoint) noexcept
 {
-    auto isEmojiKeycapBase = [](char32_t _codepoint) constexpr noexcept -> bool {
-        return ('0' <= _codepoint && _codepoint <= '9')
-            || _codepoint == '#' || _codepoint == '*';
+    auto isEmojiKeycapBase = [](char32_t _codepoint) constexpr noexcept->bool
+    {
+        return ('0' <= _codepoint && _codepoint <= '9') || _codepoint == '#' || _codepoint == '*';
     };
 
     if (_codepoint == 0x20e3)
@@ -82,23 +84,24 @@ inline EmojiSegmentationCategory toCategory(char32_t _codepoint) noexcept
     return EmojiSegmentationCategory::Invalid;
 }
 
-class RagelIterator {
+class RagelIterator
+{
     EmojiSegmentationCategory category_;
     char32_t const* buffer_;
     size_t size_;
     size_t currentCursorEnd_;
 
   public:
-    RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept
-      : category_{ EmojiSegmentationCategory::Invalid },
-        buffer_{ _buffer },
-        size_{ _size },
-        currentCursorEnd_{ _cursor }
+    RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept:
+        category_ { EmojiSegmentationCategory::Invalid },
+        buffer_ { _buffer },
+        size_ { _size },
+        currentCursorEnd_ { _cursor }
     {
         updateCategory();
     }
 
-    RagelIterator() noexcept : RagelIterator(U"", 0, 0) {}
+    RagelIterator() noexcept: RagelIterator(U"", 0, 0) {}
 
     constexpr char32_t codepoint() const noexcept { return buffer_[currentCursorEnd_]; }
     constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
@@ -114,21 +117,31 @@ class RagelIterator {
 
     constexpr int operator*() const noexcept { return static_cast<int>(category_); }
 
-    RagelIterator& operator++() noexcept { currentCursorEnd_++; updateCategory(); return *this; }
-    RagelIterator& operator--(int) noexcept { currentCursorEnd_--; updateCategory(); return *this; }
-
-    RagelIterator operator+(int v) const noexcept
+    RagelIterator& operator++() noexcept
     {
-        // TODO: assert() on integer overflow
-        return {buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v)};
+        currentCursorEnd_++;
+        updateCategory();
+        return *this;
+    }
+    RagelIterator& operator--(int) noexcept
+    {
+        currentCursorEnd_--;
+        updateCategory();
+        return *this;
     }
 
-    RagelIterator operator-(int v) const noexcept
+    RagelIterator operator+(long v) const noexcept
+    {
+        // TODO: assert() on integer overflow
+        return { buffer_, size_, currentCursorEnd_ + (size_t) v };
+    }
+
+    RagelIterator operator-(long v) const noexcept
     {
         if (v >= 0)
         {
             assert(currentCursorEnd_ >= static_cast<size_t>(v));
-            return {buffer_, size_, currentCursorEnd_ + static_cast<size_t>(v)};
+            return { buffer_, size_, currentCursorEnd_ - (size_t) v };
         }
         else
         {
@@ -152,14 +165,14 @@ class RagelIterator {
     constexpr bool operator!=(RagelIterator const& _rhs) const noexcept { return !(*this == _rhs); }
 };
 
-namespace {
-using emoji_text_iter_t = RagelIterator;
+namespace
+{
+    using emoji_text_iter_t = RagelIterator;
 #include "emoji_presentation_scanner.c"
-}
+} // namespace
 
-emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept
-  : buffer_{ _buffer },
-    size_{ _size }
+emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept:
+    buffer_ { _buffer }, size_ { _size }
 {
     if (size_)
         consume_once();
@@ -196,8 +209,7 @@ bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) 
         }
 
         currentCursorEnd_ = o;
-    }
-    while (currentCursorEnd_ < size_);
+    } while (currentCursorEnd_ < size_);
 
     _size.assign(currentCursorEnd_);
     _emoji.assign(isEmoji_ ? PresentationStyle::Emoji : PresentationStyle::Text);
@@ -214,4 +226,4 @@ size_t emoji_segmenter::consume_once()
     return o.cursor();
 }
 
-} // end namespace
+} // namespace unicode

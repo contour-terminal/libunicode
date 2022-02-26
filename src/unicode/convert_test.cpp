@@ -12,10 +12,13 @@
  * limitations under the License.
  */
 #include <unicode/convert.h>
-#include <unicode/utf8.h>
 #include <unicode/support.h>
-#include <catch2/catch.hpp>
+#include <unicode/utf8.h>
+
 #include <fmt/format.h>
+
+#include <catch2/catch.hpp>
+
 #include <iterator>
 
 using namespace unicode;
@@ -25,28 +28,28 @@ using namespace std;
 TEST_CASE("convert.same", "[convert]")
 {
     auto const s8 = "Hello, 😀"sv;
-    auto t8 = string{};
+    auto t8 = string {};
     unicode::convert_to<char>(s8, back_insert_iterator(t8));
     CHECK(s8 == t8);
 
     auto const s16 = u"Hello, 😀"sv;
-    auto t16 = u16string{};
+    auto t16 = u16string {};
     unicode::convert_to<char16_t>(s16, back_insert_iterator(t16));
     CHECK(s16 == t16);
 
     auto const s32 = U"Hello, 😀"sv;
-    auto t32 = u32string{};
+    auto t32 = u32string {};
     unicode::convert_to<char32_t>(s32, back_insert_iterator(t32));
     CHECK(s32 == t32);
 }
 
 TEST_CASE("convert.8_to_16", "[convert]")
 {
-    auto constexpr input = string_view{
+    auto constexpr input = string_view {
         "["
-        "\xC3\xB6"          // ö  - german o-umlaut
-        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
-        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+        "\xC3\xB6"         // ö  - german o-umlaut
+        "\xE2\x82\xAC"     // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80" // 😀 - U+1F600
     };
     u16string output;
     auto bi = back_inserter(output);
@@ -57,11 +60,11 @@ TEST_CASE("convert.8_to_16", "[convert]")
 
 TEST_CASE("convert.8_to_32", "[convert]")
 {
-    auto constexpr input = string_view{
+    auto constexpr input = string_view {
         "["
-        "\xC3\xB6"          // ö  - german o-umlaut
-        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
-        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+        "\xC3\xB6"         // ö  - german o-umlaut
+        "\xE2\x82\xAC"     // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80" // 😀 - U+1F600
     };
     u32string output;
     auto bi = back_inserter(output);
@@ -72,14 +75,14 @@ TEST_CASE("convert.8_to_32", "[convert]")
 
 TEST_CASE("convert.utf8.incremental_decode", "[utf8]")
 {
-    auto constexpr values = string_view{
+    auto constexpr values = string_view {
         "["
-        "\xC3\xB6"          // ö  - german o-umlaut
-        "\xE2\x82\xAC"      // €  - EURO sign U+20AC
-        "\xF0\x9F\x98\x80"  // 😀 - U+1F600
+        "\xC3\xB6"         // ö  - german o-umlaut
+        "\xE2\x82\xAC"     // €  - EURO sign U+20AC
+        "\xF0\x9F\x98\x80" // 😀 - U+1F600
     };
     auto const* p = (char8_type const*) (values.data());
-    auto decode = unicode::decoder<char>{};
+    auto decode = unicode::decoder<char> {};
 
     // single-byte
     auto result = decode(*p++);

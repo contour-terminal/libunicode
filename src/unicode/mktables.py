@@ -125,12 +125,12 @@ class EnumClassWriter(EnumBuilder): # {{{
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
-        self.file.write('namespace unicode {\n\n')
+        self.file.write('namespace unicode\n{\n\n')
 
     def begin(self, _enum_class, _first_value):
         self.enum_class = _enum_class
         self.next_value = _first_value
-        self.file.write('enum class {} {{\n'.format(_enum_class))
+        self.file.write('enum class {}\n{{\n'.format(_enum_class))
 
     def member(self, _member):
         self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.next_value))
@@ -143,7 +143,7 @@ class EnumClassWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace unicode\n")
         self.file.close()
     # }}}
 class EnumOstreamWriter(EnumBuilder): # {{{
@@ -154,22 +154,26 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
-        self.file.write('#include <ostream>\n')
         self.file.write('#include <unicode/ucd.h>\n')
         self.file.write('\n')
-        self.file.write('namespace unicode {\n\n')
+        self.file.write('#include <ostream>\n')
+        self.file.write('\n')
+        self.file.write('namespace unicode\n{\n\n')
 
     def begin(self, _enum_class, _first):
         self.enum_class = _enum_class
-        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept {{\n'.format(_enum_class))
-        self.file.write('    switch (_value) {\n')
+        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept\n{{\n'.format(_enum_class))
+        self.file.write('    // clang-format off\n')
+        self.file.write('    switch (_value)\n')
+        self.file.write('    {\n')
 
     def member(self, _member):
-        self.file.write('        case {0}::{1}: return os << "{2}";\n'.format(self.enum_class, sanitize_identifier(_member), _member))
+        self.file.write('    case {0}::{1}: return os << "{2}";\n'.format(self.enum_class, sanitize_identifier(_member), _member))
         return
 
     def end(self):
         self.file.write("    }\n")
+        self.file.write('    // clang-format on\n')
         self.file.write('    return os << "(" << static_cast<unsigned>(_value) << ")";\n')
         self.file.write("}\n\n")
         pass
@@ -178,7 +182,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace unicode\n")
         self.file.close()
     # }}}
 class EnumFmtWriter(EnumBuilder): # {{{
@@ -190,30 +194,37 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('#pragma once\n')
         self.file.write('\n')
         self.file.write('#include <unicode/ucd_enums.h>\n')
+        self.file.write('\n')
         self.file.write('#include <fmt/format.h>\n')
         self.file.write('\n')
-        self.file.write('namespace fmt {\n\n')
+        self.file.write('namespace fmt\n{\n\n')
 
     def begin(self, _enum_class, _first):
         self.enum_class = 'unicode::' + _enum_class
         self.file.write('template <>\n')
-        self.file.write('struct formatter<{}> {{\n'.format(self.enum_class))
+        self.file.write('struct formatter<{}>\n{{\n'.format(self.enum_class))
 
         self.file.write('    template <typename ParseContext>\n')
-        self.file.write('    constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }\n')
+        self.file.write('    constexpr auto parse(ParseContext& ctx)\n')
+        self.file.write('    {\n')
+        self.file.write('        return ctx.begin();\n')
+        self.file.write('    }\n')
 
         self.file.write('    template <typename FormatContext>\n')
         self.file.write('    auto format({} _value, FormatContext& ctx)\n'.format(self.enum_class))
         self.file.write('    {\n')
-        self.file.write('        switch (_value) {\n')
+        self.file.write('        switch (_value)\n')
+        self.file.write('        {\n')
+        self.file.write('        // clang-format off\n')
 
     def member(self, _member):
         self.file.write(
-                '            case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
+                '        case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
             self.enum_class, sanitize_identifier(_member), _member)
         )
 
     def end(self):
+        self.file.write('        // clang-format off\n')
         self.file.write("        }\n")
         self.file.write('        return format_to(ctx.out(), "({})", unsigned(_value));\n')
         self.file.write("    }\n")
@@ -223,7 +234,7 @@ class EnumFmtWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // end namespace\n")
+        self.file.write("} // namespace fmt\n")
         self.file.close()
     # }}}
 class MergedRange: # {{{
@@ -339,7 +350,8 @@ class UCDGenerator: # {{{
 #include <string>
 #include <utility>
 
-namespace unicode {
+namespace unicode
+{
 
 """)
 
@@ -352,13 +364,14 @@ namespace unicode {
 #include <optional>
 #include <string>
 
-namespace unicode {
+namespace unicode
+{
 
 """) # }}}
 
     def file_footer(self): # {{{
-        self.header.write("} // end namespace\n")
-        self.impl.write("} // end namespace\n")
+        self.header.write("} // namespace unicode\n")
+        self.impl.write("} // namespace unicode\n")
 # }}}
 
     def load_property_value_aliases(self): # {{{
@@ -428,7 +441,8 @@ namespace unicode {
 
     def table_prop_start(self, _element_type, _name, _count):
         element_type = 'Prop<::unicode::{}>'.format(_element_type)
-        self.impl.write('namespace tables {\n')
+        self.impl.write('namespace tables\n{\n')
+        self.impl.write('    // clang-format off\n')
         self.impl.write("    auto static const {} = std::array<{}, {}>{{ // {}\n".format(
             _name,
             element_type,
@@ -437,7 +451,7 @@ namespace unicode {
         pass
 
     def table_prop_element(self, _element_type, _start, _end, _name, _prop, _comment = ''):
-        self.impl.write('        {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }},'.format(
+        self.impl.write('        {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }},'.format(
                         _element_type,
                         _start,
                         _end,
@@ -450,7 +464,8 @@ namespace unicode {
 
     def table_prop_end(self):
         self.impl.write("    }}; // {}\n".format(FOLD_CLOSE))
-        self.impl.write("} // end namespace tables\n\n")
+        self.impl.write('    // clang-format off\n')
+        self.impl.write("} // namespace tables\n\n")
     # }}}
 
     def write_properties(self): # {{{
@@ -575,7 +590,8 @@ namespace unicode {
 
         # write out test function
         self.impl.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept {\n")
-        self.impl.write("    switch (_prop) {\n")
+        self.impl.write("    switch (_prop)\n")
+        self.impl.write("    {\n")
         for name in sorted(props.keys()):
             self.impl.write("        case Core_Property::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
         self.impl.write("    }\n")
@@ -657,7 +673,7 @@ namespace unicode {
                     len(props[name]),
                     FOLD_OPEN))
                 for propRange in props[name]:
-                    self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
+                    self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
                                element_type,
                                propRange['start'],
                                propRange['end'],
@@ -689,8 +705,8 @@ namespace unicode {
                 self.builder.end()
 
             for name in sorted(props.keys()):
-                self.impl.write('namespace {} {{\n'.format(name.lower()))
-                self.header.write('namespace {} {{\n'.format(name.lower()))
+                self.impl.write('namespace {}\n{{\n'.format(name.lower()))
+                self.header.write('namespace {}\n{{\n'.format(name.lower()))
                 enum_set = set()
                 for enum in props[name]:
                     enum_set.add(enum['property'])
@@ -701,8 +717,8 @@ namespace unicode {
                     self.impl.write('            return *p == {}::{};\n'.format(name, enum))
                     self.impl.write('        return false;\n')
                     self.impl.write('    }\n\n')
-                self.header.write('}\n')
-                self.impl.write('}\n')
+                self.header.write('}} // namespace {}\n'.format(name.lower()))
+                self.impl.write('}} // namespace {}\n'.format(name.lower()))
             self.header.write('\n')
             self.impl.write('\n')
         # }}}
@@ -727,7 +743,7 @@ namespace unicode {
         pset = set()
         for propRange in props:
             pset.add(propRange['property'])
-            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }}, // {}\n".format(
+            self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, unicode::{}::{} }}, // {}\n".format(
                             element_type,
                             propRange['start'],
                             propRange['end'],
@@ -834,7 +850,7 @@ namespace unicode {
         for sce in self.script_extensions:
             scripts = sce['property']
             key = 'sce_{}'.format('_'.join(scripts))
-            self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {} }}, // {}\n".format(
+            self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {} }}, // {}\n".format(
                             element_type,
                             sce['start'],
                             sce['end'],
@@ -947,7 +963,7 @@ namespace unicode {
             FOLD_OPEN))
         for block in self.blocks:
             self.impl.write(
-                '    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},\n'.format(
+                '    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},\n'.format(
                 element_type,
                 block['start'],
                 block['end'],
@@ -982,7 +998,7 @@ namespace unicode {
         for cat in gcats:
             cats.add(cat['property'])
             self.impl.write(
-                "    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
+                "    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }}, // {}\n".format(
                 element_type,
                 cat['start'],
                 cat['end'],
@@ -1000,7 +1016,8 @@ namespace unicode {
         self.builder.end()
 
         # getter impl
-        self.impl.write("namespace {} {{\n".format(type_name.lower()))
+        self.impl.write("namespace {}\n".format(type_name.lower()))
+        self.impl.write("{\n")
         self.impl.write("    {} get(char32_t _value) noexcept {{\n".format(type_name))
         self.impl.write("        return search(tables::{}, _value).value_or({}::{});\n".format(type_name, type_name, UNSPECIFIED))
         self.impl.write("    }\n")
@@ -1025,7 +1042,8 @@ namespace unicode {
 
         # write out test function
         self.impl.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept {\n")
-        self.impl.write("    switch (_cat) {\n")
+        self.impl.write("    switch (_cat)\n")
+        self.impl.write("    {\n")
         for name in sorted(cats.keys()):
             self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
         self.impl.write("        case General_Category::{0:}: return false;\n".format(UNSPECIFIED)) # special case
@@ -1036,13 +1054,17 @@ namespace unicode {
         # write signature
         self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
 
-        self.header.write('namespace general_category {\n')
+        self.header.write('namespace general_category\n')
+        self.header.write('{\n')
         self.header.write("    {} get(char32_t _value) noexcept;\n\n".format(type_name))
         for name in sorted(cats.keys()):
             self.header.write(
-                    '    inline bool {}(char32_t _codepoint) {{ return contains(General_Category::{}, _codepoint); }}\n'.
+                    '    inline bool {}(char32_t _codepoint) noexcept\n'
+                    '    {{\n'
+                    '        return contains(General_Category::{}, _codepoint);\n'
+                    '    }}\n\n'.
                     format(name.lower(), name))
-        self.header.write('}\n\n') # }}}
+        self.header.write('} // namespace general_category\n\n') # }}}
 
     def collect_range_table_with_prop(self, f): # {{{
         table = []
@@ -1103,10 +1125,12 @@ namespace unicode {
             self.builder.end()
 
             # api: enum to_string
-            self.header.write('inline std::string to_string({} _value) {{\n'.format(type_name))
-            self.header.write('    switch (_value) {\n')
+            self.header.write('inline std::string to_string({} _value)\n'.format(type_name))
+            self.header.write('{\n')
+            self.header.write('    switch (_value)\n')
+            self.header.write('    {\n')
             for v in WIDTH_NAMES.values():
-                self.header.write('        case {}::{}: return "{}";\n'.format(type_name, v, v))
+                self.header.write('    case {}::{}: return "{}";\n'.format(type_name, v, v))
             self.header.write('    }\n');
             self.header.write('    return "Unknown";\n');
             self.header.write('}\n\n')
@@ -1127,7 +1151,7 @@ namespace unicode {
                 if len(range.comments) > 1:
                     for comment in range.comments:
                         self.impl.write("    // {}\n".format(comment))
-                self.impl.write("    {}{{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},".format(
+                self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {}::{} }},".format(
                                 element_type,
                                 range.range_from,
                                 range.range_to,

@@ -13,18 +13,19 @@
  */
 #pragma once
 
-#include <unicode/script_segmenter.h>
 #include <unicode/emoji_segmenter.h>
+#include <unicode/script_segmenter.h>
+#include <unicode/support.h>
 #include <unicode/ucd.h>
 #include <unicode/ucd_ostream.h>
-#include <unicode/support.h>
 
 #include <array>
 #include <iterator>
 #include <ostream>
 #include <tuple>
 
-namespace unicode {
+namespace unicode
+{
 
 template <typename T>
 using segmenter_property_t = typename T::property_type;
@@ -39,7 +40,7 @@ namespace detail
     {
         ((os << prep << std::get<Ts>(p)), ...);
     }
-}
+} // namespace detail
 
 /// API for segmenting incoming text into small runs.
 ///
@@ -50,7 +51,8 @@ namespace detail
 /// @see emoji_segmenter
 /// @see grapheme_segmenter
 template <typename... Segmenter>
-class basic_run_segmenter {
+class basic_run_segmenter
+{
   public:
     using property_tuple = std::tuple<segmenter_property_t<Segmenter>...>;
 
@@ -69,15 +71,10 @@ class basic_run_segmenter {
 
         constexpr bool operator==(range other) const noexcept
         {
-            return start == other.start
-                && end == other.end
-                && properties == other.properties;
+            return start == other.start && end == other.end && properties == other.properties;
         }
 
-        constexpr bool operator!=(range other) const noexcept
-        {
-            return !(*this == other);
-        }
+        constexpr bool operator!=(range other) const noexcept { return !(*this == other); }
 
         friend inline std::ostream& operator<<(std::ostream& os, range r)
         {
@@ -88,12 +85,9 @@ class basic_run_segmenter {
         }
     };
 
-    explicit basic_run_segmenter(std::u32string_view _sv)
-        : basic_run_segmenter(_sv.data(), _sv.size()) {}
+    explicit basic_run_segmenter(std::u32string_view _sv): basic_run_segmenter(_sv.data(), _sv.size()) {}
 
-    basic_run_segmenter(char32_t const* _text, size_t _size)
-        : segmenter_{},
-          size_{_size}
+    basic_run_segmenter(char32_t const* _text, size_t _size): segmenter_ {}, size_ { _size }
     {
         initialize<0, Segmenter...>(_text, _size);
     }
@@ -125,33 +119,32 @@ class basic_run_segmenter {
 
   private:
     template <size_t I>
-    void initialize(char32_t const*, size_t) {}
+    void initialize(char32_t const*, size_t)
+    {
+    }
 
     template <size_t I, typename Current, typename... Remaining>
     void initialize(char32_t const* _text, size_t _size)
     {
-        std::get<I>(segmenter_) = Current{_text, _size};
+        std::get<I>(segmenter_) = Current { _text, _size };
         initialize<I + 1, Remaining...>(_text, _size);
     }
 
     template <size_t I>
-    void consumeAllUntilSplitPosition() {}
+    void consumeAllUntilSplitPosition()
+    {
+    }
 
     template <size_t I, typename Current, typename... Remaining>
     void consumeAllUntilSplitPosition()
     {
         consumeUntilSplitPosition(
-            std::get<Current>(segmenter_),
-            out(positions_[I]),
-            out(std::get<I>(properties_))
-        );
+            std::get<Current>(segmenter_), out(positions_[I]), out(std::get<I>(properties_)));
         consumeAllUntilSplitPosition<I + 1, Remaining...>();
     }
 
     template <typename TheSegmenter, typename Property>
-    void consumeUntilSplitPosition(TheSegmenter& _segmenter,
-                                   out<size_t> _position,
-                                   out<Property> _property)
+    void consumeUntilSplitPosition(TheSegmenter& _segmenter, out<size_t> _position, out<Property> _property)
     {
         if (*_position > lastSplit_)
             return;
@@ -175,12 +168,12 @@ class basic_run_segmenter {
 
     size_t lastSplit_ = 0;
     range candidate_ = {};
-    position_list positions_{};
-    property_tuple properties_{};
+    position_list positions_ {};
+    property_tuple properties_ {};
     segmenter_tuple segmenter_;
     size_t const size_;
 };
 
 using run_segmenter = basic_run_segmenter<script_segmenter, emoji_segmenter>;
 
-} // end namespace
+} // namespace unicode

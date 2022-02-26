@@ -16,65 +16,67 @@
 #include <array>
 #include <optional>
 
-namespace unicode {
+namespace unicode
+{
 
 struct Interval
 {
-	char32_t from;
-	char32_t to;
+    char32_t from;
+    char32_t to;
 };
 
 template <size_t N>
-constexpr bool contains(std::array<Interval, N> const& _ranges, char32_t _codepoint)
+constexpr bool contains(std::array<Interval, N> const& _ranges, char32_t _codepoint) noexcept
 {
-	auto a = size_t{0};
-	auto b = static_cast<size_t>(_ranges.size()) - 1;
-	while (a < b)
-	{
-		auto const i = ((b + a) / 2);
-		auto const& I = _ranges[i];
-		if (I.to < _codepoint)
-			a = i + 1;
-		else if (I.from > _codepoint)
+    auto a = size_t { 0 };
+    auto b = static_cast<size_t>(_ranges.size()) - 1;
+    while (a < b)
+    {
+        auto const i = ((b + a) / 2);
+        auto const& I = _ranges[i];
+        if (I.to < _codepoint)
+            a = i + 1;
+        else if (I.from > _codepoint)
         {
             if (i == 0)
                 return false;
-			b = i - 1;
+            b = i - 1;
         }
-		else
-			return true;
-	}
-	return a == b && _ranges[a].from <= _codepoint && _codepoint <= _ranges[a].to;
+        else
+            return true;
+    }
+    return a == b && _ranges[a].from <= _codepoint && _codepoint <= _ranges[a].to;
 }
 
-template <typename T> struct Prop
+template <typename T>
+struct Prop
 {
-	Interval interval;
-	T property;
+    Interval interval;
+    T property;
 };
 
 template <typename T, size_t N>
 constexpr std::optional<T> search(std::array<Prop<T>, N> const& _ranges, char32_t _codepoint)
 {
-	auto a = size_t{0};
-	auto b = static_cast<size_t>(_ranges.size()) - 1;
+    auto a = size_t { 0 };
+    auto b = static_cast<size_t>(_ranges.size()) - 1;
 
-	while (a < b)
-	{
-		auto const i = static_cast<size_t>((b + a) / 2);
-		auto const& I = _ranges[i];
-		if (I.interval.to < _codepoint)
-			a = i + 1;
-		else if (I.interval.from > _codepoint)
-			b = i - 1;
-		else
-			return I.property;
-	}
+    while (a < b)
+    {
+        auto const i = static_cast<size_t>((b + a) / 2);
+        auto const& I = _ranges[i];
+        if (I.interval.to < _codepoint)
+            a = i + 1;
+        else if (I.interval.from > _codepoint)
+            b = i - 1;
+        else
+            return I.property;
+    }
 
-	if (a == b && _ranges[a].interval.from <= _codepoint && _codepoint <= _ranges[a].interval.to)
-		return _ranges[a].property;
+    if (a == b && _ranges[a].interval.from <= _codepoint && _codepoint <= _ranges[a].interval.to)
+        return _ranges[a].property;
 
-	return std::nullopt;
+    return std::nullopt;
 }
 
-} // end namespace
+} // namespace unicode

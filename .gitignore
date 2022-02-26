@@ -1,5 +1,7 @@
 /build/
+/_deps/
 /.clangd/
 /compile_commands.json
 /.vscode/
 /sandbox/
+/target/

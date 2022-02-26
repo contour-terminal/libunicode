@@ -17,26 +17,25 @@
 
 #include <string_view>
 
-namespace unicode {
+namespace unicode
+{
 
 /// Implements http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
-class grapheme_segmenter {
+class grapheme_segmenter
+{
   public:
-    constexpr grapheme_segmenter(char32_t const* _begin, char32_t const* _end) noexcept
-      : left_{ _begin },
-        right_{ _begin },
-        end_{ _end }
+    constexpr grapheme_segmenter(char32_t const* _begin, char32_t const* _end) noexcept:
+        left_ { _begin }, right_ { _begin }, end_ { _end }
     {
         ++*this;
     }
 
-    constexpr grapheme_segmenter(std::u32string_view const& _sv) noexcept
-      : grapheme_segmenter(_sv.data(), _sv.data() + _sv.size())
-    {}
+    constexpr grapheme_segmenter(std::u32string_view const& _sv) noexcept:
+        grapheme_segmenter(_sv.data(), _sv.data() + _sv.size())
+    {
+    }
 
-    constexpr grapheme_segmenter() noexcept
-      : grapheme_segmenter({}, {})
-    {}
+    constexpr grapheme_segmenter() noexcept: grapheme_segmenter({}, {}) {}
 
     constexpr grapheme_segmenter& operator++()
     {
@@ -56,20 +55,14 @@ class grapheme_segmenter {
         return std::u32string_view(left_, static_cast<size_t>(right_ - left_));
     }
 
-    constexpr bool codepointsAvailable() const noexcept
-    {
-        return right_ != end_;
-    }
+    constexpr bool codepointsAvailable() const noexcept { return right_ != end_; }
 
-    constexpr operator bool () const noexcept
-    {
-        return codepointsAvailable();
-    }
+    constexpr operator bool() const noexcept { return codepointsAvailable(); }
 
     constexpr bool operator==(grapheme_segmenter const& _rhs) const noexcept
     {
         return (!codepointsAvailable() && !_rhs.codepointsAvailable())
-            || (left_ == _rhs.left_ && right_ == _rhs.right_);
+               || (left_ == _rhs.left_ && right_ == _rhs.right_);
     }
 
     /// Tests if codepoint @p a and @p b are breakable, and thus, two different grapheme clusters.
@@ -102,20 +95,18 @@ class grapheme_segmenter {
 
         // Do not break Hangul syllable sequences.
         // GB6:
-        if (grapheme_cluster_break::l(a) && (grapheme_cluster_break::l(b)
-                                            || grapheme_cluster_break::v(b)
-                                            || grapheme_cluster_break::lv(b)
-                                            || grapheme_cluster_break::lvt(b)))
+        if (grapheme_cluster_break::l(a)
+            && (grapheme_cluster_break::l(b) || grapheme_cluster_break::v(b) || grapheme_cluster_break::lv(b)
+                || grapheme_cluster_break::lvt(b)))
             return false;
 
         // GB7:
         if ((grapheme_cluster_break::lv(a) || grapheme_cluster_break::v(a))
-                && (grapheme_cluster_break::v(b) || grapheme_cluster_break::t(b)))
+            && (grapheme_cluster_break::v(b) || grapheme_cluster_break::t(b)))
             return false;
 
         // GB8:
-        if ((grapheme_cluster_break::lv(a) || grapheme_cluster_break::t(a))
-                && grapheme_cluster_break::t(b))
+        if ((grapheme_cluster_break::lv(a) || grapheme_cluster_break::t(a)) && grapheme_cluster_break::t(b))
             return false;
 
         // GB9: Do not break before extending characters.
@@ -144,45 +135,36 @@ class grapheme_segmenter {
         return true; // GB10
     }
 
-    static bool nonbreakable(char32_t a, char32_t b) noexcept
-    {
-        return !breakable(a, b);
-    }
+    static bool nonbreakable(char32_t a, char32_t b) noexcept { return !breakable(a, b); }
 
   private:
     static bool extend(char32_t _codepoint) noexcept
     {
         return contains(Core_Property::Grapheme_Extend, _codepoint)
-            || contains(General_Category::Spacing_Mark, _codepoint)
-            || (emoji_modifier(_codepoint) && _codepoint != 0x200D);
+               || contains(General_Category::Spacing_Mark, _codepoint)
+               || (emoji_modifier(_codepoint) && _codepoint != 0x200D);
     }
 
     static bool control(char32_t ch) noexcept
     {
         return contains(General_Category::Line_Separator, ch)
-            || contains(General_Category::Paragraph_Separator, ch)
-            || contains(General_Category::Control, ch)
-            || contains(General_Category::Surrogate, ch)
-            || (contains(General_Category::Unassigned, ch)
-                    && contains(Core_Property::Default_Ignorable_Code_Point, ch))
-            || (contains(General_Category::Format, ch)
-                    && ch != 0x000D
-                    && ch != 0x000A
-                    && ch != 0x200C
-                    && ch != 0x200D);
+               || contains(General_Category::Paragraph_Separator, ch)
+               || contains(General_Category::Control, ch) || contains(General_Category::Surrogate, ch)
+               || (contains(General_Category::Unassigned, ch)
+                   && contains(Core_Property::Default_Ignorable_Code_Point, ch))
+               || (contains(General_Category::Format, ch) && ch != 0x000D && ch != 0x000A && ch != 0x200C
+                   && ch != 0x200D);
     }
 
     static bool spacingMark(char32_t _codepoint) noexcept
     {
-        return general_category::spacing_mark(_codepoint)
-            || _codepoint == 0x0E33
-            || _codepoint == 0x0EB3;
+        return general_category::spacing_mark(_codepoint) || _codepoint == 0x0E33 || _codepoint == 0x0EB3;
     }
 
     static constexpr bool prepend([[maybe_unused]] char32_t _codepoint) noexcept
     {
         // (NB: wrt "Prepend": Currently there are no characters with this value)
-        //return contains(General_Category::Pepend, _codepoint)
+        // return contains(General_Category::Pepend, _codepoint)
         return false;
     }
 
@@ -192,4 +174,4 @@ class grapheme_segmenter {
     char32_t const* end_;
 };
 
-} // end namespace
+} // namespace unicode

@@ -16,7 +16,8 @@
 #include <cstdint>
 #include <functional>
 
-namespace unicode {
+namespace unicode
+{
 
 #if defined(__cpp_char8_t)
 using char8_type = char8_t;
@@ -26,10 +27,11 @@ using char8_type = uint8_t;
 
 // Helper API solely for use of function parameters to visually denote output parameters.
 template <typename T>
-class out {
+class out
+{
   public:
-    constexpr out(std::reference_wrapper<T> _ref) noexcept : ref_{&_ref.value()} {}
-    constexpr explicit out(T& _ref) noexcept : ref_{&_ref} {}
+    constexpr out(std::reference_wrapper<T> _ref) noexcept: ref_ { &_ref.value() } {}
+    constexpr explicit out(T& _ref) noexcept: ref_ { &_ref } {}
     constexpr out(out const&) noexcept = default;
     constexpr out(out&&) noexcept = default;
     constexpr out& operator=(out const&) noexcept = default;
@@ -52,16 +54,18 @@ class out {
 
 // dynamic array with a fixed capacity.
 template <typename T, std::size_t N>
-class fs_array {
+class fs_array
+{
   public:
     using value_type = T;
     using array_type = std::array<value_type, N>;
     using iterator = typename array_type::iterator;
     using const_iterator = typename array_type::const_iterator;
 
-    constexpr fs_array() noexcept : values_{{}}, size_{0} {}
+    constexpr fs_array() noexcept: values_ { {} }, size_ { 0 } {}
 
-    constexpr void clear() noexcept {
+    constexpr void clear() noexcept
+    {
         for (size_t i = 0; i < size_; ++i)
             values_[i].~T();
         size_ = 0;
@@ -116,4 +120,4 @@ class fs_array {
     size_t size_;
 };
 
-}
+} // namespace unicode

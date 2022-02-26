@@ -2,48 +2,133 @@ name: Build
 
 on:
   push:
+    paths-ignore:
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/*.yml'
+      - 'LICENSE.txt'
+      - '*.md'
+      - '*.sh'
     branches:
       - master
-      - wip
-      - improvement/*
-      - feature/*
-      - fix/*
+      - edge
   pull_request:
     branches:
       - master
+      - edge
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
-  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
-  unix:
+  ubuntu_1804:
+    name: "Ubuntu Linux 18.04"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ccache-ubuntu_1804
+          max-size: 256M
+      - name: "install dependencies"
+        run: |
+          set -ex
+          sudo apt -q update
+          sudo apt install -y g++-8
+          sudo ./scripts/install-deps.sh
+      - name: "Get specific version CMake, v3.18.3"
+        uses: lukka/get-cmake@v3.18.3
+      - name: "create build directory"
+        run: mkdir build
+      - name: "cmake"
+        run: |
+          BUILD_DIR="build" \
+            CMAKE_BUILD_TYPE="Release" \
+            CXX="g++-8" \
+            ./scripts/ci-prepare.sh
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/unicode/unicode_test
+
+  ubuntu_matrix:
     strategy:
       matrix:
-        os: [ubuntu, macos, windows]
-        compiler: [g++, clang++, cl]
-        exclude:
-          - os: macos
-            compiler: g++
-          - os: macos
-            compiler: cl
-          - os: ubuntu
-            compiler: cl
-    name: ${{matrix.os}} / ${{matrix.compiler}}
-    runs-on: ${{matrix.os}}-latest
+        compiler:
+          [
+            "GCC 8",
+            "GCC 9",
+            "GCC 10",
+            "Clang 9",
+            "Clang 10",
+            "Clang 11",
+            "Clang 12"
+          ]
+    name: "Ubuntu Linux 20.04 (${{ matrix.compiler }})"
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
         with:
-          path: "**/cpm_modules"
-          key: ${{github.workflow}}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        env:
+          COMPILER: "${{ matrix.compiler }}"
+        run: ./scripts/install-deps.sh
+      - name: "create build directory"
+        run: mkdir build
+      - name: "cmake"
+        env:
+          COMPILER: "${{ matrix.compiler }}"
+        run: |
+          BUILD_DIR="build" \
+            CMAKE_BUILD_TYPE="RelWithDebInfo" \
+            ./scripts/ci-prepare.sh
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/unicode/unicode_test
 
-      - name: configure
-        run: cmake -S . -B build -DLIBUNICODE_TESTING=ON -DCMAKE_CXX_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=Debug
-
-      - name: build
-        run: cmake --build build -j4
-
-      - name: test
-        run: ctest --test-dir build/src/unicode --build-config Debug
+  windows:
+    name: "Windows"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Fetch embedded dependencies"
+        shell: powershell
+        run: |
+          ./scripts/install-deps.ps1
+          type ./_deps/sources/CMakeLists.txt
+      - name: "vcpkg: Install dependencies"
+        uses: lukka/run-vcpkg@v5
+        id: runvcpkg
+        with:
+          vcpkgArguments: fmt range-v3
+          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+          vcpkgGitCommitId: 1b1ae50e1a69f7c659bd7d731e80b358d21c86ad
+          vcpkgTriplet: x64-windows
+      - name: "create build directory"
+        shell: powershell
+        run: |
+          If (!(Test-Path build))
+          {
+              New-Item -ItemType Directory -Force -Path build
+          }
+      - name: "Generate build files"
+        env:
+          WORKSPACE: ${{ runner.workspace }}
+        run: ./scripts/ci-prepare.ps1
+      - name: "Build"
+        run: cmake --build build/ --config Release
+      - name: "test: libterminal"
+        run: .\build\src\unicode\Release\unicode_test.exe
