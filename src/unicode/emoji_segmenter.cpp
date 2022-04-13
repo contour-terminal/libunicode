@@ -43,42 +43,42 @@ enum class EmojiSegmentationCategory
     TagTerm = 15,
 };
 
-inline EmojiSegmentationCategory toCategory(char32_t _codepoint) noexcept
+inline EmojiSegmentationCategory toCategory(char32_t codepoint) noexcept
 {
-    auto isEmojiKeycapBase = [](char32_t _codepoint) constexpr noexcept->bool
+    auto isEmojiKeycapBase = [](char32_t codepoint) constexpr noexcept->bool
     {
-        return ('0' <= _codepoint && _codepoint <= '9') || _codepoint == '#' || _codepoint == '*';
+        return ('0' <= codepoint && codepoint <= '9') || codepoint == '#' || codepoint == '*';
     };
 
-    if (_codepoint == 0x20e3)
+    if (codepoint == 0x20e3)
         return EmojiSegmentationCategory::CombiningEnclosingKeyCap;
-    if (_codepoint == 0x20e0)
+    if (codepoint == 0x20e0)
         return EmojiSegmentationCategory::CombiningEnclosingCircleBackslash;
-    if (_codepoint == 0x200d)
+    if (codepoint == 0x200d)
         return EmojiSegmentationCategory::ZWJ;
-    if (_codepoint == 0xfe0e)
+    if (codepoint == 0xfe0e)
         return EmojiSegmentationCategory::VS15;
-    if (_codepoint == 0xfe0f)
+    if (codepoint == 0xfe0f)
         return EmojiSegmentationCategory::VS16;
-    if (_codepoint == 0x1f3f4)
+    if (codepoint == 0x1f3f4)
         return EmojiSegmentationCategory::TagBase;
-    if ((_codepoint >= 0xE0030 && _codepoint <= 0xE0039) || (_codepoint >= 0xE0061 && _codepoint <= 0xE007A))
+    if ((codepoint >= 0xE0030 && codepoint <= 0xE0039) || (codepoint >= 0xE0061 && codepoint <= 0xE007A))
         return EmojiSegmentationCategory::TagSequence;
-    if (_codepoint == 0xE007F)
+    if (codepoint == 0xE007F)
         return EmojiSegmentationCategory::TagTerm;
-    if (emoji_modifier_base(_codepoint))
+    if (emoji_modifier_base(codepoint))
         return EmojiSegmentationCategory::EmojiModifierBase;
-    if (emoji_modifier(_codepoint))
+    if (emoji_modifier(codepoint))
         return EmojiSegmentationCategory::EmojiModifier;
-    if (grapheme_cluster_break::regional_indicator(_codepoint))
+    if (grapheme_cluster_break::regional_indicator(codepoint))
         return EmojiSegmentationCategory::RegionalIndicator;
-    if (isEmojiKeycapBase(_codepoint))
+    if (isEmojiKeycapBase(codepoint))
         return EmojiSegmentationCategory::KeyCapBase;
-    if (emoji_presentation(_codepoint))
+    if (emoji_presentation(codepoint))
         return EmojiSegmentationCategory::EmojiEmojiPresentation;
-    if (emoji(_codepoint) && !emoji_presentation(_codepoint))
+    if (emoji(codepoint) && !emoji_presentation(codepoint))
         return EmojiSegmentationCategory::EmojiTextPresentation;
-    if (emoji(_codepoint))
+    if (emoji(codepoint))
         return EmojiSegmentationCategory::Emoji;
 
     return EmojiSegmentationCategory::Invalid;
@@ -92,11 +92,11 @@ class RagelIterator
     size_t currentCursorEnd_;
 
   public:
-    RagelIterator(char32_t const* _buffer, size_t _size, size_t _cursor) noexcept:
+    RagelIterator(char32_t const* buffer, size_t size, size_t cursor) noexcept:
         category_ { EmojiSegmentationCategory::Invalid },
-        buffer_ { _buffer },
-        size_ { _size },
-        currentCursorEnd_ { _cursor }
+        buffer_ { buffer },
+        size_ { size },
+        currentCursorEnd_ { cursor }
     {
         updateCategory();
     }
@@ -157,12 +157,12 @@ class RagelIterator
         return *this;
     }
 
-    constexpr bool operator==(RagelIterator const& _rhs) const noexcept
+    constexpr bool operator==(RagelIterator const& rhs) const noexcept
     {
-        return buffer_ == _rhs.buffer_ && size_ == _rhs.size_ && currentCursorEnd_ == _rhs.currentCursorEnd_;
+        return buffer_ == rhs.buffer_ && size_ == rhs.size_ && currentCursorEnd_ == rhs.currentCursorEnd_;
     }
 
-    constexpr bool operator!=(RagelIterator const& _rhs) const noexcept { return !(*this == _rhs); }
+    constexpr bool operator!=(RagelIterator const& rhs) const noexcept { return !(*this == rhs); }
 };
 
 namespace
@@ -171,14 +171,14 @@ namespace
 #include "emoji_presentation_scanner.c"
 } // namespace
 
-emoji_segmenter::emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept:
-    buffer_ { _buffer }, size_ { _size }
+emoji_segmenter::emoji_segmenter(char32_t const* buffer, size_t size) noexcept:
+    buffer_ { buffer }, size_ { size }
 {
     if (size_)
         consume_once();
 }
 
-bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept
+bool emoji_segmenter::consume(out<size_t> size, out<PresentationStyle> emoji) noexcept
 {
     // 01234567890123456
     // "A EMOJI"
@@ -211,8 +211,8 @@ bool emoji_segmenter::consume(out<size_t> _size, out<PresentationStyle> _emoji) 
         currentCursorEnd_ = o;
     } while (currentCursorEnd_ < size_);
 
-    _size.assign(currentCursorEnd_);
-    _emoji.assign(isEmoji_ ? PresentationStyle::Emoji : PresentationStyle::Text);
+    size.assign(currentCursorEnd_);
+    emoji.assign(isEmoji_ ? PresentationStyle::Emoji : PresentationStyle::Text);
     nextCursorBegin_ = currentCursorEnd_;
 
     return true;

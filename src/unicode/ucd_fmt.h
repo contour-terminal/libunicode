@@ -29,9 +29,9 @@ struct formatter<unicode::Plane>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Plane _value, FormatContext& ctx)
+    auto format(unicode::Plane value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Plane::Basic_Multilingual_Plane: return format_to(ctx.out(), "Basic_Multilingual_Plane");
@@ -43,7 +43,7 @@ struct formatter<unicode::Plane>
         case unicode::Plane::Unassigned: return format_to(ctx.out(), "Unassigned");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -56,9 +56,9 @@ struct formatter<unicode::Age>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Age _value, FormatContext& ctx)
+    auto format(unicode::Age value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Age::Unassigned: return format_to(ctx.out(), "Unassigned");
@@ -87,7 +87,7 @@ struct formatter<unicode::Age>
         case unicode::Age::V9_0: return format_to(ctx.out(), "V9_0");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -100,9 +100,9 @@ struct formatter<unicode::Bidi_Class>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Bidi_Class _value, FormatContext& ctx)
+    auto format(unicode::Bidi_Class value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Bidi_Class::Arabic_Letter: return format_to(ctx.out(), "Arabic_Letter");
@@ -130,7 +130,7 @@ struct formatter<unicode::Bidi_Class>
         case unicode::Bidi_Class::White_Space: return format_to(ctx.out(), "White_Space");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -143,9 +143,9 @@ struct formatter<unicode::Bidi_Paired_Bracket_Type>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Bidi_Paired_Bracket_Type _value, FormatContext& ctx)
+    auto format(unicode::Bidi_Paired_Bracket_Type value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Bidi_Paired_Bracket_Type::Close: return format_to(ctx.out(), "Close");
@@ -153,7 +153,7 @@ struct formatter<unicode::Bidi_Paired_Bracket_Type>
         case unicode::Bidi_Paired_Bracket_Type::Open: return format_to(ctx.out(), "Open");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -166,9 +166,9 @@ struct formatter<unicode::Canonical_Combining_Class>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Canonical_Combining_Class _value, FormatContext& ctx)
+    auto format(unicode::Canonical_Combining_Class value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Canonical_Combining_Class::A: return format_to(ctx.out(), "A");
@@ -231,7 +231,7 @@ struct formatter<unicode::Canonical_Combining_Class>
         case unicode::Canonical_Combining_Class::VR: return format_to(ctx.out(), "VR");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -244,9 +244,9 @@ struct formatter<unicode::Decomposition_Type>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Decomposition_Type _value, FormatContext& ctx)
+    auto format(unicode::Decomposition_Type value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Decomposition_Type::Canonical: return format_to(ctx.out(), "Canonical");
@@ -269,7 +269,7 @@ struct formatter<unicode::Decomposition_Type>
         case unicode::Decomposition_Type::Wide: return format_to(ctx.out(), "Wide");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -282,9 +282,9 @@ struct formatter<unicode::East_Asian_Width>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::East_Asian_Width _value, FormatContext& ctx)
+    auto format(unicode::East_Asian_Width value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::East_Asian_Width::Ambiguous: return format_to(ctx.out(), "Ambiguous");
@@ -295,7 +295,7 @@ struct formatter<unicode::East_Asian_Width>
         case unicode::East_Asian_Width::Wide: return format_to(ctx.out(), "Wide");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -308,9 +308,9 @@ struct formatter<unicode::Hangul_Syllable_Type>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Hangul_Syllable_Type _value, FormatContext& ctx)
+    auto format(unicode::Hangul_Syllable_Type value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Hangul_Syllable_Type::LVT_Syllable: return format_to(ctx.out(), "LVT_Syllable");
@@ -321,7 +321,7 @@ struct formatter<unicode::Hangul_Syllable_Type>
         case unicode::Hangul_Syllable_Type::Vowel_Jamo: return format_to(ctx.out(), "Vowel_Jamo");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -334,9 +334,9 @@ struct formatter<unicode::Indic_Positional_Category>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Indic_Positional_Category _value, FormatContext& ctx)
+    auto format(unicode::Indic_Positional_Category value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Indic_Positional_Category::Bottom: return format_to(ctx.out(), "Bottom");
@@ -357,7 +357,7 @@ struct formatter<unicode::Indic_Positional_Category>
         case unicode::Indic_Positional_Category::Visual_Order_Left: return format_to(ctx.out(), "Visual_Order_Left");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -370,9 +370,9 @@ struct formatter<unicode::Indic_Syllabic_Category>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Indic_Syllabic_Category _value, FormatContext& ctx)
+    auto format(unicode::Indic_Syllabic_Category value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Indic_Syllabic_Category::Avagraha: return format_to(ctx.out(), "Avagraha");
@@ -413,7 +413,7 @@ struct formatter<unicode::Indic_Syllabic_Category>
         case unicode::Indic_Syllabic_Category::Vowel_Independent: return format_to(ctx.out(), "Vowel_Independent");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -426,9 +426,9 @@ struct formatter<unicode::Jamo_Short_Name>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Jamo_Short_Name _value, FormatContext& ctx)
+    auto format(unicode::Jamo_Short_Name value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Jamo_Short_Name::A: return format_to(ctx.out(), "A");
@@ -485,7 +485,7 @@ struct formatter<unicode::Jamo_Short_Name>
         case unicode::Jamo_Short_Name::YU: return format_to(ctx.out(), "YU");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -498,9 +498,9 @@ struct formatter<unicode::Joining_Group>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Joining_Group _value, FormatContext& ctx)
+    auto format(unicode::Joining_Group value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Joining_Group::African_Feh: return format_to(ctx.out(), "African_Feh");
@@ -607,7 +607,7 @@ struct formatter<unicode::Joining_Group>
         case unicode::Joining_Group::Zhain: return format_to(ctx.out(), "Zhain");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -620,9 +620,9 @@ struct formatter<unicode::Joining_Type>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Joining_Type _value, FormatContext& ctx)
+    auto format(unicode::Joining_Type value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Joining_Type::Dual_Joining: return format_to(ctx.out(), "Dual_Joining");
@@ -633,7 +633,7 @@ struct formatter<unicode::Joining_Type>
         case unicode::Joining_Type::Transparent: return format_to(ctx.out(), "Transparent");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -646,9 +646,9 @@ struct formatter<unicode::Line_Break>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Line_Break _value, FormatContext& ctx)
+    auto format(unicode::Line_Break value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Line_Break::Alphabetic: return format_to(ctx.out(), "Alphabetic");
@@ -696,7 +696,7 @@ struct formatter<unicode::Line_Break>
         case unicode::Line_Break::ZWSpace: return format_to(ctx.out(), "ZWSpace");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -709,9 +709,9 @@ struct formatter<unicode::NFC_Quick_Check>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::NFC_Quick_Check _value, FormatContext& ctx)
+    auto format(unicode::NFC_Quick_Check value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::NFC_Quick_Check::Maybe: return format_to(ctx.out(), "Maybe");
@@ -719,7 +719,7 @@ struct formatter<unicode::NFC_Quick_Check>
         case unicode::NFC_Quick_Check::Yes: return format_to(ctx.out(), "Yes");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -732,9 +732,9 @@ struct formatter<unicode::NFKC_Quick_Check>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::NFKC_Quick_Check _value, FormatContext& ctx)
+    auto format(unicode::NFKC_Quick_Check value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::NFKC_Quick_Check::Maybe: return format_to(ctx.out(), "Maybe");
@@ -742,7 +742,7 @@ struct formatter<unicode::NFKC_Quick_Check>
         case unicode::NFKC_Quick_Check::Yes: return format_to(ctx.out(), "Yes");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -755,9 +755,9 @@ struct formatter<unicode::Numeric_Type>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Numeric_Type _value, FormatContext& ctx)
+    auto format(unicode::Numeric_Type value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Numeric_Type::Decimal: return format_to(ctx.out(), "Decimal");
@@ -766,7 +766,7 @@ struct formatter<unicode::Numeric_Type>
         case unicode::Numeric_Type::Numeric: return format_to(ctx.out(), "Numeric");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -779,9 +779,9 @@ struct formatter<unicode::Sentence_Break>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Sentence_Break _value, FormatContext& ctx)
+    auto format(unicode::Sentence_Break value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Sentence_Break::ATerm: return format_to(ctx.out(), "ATerm");
@@ -801,7 +801,7 @@ struct formatter<unicode::Sentence_Break>
         case unicode::Sentence_Break::Upper: return format_to(ctx.out(), "Upper");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -814,9 +814,9 @@ struct formatter<unicode::Vertical_Orientation>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Vertical_Orientation _value, FormatContext& ctx)
+    auto format(unicode::Vertical_Orientation value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Vertical_Orientation::Rotated: return format_to(ctx.out(), "Rotated");
@@ -825,7 +825,7 @@ struct formatter<unicode::Vertical_Orientation>
         case unicode::Vertical_Orientation::Upright: return format_to(ctx.out(), "Upright");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -838,9 +838,9 @@ struct formatter<unicode::Word_Break>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Word_Break _value, FormatContext& ctx)
+    auto format(unicode::Word_Break value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Word_Break::ALetter: return format_to(ctx.out(), "ALetter");
@@ -868,7 +868,7 @@ struct formatter<unicode::Word_Break>
         case unicode::Word_Break::ZWJ: return format_to(ctx.out(), "ZWJ");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -881,9 +881,9 @@ struct formatter<unicode::Core_Property>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Core_Property _value, FormatContext& ctx)
+    auto format(unicode::Core_Property value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Core_Property::Alphabetic: return format_to(ctx.out(), "Alphabetic");
@@ -907,7 +907,7 @@ struct formatter<unicode::Core_Property>
         case unicode::Core_Property::XID_Start: return format_to(ctx.out(), "XID_Start");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -920,9 +920,9 @@ struct formatter<unicode::General_Category>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::General_Category _value, FormatContext& ctx)
+    auto format(unicode::General_Category value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::General_Category::Unspecified: return format_to(ctx.out(), "Unspecified");
@@ -958,7 +958,7 @@ struct formatter<unicode::General_Category>
         case unicode::General_Category::Uppercase_Letter: return format_to(ctx.out(), "Uppercase_Letter");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -971,9 +971,9 @@ struct formatter<unicode::Script>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Script _value, FormatContext& ctx)
+    auto format(unicode::Script value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Script::Invalid: return format_to(ctx.out(), "Invalid");
@@ -1136,7 +1136,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Zanabazar_Square: return format_to(ctx.out(), "Zanabazar_Square");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -1149,9 +1149,9 @@ struct formatter<unicode::Block>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Block _value, FormatContext& ctx)
+    auto format(unicode::Block value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Block::Unspecified: return format_to(ctx.out(), "Unspecified");
@@ -1465,7 +1465,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Zanabazar_Square: return format_to(ctx.out(), "Zanabazar_Square");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -1478,9 +1478,9 @@ struct formatter<unicode::Grapheme_Cluster_Break>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::Grapheme_Cluster_Break _value, FormatContext& ctx)
+    auto format(unicode::Grapheme_Cluster_Break value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::Grapheme_Cluster_Break::CR: return format_to(ctx.out(), "CR");
@@ -1498,7 +1498,7 @@ struct formatter<unicode::Grapheme_Cluster_Break>
         case unicode::Grapheme_Cluster_Break::ZWJ: return format_to(ctx.out(), "ZWJ");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 
@@ -1511,9 +1511,9 @@ struct formatter<unicode::EastAsianWidth>
         return ctx.begin();
     }
     template <typename FormatContext>
-    auto format(unicode::EastAsianWidth _value, FormatContext& ctx)
+    auto format(unicode::EastAsianWidth value, FormatContext& ctx)
     {
-        switch (_value)
+        switch (value)
         {
         // clang-format off
         case unicode::EastAsianWidth::Ambiguous: return format_to(ctx.out(), "Ambiguous");
@@ -1525,7 +1525,7 @@ struct formatter<unicode::EastAsianWidth>
         case unicode::EastAsianWidth::Unspecified: return format_to(ctx.out(), "Unspecified");
         // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(_value));
+        return format_to(ctx.out(), "({})", unsigned(value));
     }
 };
 

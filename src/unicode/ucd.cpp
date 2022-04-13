@@ -47,8 +47,8 @@ namespace tables
     // clang-format off
 } // namespace tables
 
-Plane plane(char32_t _codepoint) noexcept {
-    return search(tables::Plane, _codepoint).value_or(Plane::Unassigned);
+Plane plane(char32_t codepoint) noexcept {
+    return search(tables::Plane, codepoint).value_or(Plane::Unassigned);
 }
 
 namespace tables {
@@ -11963,28 +11963,28 @@ auto static const XID_Start = std::array<Interval, 700>{ // {{{
 }; // }}}
 } // end namespace tables
 
-bool contains(Core_Property _prop, char32_t _codepoint) noexcept {
-    switch (_prop)
+bool contains(Core_Property prop, char32_t codepoint) noexcept {
+    switch (prop)
     {
-        case Core_Property::Alphabetic: return contains(tables::Alphabetic, _codepoint);
-        case Core_Property::Case_Ignorable: return contains(tables::Case_Ignorable, _codepoint);
-        case Core_Property::Cased: return contains(tables::Cased, _codepoint);
-        case Core_Property::Changes_When_Casefolded: return contains(tables::Changes_When_Casefolded, _codepoint);
-        case Core_Property::Changes_When_Casemapped: return contains(tables::Changes_When_Casemapped, _codepoint);
-        case Core_Property::Changes_When_Lowercased: return contains(tables::Changes_When_Lowercased, _codepoint);
-        case Core_Property::Changes_When_Titlecased: return contains(tables::Changes_When_Titlecased, _codepoint);
-        case Core_Property::Changes_When_Uppercased: return contains(tables::Changes_When_Uppercased, _codepoint);
-        case Core_Property::Default_Ignorable_Code_Point: return contains(tables::Default_Ignorable_Code_Point, _codepoint);
-        case Core_Property::Grapheme_Base: return contains(tables::Grapheme_Base, _codepoint);
-        case Core_Property::Grapheme_Extend: return contains(tables::Grapheme_Extend, _codepoint);
-        case Core_Property::Grapheme_Link: return contains(tables::Grapheme_Link, _codepoint);
-        case Core_Property::ID_Continue: return contains(tables::ID_Continue, _codepoint);
-        case Core_Property::ID_Start: return contains(tables::ID_Start, _codepoint);
-        case Core_Property::Lowercase: return contains(tables::Lowercase, _codepoint);
-        case Core_Property::Math: return contains(tables::Math, _codepoint);
-        case Core_Property::Uppercase: return contains(tables::Uppercase, _codepoint);
-        case Core_Property::XID_Continue: return contains(tables::XID_Continue, _codepoint);
-        case Core_Property::XID_Start: return contains(tables::XID_Start, _codepoint);
+        case Core_Property::Alphabetic: return contains(tables::Alphabetic, codepoint);
+        case Core_Property::Case_Ignorable: return contains(tables::Case_Ignorable, codepoint);
+        case Core_Property::Cased: return contains(tables::Cased, codepoint);
+        case Core_Property::Changes_When_Casefolded: return contains(tables::Changes_When_Casefolded, codepoint);
+        case Core_Property::Changes_When_Casemapped: return contains(tables::Changes_When_Casemapped, codepoint);
+        case Core_Property::Changes_When_Lowercased: return contains(tables::Changes_When_Lowercased, codepoint);
+        case Core_Property::Changes_When_Titlecased: return contains(tables::Changes_When_Titlecased, codepoint);
+        case Core_Property::Changes_When_Uppercased: return contains(tables::Changes_When_Uppercased, codepoint);
+        case Core_Property::Default_Ignorable_Code_Point: return contains(tables::Default_Ignorable_Code_Point, codepoint);
+        case Core_Property::Grapheme_Base: return contains(tables::Grapheme_Base, codepoint);
+        case Core_Property::Grapheme_Extend: return contains(tables::Grapheme_Extend, codepoint);
+        case Core_Property::Grapheme_Link: return contains(tables::Grapheme_Link, codepoint);
+        case Core_Property::ID_Continue: return contains(tables::ID_Continue, codepoint);
+        case Core_Property::ID_Start: return contains(tables::ID_Start, codepoint);
+        case Core_Property::Lowercase: return contains(tables::Lowercase, codepoint);
+        case Core_Property::Math: return contains(tables::Math, codepoint);
+        case Core_Property::Uppercase: return contains(tables::Uppercase, codepoint);
+        case Core_Property::XID_Continue: return contains(tables::XID_Continue, codepoint);
+        case Core_Property::XID_Start: return contains(tables::XID_Start, codepoint);
     }
     return false;
 }
@@ -15872,8 +15872,8 @@ auto const General_Category = std::array<Prop<::unicode::General_Category>, 3876
 
 namespace general_category
 {
-    General_Category get(char32_t _value) noexcept {
-        return search(tables::General_Category, _value).value_or(General_Category::Unspecified);
+    General_Category get(char32_t value) noexcept {
+        return search(tables::General_Category, value).value_or(General_Category::Unspecified);
     }
 }
 
@@ -19816,39 +19816,39 @@ auto static const Uppercase_Letter = std::array<Interval, 638>{ // {{{
 }; // }}}
 } // end namespace tables
 
-bool contains(General_Category _cat, char32_t _codepoint) noexcept {
-    switch (_cat)
+bool contains(General_Category generalCategory, char32_t codepoint) noexcept {
+    switch (generalCategory)
     {
-        case General_Category::Close_Punctuation: return contains(tables::Close_Punctuation, _codepoint);
-        case General_Category::Connector_Punctuation: return contains(tables::Connector_Punctuation, _codepoint);
-        case General_Category::Control: return contains(tables::Control, _codepoint);
-        case General_Category::Currency_Symbol: return contains(tables::Currency_Symbol, _codepoint);
-        case General_Category::Dash_Punctuation: return contains(tables::Dash_Punctuation, _codepoint);
-        case General_Category::Decimal_Number: return contains(tables::Decimal_Number, _codepoint);
-        case General_Category::Enclosing_Mark: return contains(tables::Enclosing_Mark, _codepoint);
-        case General_Category::Final_Punctuation: return contains(tables::Final_Punctuation, _codepoint);
-        case General_Category::Format: return contains(tables::Format, _codepoint);
-        case General_Category::Initial_Punctuation: return contains(tables::Initial_Punctuation, _codepoint);
-        case General_Category::Letter_Number: return contains(tables::Letter_Number, _codepoint);
-        case General_Category::Line_Separator: return contains(tables::Line_Separator, _codepoint);
-        case General_Category::Lowercase_Letter: return contains(tables::Lowercase_Letter, _codepoint);
-        case General_Category::Math_Symbol: return contains(tables::Math_Symbol, _codepoint);
-        case General_Category::Modifier_Letter: return contains(tables::Modifier_Letter, _codepoint);
-        case General_Category::Modifier_Symbol: return contains(tables::Modifier_Symbol, _codepoint);
-        case General_Category::Nonspacing_Mark: return contains(tables::Nonspacing_Mark, _codepoint);
-        case General_Category::Open_Punctuation: return contains(tables::Open_Punctuation, _codepoint);
-        case General_Category::Other_Letter: return contains(tables::Other_Letter, _codepoint);
-        case General_Category::Other_Number: return contains(tables::Other_Number, _codepoint);
-        case General_Category::Other_Punctuation: return contains(tables::Other_Punctuation, _codepoint);
-        case General_Category::Other_Symbol: return contains(tables::Other_Symbol, _codepoint);
-        case General_Category::Paragraph_Separator: return contains(tables::Paragraph_Separator, _codepoint);
-        case General_Category::Private_Use: return contains(tables::Private_Use, _codepoint);
-        case General_Category::Space_Separator: return contains(tables::Space_Separator, _codepoint);
-        case General_Category::Spacing_Mark: return contains(tables::Spacing_Mark, _codepoint);
-        case General_Category::Surrogate: return contains(tables::Surrogate, _codepoint);
-        case General_Category::Titlecase_Letter: return contains(tables::Titlecase_Letter, _codepoint);
-        case General_Category::Unassigned: return contains(tables::Unassigned, _codepoint);
-        case General_Category::Uppercase_Letter: return contains(tables::Uppercase_Letter, _codepoint);
+        case General_Category::Close_Punctuation: return contains(tables::Close_Punctuation, codepoint);
+        case General_Category::Connector_Punctuation: return contains(tables::Connector_Punctuation, codepoint);
+        case General_Category::Control: return contains(tables::Control, codepoint);
+        case General_Category::Currency_Symbol: return contains(tables::Currency_Symbol, codepoint);
+        case General_Category::Dash_Punctuation: return contains(tables::Dash_Punctuation, codepoint);
+        case General_Category::Decimal_Number: return contains(tables::Decimal_Number, codepoint);
+        case General_Category::Enclosing_Mark: return contains(tables::Enclosing_Mark, codepoint);
+        case General_Category::Final_Punctuation: return contains(tables::Final_Punctuation, codepoint);
+        case General_Category::Format: return contains(tables::Format, codepoint);
+        case General_Category::Initial_Punctuation: return contains(tables::Initial_Punctuation, codepoint);
+        case General_Category::Letter_Number: return contains(tables::Letter_Number, codepoint);
+        case General_Category::Line_Separator: return contains(tables::Line_Separator, codepoint);
+        case General_Category::Lowercase_Letter: return contains(tables::Lowercase_Letter, codepoint);
+        case General_Category::Math_Symbol: return contains(tables::Math_Symbol, codepoint);
+        case General_Category::Modifier_Letter: return contains(tables::Modifier_Letter, codepoint);
+        case General_Category::Modifier_Symbol: return contains(tables::Modifier_Symbol, codepoint);
+        case General_Category::Nonspacing_Mark: return contains(tables::Nonspacing_Mark, codepoint);
+        case General_Category::Open_Punctuation: return contains(tables::Open_Punctuation, codepoint);
+        case General_Category::Other_Letter: return contains(tables::Other_Letter, codepoint);
+        case General_Category::Other_Number: return contains(tables::Other_Number, codepoint);
+        case General_Category::Other_Punctuation: return contains(tables::Other_Punctuation, codepoint);
+        case General_Category::Other_Symbol: return contains(tables::Other_Symbol, codepoint);
+        case General_Category::Paragraph_Separator: return contains(tables::Paragraph_Separator, codepoint);
+        case General_Category::Private_Use: return contains(tables::Private_Use, codepoint);
+        case General_Category::Space_Separator: return contains(tables::Space_Separator, codepoint);
+        case General_Category::Spacing_Mark: return contains(tables::Spacing_Mark, codepoint);
+        case General_Category::Surrogate: return contains(tables::Surrogate, codepoint);
+        case General_Category::Titlecase_Letter: return contains(tables::Titlecase_Letter, codepoint);
+        case General_Category::Unassigned: return contains(tables::Unassigned, codepoint);
+        case General_Category::Uppercase_Letter: return contains(tables::Uppercase_Letter, codepoint);
         case General_Category::Unspecified: return false;
     }
     return false;
@@ -21954,8 +21954,8 @@ auto static const Script = std::array<Prop<unicode::Script>, 2095>{ // {{{
 }; // }}}
 } // end namespace tables
 
-Script script(char32_t _codepoint) noexcept {
-    return search(tables::Script, _codepoint).value_or(Script::Unknown);
+Script script(char32_t codepoint) noexcept {
+    return search(tables::Script, codepoint).value_or(Script::Unknown);
 }
 
 namespace tables { // {{{ ScriptExtensions
@@ -22521,15 +22521,15 @@ static const std::array<Prop<std::pair<unicode::Script const*, std::size_t>>, 14
 } };
 } // }}}
 
-size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {
-    auto const p = search(tables::sce, _codepoint);
+size_t script_extensions(char32_t codepoint, Script* result, size_t capacity) noexcept {
+    auto const p = search(tables::sce, codepoint);
     if (!p.has_value()) {
-        *_result = script(_codepoint);
+        *result = script(codepoint);
         return 1;
     }
-    auto const cap = std::min(_capacity, p.value().second);
+    auto const cap = std::min(capacity, p.value().second);
     for (size_t i = 0; i < cap; ++i)
-        _result[i] = p->first[i];
+        result[i] = p->first[i];
     return cap;
 }
 
@@ -22846,8 +22846,8 @@ auto static const Block = std::array<Prop<::unicode::Block>, 308>{ // {{{
 };
 } // end namespace tables {}
 
-Block block(char32_t _codepoint) noexcept {
-    return search(tables::Block, _codepoint).value_or(::unicode::Block::Unspecified);
+Block block(char32_t codepoint) noexcept {
+    return search(tables::Block, codepoint).value_or(::unicode::Block::Unspecified);
 }
 
 namespace tables {
@@ -24221,80 +24221,80 @@ auto static const Grapheme_Cluster_Break = std::array<Prop<::unicode::Grapheme_C
 
 namespace grapheme_cluster_break
 {
-    bool cr(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool cr(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::CR;
         return false;
     }
 
-    bool control(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool control(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::Control;
         return false;
     }
 
-    bool extend(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool extend(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::Extend;
         return false;
     }
 
-    bool l(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool l(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::L;
         return false;
     }
 
-    bool lf(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool lf(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::LF;
         return false;
     }
 
-    bool lv(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool lv(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::LV;
         return false;
     }
 
-    bool lvt(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool lvt(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::LVT;
         return false;
     }
 
-    bool prepend(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool prepend(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::Prepend;
         return false;
     }
 
-    bool regional_indicator(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool regional_indicator(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::Regional_Indicator;
         return false;
     }
 
-    bool spacingmark(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool spacingmark(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::SpacingMark;
         return false;
     }
 
-    bool t(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool t(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::T;
         return false;
     }
 
-    bool v(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool v(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::V;
         return false;
     }
 
-    bool zwj(char32_t _codepoint) noexcept {
-        if (auto p = search(tables::Grapheme_Cluster_Break, _codepoint); p.has_value())
+    bool zwj(char32_t codepoint) noexcept {
+        if (auto p = search(tables::Grapheme_Cluster_Break, codepoint); p.has_value())
             return *p == Grapheme_Cluster_Break::ZWJ;
         return false;
     }
@@ -27090,8 +27090,8 @@ auto static const EastAsianWidth = std::array<Prop<::unicode::EastAsianWidth>, 1
 }; // }}}
 } // end namespace tables
 
-EastAsianWidth east_asian_width(char32_t _codepoint) noexcept {
-    return search(tables::EastAsianWidth, _codepoint).value_or(EastAsianWidth::Unspecified);
+EastAsianWidth east_asian_width(char32_t codepoint) noexcept {
+    return search(tables::EastAsianWidth, codepoint).value_or(EastAsianWidth::Unspecified);
 }
 
 namespace tables {
@@ -28302,28 +28302,28 @@ auto static const Extended_Pictographic = std::array<Interval, 491>{ // {{{
 }; // }}}
 } // end namespace tables
 
-bool emoji(char32_t _codepoint) noexcept {
-    return contains(tables::Emoji, _codepoint);
+bool emoji(char32_t codepoint) noexcept {
+    return contains(tables::Emoji, codepoint);
 }
 
-bool emoji_component(char32_t _codepoint) noexcept {
-    return contains(tables::Emoji_Component, _codepoint);
+bool emoji_component(char32_t codepoint) noexcept {
+    return contains(tables::Emoji_Component, codepoint);
 }
 
-bool emoji_modifier(char32_t _codepoint) noexcept {
-    return contains(tables::Emoji_Modifier, _codepoint);
+bool emoji_modifier(char32_t codepoint) noexcept {
+    return contains(tables::Emoji_Modifier, codepoint);
 }
 
-bool emoji_modifier_base(char32_t _codepoint) noexcept {
-    return contains(tables::Emoji_Modifier_Base, _codepoint);
+bool emoji_modifier_base(char32_t codepoint) noexcept {
+    return contains(tables::Emoji_Modifier_Base, codepoint);
 }
 
-bool emoji_presentation(char32_t _codepoint) noexcept {
-    return contains(tables::Emoji_Presentation, _codepoint);
+bool emoji_presentation(char32_t codepoint) noexcept {
+    return contains(tables::Emoji_Presentation, codepoint);
 }
 
-bool extended_pictographic(char32_t _codepoint) noexcept {
-    return contains(tables::Extended_Pictographic, _codepoint);
+bool extended_pictographic(char32_t codepoint) noexcept {
+    return contains(tables::Extended_Pictographic, codepoint);
 }
 
 } // namespace unicode

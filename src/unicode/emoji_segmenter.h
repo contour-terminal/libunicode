@@ -61,16 +61,16 @@ class emoji_segmenter
     constexpr emoji_segmenter(emoji_segmenter const&) noexcept = default;
     constexpr emoji_segmenter(emoji_segmenter&&) noexcept = default;
 
-    emoji_segmenter(char32_t const* _buffer, size_t _size) noexcept;
+    emoji_segmenter(char32_t const* buffer, size_t size) noexcept;
 
-    emoji_segmenter(std::u32string_view const& _sv) noexcept: emoji_segmenter(_sv.data(), _sv.size()) {}
+    emoji_segmenter(std::u32string_view const& sv) noexcept: emoji_segmenter(sv.data(), sv.size()) {}
 
     constexpr char32_t const* buffer() const noexcept { return buffer_; }
     constexpr size_t size() const noexcept { return size_; }
     constexpr size_t currentCursorBegin() const noexcept { return currentCursorBegin_; }
     constexpr size_t currentCursorEnd() const noexcept { return currentCursorEnd_; }
 
-    bool consume(out<size_t> _size, out<PresentationStyle> _emoji) noexcept;
+    bool consume(out<size_t> size, out<PresentationStyle> emoji) noexcept;
 
     /// @returns whether or not the currently segmented emoji is to be rendered in text-presentation or not.
     constexpr bool isText() const noexcept { return !isEmoji_; }

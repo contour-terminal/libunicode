@@ -17,15 +17,15 @@
 namespace unicode
 {
 
-int width(char32_t _codepoint)
+int width(char32_t codepoint)
 {
     // Small optimization to speadup US-ASCII width calculation.
-    if (0x20 <= _codepoint && _codepoint <= 0xA0)
+    if (0x20 <= codepoint && codepoint <= 0xA0)
         return 1;
 
     // TODO: make this at most one lookup
 
-    switch (general_category::get(_codepoint))
+    switch (general_category::get(codepoint))
     {
     case General_Category::Control: // XXX really?
     case General_Category::Enclosing_Mark:
@@ -39,7 +39,7 @@ int width(char32_t _codepoint)
     default: break;
     }
 
-    switch (east_asian_width(_codepoint))
+    switch (east_asian_width(codepoint))
     {
     case EastAsianWidth::Narrow:
     case EastAsianWidth::Ambiguous:

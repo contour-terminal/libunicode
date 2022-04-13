@@ -34,33 +34,33 @@ struct Expectation
     PresentationStyle presentationStyle;
 };
 
-void test_segments(int _lineNo,
-                   std::vector<std::pair<std::u32string_view, PresentationStyle>> const& _expects)
+void test_segments(int lineNo,
+                   std::vector<std::pair<std::u32string_view, PresentationStyle>> const& expectations)
 {
     vector<Expectation> expects;
     u32string fullText;
     size_t i = 0;
-    for (auto&& [text, isEmoji]: _expects)
+    for (auto&& [text, isEmoji]: expectations)
     {
         expects.push_back(Expectation { text, i, i + text.size(), isEmoji });
         fullText += text;
         i += text.size();
     }
 
-    INFO(fmt::format("Testing emoji segmentation from line {}: {}", _lineNo, to_utf8(fullText)));
+    INFO(fmt::format("Testing emoji segmentation from line {}: {}", lineNo, to_utf8(fullText)));
 
     size_t size {};
     auto presentationStyle = PresentationStyle {};
     auto segmenter = unicode::emoji_segmenter { fullText };
-    for (size_t i = 0; i < _expects.size(); ++i)
+    for (size_t i = 0; i < expectations.size(); ++i)
     {
         INFO(fmt::format("run segmentation for part {}: \"{}\" to be {}",
                          i,
-                         to_utf8(_expects[i].first),
-                         (unsigned) _expects[i].second));
+                         to_utf8(expectations[i].first),
+                         (unsigned) expectations[i].second));
         bool const consumeSuccess = segmenter.consume(out(size), out(presentationStyle));
         REQUIRE(consumeSuccess);
-        CHECK(_expects[i].first == *segmenter);
+        CHECK(expectations[i].first == *segmenter);
         CHECK(size == expects[i].end);
         CHECK(presentationStyle == expects[i].presentationStyle);
     }

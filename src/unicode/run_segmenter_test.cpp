@@ -37,12 +37,12 @@ struct Expectation
     PresentationStyle presentationStyle;
 };
 
-void test_run_segmentation(int _lineNo, std::vector<Expectation> const& _rs)
+void test_run_segmentation(int lineNo, std::vector<Expectation> const& expectations)
 {
     vector<run_segmenter::range> expects;
     u32string text;
     size_t i = 0;
-    for (Expectation const& expect: _rs)
+    for (Expectation const& expect: expectations)
     {
         expects.push_back(run_segmenter::range {
             i,
@@ -55,12 +55,12 @@ void test_run_segmentation(int _lineNo, std::vector<Expectation> const& _rs)
 
     auto segmenter = unicode::run_segmenter { text };
     unicode::run_segmenter::range actualSegment;
-    for (size_t i = 0; i < _rs.size(); ++i)
+    for (size_t i = 0; i < expectations.size(); ++i)
     {
         INFO(fmt::format("Line {}: run segmentation failed for part {}: \"{}\" to be {}",
-                         _lineNo,
+                         lineNo,
                          i,
-                         to_utf8(_rs[i].text),
+                         to_utf8(expectations[i].text),
                          expects[i]));
         bool const consumeSuccess = segmenter.consume(out(actualSegment));
         REQUIRE(consumeSuccess);

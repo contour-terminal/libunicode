@@ -65,19 +65,19 @@ bool isEmoji(char32_t ch)
 }
 
 template <typename T>
-basic_string<T> replaceAll(basic_string_view<T> _what, basic_string_view<T> _with, basic_string_view<T> _text)
+basic_string<T> replaceAll(basic_string_view<T> what, basic_string_view<T> with, basic_string_view<T> text)
 {
     basic_string<T> s;
     size_t a = 0;
-    size_t b = _text.find(_what);
+    size_t b = text.find(what);
     while (b != basic_string_view<T>::npos)
     {
-        s += _text.substr(a, b - a);
-        s += _with;
-        a = b + _what.size();
-        b = _text.find(_what, a + 1);
+        s += text.substr(a, b - a);
+        s += with;
+        a = b + what.size();
+        b = text.find(what, a + 1);
     }
-    s += _text.substr(a);
+    s += text.substr(a);
     return s;
 }
 
@@ -126,7 +126,7 @@ inline string escape(string const& s)
 //     }
 // }
 
-void codepoints(istream& _in) // {{{
+void codepoints(istream& in) // {{{
 {
     auto lastOffset = 0;
     auto totalOffset = 0;
@@ -136,8 +136,8 @@ void codepoints(istream& _in) // {{{
     for (;;)
     {
         uint8_t ch {};
-        _in.read((char*) &ch, sizeof(ch));
-        if (!_in.good())
+        in.read((char*) &ch, sizeof(ch));
+        if (!in.good())
             break;
 
         totalOffset++;
@@ -177,10 +177,10 @@ using unicode::convert_to;
 using unicode::out;
 using unicode::run_segmenter;
 
-string scriptExtensionsString(char32_t _codepoint)
+string scriptExtensionsString(char32_t codepoint)
 {
     array<unicode::Script, 32> scripts {};
-    size_t count = unicode::script_extensions(_codepoint, scripts.data(), scripts.size());
+    size_t count = unicode::script_extensions(codepoint, scripts.data(), scripts.size());
     std::stringstream sstr;
     for (size_t i = 0; i < count; ++i)
     {
@@ -191,9 +191,9 @@ string scriptExtensionsString(char32_t _codepoint)
     return sstr.str();
 }
 
-int scripts(istream& _in) // {{{
+int scripts(istream& in) // {{{
 {
-    string bytes((istreambuf_iterator<char>(_in)), istreambuf_iterator<char>());
+    string bytes((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
     u32string const codepoints = convert_to<char32_t>(string_view(bytes));
 
     unicode::script_segmenter segmenter(codepoints);
@@ -223,9 +223,9 @@ int scripts(istream& _in) // {{{
     return EXIT_SUCCESS;
 } // }}}
 
-int runs(istream& _in) // {{{
+int runs(istream& in) // {{{
 {
-    string bytes((istreambuf_iterator<char>(_in)), istreambuf_iterator<char>());
+    string bytes((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
     u32string const codepoints = convert_to<char32_t>(string_view(bytes));
 
     run_segmenter rs(codepoints);

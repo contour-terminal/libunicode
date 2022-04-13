@@ -19,14 +19,14 @@
 
 #include <iterator>
 
-int u32_gc_count(u32_char_t const* _codepoints, size_t _size)
+int u32_gc_count(u32_char_t const* codepoints, size_t size)
 {
-    if (!_size)
+    if (!size)
         return 0;
 
     int count = 1;
     auto segmenter =
-        unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
+        unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
     while (segmenter.codepointsAvailable())
     {
         ++segmenter;
@@ -35,26 +35,26 @@ int u32_gc_count(u32_char_t const* _codepoints, size_t _size)
     return count;
 }
 
-int u8_gc_count(u8_char_t const* _codepoints, size_t _size)
+int u8_gc_count(u8_char_t const* codepoints, size_t size)
 {
-    auto const u32 = unicode::convert_to<char32_t>(std::string_view(_codepoints, _size));
+    auto const u32 = unicode::convert_to<char32_t>(std::string_view(codepoints, size));
     return u32_gc_count((uint32_t const*) u32.data(), u32.size());
 }
 
-int u32_gc_width(u32_char_t const* _codepoints, size_t _size, int _mode)
+int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
 {
     int totalWidth = 0;
     auto segmenter =
-        unicode::grapheme_segmenter((char32_t const*) _codepoints, (char32_t const*) _codepoints + _size);
+        unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
     while (segmenter.codepointsAvailable())
     {
         auto const cluster = *segmenter;
         int thisWidth = unicode::width(cluster.front());
-        if (_mode != GC_WIDTH_MODE_NON_MODIFIABLE)
+        if (mode != GC_WIDTH_MODE_NON_MODIFIABLE)
         {
-            for (size_t i = 1; i < _size; ++i)
+            for (size_t i = 1; i < size; ++i)
             {
-                auto const codepoint = _codepoints[i];
+                auto const codepoint = codepoints[i];
                 auto const width = [&]() {
                     switch (codepoint)
                     {
@@ -97,11 +97,11 @@ u8u32_stream_state_t u8u32_stream_convert_create()
     return new u8u32_stream_state();
 }
 
-int u8u32_stream_convert_run(u8u32_stream_state_t _handle, u8_char_t _input, u32_char_t* _output)
+int u8u32_stream_convert_run(u8u32_stream_state_t handle, u8_char_t input, u32_char_t* output)
 {
-    if (auto const codepoint = _handle->conv(static_cast<uint8_t>(_input)); codepoint.has_value())
+    if (auto const codepoint = handle->conv(static_cast<uint8_t>(input)); codepoint.has_value())
     {
-        *_output = codepoint.value();
+        *output = codepoint.value();
         return 1;
     }
     return 0;
@@ -113,24 +113,24 @@ void u8u32_stream_convert_destroy(u8u32_stream_state_t* handle)
     *handle = nullptr;
 }
 
-int u32u8_convert(u32_char_t const* _source, size_t _slen, u8_char_t* _dest, size_t _dlen)
+int u32u8_convert(u32_char_t const* source, size_t slen, u8_char_t* dest, size_t dlen)
 {
     auto conv = unicode::encoder<u8_char_t> {};
     auto nwritten = 0;
 
-    for (size_t i = 0; i < _slen; ++i)
+    for (size_t i = 0; i < slen; ++i)
     {
         u8_char_t buf[4];
-        auto const bufEnd = conv(_source[i], buf);
+        auto const bufEnd = conv(source[i], buf);
         auto const bufLength = static_cast<size_t>(std::distance(buf, bufEnd));
-        if (!(bufLength < _dlen))
+        if (!(bufLength < dlen))
             return -1;
 
         for (size_t k = 0; k < bufLength; ++k)
-            _dest[k] = buf[k];
+            dest[k] = buf[k];
         nwritten += static_cast<int>(bufLength);
-        _dest += bufLength;
-        _dlen -= bufLength;
+        dest += bufLength;
+        dlen -= bufLength;
     }
 
     return nwritten;

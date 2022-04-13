@@ -162,9 +162,9 @@ class EnumOstreamWriter(EnumBuilder): # {{{
 
     def begin(self, _enum_class, _first):
         self.enum_class = _enum_class
-        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} _value) noexcept\n{{\n'.format(_enum_class))
+        self.file.write('inline std::ostream& operator<<(std::ostream& os, {} value) noexcept\n{{\n'.format(_enum_class))
         self.file.write('    // clang-format off\n')
-        self.file.write('    switch (_value)\n')
+        self.file.write('    switch (value)\n')
         self.file.write('    {\n')
 
     def member(self, _member):
@@ -174,7 +174,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
     def end(self):
         self.file.write("    }\n")
         self.file.write('    // clang-format on\n')
-        self.file.write('    return os << "(" << static_cast<unsigned>(_value) << ")";\n')
+        self.file.write('    return os << "(" << static_cast<unsigned>(value) << ")";\n')
         self.file.write("}\n\n")
         pass
 
@@ -211,9 +211,9 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('    }\n')
 
         self.file.write('    template <typename FormatContext>\n')
-        self.file.write('    auto format({} _value, FormatContext& ctx)\n'.format(self.enum_class))
+        self.file.write('    auto format({} value, FormatContext& ctx)\n'.format(self.enum_class))
         self.file.write('    {\n')
-        self.file.write('        switch (_value)\n')
+        self.file.write('        switch (value)\n')
         self.file.write('        {\n')
         self.file.write('        // clang-format off\n')
 
@@ -226,7 +226,7 @@ class EnumFmtWriter(EnumBuilder): # {{{
     def end(self):
         self.file.write('        // clang-format off\n')
         self.file.write("        }\n")
-        self.file.write('        return format_to(ctx.out(), "({})", unsigned(_value));\n')
+        self.file.write('        return format_to(ctx.out(), "({})", unsigned(value));\n')
         self.file.write("    }\n")
         self.file.write("};\n\n")
 
@@ -434,9 +434,9 @@ namespace unicode
 
     # {{{ array<Prop<Key>, N> writer
     def table_prop_mapping(self, _name, _default):
-        self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(_name, _name.lower()))
-        self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(_name, _name.lower()))
-        self.impl.write('    return search(tables::{0}, _codepoint).value_or({0}::{1});\n'.format(_name, _default))
+        self.header.write('{} {}(char32_t codepoint) noexcept;\n\n'.format(_name, _name.lower()))
+        self.impl.write('{} {}(char32_t codepoint) noexcept {{\n'.format(_name, _name.lower()))
+        self.impl.write('    return search(tables::{0}, codepoint).value_or({0}::{1});\n'.format(_name, _default))
         self.impl.write('}\n\n')
 
     def table_prop_start(self, _element_type, _name, _count):
@@ -589,17 +589,17 @@ namespace unicode
         self.impl.write("} // end namespace tables\n\n")
 
         # write out test function
-        self.impl.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept {\n")
-        self.impl.write("    switch (_prop)\n")
+        self.impl.write("bool contains(Core_Property prop, char32_t codepoint) noexcept {\n")
+        self.impl.write("    switch (prop)\n")
         self.impl.write("    {\n")
         for name in sorted(props.keys()):
-            self.impl.write("        case Core_Property::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
+            self.impl.write("        case Core_Property::{0:}: return contains(tables::{0:}, codepoint);\n".format(name))
         self.impl.write("    }\n")
         self.impl.write("    return false;\n")
         self.impl.write("}\n\n")
 
         # API: write enum and tester
-        self.header.write("bool contains(Core_Property _prop, char32_t _codepoint) noexcept;\n\n")
+        self.header.write("bool contains(Core_Property prop, char32_t codepoint) noexcept;\n\n")
         # }}}
 
     def load_generic_properties(self, filename): # {{{
@@ -711,9 +711,9 @@ namespace unicode
                 for enum in props[name]:
                     enum_set.add(enum['property'])
                 for enum in sorted(enum_set):
-                    self.header.write('    bool {}(char32_t _codepoint) noexcept;\n'.format(enum.lower()))
-                    self.impl.write('    bool {}(char32_t _codepoint) noexcept {{\n'.format(enum.lower()))
-                    self.impl.write("        if (auto p = search(tables::{}, _codepoint); p.has_value())\n".format(name))
+                    self.header.write('    bool {}(char32_t codepoint) noexcept;\n'.format(enum.lower()))
+                    self.impl.write('    bool {}(char32_t codepoint) noexcept {{\n'.format(enum.lower()))
+                    self.impl.write("        if (auto p = search(tables::{}, codepoint); p.has_value())\n".format(name))
                     self.impl.write('            return *p == {}::{};\n'.format(name, enum))
                     self.impl.write('        return false;\n')
                     self.impl.write('    }\n\n')
@@ -764,10 +764,10 @@ namespace unicode
         self.builder.end()
 
         # codepoint-to-script mapping function
-        self.header.write('{} {}(char32_t _codepoint) noexcept;\n\n'.format(name, name.lower()))
+        self.header.write('{} {}(char32_t codepoint) noexcept;\n\n'.format(name, name.lower()))
 
-        self.impl.write('{} {}(char32_t _codepoint) noexcept {{\n'.format(name, name.lower()))
-        self.impl.write('    return search(tables::{}, _codepoint).value_or(Script::Unknown);\n'.format(name))
+        self.impl.write('{} {}(char32_t codepoint) noexcept {{\n'.format(name, name.lower()))
+        self.impl.write('    return search(tables::{}, codepoint).value_or(Script::Unknown);\n'.format(name))
         self.impl.write('}\n\n')
         # }}}
 
@@ -860,16 +860,16 @@ namespace unicode
         self.impl.write("}} // {}\n\n".format(FOLD_CLOSE))
 
         # getter function
-        self.header.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept;\n\n")
-        self.impl.write("size_t script_extensions(char32_t _codepoint, Script* _result, size_t _capacity) noexcept {\n")
-        self.impl.write("    auto const p = search(tables::{}, _codepoint);\n".format('sce'))
+        self.header.write("size_t script_extensions(char32_t codepoint, Script* result, size_t capacity) noexcept;\n\n")
+        self.impl.write("size_t script_extensions(char32_t codepoint, Script* result, size_t capacity) noexcept {\n")
+        self.impl.write("    auto const p = search(tables::{}, codepoint);\n".format('sce'))
         self.impl.write("    if (!p.has_value()) {{\n".format('sce'))
-        self.impl.write('        *_result = script(_codepoint);\n')
+        self.impl.write('        *result = script(codepoint);\n')
         self.impl.write('        return 1;\n')
         self.impl.write('    }\n')
-        self.impl.write('    auto const cap = std::min(_capacity, p.value().second);\n')
+        self.impl.write('    auto const cap = std::min(capacity, p.value().second);\n')
         self.impl.write('    for (size_t i = 0; i < cap; ++i)\n')
-        self.impl.write('        _result[i] = p->first[i];\n')
+        self.impl.write('        result[i] = p->first[i];\n')
         self.impl.write('    return cap;\n')
         self.impl.write("}\n\n")
     # }}}
@@ -930,13 +930,13 @@ namespace unicode
 
             # write out test function
             for name in sorted(props.keys()):
-                self.impl.write('bool {}(char32_t _codepoint) noexcept {{\n'.format(name.lower()))
-                self.impl.write("    return contains(tables::{0:}, _codepoint);\n".format(name))
+                self.impl.write('bool {}(char32_t codepoint) noexcept {{\n'.format(name.lower()))
+                self.impl.write("    return contains(tables::{0:}, codepoint);\n".format(name))
                 self.impl.write("}\n\n")
 
             # write enums / signature
             for name in sorted(props.keys()):
-                self.header.write('bool {}(char32_t _codepoint) noexcept;\n'.format(name.lower()))
+                self.header.write('bool {}(char32_t codepoint) noexcept;\n'.format(name.lower()))
             self.header.write('\n')
         # }}}
 
@@ -973,11 +973,11 @@ namespace unicode
         self.impl.write("} // end namespace tables {}\n\n")
 
         # write out search function
-        self.impl.write("Block block(char32_t _codepoint) noexcept {\n")
-        self.impl.write("    return search(tables::Block, _codepoint).value_or(::unicode::Block::Unspecified);\n")
+        self.impl.write("Block block(char32_t codepoint) noexcept {\n")
+        self.impl.write("    return search(tables::Block, codepoint).value_or(::unicode::Block::Unspecified);\n")
         self.impl.write("}\n\n")
 
-        self.header.write("Block block(char32_t _codepoint) noexcept;\n\n")
+        self.header.write("Block block(char32_t codepoint) noexcept;\n\n")
 
         # }}}
 
@@ -1018,8 +1018,8 @@ namespace unicode
         # getter impl
         self.impl.write("namespace {}\n".format(type_name.lower()))
         self.impl.write("{\n")
-        self.impl.write("    {} get(char32_t _value) noexcept {{\n".format(type_name))
-        self.impl.write("        return search(tables::{}, _value).value_or({}::{});\n".format(type_name, type_name, UNSPECIFIED))
+        self.impl.write("    {} get(char32_t value) noexcept {{\n".format(type_name))
+        self.impl.write("        return search(tables::{}, value).value_or({}::{});\n".format(type_name, type_name, UNSPECIFIED))
         self.impl.write("    }\n")
         self.impl.write("}\n\n")
         # -----------------------------------------------------------------------------------------------
@@ -1041,27 +1041,27 @@ namespace unicode
         self.impl.write("} // end namespace tables\n\n")
 
         # write out test function
-        self.impl.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept {\n")
-        self.impl.write("    switch (_cat)\n")
+        self.impl.write("bool contains(General_Category generalCategory, char32_t codepoint) noexcept {\n")
+        self.impl.write("    switch (generalCategory)\n")
         self.impl.write("    {\n")
         for name in sorted(cats.keys()):
-            self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, _codepoint);\n".format(name))
+            self.impl.write("        case General_Category::{0:}: return contains(tables::{0:}, codepoint);\n".format(name))
         self.impl.write("        case General_Category::{0:}: return false;\n".format(UNSPECIFIED)) # special case
         self.impl.write("    }\n")
         self.impl.write("    return false;\n")
         self.impl.write("}\n\n")
 
         # write signature
-        self.header.write("bool contains(General_Category _cat, char32_t _codepoint) noexcept;\n\n")
+        self.header.write("bool contains(General_Category generalCategory, char32_t codepoint) noexcept;\n\n")
 
         self.header.write('namespace general_category\n')
         self.header.write('{\n')
-        self.header.write("    {} get(char32_t _value) noexcept;\n\n".format(type_name))
+        self.header.write("    {} get(char32_t value) noexcept;\n\n".format(type_name))
         for name in sorted(cats.keys()):
             self.header.write(
-                    '    inline bool {}(char32_t _codepoint) noexcept\n'
+                    '    inline bool {}(char32_t codepoint) noexcept\n'
                     '    {{\n'
-                    '        return contains(General_Category::{}, _codepoint);\n'
+                    '        return contains(General_Category::{}, codepoint);\n'
                     '    }}\n\n'.
                     format(name.lower(), name))
         self.header.write('} // namespace general_category\n\n') # }}}
@@ -1125,9 +1125,9 @@ namespace unicode
             self.builder.end()
 
             # api: enum to_string
-            self.header.write('inline std::string to_string({} _value)\n'.format(type_name))
+            self.header.write('inline std::string to_string({} value)\n'.format(type_name))
             self.header.write('{\n')
-            self.header.write('    switch (_value)\n')
+            self.header.write('    switch (value)\n')
             self.header.write('    {\n')
             for v in WIDTH_NAMES.values():
                 self.header.write('    case {}::{}: return "{}";\n'.format(type_name, v, v))
@@ -1136,7 +1136,7 @@ namespace unicode
             self.header.write('}\n\n')
 
             # api: signature
-            self.header.write('EastAsianWidth east_asian_width(char32_t _codepoint) noexcept;\n\n')
+            self.header.write('EastAsianWidth east_asian_width(char32_t codepoint) noexcept;\n\n')
 
             # impl: range tables
             self.impl.write("namespace tables {\n")
@@ -1167,8 +1167,8 @@ namespace unicode
 
             # impl: function
             self.impl.write(
-                'EastAsianWidth east_asian_width(char32_t _codepoint) noexcept {\n' +
-                '    return search(tables::EastAsianWidth, _codepoint).value_or(EastAsianWidth::Unspecified);\n'
+                'EastAsianWidth east_asian_width(char32_t codepoint) noexcept {\n' +
+                '    return search(tables::EastAsianWidth, codepoint).value_or(EastAsianWidth::Unspecified);\n'
                 '}\n\n'
             )
             # }}}

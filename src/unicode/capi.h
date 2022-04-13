@@ -187,10 +187,10 @@ extern "C"
     /**
      * Convertes a UTF-32 sequence to UTF-8.
      *
-     * @param _source Pointer sequence of UTF-32 characters to convert.
-     * @param _slen   Number of UTF-32 characters to convert.
-     * @param _dest   Destination address where to store the converted UTF-8 sequence to.
-     * @param _dlen   Number of bytes to write to @p _dest at most.
+     * @param source Pointer sequence of UTF-32 characters to convert.
+     * @param slen   Number of UTF-32 characters to convert.
+     * @param dest   Destination address where to store the converted UTF-8 sequence to.
+     * @param dlen   Number of bytes to write to @p _dest at most.
      *
      * @note No trailing zero byte will be written.
      *
@@ -199,7 +199,7 @@ extern "C"
      * @retval -1     Some characters have been converted but target destination
      *                is not large enough to continue.
      */
-    int u32u8_convert(u32_char_t const* _source, size_t _slen, u8_char_t* _dest, size_t _dlen);
+    int u32u8_convert(u32_char_t const* source, size_t slen, u8_char_t* dest, size_t dlen);
 
 #if !defined(__cplusplus)
 }

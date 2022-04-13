@@ -85,11 +85,11 @@ class basic_run_segmenter
         }
     };
 
-    explicit basic_run_segmenter(std::u32string_view _sv): basic_run_segmenter(_sv.data(), _sv.size()) {}
+    explicit basic_run_segmenter(std::u32string_view sv): basic_run_segmenter(sv.data(), sv.size()) {}
 
-    basic_run_segmenter(char32_t const* _text, size_t _size): segmenter_ {}, size_ { _size }
+    basic_run_segmenter(char32_t const* text, size_t size): segmenter_ {}, size_ { size }
     {
-        initialize<0, Segmenter...>(_text, _size);
+        initialize<0, Segmenter...>(text, size);
     }
 
     constexpr bool finished() const noexcept { return lastSplit_ >= size_; }
@@ -98,7 +98,7 @@ class basic_run_segmenter
     ///
     /// @retval true more data can be processed
     /// @retval false end of input data has been reached.
-    bool consume(out<range> _result)
+    bool consume(out<range> result)
     {
         if (finished())
             return false;
@@ -113,7 +113,7 @@ class basic_run_segmenter
         candidate_.end = lastSplit_;
         candidate_.properties = properties_;
 
-        *_result = candidate_;
+        *result = candidate_;
         return true;
     }
 
@@ -124,10 +124,10 @@ class basic_run_segmenter
     }
 
     template <size_t I, typename Current, typename... Remaining>
-    void initialize(char32_t const* _text, size_t _size)
+    void initialize(char32_t const* text, size_t size)
     {
-        std::get<I>(segmenter_) = Current { _text, _size };
-        initialize<I + 1, Remaining...>(_text, _size);
+        std::get<I>(segmenter_) = Current { text, size };
+        initialize<I + 1, Remaining...>(text, size);
     }
 
     template <size_t I>
@@ -144,25 +144,26 @@ class basic_run_segmenter
     }
 
     template <typename TheSegmenter, typename Property>
-    void consumeUntilSplitPosition(TheSegmenter& _segmenter, out<size_t> _position, out<Property> _property)
+    void consumeUntilSplitPosition(TheSegmenter& segmenter, out<size_t> position, out<Property> property)
     {
-        if (*_position > lastSplit_)
+        if (*position > lastSplit_)
             return;
 
-        if (*_position >= size_)
+        if (*position >= size_)
             return;
 
         for (;;)
         {
-            if (!_segmenter.consume(_position, _property))
+            if (!segmenter.consume(position, property))
                 break;
 
-            if (*_position > lastSplit_)
+            if (*position > lastSplit_)
                 break;
         }
     }
 
-  private:
+    // private data
+
     using position_list = std::array<size_t, sizeof...(Segmenter)>;
     using segmenter_tuple = std::tuple<Segmenter...>;
 

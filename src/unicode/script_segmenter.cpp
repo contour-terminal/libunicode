@@ -23,9 +23,9 @@ namespace unicode
 
 namespace
 {
-    bool constexpr isPreferred(Script _script) noexcept
+    bool constexpr isPreferred(Script script) noexcept
     {
-        switch (_script)
+        switch (script)
         {
         case Script::Invalid:
         case Script::Common:
@@ -60,32 +60,32 @@ optional<script_segmenter::result> script_segmenter::consume()
     return res;
 }
 
-bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentSet)
+bool script_segmenter::mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet)
 {
-    if (_nextSet.empty() || _currentSet.empty())
+    if (nextSet.empty() || currentSet.empty())
         return false;
 
-    auto currentSetIter = _currentSet.begin();
-    auto const currentSetEnd = _currentSet.end();
+    auto currentSetIter = currentSet.begin();
+    auto const currentSetEnd = currentSet.end();
 
     Script priorityScript = *currentSetIter++;
 
-    if (!isPreferred(_nextSet.at(0)))
+    if (!isPreferred(nextSet.at(0)))
     {
-        if (_nextSet.size() == 2 && !isPreferred(priorityScript) && commonPreferredScript_ == Script::Common)
-            commonPreferredScript_ = _nextSet.at(1);
+        if (nextSet.size() == 2 && !isPreferred(priorityScript) && commonPreferredScript_ == Script::Common)
+            commonPreferredScript_ = nextSet.at(1);
         return true;
     }
 
     // If priorityScript is either Common or Inherited then take nextScriptSet
     if (!isPreferred(priorityScript))
     {
-        _currentSet = _nextSet;
+        currentSet = nextSet;
         return true;
     }
 
-    auto nextSetIter = _nextSet.begin();
-    auto const nextSetEnd = _nextSet.end();
+    auto nextSetIter = nextSet.begin();
+    auto const nextSetEnd = nextSet.end();
 
     if (currentSetIter == currentSetEnd)
         return std::find(nextSetIter, nextSetEnd, priorityScript) != nextSetEnd;
@@ -98,7 +98,7 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
         hasPriorityScript = find(currentSetIter, currentSetEnd, priorityScript) != currentSetEnd;
     }
 
-    auto currentWriteIter = _currentSet.begin();
+    auto currentWriteIter = currentSet.begin();
     if (hasPriorityScript)
         *currentWriteIter++ = priorityScript;
 
@@ -114,24 +114,24 @@ bool script_segmenter::mergeSets(ScriptSet const& _nextSet, ScriptSet& _currentS
     }
 
     // NB: first is always smaller than second, so it is save to cast to unsigned.
-    auto const writeCount = static_cast<size_t>(distance(_currentSet.begin(), currentWriteIter));
+    auto const writeCount = static_cast<size_t>(distance(currentSet.begin(), currentWriteIter));
     if (writeCount == 0)
         return false;
 
-    _currentSet.resize(writeCount);
+    currentSet.resize(writeCount);
     return true;
 }
 
-script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t _codepoint)
+script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t codepoint)
 {
     ScriptSet scriptSet;
 
     // Collect all script(/-extensions) for @p _codepoint into scriptSet.
-    size_t const sceCount = script_extensions(_codepoint, scriptSet.data(), scriptSet.capacity());
+    size_t const sceCount = script_extensions(codepoint, scriptSet.data(), scriptSet.capacity());
     scriptSet.resize(sceCount);
 
     // Get the script for @p _codepoint.
-    Script const sc = script(_codepoint);
+    Script const sc = script(codepoint);
 
     // If the script of @p _codepoint is also in scriptSet,
     // then move it to the front of the set,
