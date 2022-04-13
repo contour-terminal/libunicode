@@ -67,6 +67,7 @@ struct formatter<unicode::Age>
         case unicode::Age::V12_0: return format_to(ctx.out(), "V12_0");
         case unicode::Age::V12_1: return format_to(ctx.out(), "V12_1");
         case unicode::Age::V13_0: return format_to(ctx.out(), "V13_0");
+        case unicode::Age::V14_0: return format_to(ctx.out(), "V14_0");
         case unicode::Age::V1_1: return format_to(ctx.out(), "V1_1");
         case unicode::Age::V2_0: return format_to(ctx.out(), "V2_0");
         case unicode::Age::V2_1: return format_to(ctx.out(), "V2_1");
@@ -597,6 +598,8 @@ struct formatter<unicode::Joining_Group>
         case unicode::Joining_Group::Taw: return format_to(ctx.out(), "Taw");
         case unicode::Joining_Group::Teh_Marbuta: return format_to(ctx.out(), "Teh_Marbuta");
         case unicode::Joining_Group::Teth: return format_to(ctx.out(), "Teth");
+        case unicode::Joining_Group::Thin_Yeh: return format_to(ctx.out(), "Thin_Yeh");
+        case unicode::Joining_Group::Vertical_Tail: return format_to(ctx.out(), "Vertical_Tail");
         case unicode::Joining_Group::Waw: return format_to(ctx.out(), "Waw");
         case unicode::Joining_Group::Yeh: return format_to(ctx.out(), "Yeh");
         case unicode::Joining_Group::Yeh_Barree: return format_to(ctx.out(), "Yeh_Barree");
@@ -1006,6 +1009,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Coptic: return format_to(ctx.out(), "Coptic");
         case unicode::Script::Cuneiform: return format_to(ctx.out(), "Cuneiform");
         case unicode::Script::Cypriot: return format_to(ctx.out(), "Cypriot");
+        case unicode::Script::Cypro_Minoan: return format_to(ctx.out(), "Cypro_Minoan");
         case unicode::Script::Cyrillic: return format_to(ctx.out(), "Cyrillic");
         case unicode::Script::Deseret: return format_to(ctx.out(), "Deseret");
         case unicode::Script::Devanagari: return format_to(ctx.out(), "Devanagari");
@@ -1089,6 +1093,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Old_Sogdian: return format_to(ctx.out(), "Old_Sogdian");
         case unicode::Script::Old_South_Arabian: return format_to(ctx.out(), "Old_South_Arabian");
         case unicode::Script::Old_Turkic: return format_to(ctx.out(), "Old_Turkic");
+        case unicode::Script::Old_Uyghur: return format_to(ctx.out(), "Old_Uyghur");
         case unicode::Script::Oriya: return format_to(ctx.out(), "Oriya");
         case unicode::Script::Osage: return format_to(ctx.out(), "Osage");
         case unicode::Script::Osmanya: return format_to(ctx.out(), "Osmanya");
@@ -1120,6 +1125,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Tai_Viet: return format_to(ctx.out(), "Tai_Viet");
         case unicode::Script::Takri: return format_to(ctx.out(), "Takri");
         case unicode::Script::Tamil: return format_to(ctx.out(), "Tamil");
+        case unicode::Script::Tangsa: return format_to(ctx.out(), "Tangsa");
         case unicode::Script::Tangut: return format_to(ctx.out(), "Tangut");
         case unicode::Script::Telugu: return format_to(ctx.out(), "Telugu");
         case unicode::Script::Thaana: return format_to(ctx.out(), "Thaana");
@@ -1127,8 +1133,10 @@ struct formatter<unicode::Script>
         case unicode::Script::Tibetan: return format_to(ctx.out(), "Tibetan");
         case unicode::Script::Tifinagh: return format_to(ctx.out(), "Tifinagh");
         case unicode::Script::Tirhuta: return format_to(ctx.out(), "Tirhuta");
+        case unicode::Script::Toto: return format_to(ctx.out(), "Toto");
         case unicode::Script::Ugaritic: return format_to(ctx.out(), "Ugaritic");
         case unicode::Script::Vai: return format_to(ctx.out(), "Vai");
+        case unicode::Script::Vithkuqi: return format_to(ctx.out(), "Vithkuqi");
         case unicode::Script::Wancho: return format_to(ctx.out(), "Wancho");
         case unicode::Script::Warang_Citi: return format_to(ctx.out(), "Warang_Citi");
         case unicode::Script::Yezidi: return format_to(ctx.out(), "Yezidi");
@@ -1166,6 +1174,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Ancient_Symbols: return format_to(ctx.out(), "Ancient_Symbols");
         case unicode::Block::Arabic: return format_to(ctx.out(), "Arabic");
         case unicode::Block::Arabic_Extended_A: return format_to(ctx.out(), "Arabic_Extended_A");
+        case unicode::Block::Arabic_Extended_B: return format_to(ctx.out(), "Arabic_Extended_B");
         case unicode::Block::Arabic_Mathematical_Alphabetic_Symbols: return format_to(ctx.out(), "Arabic_Mathematical_Alphabetic_Symbols");
         case unicode::Block::Arabic_Presentation_Forms_A: return format_to(ctx.out(), "Arabic_Presentation_Forms_A");
         case unicode::Block::Arabic_Presentation_Forms_B: return format_to(ctx.out(), "Arabic_Presentation_Forms_B");
@@ -1227,6 +1236,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Cuneiform_Numbers_and_Punctuation: return format_to(ctx.out(), "Cuneiform_Numbers_and_Punctuation");
         case unicode::Block::Currency_Symbols: return format_to(ctx.out(), "Currency_Symbols");
         case unicode::Block::Cypriot_Syllabary: return format_to(ctx.out(), "Cypriot_Syllabary");
+        case unicode::Block::Cypro_Minoan: return format_to(ctx.out(), "Cypro_Minoan");
         case unicode::Block::Cyrillic: return format_to(ctx.out(), "Cyrillic");
         case unicode::Block::Cyrillic_Extended_A: return format_to(ctx.out(), "Cyrillic_Extended_A");
         case unicode::Block::Cyrillic_Extended_B: return format_to(ctx.out(), "Cyrillic_Extended_B");
@@ -1253,6 +1263,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Ethiopic: return format_to(ctx.out(), "Ethiopic");
         case unicode::Block::Ethiopic_Extended: return format_to(ctx.out(), "Ethiopic_Extended");
         case unicode::Block::Ethiopic_Extended_A: return format_to(ctx.out(), "Ethiopic_Extended_A");
+        case unicode::Block::Ethiopic_Extended_B: return format_to(ctx.out(), "Ethiopic_Extended_B");
         case unicode::Block::Ethiopic_Supplement: return format_to(ctx.out(), "Ethiopic_Supplement");
         case unicode::Block::General_Punctuation: return format_to(ctx.out(), "General_Punctuation");
         case unicode::Block::Geometric_Shapes: return format_to(ctx.out(), "Geometric_Shapes");
@@ -1292,6 +1303,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Javanese: return format_to(ctx.out(), "Javanese");
         case unicode::Block::Kaithi: return format_to(ctx.out(), "Kaithi");
         case unicode::Block::Kana_Extended_A: return format_to(ctx.out(), "Kana_Extended_A");
+        case unicode::Block::Kana_Extended_B: return format_to(ctx.out(), "Kana_Extended_B");
         case unicode::Block::Kana_Supplement: return format_to(ctx.out(), "Kana_Supplement");
         case unicode::Block::Kanbun: return format_to(ctx.out(), "Kanbun");
         case unicode::Block::Kangxi_Radicals: return format_to(ctx.out(), "Kangxi_Radicals");
@@ -1312,6 +1324,8 @@ struct formatter<unicode::Block>
         case unicode::Block::Latin_Extended_C: return format_to(ctx.out(), "Latin_Extended_C");
         case unicode::Block::Latin_Extended_D: return format_to(ctx.out(), "Latin_Extended_D");
         case unicode::Block::Latin_Extended_E: return format_to(ctx.out(), "Latin_Extended_E");
+        case unicode::Block::Latin_Extended_F: return format_to(ctx.out(), "Latin_Extended_F");
+        case unicode::Block::Latin_Extended_G: return format_to(ctx.out(), "Latin_Extended_G");
         case unicode::Block::Latin_1_Supplement: return format_to(ctx.out(), "Latin_1_Supplement");
         case unicode::Block::Lepcha: return format_to(ctx.out(), "Lepcha");
         case unicode::Block::Letterlike_Symbols: return format_to(ctx.out(), "Letterlike_Symbols");
@@ -1376,6 +1390,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Old_Sogdian: return format_to(ctx.out(), "Old_Sogdian");
         case unicode::Block::Old_South_Arabian: return format_to(ctx.out(), "Old_South_Arabian");
         case unicode::Block::Old_Turkic: return format_to(ctx.out(), "Old_Turkic");
+        case unicode::Block::Old_Uyghur: return format_to(ctx.out(), "Old_Uyghur");
         case unicode::Block::Optical_Character_Recognition: return format_to(ctx.out(), "Optical_Character_Recognition");
         case unicode::Block::Oriya: return format_to(ctx.out(), "Oriya");
         case unicode::Block::Ornamental_Dingbats: return format_to(ctx.out(), "Ornamental_Dingbats");
@@ -1438,6 +1453,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Takri: return format_to(ctx.out(), "Takri");
         case unicode::Block::Tamil: return format_to(ctx.out(), "Tamil");
         case unicode::Block::Tamil_Supplement: return format_to(ctx.out(), "Tamil_Supplement");
+        case unicode::Block::Tangsa: return format_to(ctx.out(), "Tangsa");
         case unicode::Block::Tangut: return format_to(ctx.out(), "Tangut");
         case unicode::Block::Tangut_Components: return format_to(ctx.out(), "Tangut_Components");
         case unicode::Block::Tangut_Supplement: return format_to(ctx.out(), "Tangut_Supplement");
@@ -1447,15 +1463,18 @@ struct formatter<unicode::Block>
         case unicode::Block::Tibetan: return format_to(ctx.out(), "Tibetan");
         case unicode::Block::Tifinagh: return format_to(ctx.out(), "Tifinagh");
         case unicode::Block::Tirhuta: return format_to(ctx.out(), "Tirhuta");
+        case unicode::Block::Toto: return format_to(ctx.out(), "Toto");
         case unicode::Block::Transport_and_Map_Symbols: return format_to(ctx.out(), "Transport_and_Map_Symbols");
         case unicode::Block::Ugaritic: return format_to(ctx.out(), "Ugaritic");
         case unicode::Block::Unified_Canadian_Aboriginal_Syllabics: return format_to(ctx.out(), "Unified_Canadian_Aboriginal_Syllabics");
         case unicode::Block::Unified_Canadian_Aboriginal_Syllabics_Extended: return format_to(ctx.out(), "Unified_Canadian_Aboriginal_Syllabics_Extended");
+        case unicode::Block::Unified_Canadian_Aboriginal_Syllabics_Extended_A: return format_to(ctx.out(), "Unified_Canadian_Aboriginal_Syllabics_Extended_A");
         case unicode::Block::Vai: return format_to(ctx.out(), "Vai");
         case unicode::Block::Variation_Selectors: return format_to(ctx.out(), "Variation_Selectors");
         case unicode::Block::Variation_Selectors_Supplement: return format_to(ctx.out(), "Variation_Selectors_Supplement");
         case unicode::Block::Vedic_Extensions: return format_to(ctx.out(), "Vedic_Extensions");
         case unicode::Block::Vertical_Forms: return format_to(ctx.out(), "Vertical_Forms");
+        case unicode::Block::Vithkuqi: return format_to(ctx.out(), "Vithkuqi");
         case unicode::Block::Wancho: return format_to(ctx.out(), "Wancho");
         case unicode::Block::Warang_Citi: return format_to(ctx.out(), "Warang_Citi");
         case unicode::Block::Yezidi: return format_to(ctx.out(), "Yezidi");
@@ -1463,6 +1482,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Yi_Syllables: return format_to(ctx.out(), "Yi_Syllables");
         case unicode::Block::Yijing_Hexagram_Symbols: return format_to(ctx.out(), "Yijing_Hexagram_Symbols");
         case unicode::Block::Zanabazar_Square: return format_to(ctx.out(), "Zanabazar_Square");
+        case unicode::Block::Znamenny_Musical_Notation: return format_to(ctx.out(), "Znamenny_Musical_Notation");
         // clang-format off
         }
         return format_to(ctx.out(), "({})", unsigned(value));
