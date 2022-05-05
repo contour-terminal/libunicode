@@ -246,16 +246,18 @@ class MergedRange: # {{{
         self.count = _count
 # }}}
 class RangeTableGenerator: # {{{
-    def __init__(self):
+    def __init__(self, gap_default=None):
         self.range_from = 0
         self.range_to = 0
         self.value = ""
         self.comments = []
         self.count = 0
         self.result = []
+        self.gap_default = gap_default
 
     def flush(self):
         # Do not flush on initial state
+        #if self.value != '' and (self.gap_default is None or self.gap_default != self.value):
         if self.value != '':
             self.result.append(MergedRange(self.range_from,
                                            self.range_to,
@@ -268,8 +270,17 @@ class RangeTableGenerator: # {{{
         self.comments = []
         self.count = 0
 
-    def append(self, _from, _to, _value, _comment):
+    def append(self, _from: int, _to: int, _value, _comment: str):
+        assert(_value is not None)
+        assert(_from <= _to)
+
         RANGE_COMMENT_FMT = '0x{:>04X} .. 0x{:>04X}: {}'
+
+        # Extend current range by gap, if gap_value matches.
+        if self.value == self.gap_default and self.range_to + 1 < _from:
+            self.range_to = _from - 1
+
+        # Extend current range with input range if sibling and if value matches.
         if self.range_to + 1 == _from and self.value == _value:
             # This is a direct upper neighbor of the current range.
             if len(self.comments) == 1:
@@ -287,6 +298,7 @@ class RangeTableGenerator: # {{{
             self.value = _value
         self.comments.append(_comment)
         self.count += 1
+
 # }}}
 class UCDGenerator: # {{{
     def __init__(self, _ucd_dir, _header_file, _impl_file):
@@ -1088,6 +1100,26 @@ namespace unicode
         table.sort(key = lambda a: a['start'])
         return table # }}}
 
+    def range_table_for_wcwidths(self, _table):
+        WIDTH_NUMBERS = {
+            'A':  1, # "Ambiguous",
+            'F':  2, # "FullWidth",
+            'H':  1, # 'HalfWidth',
+            'N':  1, # 'Neutral',
+            'Na': 1, # 'Narrow',
+            'W':  2, # "Wide",
+        }
+        m = RangeTableGenerator(gap_default=2)
+        for propRange in _table:
+            start = int(propRange['start'])
+            end = int(propRange['end'])
+            prop = propRange['property']
+            value = WIDTH_NUMBERS[prop]
+            comment = '' # propRange['comment']
+            m.append(start, end, value, comment)
+        m.flush()
+        return m.result
+
     def range_table_merge_siblings(self, _table):
         m = RangeTableGenerator()
         for propRange in _table:
@@ -1117,6 +1149,32 @@ namespace unicode
         with uopen(self.ucd_dir + '/' + EastAsianWidth_fname) as f:
             table = self.collect_range_table_with_prop(f)
             compact_ranges = self.range_table_merge_siblings(table)
+
+            # {{{ impl: write wcwidth range table
+            wcwidth_ranges = self.range_table_for_wcwidths(table)
+            self.header.write('int wcwidth_fast(char32_t codepoint) noexcept;\n\n')
+            # TODO: this could be even compressed into 3-bit elements)
+            self.impl.write("namespace tables {\n")
+            element_type = 'Prop<{}>'.format('uint8_t')
+            self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
+                table_name + "_wcwidth",
+                element_type,
+                len(wcwidth_ranges),
+                FOLD_OPEN
+            ))
+            for range in wcwidth_ranges:
+                self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {} }},".format(
+                                element_type,
+                                range.range_from,
+                                range.range_to,
+                                range.value))
+                if len(range.comments) == 1 and len(range.comments[0]) != 0:
+                    self.impl.write(" // {}".format(range.comments[0]))
+                self.impl.write('\n')
+                pass
+            self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+            self.impl.write("} // end namespace tables\n\n")
+            # }}}
 
             # api: enum
             self.builder.begin(table_name)
@@ -1169,6 +1227,13 @@ namespace unicode
             self.impl.write(
                 'EastAsianWidth east_asian_width(char32_t codepoint) noexcept {\n' +
                 '    return search(tables::EastAsianWidth, codepoint).value_or(EastAsianWidth::Unspecified);\n'
+                '}\n\n'
+            )
+            self.impl.write(
+                'int wcwidth_fast(char32_t codepoint) noexcept {\n' +
+                '    if (0x20 <= codepoint && codepoint <= tables::EastAsianWidth_wcwidth[0].interval.to)\n' +
+                '        return 1;\n' +
+                '    return search(tables::EastAsianWidth_wcwidth, codepoint).value_or(2);\n'
                 '}\n\n'
             )
             # }}}
