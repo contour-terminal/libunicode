@@ -1130,7 +1130,46 @@ namespace unicode
         m.flush()
         return m.result
 
-    def process_east_asian_width(self): # {{{
+    # {{{ EastAsianWidth
+    def process_wcwidth_explicit(self, ranges: list[MergedRange], width: int):
+        filtered_ranges = []
+        TABLE_NAME = f"EastAsianWidth_wcwidth_{width}"
+        for r in ranges:
+            if r.value == width:
+                filtered_ranges.append(r)
+        self.header.write(f"bool east_asian_width_{width}(char32_t codepoint) noexcept;\n\n")
+        self.impl.write("namespace tables {\n")
+        self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
+            TABLE_NAME,
+            'Interval',
+            len(filtered_ranges),
+            width,
+            FOLD_OPEN
+        ))
+
+        for range in filtered_ranges:
+            if range.value == width:
+                self.impl.write("    {} {{ 0x{:>04X}, 0x{:>04X} }},".format(
+                                'Interval',
+                                range.range_from,
+                                range.range_to,
+                                range.comments))
+                if len(range.comments) == 1 and len(range.comments[0]) != 0:
+                    self.impl.write(" // {}".format(range.comments[0]))
+                self.impl.write('\n')
+        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
+        self.impl.write(f"bool east_asian_width_{width}(char32_t codepoint) noexcept {{\n")
+        if width == 1:
+            self.impl.write(
+                '    if (0x20 <= codepoint && codepoint <= tables::EastAsianWidth_wcwidth_1[0].to)\n' +
+                '        return 1;\n'
+            )
+        self.impl.write(f"    return contains(tables::EastAsianWidth_wcwidth_{width}, codepoint);\n")
+        self.impl.write('}\n\n')
+        pass
+
+    def process_east_asian_width(self):
         WIDTH_NAMES = {
             'A': "Ambiguous",
             'F': "FullWidth",
@@ -1150,30 +1189,44 @@ namespace unicode
             table = self.collect_range_table_with_prop(f)
             compact_ranges = self.range_table_merge_siblings(table)
 
-            # {{{ impl: write wcwidth range table
             wcwidth_ranges = self.range_table_for_wcwidths(table)
-            self.header.write('int wcwidth_fast(char32_t codepoint) noexcept;\n\n')
+            self.process_wcwidth_explicit(ranges=wcwidth_ranges, width=1)
+            self.process_wcwidth_explicit(ranges=wcwidth_ranges, width=2)
+
+            # {{{ impl: write wcwidth range table
             # TODO: this could be even compressed into 3-bit elements)
+            wcwidth1 = []
+            for r in wcwidth_ranges:
+                if r.value == 2:
+                    wcwidth1.append(r)
+
+            self.header.write('int wcwidth_fast(char32_t codepoint) noexcept;\n\n')
             self.impl.write("namespace tables {\n")
-            element_type = 'Prop<{}>'.format('uint8_t')
             self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
                 table_name + "_wcwidth",
-                element_type,
-                len(wcwidth_ranges),
+                'Interval',
+                len(wcwidth1),
                 FOLD_OPEN
             ))
-            for range in wcwidth_ranges:
-                self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, {} }},".format(
-                                element_type,
-                                range.range_from,
-                                range.range_to,
-                                range.value))
-                if len(range.comments) == 1 and len(range.comments[0]) != 0:
-                    self.impl.write(" // {}".format(range.comments[0]))
-                self.impl.write('\n')
-                pass
+            for range in wcwidth1:
+                if range.value == 2:
+                    self.impl.write("    {} {{ 0x{:>04X}, 0x{:>04X} }},".format(
+                                    'Interval',
+                                    range.range_from,
+                                    range.range_to,
+                                    range.comments))
+                    if len(range.comments) == 1 and len(range.comments[0]) != 0:
+                        self.impl.write(" // {}".format(range.comments[0]))
+                    self.impl.write('\n')
             self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
             self.impl.write("} // end namespace tables\n\n")
+            self.impl.write(
+                'int wcwidth_fast(char32_t codepoint) noexcept {\n' +
+                '    if (0x20 <= codepoint && codepoint <= tables::EastAsianWidth_wcwidth[0].to)\n' +
+                '        return 1;\n' +
+                '    return contains(tables::EastAsianWidth_wcwidth, codepoint) ? 1 : 2;\n'
+                '}\n\n'
+            )
             # }}}
 
             # api: enum
@@ -1227,13 +1280,6 @@ namespace unicode
             self.impl.write(
                 'EastAsianWidth east_asian_width(char32_t codepoint) noexcept {\n' +
                 '    return search(tables::EastAsianWidth, codepoint).value_or(EastAsianWidth::Unspecified);\n'
-                '}\n\n'
-            )
-            self.impl.write(
-                'int wcwidth_fast(char32_t codepoint) noexcept {\n' +
-                '    if (0x20 <= codepoint && codepoint <= tables::EastAsianWidth_wcwidth[0].interval.to)\n' +
-                '        return 1;\n' +
-                '    return search(tables::EastAsianWidth_wcwidth, codepoint).value_or(2);\n'
                 '}\n\n'
             )
             # }}}

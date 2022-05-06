@@ -208,6 +208,10 @@ namespace grapheme_cluster_break
     bool zwj(char32_t codepoint) noexcept;
 } // namespace grapheme_cluster_break
 
+bool east_asian_width_1(char32_t codepoint) noexcept;
+
+bool east_asian_width_2(char32_t codepoint) noexcept;
+
 int wcwidth_fast(char32_t codepoint) noexcept;
 
 inline std::string to_string(EastAsianWidth value)
