@@ -17,8 +17,6 @@ endif()
 add_library(unicode STATIC
     capi.h capi.cpp
     convert.h
-    utf8.h
-    width.h width.cpp
     emoji_segmenter.h emoji_segmenter.cpp
     grapheme_segmenter.h
     run_segmenter.h
@@ -26,6 +24,9 @@ add_library(unicode STATIC
     ucd.h ucd.cpp
     ucd_enums.h
     ucd_ostream.h
+    utf8.h
+    utf8_grapheme_segmenter.h
+    width.h width.cpp
     word_segmenter.h
 )
 add_library(unicode::core ALIAS unicode)
@@ -46,6 +47,7 @@ if(LIBUNICODE_TESTING)
         script_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp
+        utf8_grapheme_segmenter_test.cpp
         utf8_test.cpp
         width_test.cpp
         word_segmenter_test.cpp
