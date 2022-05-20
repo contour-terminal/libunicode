@@ -29,6 +29,8 @@ bool contains(Core_Property prop, char32_t codepoint) noexcept;
 
 bool contains(General_Category generalCategory, char32_t codepoint) noexcept;
 
+// Disabling clang-format to avoid single-line folding implementations.
+// clang-format off
 namespace general_category
 {
     General_Category get(char32_t value) noexcept;
@@ -184,6 +186,7 @@ namespace general_category
     }
 
 } // namespace general_category
+// clang-format on
 
 Script script(char32_t codepoint) noexcept;
 

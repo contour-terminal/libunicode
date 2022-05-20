@@ -20,6 +20,7 @@ add_library(unicode STATIC
     emoji_segmenter.h emoji_segmenter.cpp
     grapheme_segmenter.h
     run_segmenter.h
+    scan.h scan.cpp
     script_segmenter.h script_segmenter.cpp
     ucd.h ucd.cpp
     ucd_enums.h
@@ -44,6 +45,7 @@ if(LIBUNICODE_TESTING)
         emoji_segmenter_test.cpp
         grapheme_segmenter_test.cpp
         run_segmenter_test.cpp
+        scan_test.cpp
         script_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp

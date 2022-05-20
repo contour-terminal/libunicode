@@ -1054,6 +1054,8 @@ namespace unicode
         # write signature
         self.header.write("bool contains(General_Category generalCategory, char32_t codepoint) noexcept;\n\n")
 
+        self.header.write('// Disabling clang-format to avoid single-line folding implementations.\n')
+        self.header.write('// clang-format off\n')
         self.header.write('namespace general_category\n')
         self.header.write('{\n')
         self.header.write("    {} get(char32_t value) noexcept;\n\n".format(type_name))
@@ -1064,7 +1066,9 @@ namespace unicode
                     '        return contains(General_Category::{}, codepoint);\n'
                     '    }}\n\n'.
                     format(name.lower(), name))
-        self.header.write('} // namespace general_category\n\n') # }}}
+        self.header.write('} // namespace general_category\n') # }}}
+        self.header.write('// clang-format on\n')
+        self.header.write('\n')
 
     def collect_range_table_with_prop(self, f): # {{{
         table = []

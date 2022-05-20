@@ -5,6 +5,7 @@ Checks: >-
   clang-analyzer-*,
   bugprone-*,
   -bugprone-suspicious-include,
+  bugprone-unchecked-optional-access,
   performance-*,
   -performance-no-int-to-ptr,
   readability-non-const-parameter,
