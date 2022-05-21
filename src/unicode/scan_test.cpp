@@ -148,6 +148,17 @@ TEST_CASE("scan.complex.half-overflowing")
     CHECK(result4.next == text.data() + 2 * oneEmoji.size());
 }
 
+TEST_CASE("scan.any.tiny")
+{
+    // Ensure that we're really only scanning up to the input's size (1 byte, here).
+    auto const storage = "X{0123456789ABCDEF}"sv;
+    auto const input = storage.substr(0, 1);
+    auto const result = unicode::scan_for_text(input, 80);
+    CHECK(result.count == 1);
+    CHECK(result.next == input.data() + input.size());
+    CHECK(*result.next == '{');
+}
+
 TEST_CASE("scan.any.ascii_complex_repeat")
 {
     auto const oneComplex = u8(SmileyEmoji);        // 2

@@ -212,7 +212,9 @@ scan_result scan_for_text(string_view text, size_t maxColumnCount) noexcept
     auto result = scan_result { 0, text.data() };
     while (result.count < maxColumnCount && result.next != end)
     {
-        auto const count = scan_for_text_ascii(result.next, maxColumnCount - result.count);
+        auto const count = scan_for_text_ascii(
+            string_view(result.next, static_cast<size_t>(std::distance(result.next, end))),
+            maxColumnCount - result.count);
         if (!count)
             break;
         result.count += count;
