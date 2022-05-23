@@ -78,12 +78,12 @@ inline utf8_grapheme_segmenter::utf8_grapheme_segmenter(std::string_view text) n
 {
 }
 
-utf8_grapheme_segmenter::iterator utf8_grapheme_segmenter::begin() const noexcept
+inline utf8_grapheme_segmenter::iterator utf8_grapheme_segmenter::begin() const noexcept
 {
     return iterator { _text.data(), _text.data() + _text.size() };
 }
 
-utf8_grapheme_segmenter::iterator utf8_grapheme_segmenter::end() const noexcept
+inline utf8_grapheme_segmenter::iterator utf8_grapheme_segmenter::end() const noexcept
 {
     return iterator { _text.data() + _text.size(), _text.data() + _text.size() };
 }
