@@ -68,6 +68,7 @@ struct formatter<unicode::Age>
         case unicode::Age::V12_1: return format_to(ctx.out(), "V12_1");
         case unicode::Age::V13_0: return format_to(ctx.out(), "V13_0");
         case unicode::Age::V14_0: return format_to(ctx.out(), "V14_0");
+        case unicode::Age::V15_0: return format_to(ctx.out(), "V15_0");
         case unicode::Age::V1_1: return format_to(ctx.out(), "V1_1");
         case unicode::Age::V2_0: return format_to(ctx.out(), "V2_0");
         case unicode::Age::V2_1: return format_to(ctx.out(), "V2_1");
@@ -1043,6 +1044,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Kaithi: return format_to(ctx.out(), "Kaithi");
         case unicode::Script::Kannada: return format_to(ctx.out(), "Kannada");
         case unicode::Script::Katakana: return format_to(ctx.out(), "Katakana");
+        case unicode::Script::Kawi: return format_to(ctx.out(), "Kawi");
         case unicode::Script::Kayah_Li: return format_to(ctx.out(), "Kayah_Li");
         case unicode::Script::Kharoshthi: return format_to(ctx.out(), "Kharoshthi");
         case unicode::Script::Khitan_Small_Script: return format_to(ctx.out(), "Khitan_Small_Script");
@@ -1077,6 +1079,7 @@ struct formatter<unicode::Script>
         case unicode::Script::Multani: return format_to(ctx.out(), "Multani");
         case unicode::Script::Myanmar: return format_to(ctx.out(), "Myanmar");
         case unicode::Script::Nabataean: return format_to(ctx.out(), "Nabataean");
+        case unicode::Script::Nag_Mundari: return format_to(ctx.out(), "Nag_Mundari");
         case unicode::Script::Nandinagari: return format_to(ctx.out(), "Nandinagari");
         case unicode::Script::New_Tai_Lue: return format_to(ctx.out(), "New_Tai_Lue");
         case unicode::Script::Newa: return format_to(ctx.out(), "Newa");
@@ -1175,6 +1178,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Arabic: return format_to(ctx.out(), "Arabic");
         case unicode::Block::Arabic_Extended_A: return format_to(ctx.out(), "Arabic_Extended_A");
         case unicode::Block::Arabic_Extended_B: return format_to(ctx.out(), "Arabic_Extended_B");
+        case unicode::Block::Arabic_Extended_C: return format_to(ctx.out(), "Arabic_Extended_C");
         case unicode::Block::Arabic_Mathematical_Alphabetic_Symbols: return format_to(ctx.out(), "Arabic_Mathematical_Alphabetic_Symbols");
         case unicode::Block::Arabic_Presentation_Forms_A: return format_to(ctx.out(), "Arabic_Presentation_Forms_A");
         case unicode::Block::Arabic_Presentation_Forms_B: return format_to(ctx.out(), "Arabic_Presentation_Forms_B");
@@ -1214,6 +1218,7 @@ struct formatter<unicode::Block>
         case unicode::Block::CJK_Unified_Ideographs_Extension_E: return format_to(ctx.out(), "CJK_Unified_Ideographs_Extension_E");
         case unicode::Block::CJK_Unified_Ideographs_Extension_F: return format_to(ctx.out(), "CJK_Unified_Ideographs_Extension_F");
         case unicode::Block::CJK_Unified_Ideographs_Extension_G: return format_to(ctx.out(), "CJK_Unified_Ideographs_Extension_G");
+        case unicode::Block::CJK_Unified_Ideographs_Extension_H: return format_to(ctx.out(), "CJK_Unified_Ideographs_Extension_H");
         case unicode::Block::Carian: return format_to(ctx.out(), "Carian");
         case unicode::Block::Caucasian_Albanian: return format_to(ctx.out(), "Caucasian_Albanian");
         case unicode::Block::Chakma: return format_to(ctx.out(), "Chakma");
@@ -1241,10 +1246,12 @@ struct formatter<unicode::Block>
         case unicode::Block::Cyrillic_Extended_A: return format_to(ctx.out(), "Cyrillic_Extended_A");
         case unicode::Block::Cyrillic_Extended_B: return format_to(ctx.out(), "Cyrillic_Extended_B");
         case unicode::Block::Cyrillic_Extended_C: return format_to(ctx.out(), "Cyrillic_Extended_C");
+        case unicode::Block::Cyrillic_Extended_D: return format_to(ctx.out(), "Cyrillic_Extended_D");
         case unicode::Block::Cyrillic_Supplement: return format_to(ctx.out(), "Cyrillic_Supplement");
         case unicode::Block::Deseret: return format_to(ctx.out(), "Deseret");
         case unicode::Block::Devanagari: return format_to(ctx.out(), "Devanagari");
         case unicode::Block::Devanagari_Extended: return format_to(ctx.out(), "Devanagari_Extended");
+        case unicode::Block::Devanagari_Extended_A: return format_to(ctx.out(), "Devanagari_Extended_A");
         case unicode::Block::Dingbats: return format_to(ctx.out(), "Dingbats");
         case unicode::Block::Dives_Akuru: return format_to(ctx.out(), "Dives_Akuru");
         case unicode::Block::Dogra: return format_to(ctx.out(), "Dogra");
@@ -1302,6 +1309,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Inscriptional_Parthian: return format_to(ctx.out(), "Inscriptional_Parthian");
         case unicode::Block::Javanese: return format_to(ctx.out(), "Javanese");
         case unicode::Block::Kaithi: return format_to(ctx.out(), "Kaithi");
+        case unicode::Block::Kaktovik_Numerals: return format_to(ctx.out(), "Kaktovik_Numerals");
         case unicode::Block::Kana_Extended_A: return format_to(ctx.out(), "Kana_Extended_A");
         case unicode::Block::Kana_Extended_B: return format_to(ctx.out(), "Kana_Extended_B");
         case unicode::Block::Kana_Supplement: return format_to(ctx.out(), "Kana_Supplement");
@@ -1310,6 +1318,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Kannada: return format_to(ctx.out(), "Kannada");
         case unicode::Block::Katakana: return format_to(ctx.out(), "Katakana");
         case unicode::Block::Katakana_Phonetic_Extensions: return format_to(ctx.out(), "Katakana_Phonetic_Extensions");
+        case unicode::Block::Kawi: return format_to(ctx.out(), "Kawi");
         case unicode::Block::Kayah_Li: return format_to(ctx.out(), "Kayah_Li");
         case unicode::Block::Kharoshthi: return format_to(ctx.out(), "Kharoshthi");
         case unicode::Block::Khitan_Small_Script: return format_to(ctx.out(), "Khitan_Small_Script");
@@ -1374,6 +1383,7 @@ struct formatter<unicode::Block>
         case unicode::Block::Myanmar_Extended_B: return format_to(ctx.out(), "Myanmar_Extended_B");
         case unicode::Block::NKo: return format_to(ctx.out(), "NKo");
         case unicode::Block::Nabataean: return format_to(ctx.out(), "Nabataean");
+        case unicode::Block::Nag_Mundari: return format_to(ctx.out(), "Nag_Mundari");
         case unicode::Block::Nandinagari: return format_to(ctx.out(), "Nandinagari");
         case unicode::Block::New_Tai_Lue: return format_to(ctx.out(), "New_Tai_Lue");
         case unicode::Block::Newa: return format_to(ctx.out(), "Newa");

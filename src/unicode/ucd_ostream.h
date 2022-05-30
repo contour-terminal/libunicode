@@ -49,6 +49,7 @@ inline std::ostream& operator<<(std::ostream& os, Age value) noexcept
     case Age::V12_1: return os << "V12_1";
     case Age::V13_0: return os << "V13_0";
     case Age::V14_0: return os << "V14_0";
+    case Age::V15_0: return os << "V15_0";
     case Age::V1_1: return os << "V1_1";
     case Age::V2_0: return os << "V2_0";
     case Age::V2_1: return os << "V2_1";
@@ -814,6 +815,7 @@ inline std::ostream& operator<<(std::ostream& os, Script value) noexcept
     case Script::Kaithi: return os << "Kaithi";
     case Script::Kannada: return os << "Kannada";
     case Script::Katakana: return os << "Katakana";
+    case Script::Kawi: return os << "Kawi";
     case Script::Kayah_Li: return os << "Kayah_Li";
     case Script::Kharoshthi: return os << "Kharoshthi";
     case Script::Khitan_Small_Script: return os << "Khitan_Small_Script";
@@ -848,6 +850,7 @@ inline std::ostream& operator<<(std::ostream& os, Script value) noexcept
     case Script::Multani: return os << "Multani";
     case Script::Myanmar: return os << "Myanmar";
     case Script::Nabataean: return os << "Nabataean";
+    case Script::Nag_Mundari: return os << "Nag_Mundari";
     case Script::Nandinagari: return os << "Nandinagari";
     case Script::New_Tai_Lue: return os << "New_Tai_Lue";
     case Script::Newa: return os << "Newa";
@@ -936,6 +939,7 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::Arabic: return os << "Arabic";
     case Block::Arabic_Extended_A: return os << "Arabic_Extended_A";
     case Block::Arabic_Extended_B: return os << "Arabic_Extended_B";
+    case Block::Arabic_Extended_C: return os << "Arabic_Extended_C";
     case Block::Arabic_Mathematical_Alphabetic_Symbols: return os << "Arabic_Mathematical_Alphabetic_Symbols";
     case Block::Arabic_Presentation_Forms_A: return os << "Arabic_Presentation_Forms_A";
     case Block::Arabic_Presentation_Forms_B: return os << "Arabic_Presentation_Forms_B";
@@ -975,6 +979,7 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::CJK_Unified_Ideographs_Extension_E: return os << "CJK_Unified_Ideographs_Extension_E";
     case Block::CJK_Unified_Ideographs_Extension_F: return os << "CJK_Unified_Ideographs_Extension_F";
     case Block::CJK_Unified_Ideographs_Extension_G: return os << "CJK_Unified_Ideographs_Extension_G";
+    case Block::CJK_Unified_Ideographs_Extension_H: return os << "CJK_Unified_Ideographs_Extension_H";
     case Block::Carian: return os << "Carian";
     case Block::Caucasian_Albanian: return os << "Caucasian_Albanian";
     case Block::Chakma: return os << "Chakma";
@@ -1002,10 +1007,12 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::Cyrillic_Extended_A: return os << "Cyrillic_Extended_A";
     case Block::Cyrillic_Extended_B: return os << "Cyrillic_Extended_B";
     case Block::Cyrillic_Extended_C: return os << "Cyrillic_Extended_C";
+    case Block::Cyrillic_Extended_D: return os << "Cyrillic_Extended_D";
     case Block::Cyrillic_Supplement: return os << "Cyrillic_Supplement";
     case Block::Deseret: return os << "Deseret";
     case Block::Devanagari: return os << "Devanagari";
     case Block::Devanagari_Extended: return os << "Devanagari_Extended";
+    case Block::Devanagari_Extended_A: return os << "Devanagari_Extended_A";
     case Block::Dingbats: return os << "Dingbats";
     case Block::Dives_Akuru: return os << "Dives_Akuru";
     case Block::Dogra: return os << "Dogra";
@@ -1063,6 +1070,7 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::Inscriptional_Parthian: return os << "Inscriptional_Parthian";
     case Block::Javanese: return os << "Javanese";
     case Block::Kaithi: return os << "Kaithi";
+    case Block::Kaktovik_Numerals: return os << "Kaktovik_Numerals";
     case Block::Kana_Extended_A: return os << "Kana_Extended_A";
     case Block::Kana_Extended_B: return os << "Kana_Extended_B";
     case Block::Kana_Supplement: return os << "Kana_Supplement";
@@ -1071,6 +1079,7 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::Kannada: return os << "Kannada";
     case Block::Katakana: return os << "Katakana";
     case Block::Katakana_Phonetic_Extensions: return os << "Katakana_Phonetic_Extensions";
+    case Block::Kawi: return os << "Kawi";
     case Block::Kayah_Li: return os << "Kayah_Li";
     case Block::Kharoshthi: return os << "Kharoshthi";
     case Block::Khitan_Small_Script: return os << "Khitan_Small_Script";
@@ -1135,6 +1144,7 @@ inline std::ostream& operator<<(std::ostream& os, Block value) noexcept
     case Block::Myanmar_Extended_B: return os << "Myanmar_Extended_B";
     case Block::NKo: return os << "NKo";
     case Block::Nabataean: return os << "Nabataean";
+    case Block::Nag_Mundari: return os << "Nag_Mundari";
     case Block::Nandinagari: return os << "Nandinagari";
     case Block::New_Tai_Lue: return os << "New_Tai_Lue";
     case Block::Newa: return os << "Newa";

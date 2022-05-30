@@ -23,15 +23,15 @@ from codecs import open as codecs_open
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) + '/../..'
 HEADER_ROOT = PROJECT_ROOT + '/src/unicode'
 SCRIPT_MTIME = os.stat(__file__).st_mtime
-PropertyValueAliases_fname = 'PropertyValueAliases.txt'
-DerivedGeneralCategory_fname = '/extracted/DerivedGeneralCategory.txt'
-DerivedCoreProperties_fname = 'DerivedCoreProperties.txt'
-GraphemeBreakProperty_fname = '/auxiliary/GraphemeBreakProperty.txt'
-Scripts_fname = 'Scripts.txt'
-Blocks_fname = 'Blocks.txt'
-ScriptExtensions_fname = 'ScriptExtensions.txt'
+PropertyValueAliases_fname = 'PropertyValueAliases-15.0.0d1.txt'
+DerivedGeneralCategory_fname = '/extracted/DerivedGeneralCategory-15.0.0d1.txt'
+DerivedCoreProperties_fname = 'DerivedCoreProperties-15.0.0d1.txt'
+GraphemeBreakProperty_fname = '/auxiliary/GraphemeBreakProperty-15.0.0d2.txt'
+Scripts_fname = 'Scripts-15.0.0d5.txt'
+Blocks_fname = 'Blocks-15.0.0d3.txt'
+ScriptExtensions_fname = 'ScriptExtensions-15.0.0d1.txt'
 Emoji_data_fname = '/emoji/emoji-data.txt'
-EastAsianWidth_fname = 'EastAsianWidth.txt'
+EastAsianWidth_fname = 'EastAsianWidth-15.0.0d5.txt'
 
 PLANES = [
     {'plane':  0, 'start':   0x0000, 'end':  0x0FFFF, 'short':    'BMP', 'name': 'Basic Multilingual Plane'},
@@ -53,7 +53,7 @@ PLANES = [
     {'plane': 16, 'start': 0x100000, 'end': 0x10FFFF, 'short': 'SPUA-B', 'name': 'Supplementary Private Use Area Plane'},
 ]
 
-# Unicode 14.0 Beta database: https://www.unicode.org/Public/14.0.0/ucd/
+# Unicode 15.0 Beta database: https://www.unicode.org/Public/15.0.0/ucd/
 UCD_DIR = argv[1]
 
 FOLD_OPEN = '{{{'
