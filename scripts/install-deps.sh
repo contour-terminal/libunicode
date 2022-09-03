@@ -211,11 +211,13 @@ install_deps_fedora()
 
 install_deps_darwin()
 {
+    fetch_and_unpack_Catch2
+
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
     # NB: Also available in brew: mimalloc
+    # catch2: available in brew, but too new (version 3+)
     brew install $SYSDEP_ASSUME_YES \
-        catch2 \
         cpp-gsl \
         fmt \
         pkg-config \
