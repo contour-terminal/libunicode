@@ -73,9 +73,9 @@ fetch_and_unpack_Catch2()
 fetch_and_unpack_fmtlib()
 {
     fetch_and_unpack \
-        fmt-8.1.1 \
-        fmtlib-8.1.1.tar.gz \
-        https://github.com/fmtlib/fmt/archive/refs/tags/8.1.1.tar.gz
+        fmt-9.1.0 \
+        fmtlib-9.1.0.tar.gz \
+        https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz
 }
 
 fetch_and_unpack_gsl()
@@ -211,11 +211,13 @@ install_deps_fedora()
 
 install_deps_darwin()
 {
+    fetch_and_unpack_Catch2
+
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
     # NB: Also available in brew: mimalloc
+    # catch2: available in brew, but too new (version 3+)
     brew install $SYSDEP_ASSUME_YES \
-        catch2 \
         cpp-gsl \
         fmt \
         pkg-config \

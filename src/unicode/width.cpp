@@ -27,27 +27,27 @@ int width(char32_t codepoint)
 
     switch (general_category::get(codepoint))
     {
-    case General_Category::Control: // XXX really?
-    case General_Category::Enclosing_Mark:
-    case General_Category::Format:
-    case General_Category::Line_Separator:
-    // case General_Category::Modifier_Symbol:
-    case General_Category::Nonspacing_Mark:
-    case General_Category::Paragraph_Separator:
-    case General_Category::Spacing_Mark:
-    case General_Category::Surrogate: return 0;
-    default: break;
+        case General_Category::Control: // XXX really?
+        case General_Category::Enclosing_Mark:
+        case General_Category::Format:
+        case General_Category::Line_Separator:
+        // case General_Category::Modifier_Symbol:
+        case General_Category::Nonspacing_Mark:
+        case General_Category::Paragraph_Separator:
+        case General_Category::Spacing_Mark:
+        case General_Category::Surrogate: return 0;
+        default: break;
     }
 
     switch (east_asian_width(codepoint))
     {
-    case EastAsianWidth::Narrow:
-    case EastAsianWidth::Ambiguous:
-    case EastAsianWidth::HalfWidth:
-    case EastAsianWidth::Neutral: return 1;
-    case EastAsianWidth::Wide:
-    case EastAsianWidth::FullWidth: return 2;
-    case EastAsianWidth::Unspecified: return 1;
+        case EastAsianWidth::Narrow:
+        case EastAsianWidth::Ambiguous:
+        case EastAsianWidth::HalfWidth:
+        case EastAsianWidth::Neutral: return 1;
+        case EastAsianWidth::Wide:
+        case EastAsianWidth::FullWidth: return 2;
+        case EastAsianWidth::Unspecified: return 1;
     }
 
     return 1;

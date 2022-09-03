@@ -43,20 +43,20 @@ class word_segmenter
         {
             switch (state_)
             {
-            case State::NoWord:
-                if (!isDelimiter(*right_))
-                {
-                    state_ = State::Word;
-                    return *this;
-                }
-                break;
-            case State::Word:
-                if (isDelimiter(*right_))
-                {
-                    state_ = State::NoWord;
-                    return *this;
-                }
-                break;
+                case State::NoWord:
+                    if (!isDelimiter(*right_))
+                    {
+                        state_ = State::Word;
+                        return *this;
+                    }
+                    break;
+                case State::Word:
+                    if (isDelimiter(*right_))
+                    {
+                        state_ = State::NoWord;
+                        return *this;
+                    }
+                    break;
             }
             ++right_;
         }
@@ -84,11 +84,11 @@ class word_segmenter
     {
         switch (_char)
         {
-        case ' ':
-        case '\r':
-        case '\n':
-        case '\t': return true;
-        default: return false;
+            case ' ':
+            case '\r':
+            case '\n':
+            case '\t': return true;
+            default: return false;
         }
     }
 

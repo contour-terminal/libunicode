@@ -27,10 +27,10 @@ namespace
     {
         switch (script)
         {
-        case Script::Invalid:
-        case Script::Common:
-        case Script::Inherited: return false;
-        default: return true;
+            case Script::Invalid:
+            case Script::Common:
+            case Script::Inherited: return false;
+            default: return true;
         }
     }
 } // namespace

@@ -58,9 +58,9 @@ int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
                 auto const width = [&]() {
                     switch (codepoint)
                     {
-                    case 0xFE0E: return 1;
-                    case 0xFE0F: return 2;
-                    default: return unicode::width(codepoint);
+                        case 0xFE0E: return 1;
+                        case 0xFE0F: return 2;
+                        default: return unicode::width(codepoint);
                     }
                 }();
                 if (width && width != thisWidth)

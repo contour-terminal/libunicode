@@ -85,17 +85,17 @@ inline string escape(uint8_t ch)
 {
     switch (ch)
     {
-    case '\\': return "\\\\";
-    case 0x1B: return "\\033";
-    case '\t': return "\\t";
-    case '\r': return "\\r";
-    case '\n': return "\\n";
-    case '"': return "\\\"";
-    default:
-        if (std::isprint(static_cast<char>(ch)))
-            return fmt::format("{}", static_cast<char>(ch));
-        else
-            return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
+        case '\\': return "\\\\";
+        case 0x1B: return "\\033";
+        case '\t': return "\\t";
+        case '\r': return "\\r";
+        case '\n': return "\\n";
+        case '"': return "\\\"";
+        default:
+            if (std::isprint(static_cast<char>(ch)))
+                return fmt::format("{}", static_cast<char>(ch));
+            else
+                return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
     }
 }
 
@@ -302,9 +302,9 @@ int run(int argc, char const* argv[])
 
     switch (cmd)
     {
-    case Cmd::Codepoints: codepoints(in); break;
-    case Cmd::Runs: runs(in); break;
-    case Cmd::Scripts: scripts(in); break;
+        case Cmd::Codepoints: codepoints(in); break;
+        case Cmd::Runs: runs(in); break;
+        case Cmd::Scripts: scripts(in); break;
     }
 
     return EXIT_SUCCESS;

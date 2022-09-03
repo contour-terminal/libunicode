@@ -1290,3 +1290,33 @@ inline std::ostream& operator<<(std::ostream& os, EastAsianWidth value) noexcept
 }
 
 } // namespace unicode
+
+// clang-format off
+#include <fmt/ostream.h>
+template <> struct fmt::formatter<unicode::Plane>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Age>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Bidi_Class>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Bidi_Paired_Bracket_Type>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Canonical_Combining_Class>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Decomposition_Type>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::East_Asian_Width>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Hangul_Syllable_Type>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Indic_Positional_Category>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Indic_Syllabic_Category>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Jamo_Short_Name>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Joining_Group>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Joining_Type>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Line_Break>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::NFC_Quick_Check>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::NFKC_Quick_Check>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Numeric_Type>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Sentence_Break>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Vertical_Orientation>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Word_Break>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Core_Property>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::General_Category>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Script>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Block>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::Grapheme_Cluster_Break>: fmt::ostream_formatter {};
+template <> struct fmt::formatter<unicode::EastAsianWidth>: fmt::ostream_formatter {};
+// clang-format off
