@@ -54,15 +54,27 @@ namespace
         return low <= val && val <= high;
     }
 
-    constexpr bool is_control(char ch) noexcept { return static_cast<uint8_t>(ch) < 0x20; }
+    constexpr bool is_control(char ch) noexcept
+    {
+        return static_cast<uint8_t>(ch) < 0x20;
+    }
 
     // Tests if given UTF-8 byte is part of a complex Unicode codepoint, that is, a value greater than U+7E.
-    constexpr bool is_complex(char ch) noexcept { return static_cast<uint8_t>(ch) & 0x80; }
+    constexpr bool is_complex(char ch) noexcept
+    {
+        return static_cast<uint8_t>(ch) & 0x80;
+    }
 
     // Tests if given UTF-8 byte is a single US-ASCII text codepoint. This excludes control characters.
-    constexpr bool is_ascii(char ch) noexcept { return !is_control(ch) && !is_complex(ch); }
+    constexpr bool is_ascii(char ch) noexcept
+    {
+        return !is_control(ch) && !is_complex(ch);
+    }
 
-    scan_result operator+(scan_result x, size_t c) noexcept { return { x.count + c, x.next }; }
+    scan_result operator+(scan_result x, size_t c) noexcept
+    {
+        return { x.count + c, x.next };
+    }
 
 } // namespace
 

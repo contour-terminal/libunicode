@@ -39,19 +39,19 @@ std::string escape(uint8_t ch)
 {
     switch (ch)
     {
-    case '\\': return "\\\\";
-    case 0x1B: return "\\e";
-    case '\t': return "\\t";
-    case '\r': return "\\r";
-    case '\n': return "\\n";
-    case '"': return "\\\"";
-    default:
-        if (ch < 0x20)
-            return fmt::format("\\{:03o}", static_cast<uint8_t>(ch) & 0xFF);
-        else if (ch < 0x80)
-            return fmt::format("{}", static_cast<char>(ch));
-        else
-            return fmt::format("\\x{:02x}", static_cast<uint8_t>(ch) & 0xFF);
+        case '\\': return "\\\\";
+        case 0x1B: return "\\e";
+        case '\t': return "\\t";
+        case '\r': return "\\r";
+        case '\n': return "\\n";
+        case '"': return "\\\"";
+        default:
+            if (ch < 0x20)
+                return fmt::format("\\{:03o}", static_cast<uint8_t>(ch) & 0xFF);
+            else if (ch < 0x80)
+                return fmt::format("{}", static_cast<char>(ch));
+            else
+                return fmt::format("\\x{:02x}", static_cast<uint8_t>(ch) & 0xFF);
     }
 }
 

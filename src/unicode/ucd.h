@@ -215,13 +215,13 @@ inline std::string to_string(EastAsianWidth value)
 {
     switch (value)
     {
-    case EastAsianWidth::Ambiguous: return "Ambiguous";
-    case EastAsianWidth::FullWidth: return "FullWidth";
-    case EastAsianWidth::HalfWidth: return "HalfWidth";
-    case EastAsianWidth::Neutral: return "Neutral";
-    case EastAsianWidth::Narrow: return "Narrow";
-    case EastAsianWidth::Wide: return "Wide";
-    case EastAsianWidth::Unspecified: return "Unspecified";
+        case EastAsianWidth::Ambiguous: return "Ambiguous";
+        case EastAsianWidth::FullWidth: return "FullWidth";
+        case EastAsianWidth::HalfWidth: return "HalfWidth";
+        case EastAsianWidth::Neutral: return "Neutral";
+        case EastAsianWidth::Narrow: return "Narrow";
+        case EastAsianWidth::Wide: return "Wide";
+        case EastAsianWidth::Unspecified: return "Unspecified";
     }
     return "Unknown";
 }

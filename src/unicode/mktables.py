@@ -223,16 +223,16 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('    {\n')
         self.file.write('        switch (value)\n')
         self.file.write('        {\n')
-        self.file.write('        // clang-format off\n')
+        self.file.write('            // clang-format off\n')
 
     def member(self, _member):
         self.file.write(
-                '        case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
+                '            case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
             self.enum_class, sanitize_identifier(_member), _member)
         )
 
     def end(self):
-        self.file.write('        // clang-format off\n')
+        self.file.write('            // clang-format off\n')
         self.file.write("        }\n")
         self.file.write('        return format_to(ctx.out(), "({})", unsigned(value));\n')
         self.file.write("    }\n")
@@ -1142,7 +1142,7 @@ namespace unicode
             self.header.write('    switch (value)\n')
             self.header.write('    {\n')
             for v in WIDTH_NAMES.values():
-                self.header.write('    case {}::{}: return "{}";\n'.format(type_name, v, v))
+                self.header.write('        case {}::{}: return "{}";\n'.format(type_name, v, v))
             self.header.write('    }\n');
             self.header.write('    return "Unknown";\n');
             self.header.write('}\n\n')

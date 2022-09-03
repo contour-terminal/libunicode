@@ -100,8 +100,8 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 {
     switch (ps)
     {
-    case PresentationStyle::Text: return os << "Text";
-    case PresentationStyle::Emoji: return os << "Emoji";
+        case PresentationStyle::Text: return os << "Text";
+        case PresentationStyle::Emoji: return os << "Emoji";
     }
     return os;
 }
@@ -112,4 +112,3 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 #include <fmt/ostream.h>
 template <> struct fmt::formatter<unicode::PresentationStyle>: fmt::ostream_formatter {};
 // clang-format on
-
