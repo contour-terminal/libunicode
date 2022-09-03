@@ -149,6 +149,7 @@ class EnumClassWriter(EnumBuilder): # {{{
 class EnumOstreamWriter(EnumBuilder): # {{{
     def __init__(self, _header_filename: str):
         self.filename = _header_filename
+        self.names = []
         self.file = open(_header_filename, 'w', encoding='utf-8', newline='\u000A')
 
         self.file.write(globals()['__doc__'])
@@ -163,6 +164,7 @@ class EnumOstreamWriter(EnumBuilder): # {{{
     def begin(self, _enum_class, _first):
         self.enum_class = _enum_class
         self.file.write('inline std::ostream& operator<<(std::ostream& os, {} value) noexcept\n{{\n'.format(_enum_class))
+        self.names.append(_enum_class);
         self.file.write('    // clang-format off\n')
         self.file.write('    switch (value)\n')
         self.file.write('    {\n')
@@ -183,6 +185,12 @@ class EnumOstreamWriter(EnumBuilder): # {{{
 
     def close(self):
         self.file.write("} // namespace unicode\n")
+        self.file.write("\n")
+        self.file.write("// clang-format off\n")
+        self.file.write("#include <fmt/ostream.h>\n")
+        for name in self.names:
+            self.file.write(f"template <> struct fmt::formatter<unicode::{name}>: fmt::ostream_formatter {{}};\n")
+        self.file.write("// clang-format off\n")
         self.file.close()
     # }}}
 class EnumFmtWriter(EnumBuilder): # {{{

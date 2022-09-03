@@ -107,3 +107,9 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 }
 
 } // namespace unicode
+
+// clang-format off
+#include <fmt/ostream.h>
+template <> struct fmt::formatter<unicode::PresentationStyle>: fmt::ostream_formatter {};
+// clang-format on
+
