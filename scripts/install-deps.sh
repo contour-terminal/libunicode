@@ -73,9 +73,9 @@ fetch_and_unpack_Catch2()
 fetch_and_unpack_fmtlib()
 {
     fetch_and_unpack \
-        fmt-8.1.1 \
-        fmtlib-8.1.1.tar.gz \
-        https://github.com/fmtlib/fmt/archive/refs/tags/8.1.1.tar.gz
+        fmt-9.1.0 \
+        fmtlib-9.1.0.tar.gz \
+        https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz
 }
 
 fetch_and_unpack_gsl()
