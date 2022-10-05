@@ -1,4 +1,15 @@
-if(IS_DIRECTORY "${LIBUNICODE_UCD_PATH}")
+
+# Automatically fetch Unicode database if not present.
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-generated
+    if(NOT IS_DIRECTORY ${LIBUNICODE_UCD_DIR})
+        if(NOT EXISTS ${LIBUNICODE_UCD_ZIP_FILE})
+            file(DOWNLOAD ${LIBUNICODE_UCD_ZIP_DOWNLOAD_URL} ${LIBUNICODE_UCD_ZIP_FILE} SHOW_PROGRESS STATUS LIBUNICODE_UCD_ZIP_DOWNLOAD_STATUS)
+        endif()
+    endif()
+    file(ARCHIVE_EXTRACT INPUT ${LIBUNICODE_UCD_ZIP_FILE} DESTINATION ${LIBUNICODE_UCD_DIR})
+endif()
+
+if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_custom_command(
         OUTPUT
@@ -6,10 +17,10 @@ if(IS_DIRECTORY "${LIBUNICODE_UCD_PATH}")
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
             "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
-        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_PATH}"
+            COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_DIR}"
         DEPENDS mktables.py
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-        COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_PATH}"
+        COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_DIR}"
         VERBATIM
     )
 endif()

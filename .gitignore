@@ -5,3 +5,7 @@
 /.vscode/
 /sandbox/
 /target/
+src/unicode/ucd.cpp
+src/unicode/ucd.h
+src/unicode/ucd_enums.h
+src/unicode/ucd_ostream.h

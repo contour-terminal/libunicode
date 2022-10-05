@@ -37,7 +37,14 @@ option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
 option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
-option(LIBUNICODE_UCD_PATH "libunicode: Path to UCD directory for rebuilding UCD API & tables (an extracted UCD.zip)." "")
+
+# ----------------------------------------------------------------------------
+set(LIBUNICODE_UCD_VERSION "15.0.0" CACHE STRING "libunicode: Unicode version")
+set(LIBUNICODE_UCD_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_ucd" CACHE PATH "Path to directory for downloaded files & extracted directories.")
+
+set(LIBUNICODE_UCD_ZIP_DOWNLOAD_URL "https://www.unicode.org/Public/${LIBUNICODE_UCD_VERSION}/ucd/UCD.zip")
+set(LIBUNICODE_UCD_ZIP_FILE "${LIBUNICODE_UCD_BASE_DIR}/ucd-${LIBUNICODE_UCD_VERSION}.zip")
+set(LIBUNICODE_UCD_DIR "${LIBUNICODE_UCD_BASE_DIR}/ucd-${LIBUNICODE_UCD_VERSION}")
 
 # ----------------------------------------------------------------------------
 # code coverage
@@ -68,6 +75,7 @@ message(STATUS "Build type:                  ${CMAKE_BUILD_TYPE}")
 message(STATUS "Build unit tests:            ${LIBUNICODE_TESTING}")
 message(STATUS "Build tools:                 ${LIBUNICODE_TOOLS}")
 message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
-message(STATUS "Using UCD source:            ${LIBUNICODE_UCD_PATH}")
+message(STATUS "Using UCD version:           ${LIBUNICODE_UCD_VERSION}")
+message(STATUS "Using UCD directory:         ${LIBUNICODE_UCD_DIR}")
 message(STATUS "Enable clang-tidy:           ${ENABLE_TIDY} (${CMAKE_CXX_CLANG_TIDY})")
 message(STATUS "------------------------------------------------------------------------------")
