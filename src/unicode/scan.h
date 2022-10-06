@@ -30,7 +30,7 @@ struct scan_result
 };
 
 size_t scan_for_text_ascii(std::string_view text, size_t maxColumnCount) noexcept;
-scan_result scan_for_text_nonascii(std::string_view text, size_t maxColumnCount) noexcept;
-scan_result scan_for_text(std::string_view text, size_t maxColumnCount) noexcept;
+scan_result scan_for_text_nonascii(std::string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept;
+scan_result scan_for_text(std::string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept;
 
 } // namespace unicode

@@ -106,7 +106,7 @@ TEST_CASE("scan.ascii.until_complex")
 TEST_CASE("scan.complex.grapheme_cluster.1")
 {
     auto const familyEmoji8 = u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80);
+    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -114,7 +114,7 @@ TEST_CASE("scan.complex.grapheme_cluster.1")
 TEST_CASE("scan.complex.grapheme_cluster.2")
 {
     auto const familyEmoji8 = u8(FamilyEmoji) + u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80);
+    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80, nullptr);
     CHECK(result.count == 4);
     CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -122,7 +122,7 @@ TEST_CASE("scan.complex.grapheme_cluster.2")
 TEST_CASE("scan.complex.mixed")
 {
     auto const text = u8(FamilyEmoji) + "ABC"s + u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(text, 80);
+    auto const result = unicode::scan_for_text_nonascii(text, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == text.data() + u8(FamilyEmoji).size());
 }
@@ -133,17 +133,17 @@ TEST_CASE("scan.complex.half-overflowing")
     auto const text = oneEmoji + oneEmoji + oneEmoji;
 
     // match at boundary
-    auto const result2 = unicode::scan_for_text_nonascii(text, 2);
+    auto const result2 = unicode::scan_for_text_nonascii(text, 2, nullptr);
     CHECK(result2.count == 2);
     CHECK(result2.next == text.data() + oneEmoji.size());
 
     // one grapheme cluster is half overflowing
-    auto const result3 = unicode::scan_for_text_nonascii(text, 3);
+    auto const result3 = unicode::scan_for_text_nonascii(text, 3, nullptr);
     CHECK(result3.count == 2);
     CHECK(result3.next == text.data() + oneEmoji.size());
 
     // match buondary
-    auto const result4 = unicode::scan_for_text_nonascii(text, 4);
+    auto const result4 = unicode::scan_for_text_nonascii(text, 4, nullptr);
     CHECK(result4.count == 4);
     CHECK(result4.next == text.data() + 2 * oneEmoji.size());
 }
@@ -153,7 +153,7 @@ TEST_CASE("scan.any.tiny")
     // Ensure that we're really only scanning up to the input's size (1 byte, here).
     auto const storage = "X{0123456789ABCDEF}"sv;
     auto const input = storage.substr(0, 1);
-    auto const result = unicode::scan_for_text(input, 80);
+    auto const result = unicode::scan_for_text(input, 80, nullptr);
     CHECK(result.count == 1);
     CHECK(result.next == input.data() + input.size());
     CHECK(*result.next == '{');
@@ -171,7 +171,7 @@ TEST_CASE("scan.any.ascii_complex_repeat")
             s += (k % 2) != 0 ? oneSimple : oneComplex;
         s += ControlCodes;
 
-        auto const result = unicode::scan_for_text(s, 80);
+        auto const result = unicode::scan_for_text(s, 80, nullptr);
         auto const countSimple = ((i + 1) / 2) * 20;
         auto const countComplex = (i / 2) * 2;
 
@@ -200,7 +200,7 @@ TEST_CASE("scan.any.complex_ascii_repeat")
             s += (k % 2) != 0 ? oneComplex : oneSimple;
         s += ControlCodes;
 
-        auto const result = unicode::scan_for_text(s, 80);
+        auto const result = unicode::scan_for_text(s, 80, nullptr);
         CHECK(result.count == (i / 2) * 20 + ((i + 1) / 2) * 2);
         CHECK(result.next == s.data() + s.size() - ControlCodes.size());
     }
@@ -212,17 +212,17 @@ TEST_CASE("scan.complex.VS16")
     auto const modifierVS16 = u8(U"\uFE0F"sv);
 
     // // narrow copyright sign
-    auto const result1 = unicode::scan_for_text(oneComplex, 80);
+    auto const result1 = unicode::scan_for_text(oneComplex, 80, nullptr);
     CHECK(result1.count == 1);
     CHECK(result1.next == oneComplex.data() + oneComplex.size());
 
     // copyright sign in emoji presentation
     auto const s = oneComplex + modifierVS16;
-    auto const result = unicode::scan_for_text(s, 80);
+    auto const result = unicode::scan_for_text(s, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == s.data() + s.size());
 
-    auto const result3 = unicode::scan_for_text(s, 1);
+    auto const result3 = unicode::scan_for_text(s, 1, nullptr);
     CHECK(result3.count == 0);
     CHECK(result3.next == s.data());
 }

@@ -116,7 +116,7 @@ size_t scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
     return static_cast<size_t>(distance(text.data(), input));
 }
 
-scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount) noexcept
+scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept
 {
     size_t count = 0;
 
@@ -128,7 +128,7 @@ scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount) noex
 
     auto decoderState = utf8_decoder_state {}; // UTF-8 decoder state
     unsigned byteCount = 0;                    // bytes consume for the current codepoint
-    char32_t lastCodepoint = 0;     // current grapheme cluster's codepoint parsed before the current one
+    char32_t lastCodepoint = lastCodepointHint ? *lastCodepointHint : 0;     // current grapheme cluster's codepoint parsed before the current one
     size_t currentClusterWidth = 0; // current grapheme cluster's East Asian Width
 
     while (input != end && count <= maxColumnCount && is_complex(*input))
@@ -195,6 +195,7 @@ scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount) noex
             assert(holds_alternative<Invalid>(result));
             ++count;
             currentClusterWidth = 0;
+            lastCodepoint = 0;
             byteCount = 0;
         }
     }
@@ -205,10 +206,12 @@ scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount) noex
     //                count,
     //                string_view(start, size_t(distance(start, input))));
 
+    if (lastCodepointHint)
+        *lastCodepointHint = lastCodepoint;
     return { count, input };
 }
 
-scan_result scan_for_text(string_view text, size_t maxColumnCount) noexcept
+scan_result scan_for_text(string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept
 {
     // AllText := ASCII
     //          | ASCII Unicode
@@ -229,11 +232,13 @@ scan_result scan_for_text(string_view text, size_t maxColumnCount) noexcept
             maxColumnCount - result.count);
         if (!count)
             break;
+        if (lastCodepointHint)
+            *lastCodepointHint = static_cast<char32_t>(result.next[count - 1]);
         result.count += count;
         result.next += count;
         auto const r =
             scan_for_text_nonascii(string_view(result.next, static_cast<size_t>(distance(result.next, end))),
-                                   maxColumnCount - result.count);
+                                   maxColumnCount - result.count, lastCodepointHint);
         if (!r.count)
             break;
         result.count += r.count;
@@ -242,11 +247,11 @@ scan_result scan_for_text(string_view text, size_t maxColumnCount) noexcept
 
     if (!result.count)
     {
-        result = scan_for_text_nonascii(text, maxColumnCount);
+        result = scan_for_text_nonascii(text, maxColumnCount, lastCodepointHint);
         if (result.count)
         {
             auto const next = string_view(result.next, static_cast<size_t>(distance(result.next, end)));
-            return scan_for_text(next, maxColumnCount - result.count) + result.count;
+            return scan_for_text(next, maxColumnCount - result.count, lastCodepointHint) + result.count;
         }
     }
 
