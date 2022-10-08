@@ -116,7 +116,9 @@ size_t scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
     return static_cast<size_t>(distance(text.data(), input));
 }
 
-scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept
+scan_result scan_for_text_nonascii(string_view text,
+                                   size_t maxColumnCount,
+                                   char32_t* lastCodepointHint) noexcept
 {
     size_t count = 0;
 
@@ -128,8 +130,10 @@ scan_result scan_for_text_nonascii(string_view text, size_t maxColumnCount, char
 
     auto decoderState = utf8_decoder_state {}; // UTF-8 decoder state
     unsigned byteCount = 0;                    // bytes consume for the current codepoint
-    char32_t lastCodepoint = lastCodepointHint ? *lastCodepointHint : 0;     // current grapheme cluster's codepoint parsed before the current one
-    size_t currentClusterWidth = 0; // current grapheme cluster's East Asian Width
+    char32_t lastCodepoint = lastCodepointHint
+                                 ? *lastCodepointHint
+                                 : 0; // current grapheme cluster's codepoint parsed before the current one
+    size_t currentClusterWidth = 0;   // current grapheme cluster's East Asian Width
 
     while (input != end && count <= maxColumnCount && is_complex(*input))
     {
@@ -238,7 +242,8 @@ scan_result scan_for_text(string_view text, size_t maxColumnCount, char32_t* las
         result.next += count;
         auto const r =
             scan_for_text_nonascii(string_view(result.next, static_cast<size_t>(distance(result.next, end))),
-                                   maxColumnCount - result.count, lastCodepointHint);
+                                   maxColumnCount - result.count,
+                                   lastCodepointHint);
         if (!r.count)
             break;
         result.count += r.count;
