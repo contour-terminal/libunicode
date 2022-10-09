@@ -488,7 +488,7 @@ namespace unicode
                 continue
 
             # Filter some properties.
-            if name in ['Script', 'General_Category', 'Grapheme_Cluster_Break', 'EastAsianWidth']:
+            if name in ['Script', 'General_Category', 'EastAsianWidth']:
                 # XXX those properties are generated somewhere else.
                 continue
 
@@ -500,6 +500,8 @@ namespace unicode
 
             # build enum class
             self.builder.begin(name)
+            if name in ['Grapheme_Cluster_Break']:
+                self.builder.member('Undefined')
             for value in values:
                 self.builder.member(value)
             self.builder.end()
@@ -637,7 +639,7 @@ namespace unicode
             return props
         # }}}
 
-    def process_props(self, filename, prop_key): # {{{
+    def load_properties(self, filename: str, prop_key: str): # {{{
         with uopen(filename) as f:
             headerRE = re.compile('^#\s*{}:\s*(\w+)$'.format(prop_key))
 
@@ -671,64 +673,42 @@ namespace unicode
             for prop_key in props.keys():
                 props[prop_key].sort(key = lambda a: a['start'])
 
-            # write range tables
-            self.impl.write("namespace tables {\n")
-            for name in sorted(props.keys()):
-                element_type = 'Prop<::unicode::{}>'.format(name)
-                self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
-                    name,
-                    element_type,
-                    len(props[name]),
-                    FOLD_OPEN))
-                for propRange in props[name]:
-                    self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
-                               element_type,
-                               propRange['start'],
-                               propRange['end'],
-                               name,
-                               propRange['property'],
-                               propRange['comment']))
-                self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
-            self.impl.write("} // end namespace tables\n\n")
+            return props
+        # }}}
 
-            # XXX write enums / signature
-            # for name in sorted(props.keys()):
-            #     self.header.write('enum class {} {{\n'.format(name))
-            #     enum_set = set()
-            #     for enum in props[name]:
-            #         enum_set.add(enum['property'])
-            #     for enum in sorted(enum_set):
-            #         self.header.write("    {},\n".format(enum))
-            #     self.header.write("};\n\n")
+    def process_props(self, filename: str, prop_key: str): # {{{
+        props = self.load_properties(filename, prop_key)
+        self.write_tables_and_functions(props)
+        # }}}
 
-            # builder
-            for name in sorted(props.keys()):
-                enum_set = set()
-                for enum in props[name]:
-                    enum_set.add(enum['property'])
+    def write_tables_and_functions(self, props): # {{{
+        # write range tables
+        self.impl.write("namespace tables {\n")
+        for name in sorted(props.keys()):
+            element_type = 'Prop<::unicode::{}>'.format(name)
+            self.impl.write("auto static const {} = std::array<{}, {}>{{ // {}\n".format(
+                name,
+                element_type,
+                len(props[name]),
+                FOLD_OPEN))
+            for propRange in props[name]:
+                self.impl.write("    {} {{ {{ 0x{:>04X}, 0x{:>04X} }}, ::unicode::{}::{} }}, // {}\n".format(
+                           element_type,
+                           propRange['start'],
+                           propRange['end'],
+                           name,
+                           propRange['property'],
+                           propRange['comment']))
+            self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+        self.impl.write("} // end namespace tables\n\n")
 
-                self.builder.begin(name)
-                for enum in sorted(enum_set):
-                    self.builder.member(enum)
-                self.builder.end()
-
-            for name in sorted(props.keys()):
-                self.impl.write('namespace {}\n{{\n'.format(name.lower()))
-                self.header.write('namespace {}\n{{\n'.format(name.lower()))
-                enum_set = set()
-                for enum in props[name]:
-                    enum_set.add(enum['property'])
-                for enum in sorted(enum_set):
-                    self.header.write('    bool {}(char32_t codepoint) noexcept;\n'.format(enum.lower()))
-                    self.impl.write('    bool {}(char32_t codepoint) noexcept {{\n'.format(enum.lower()))
-                    self.impl.write("        if (auto p = search(tables::{}, codepoint); p.has_value())\n".format(name))
-                    self.impl.write('            return *p == {}::{};\n'.format(name, enum))
-                    self.impl.write('        return false;\n')
-                    self.impl.write('    }\n\n')
-                self.header.write('}} // namespace {}\n'.format(name.lower()))
-                self.impl.write('}} // namespace {}\n'.format(name.lower()))
-            self.header.write('\n')
-            self.impl.write('\n')
+        for name in sorted(props.keys()):
+            self.header.write(f'{name} {name.lower()}(char32_t codepoint) noexcept;\n')
+            self.impl.write(f'{name} {name.lower()}(char32_t codepoint) noexcept {{\n')
+            self.impl.write(f'    return search(tables::{name}, codepoint).value_or({name}::Undefined);\n')
+            self.impl.write('}\n\n')
+        self.header.write('\n')
+        self.impl.write('\n')
         # }}}
 
     def process_grapheme_break_props(self):
