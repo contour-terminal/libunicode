@@ -1,5 +1,6 @@
 /build/
 /_deps/
+/_ucd/
 /.clangd/
 /compile_commands.json
 /.vscode/
@@ -8,4 +9,5 @@
 src/unicode/ucd.cpp
 src/unicode/ucd.h
 src/unicode/ucd_enums.h
+src/unicode/ucd_fmt.h
 src/unicode/ucd_ostream.h
