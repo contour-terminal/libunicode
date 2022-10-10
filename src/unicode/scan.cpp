@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iterator>
+#include <numeric>
 #include <string_view>
 
 #if defined(__SSE2__)
@@ -70,15 +71,9 @@ namespace
     {
         return !is_control(ch) && !is_complex(ch);
     }
-
-    scan_result operator+(scan_result x, size_t c) noexcept
-    {
-        return { x.count + c, x.next };
-    }
-
 } // namespace
 
-size_t scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
+size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
@@ -116,9 +111,9 @@ size_t scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
     return static_cast<size_t>(distance(text.data(), input));
 }
 
-scan_result scan_for_text_nonascii(string_view text,
-                                   size_t maxColumnCount,
-                                   char32_t* lastCodepointHint) noexcept
+scan_result detail::scan_for_text_nonascii(scan_state& state,
+                                           string_view text,
+                                           size_t maxColumnCount) noexcept
 {
     size_t count = 0;
 
@@ -128,16 +123,17 @@ scan_result scan_for_text_nonascii(string_view text,
     char const* clusterStart = start;
     char const* lastCodepointStart = start;
 
-    auto decoderState = utf8_decoder_state {}; // UTF-8 decoder state
-    unsigned byteCount = 0;                    // bytes consume for the current codepoint
-    char32_t lastCodepoint = lastCodepointHint
-                                 ? *lastCodepointHint
-                                 : 0; // current grapheme cluster's codepoint parsed before the current one
-    size_t currentClusterWidth = 0;   // current grapheme cluster's East Asian Width
+    unsigned byteCount = 0; // bytes consume for the current codepoint
+
+    // TODO: move currentClusterWidth to scan_state.
+    size_t currentClusterWidth = 0; // current grapheme cluster's East Asian Width
+
+    char const* resultStart = state.utf8.expectedLength ? start - state.utf8.currentLength : start;
+    char const* resultEnd = resultStart;
 
     while (input != end && count <= maxColumnCount && is_complex(*input))
     {
-        auto const result = from_utf8(decoderState, static_cast<uint8_t>(*input++));
+        auto const result = from_utf8(state.utf8, static_cast<uint8_t>(*input++));
         ++byteCount;
 
         if (holds_alternative<Incomplete>(result))
@@ -145,9 +141,11 @@ scan_result scan_for_text_nonascii(string_view text,
 
         if (holds_alternative<Success>(result))
         {
-            char32_t const nextCodepoint = get<Success>(result).value;
+            auto const prevCodepoint = state.lastCodepointHint;
+            auto const nextCodepoint = get<Success>(result).value;
             auto const nextWidth = max(currentClusterWidth, static_cast<size_t>(width(nextCodepoint)));
-            if (grapheme_segmenter::breakable(lastCodepoint, nextCodepoint))
+            state.lastCodepointHint = nextCodepoint;
+            if (grapheme_segmenter::breakable(prevCodepoint, nextCodepoint))
             {
                 // Flush out current grapheme cluster's East Asian Width.
                 count += currentClusterWidth;
@@ -161,36 +159,29 @@ scan_result scan_for_text_nonascii(string_view text,
                 }
 
                 // And start a new grapheme cluster.
-                // fmt::print("last: U+{:X}, flush width {}, start new GC: width {}, U+{:X}\n",
-                //            (unsigned) lastCodepoint,
-                //            currentClusterWidth,
-                //            nextWidth, (unsigned) nextCodepoint);
                 currentClusterWidth = nextWidth;
-                lastCodepoint = nextCodepoint;
                 clusterStart = lastCodepointStart;
                 lastCodepointStart = input - byteCount;
                 byteCount = 0;
+                resultEnd = input;
             }
             else
             {
+                resultEnd = input;
                 // Increase width on VS16 but do not decrease on VS15.
                 if (nextCodepoint == 0xFE0F) // VS16
                 {
                     currentClusterWidth = 2;
                     if (count + currentClusterWidth > maxColumnCount)
                     {
-                        // fmt::print("Rewinding by {} bytes (overflow due to VS16).\n", byteCount);
+                        // Rewinding by {byteCount} bytes (overflow due to VS16).
                         currentClusterWidth = 0;
                         input = clusterStart;
                         break;
                     }
                 }
 
-                // fmt::print("Consumed {} bytes for grapheme cluster: U+{:X} with width {}.\n",
-                //            byteCount,
-                //            unsigned(nextCodepoint),
-                //            currentClusterWidth);
-                lastCodepoint = nextCodepoint;
+                // Consumed {byteCount} bytes for grapheme cluster.
                 lastCodepointStart = input - byteCount;
             }
         }
@@ -199,7 +190,7 @@ scan_result scan_for_text_nonascii(string_view text,
             assert(holds_alternative<Invalid>(result));
             ++count;
             currentClusterWidth = 0;
-            lastCodepoint = 0;
+            state.lastCodepointHint = 0;
             byteCount = 0;
         }
     }
@@ -210,55 +201,68 @@ scan_result scan_for_text_nonascii(string_view text,
     //                count,
     //                string_view(start, size_t(distance(start, input))));
 
-    if (lastCodepointHint)
-        *lastCodepointHint = lastCodepoint;
-    return { count, input };
+    assert(resultStart <= resultEnd);
+
+    return { count, input, resultStart, resultEnd };
 }
 
-scan_result scan_for_text(string_view text, size_t maxColumnCount, char32_t* lastCodepointHint) noexcept
+scan_result scan_for_text(scan_state& state, string_view text, size_t maxColumnCount) noexcept
 {
-    // AllText := ASCII
-    //          | ASCII Unicode
-    //          | ASCII Unicode AllText
-    //          | Unicode
-    //          | Unicode ASCII
-    //          | Unicode ASCII AllText
+    //       ----(a)--->   A   -------> END
+    //                   ^   |
+    //                   |   |
+    // Start            (a) (b)
+    //                   |   |
+    //                   |   v
+    //       ----(b)--->   B   -------> END
 
-    auto const end = text.data() + text.size();
-    if (text.empty())
-        return { 0, end };
-
-    auto result = scan_result { 0, text.data() };
-    while (result.count < maxColumnCount && result.next != end)
+    enum class NextState
     {
-        auto const count = scan_for_text_ascii(
-            string_view(result.next, static_cast<size_t>(std::distance(result.next, end))),
-            maxColumnCount - result.count);
-        if (!count)
-            break;
-        if (lastCodepointHint)
-            *lastCodepointHint = static_cast<char32_t>(result.next[count - 1]);
-        result.count += count;
-        result.next += count;
-        auto const r =
-            scan_for_text_nonascii(string_view(result.next, static_cast<size_t>(distance(result.next, end))),
-                                   maxColumnCount - result.count,
-                                   lastCodepointHint);
-        if (!r.count)
-            break;
-        result.count += r.count;
-        result.next = r.next;
+        Trivial,
+        Complex
+    };
+
+    auto result = scan_result { 0, text.data(), text.data(), text.data() };
+
+    // If state indicates that we previously started consuming a UTF-8 sequence but did not complete yet,
+    // attempt to finish that one first.
+    if (state.utf8.expectedLength != 0)
+    {
+        result = detail::scan_for_text_nonascii(state, text, maxColumnCount);
+        text = std::string_view(result.end,
+                                static_cast<size_t>(std::distance(result.end, text.data() + text.size())));
     }
 
-    if (!result.count)
+    auto nextState = is_complex(text.front()) ? NextState::Complex : NextState::Trivial;
+    while (result.count < maxColumnCount && result.next != (text.data() + text.size()))
     {
-        result = scan_for_text_nonascii(text, maxColumnCount, lastCodepointHint);
-        if (result.count)
+        switch (nextState)
         {
-            auto const next = string_view(result.next, static_cast<size_t>(distance(result.next, end)));
-            return scan_for_text(next, maxColumnCount - result.count, lastCodepointHint) + result.count;
+            case NextState::Trivial: {
+                auto const count = detail::scan_for_text_ascii(text, maxColumnCount - result.count);
+                if (!count)
+                    return result;
+                result.count += count;
+                result.next += count;
+                result.end += count;
+                nextState = NextState::Complex;
+                text.remove_prefix(count);
+                break;
+            }
+            case NextState::Complex: {
+                auto const sub = detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count);
+                nextState = NextState::Trivial;
+                result.count += sub.count;
+                result.next = sub.next;
+                result.end = sub.end;
+                text.remove_prefix(static_cast<size_t>(std::distance(sub.start, sub.end)));
+                break;
+            }
         }
     }
+
+    assert(result.start <= result.end);
+    assert(result.end <= result.next);
 
     return result;
 }
