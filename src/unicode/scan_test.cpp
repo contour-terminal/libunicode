@@ -13,10 +13,13 @@
  */
 #include <unicode/convert.h>
 #include <unicode/scan.h>
+#include <unicode/utf8.h>
 
 #include <fmt/format.h>
 
 #include <catch2/catch.hpp>
+
+using std::string_view;
 
 using namespace std::string_literals;
 using namespace std::string_view_literals;
@@ -71,42 +74,90 @@ inline std::string escape(std::string_view s)
     return escape(begin(s), end(s));
 }
 
+unicode::scan_result scan_for_text_nonascii(string_view text,
+                                            size_t maxColumnCount,
+                                            char32_t* lastCodepointHint,
+                                            unicode::utf8_decoder_state* utf8DecoderState = nullptr) noexcept
+{
+    auto state = unicode::scan_state {};
+    if (lastCodepointHint)
+        state.lastCodepointHint = *lastCodepointHint;
+
+    if (utf8DecoderState)
+        state.utf8 = *utf8DecoderState;
+
+    auto const result = unicode::detail::scan_for_text_nonascii(state, text, maxColumnCount);
+
+    if (lastCodepointHint)
+        *lastCodepointHint = state.lastCodepointHint;
+
+    if (utf8DecoderState)
+        *utf8DecoderState = state.utf8;
+
+    return result;
+}
+
+unicode::scan_result scan_for_text(std::string_view text,
+                                   size_t maxColumnCount,
+                                   char32_t* lastCodepointHint,
+                                   unicode::utf8_decoder_state* utf8DecoderState = nullptr) noexcept
+{
+    auto state = unicode::scan_state {};
+    if (lastCodepointHint)
+        state.lastCodepointHint = *lastCodepointHint;
+
+    if (utf8DecoderState)
+        state.utf8 = *utf8DecoderState;
+
+    auto const result = unicode::scan_for_text(state, text, maxColumnCount);
+
+    if (lastCodepointHint)
+        *lastCodepointHint = state.lastCodepointHint;
+
+    if (utf8DecoderState)
+        *utf8DecoderState = state.utf8;
+
+    return result;
+}
+
 } // namespace
+
+using unicode::detail::scan_for_text_ascii;
 
 TEST_CASE("scan.ascii.empty")
 {
-    CHECK(unicode::scan_for_text_ascii("", 0) == 0);
-    CHECK(unicode::scan_for_text_ascii("", 1) == 0);
+    CHECK(scan_for_text_ascii("", 0) == 0);
+    CHECK(scan_for_text_ascii("", 1) == 0);
 }
 
 TEST_CASE("scan.ascii.32")
 {
     auto const text = "0123456789ABCDEF0123456789ABCDEF"sv;
-    CHECK(unicode::scan_for_text_ascii(text, 32) == 32);
-    CHECK(unicode::scan_for_text_ascii(text, 16) == 16);
-    CHECK(unicode::scan_for_text_ascii(text, 8) == 8);
-    CHECK(unicode::scan_for_text_ascii(text, 1) == 1);
+    CHECK(scan_for_text_ascii(text, 32) == 32);
+    CHECK(scan_for_text_ascii(text, 16) == 16);
+    CHECK(scan_for_text_ascii(text, 8) == 8);
+    CHECK(scan_for_text_ascii(text, 1) == 1);
 }
 
 TEST_CASE("scan.ascii.mixed_with_controls")
 {
-    CHECK(unicode::scan_for_text_ascii("\0331234", 80) == 0);
-    CHECK(unicode::scan_for_text_ascii("1234\033", 80) == 4);
-    CHECK(unicode::scan_for_text_ascii("12345678\033", 80) == 8);
-    CHECK(unicode::scan_for_text_ascii("0123456789ABCDEF\033", 80) == 16);
-    CHECK(unicode::scan_for_text_ascii("0123456789ABCDEF1\033", 80) == 17);
+    CHECK(scan_for_text_ascii("\0331234", 80) == 0);
+    CHECK(scan_for_text_ascii("1234\033", 80) == 4);
+    CHECK(scan_for_text_ascii("12345678\033", 80) == 8);
+    CHECK(scan_for_text_ascii("0123456789ABCDEF\033", 80) == 16);
+    CHECK(scan_for_text_ascii("0123456789ABCDEF1\033", 80) == 17);
 }
 
 TEST_CASE("scan.ascii.until_complex")
 {
-    CHECK(unicode::scan_for_text_ascii("1234\x80", 80) == 4);
-    CHECK(unicode::scan_for_text_ascii("0123456789{\xE2\x94\x80}ABCDEF", 80) == 11);
+    CHECK(scan_for_text_ascii("1234\x80", 80) == 4);
+    CHECK(scan_for_text_ascii("0123456789{\xE2\x94\x80}ABCDEF", 80) == 11);
 }
 
 TEST_CASE("scan.complex.grapheme_cluster.1")
 {
     auto const familyEmoji8 = u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80, nullptr);
+    auto const result = scan_for_text_nonascii(familyEmoji8, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -114,7 +165,7 @@ TEST_CASE("scan.complex.grapheme_cluster.1")
 TEST_CASE("scan.complex.grapheme_cluster.2")
 {
     auto const familyEmoji8 = u8(FamilyEmoji) + u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(familyEmoji8, 80, nullptr);
+    auto const result = scan_for_text_nonascii(familyEmoji8, 80, nullptr);
     CHECK(result.count == 4);
     CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -122,7 +173,7 @@ TEST_CASE("scan.complex.grapheme_cluster.2")
 TEST_CASE("scan.complex.mixed")
 {
     auto const text = u8(FamilyEmoji) + "ABC"s + u8(FamilyEmoji);
-    auto const result = unicode::scan_for_text_nonascii(text, 80, nullptr);
+    auto const result = scan_for_text_nonascii(text, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == text.data() + u8(FamilyEmoji).size());
 }
@@ -133,17 +184,17 @@ TEST_CASE("scan.complex.half-overflowing")
     auto const text = oneEmoji + oneEmoji + oneEmoji;
 
     // match at boundary
-    auto const result2 = unicode::scan_for_text_nonascii(text, 2, nullptr);
+    auto const result2 = scan_for_text_nonascii(text, 2, nullptr);
     CHECK(result2.count == 2);
     CHECK(result2.next == text.data() + oneEmoji.size());
 
     // one grapheme cluster is half overflowing
-    auto const result3 = unicode::scan_for_text_nonascii(text, 3, nullptr);
+    auto const result3 = scan_for_text_nonascii(text, 3, nullptr);
     CHECK(result3.count == 2);
     CHECK(result3.next == text.data() + oneEmoji.size());
 
     // match buondary
-    auto const result4 = unicode::scan_for_text_nonascii(text, 4, nullptr);
+    auto const result4 = scan_for_text_nonascii(text, 4, nullptr);
     CHECK(result4.count == 4);
     CHECK(result4.next == text.data() + 2 * oneEmoji.size());
 }
@@ -153,10 +204,41 @@ TEST_CASE("scan.any.tiny")
     // Ensure that we're really only scanning up to the input's size (1 byte, here).
     auto const storage = "X{0123456789ABCDEF}"sv;
     auto const input = storage.substr(0, 1);
-    auto const result = unicode::scan_for_text(input, 80, nullptr);
+    auto const result = scan_for_text(input, 80, nullptr);
     CHECK(result.count == 1);
     CHECK(result.next == input.data() + input.size());
     CHECK(*result.next == '{');
+}
+
+TEST_CASE("scan.complex.sliced_calls")
+{
+    auto const text = "\xF0\x9F\x98\x80\033\\0123456789ABCDEF"sv; // U+1F600
+    auto constexpr splitOffset = 3;
+    auto const chunkOne = std::string_view(text.data(), splitOffset);
+
+    auto lastCodepointHint = char32_t { 0 };
+    auto utf8DecodeState = unicode::utf8_decoder_state {};
+    auto result = scan_for_text(chunkOne, 80, &lastCodepointHint, &utf8DecodeState);
+
+    REQUIRE(utf8DecodeState.expectedLength == 4);
+    REQUIRE(utf8DecodeState.currentLength == 3);
+    CHECK(result.count == 0);
+    CHECK(result.start == text.data());
+    CHECK(result.end == text.data());
+    CHECK(result.next == (text.data() + splitOffset));
+
+    auto const chunkTwo =
+        std::string_view(result.next, (size_t) std::distance(result.next, text.data() + text.size()));
+    result = scan_for_text(chunkTwo, 80, &lastCodepointHint, &utf8DecodeState);
+
+    REQUIRE(utf8DecodeState.expectedLength == 0);
+    CHECK(result.count == 2);
+    REQUIRE(result.start == text.data());
+    REQUIRE(result.end == text.data() + 4);
+    REQUIRE(result.next == text.data() + 4);
+    auto const resultingText =
+        string_view(result.start, static_cast<size_t>(std::distance(result.start, result.end)));
+    REQUIRE(resultingText == text.substr(0, 4));
 }
 
 TEST_CASE("scan.any.ascii_complex_repeat")
@@ -171,7 +253,7 @@ TEST_CASE("scan.any.ascii_complex_repeat")
             s += (k % 2) != 0 ? oneSimple : oneComplex;
         s += ControlCodes;
 
-        auto const result = unicode::scan_for_text(s, 80, nullptr);
+        auto const result = scan_for_text(s, 80, nullptr);
         auto const countSimple = ((i + 1) / 2) * 20;
         auto const countComplex = (i / 2) * 2;
 
@@ -200,7 +282,7 @@ TEST_CASE("scan.any.complex_ascii_repeat")
             s += (k % 2) != 0 ? oneComplex : oneSimple;
         s += ControlCodes;
 
-        auto const result = unicode::scan_for_text(s, 80, nullptr);
+        auto const result = scan_for_text(s, 80, nullptr);
         CHECK(result.count == (i / 2) * 20 + ((i + 1) / 2) * 2);
         CHECK(result.next == s.data() + s.size() - ControlCodes.size());
     }
@@ -212,17 +294,17 @@ TEST_CASE("scan.complex.VS16")
     auto const modifierVS16 = u8(U"\uFE0F"sv);
 
     // // narrow copyright sign
-    auto const result1 = unicode::scan_for_text(oneComplex, 80, nullptr);
+    auto const result1 = scan_for_text(oneComplex, 80, nullptr);
     CHECK(result1.count == 1);
     CHECK(result1.next == oneComplex.data() + oneComplex.size());
 
     // copyright sign in emoji presentation
     auto const s = oneComplex + modifierVS16;
-    auto const result = unicode::scan_for_text(s, 80, nullptr);
+    auto const result = scan_for_text(s, 80, nullptr);
     CHECK(result.count == 2);
     CHECK(result.next == s.data() + s.size());
 
-    auto const result3 = unicode::scan_for_text(s, 1, nullptr);
+    auto const result3 = scan_for_text(s, 1, nullptr);
     CHECK(result3.count == 0);
     CHECK(result3.next == s.data());
 }
