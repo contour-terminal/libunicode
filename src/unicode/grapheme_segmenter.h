@@ -93,20 +93,24 @@ class grapheme_segmenter
         if (control(b))
             return true;
 
+        auto const A = grapheme_cluster_break(a);
+        auto const B = grapheme_cluster_break(b);
+
         // Do not break Hangul syllable sequences.
         // GB6:
-        if (grapheme_cluster_break::l(a)
-            && (grapheme_cluster_break::l(b) || grapheme_cluster_break::v(b) || grapheme_cluster_break::lv(b)
-                || grapheme_cluster_break::lvt(b)))
+        if (A == Grapheme_Cluster_Break::L
+            && (B == Grapheme_Cluster_Break::L || B == Grapheme_Cluster_Break::V
+                || B == Grapheme_Cluster_Break::LV || B == Grapheme_Cluster_Break::LVT))
             return false;
 
         // GB7:
-        if ((grapheme_cluster_break::lv(a) || grapheme_cluster_break::v(a))
-            && (grapheme_cluster_break::v(b) || grapheme_cluster_break::t(b)))
+        if ((A == Grapheme_Cluster_Break::LV || A == Grapheme_Cluster_Break::V)
+            && (B == Grapheme_Cluster_Break::V || B == Grapheme_Cluster_Break::T))
             return false;
 
         // GB8:
-        if ((grapheme_cluster_break::lv(a) || grapheme_cluster_break::t(a)) && grapheme_cluster_break::t(b))
+        if ((A == Grapheme_Cluster_Break::LV || A == Grapheme_Cluster_Break::T)
+            && B == Grapheme_Cluster_Break::T)
             return false;
 
         // GB9: Do not break before extending characters.
@@ -128,7 +132,8 @@ class grapheme_segmenter
         // GB12/GB13: Do not break within emoji flag sequences.
         // That is, do not break between regional indicator (RI) symbols
         // if there is an odd number of RI characters before the break point.
-        if (grapheme_cluster_break::regional_indicator(a) || grapheme_cluster_break::regional_indicator(b))
+        if (A == Grapheme_Cluster_Break::Regional_Indicator
+            || B == Grapheme_Cluster_Break::Regional_Indicator)
             return false;
 
         // GB999: Otherwise, break everywhere.

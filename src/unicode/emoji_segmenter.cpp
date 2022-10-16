@@ -70,7 +70,7 @@ inline EmojiSegmentationCategory toCategory(char32_t codepoint) noexcept
         return EmojiSegmentationCategory::EmojiModifierBase;
     if (emoji_modifier(codepoint))
         return EmojiSegmentationCategory::EmojiModifier;
-    if (grapheme_cluster_break::regional_indicator(codepoint))
+    if (grapheme_cluster_break(codepoint) == Grapheme_Cluster_Break::Regional_Indicator)
         return EmojiSegmentationCategory::RegionalIndicator;
     if (isEmojiKeycapBase(codepoint))
         return EmojiSegmentationCategory::KeyCapBase;
