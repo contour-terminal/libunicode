@@ -13,11 +13,18 @@
  */
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <functional>
 
 namespace unicode
 {
+
+#if defined(__GNUC__) || defined(__clang__)
+    #define LIBUNICODE_PACKED __attribute__((packed))
+#else
+    #define LIBUNICODE_PACKED /*!*/
+#endif
 
 #if defined(__cpp_char8_t)
 using char8_type = char8_t;

@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 
+#include <unicode/codepoint_properties_data.h>
 #include <unicode/emoji_segmenter.h>
 #include <unicode/ucd.h>
 
@@ -21,153 +22,92 @@
 namespace unicode
 {
 
-enum class EmojiSegmentationCategory
-{
-    Invalid = -1,
-
-    Emoji = 0,
-    EmojiTextPresentation = 1,
-    EmojiEmojiPresentation = 2,
-    EmojiModifierBase = 3,
-    EmojiModifier = 4,
-    EmojiVSBase = 5,
-    RegionalIndicator = 6,
-    KeyCapBase = 7,
-    CombiningEnclosingKeyCap = 8,
-    CombiningEnclosingCircleBackslash = 9,
-    ZWJ = 10,
-    VS15 = 11,
-    VS16 = 12,
-    TagBase = 13,
-    TagSequence = 14,
-    TagTerm = 15,
-};
-
-inline EmojiSegmentationCategory toCategory(char32_t codepoint) noexcept
-{
-    auto isEmojiKeycapBase = [](char32_t codepoint) constexpr noexcept->bool
-    {
-        return ('0' <= codepoint && codepoint <= '9') || codepoint == '#' || codepoint == '*';
-    };
-
-    if (codepoint == 0x20e3)
-        return EmojiSegmentationCategory::CombiningEnclosingKeyCap;
-    if (codepoint == 0x20e0)
-        return EmojiSegmentationCategory::CombiningEnclosingCircleBackslash;
-    if (codepoint == 0x200d)
-        return EmojiSegmentationCategory::ZWJ;
-    if (codepoint == 0xfe0e)
-        return EmojiSegmentationCategory::VS15;
-    if (codepoint == 0xfe0f)
-        return EmojiSegmentationCategory::VS16;
-    if (codepoint == 0x1f3f4)
-        return EmojiSegmentationCategory::TagBase;
-    if ((codepoint >= 0xE0030 && codepoint <= 0xE0039) || (codepoint >= 0xE0061 && codepoint <= 0xE007A))
-        return EmojiSegmentationCategory::TagSequence;
-    if (codepoint == 0xE007F)
-        return EmojiSegmentationCategory::TagTerm;
-    if (emoji_modifier_base(codepoint))
-        return EmojiSegmentationCategory::EmojiModifierBase;
-    if (emoji_modifier(codepoint))
-        return EmojiSegmentationCategory::EmojiModifier;
-    if (grapheme_cluster_break(codepoint) == Grapheme_Cluster_Break::Regional_Indicator)
-        return EmojiSegmentationCategory::RegionalIndicator;
-    if (isEmojiKeycapBase(codepoint))
-        return EmojiSegmentationCategory::KeyCapBase;
-    if (emoji_presentation(codepoint))
-        return EmojiSegmentationCategory::EmojiEmojiPresentation;
-    if (emoji(codepoint) && !emoji_presentation(codepoint))
-        return EmojiSegmentationCategory::EmojiTextPresentation;
-    if (emoji(codepoint))
-        return EmojiSegmentationCategory::Emoji;
-
-    return EmojiSegmentationCategory::Invalid;
-}
-
-class RagelIterator
-{
-    EmojiSegmentationCategory category_;
-    char32_t const* buffer_;
-    size_t size_;
-    size_t currentCursorEnd_;
-
-  public:
-    RagelIterator(char32_t const* buffer, size_t size, size_t cursor) noexcept:
-        category_ { EmojiSegmentationCategory::Invalid },
-        buffer_ { buffer },
-        size_ { size },
-        currentCursorEnd_ { cursor }
-    {
-        updateCategory();
-    }
-
-    RagelIterator() noexcept: RagelIterator(U"", 0, 0) {}
-
-    constexpr char32_t codepoint() const noexcept { return buffer_[currentCursorEnd_]; }
-    constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
-    constexpr size_t cursor() const noexcept { return currentCursorEnd_; }
-
-    void updateCategory() noexcept
-    {
-        if (currentCursorEnd_ < size_)
-            category_ = toCategory(codepoint());
-        else
-            category_ = EmojiSegmentationCategory::Invalid;
-    }
-
-    constexpr int operator*() const noexcept { return static_cast<int>(category_); }
-
-    RagelIterator& operator++() noexcept
-    {
-        currentCursorEnd_++;
-        updateCategory();
-        return *this;
-    }
-    RagelIterator& operator--(int) noexcept
-    {
-        currentCursorEnd_--;
-        updateCategory();
-        return *this;
-    }
-
-    RagelIterator operator+(long v) const noexcept
-    {
-        // TODO: assert() on integer overflow
-        return { buffer_, size_, currentCursorEnd_ + (size_t) v };
-    }
-
-    RagelIterator operator-(long v) const noexcept
-    {
-        if (v >= 0)
-        {
-            assert(currentCursorEnd_ >= static_cast<size_t>(v));
-            return { buffer_, size_, currentCursorEnd_ - (size_t) v };
-        }
-        else
-        {
-            return *this + (-v);
-        }
-    }
-
-    RagelIterator& operator=(int v) noexcept
-    {
-        assert(v >= 0);
-        currentCursorEnd_ = static_cast<size_t>(v);
-        updateCategory();
-        return *this;
-    }
-
-    constexpr bool operator==(RagelIterator const& rhs) const noexcept
-    {
-        return buffer_ == rhs.buffer_ && size_ == rhs.size_ && currentCursorEnd_ == rhs.currentCursorEnd_;
-    }
-
-    constexpr bool operator!=(RagelIterator const& rhs) const noexcept { return !(*this == rhs); }
-};
-
 namespace
 {
+
+    class RagelIterator
+    {
+        EmojiSegmentationCategory category_;
+        char32_t const* buffer_;
+        size_t size_;
+        size_t currentCursorEnd_;
+
+      public:
+        RagelIterator(char32_t const* buffer, size_t size, size_t cursor) noexcept:
+            category_ { EmojiSegmentationCategory::Invalid },
+            buffer_ { buffer },
+            size_ { size },
+            currentCursorEnd_ { cursor }
+        {
+            updateCategory();
+        }
+
+        RagelIterator() noexcept: RagelIterator(U"", 0, 0) {}
+
+        constexpr char32_t codepoint() const noexcept { return buffer_[currentCursorEnd_]; }
+        constexpr EmojiSegmentationCategory category() const noexcept { return category_; }
+        constexpr size_t cursor() const noexcept { return currentCursorEnd_; }
+
+        void updateCategory() noexcept
+        {
+            if (currentCursorEnd_ < size_)
+                category_ = codepoint_properties::get(codepoint()).emoji_segmentation_category;
+            else
+                category_ = EmojiSegmentationCategory::Invalid;
+        }
+
+        constexpr int operator*() const noexcept { return static_cast<int>(category_); }
+
+        RagelIterator& operator++() noexcept
+        {
+            currentCursorEnd_++;
+            updateCategory();
+            return *this;
+        }
+        RagelIterator& operator--(int) noexcept
+        {
+            currentCursorEnd_--;
+            updateCategory();
+            return *this;
+        }
+
+        RagelIterator operator+(long v) const noexcept
+        {
+            // TODO: assert() on integer overflow
+            return { buffer_, size_, currentCursorEnd_ + (size_t) v };
+        }
+
+        RagelIterator operator-(long v) const noexcept
+        {
+            if (v >= 0)
+            {
+                assert(currentCursorEnd_ >= static_cast<size_t>(v));
+                return { buffer_, size_, currentCursorEnd_ - (size_t) v };
+            }
+            else
+            {
+                return *this + (-v);
+            }
+        }
+
+        RagelIterator& operator=(int v) noexcept
+        {
+            assert(v >= 0);
+            currentCursorEnd_ = static_cast<size_t>(v);
+            updateCategory();
+            return *this;
+        }
+
+        constexpr bool operator==(RagelIterator const& rhs) const noexcept
+        {
+            return buffer_ == rhs.buffer_ && size_ == rhs.size_ && currentCursorEnd_ == rhs.currentCursorEnd_;
+        }
+
+        constexpr bool operator!=(RagelIterator const& rhs) const noexcept { return !(*this == rhs); }
+    };
+
     using emoji_text_iter_t = RagelIterator;
+
 #include "emoji_presentation_scanner.c"
 } // namespace
 
