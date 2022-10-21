@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <unicode/codepoint_properties.h>
 #include <unicode/ucd.h>
 #include <unicode/width.h>
 
@@ -24,8 +25,9 @@ int width(char32_t codepoint)
         return 1;
 
     // TODO: make this at most one lookup
+    auto const& properties = codepoint_properties::get(codepoint);
 
-    switch (general_category::get(codepoint))
+    switch (properties.general_category)
     {
         case General_Category::Control: // XXX really?
         case General_Category::Enclosing_Mark:
@@ -39,15 +41,14 @@ int width(char32_t codepoint)
         default: break;
     }
 
-    switch (east_asian_width(codepoint))
+    switch (properties.east_asian_width)
     {
-        case EastAsianWidth::Narrow:
-        case EastAsianWidth::Ambiguous:
-        case EastAsianWidth::HalfWidth:
-        case EastAsianWidth::Neutral: return 1;
-        case EastAsianWidth::Wide:
-        case EastAsianWidth::FullWidth: return 2;
-        case EastAsianWidth::Unspecified: return 1;
+        case East_Asian_Width::Narrow:
+        case East_Asian_Width::Ambiguous:
+        case East_Asian_Width::Halfwidth:
+        case East_Asian_Width::Neutral: return 1;
+        case East_Asian_Width::Wide:
+        case East_Asian_Width::Fullwidth: return 2;
     }
 
     return 1;
