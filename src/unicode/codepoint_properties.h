@@ -40,6 +40,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     static uint8_t constexpr FlagEmojiModifier = 0x08;        // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagEmojiModifierBase = 0x10;    // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagExtendedPictographic = 0x20; // NOLINT(readability-identifier-naming)
+    static uint8_t constexpr FlagCoreGraphemeExtend = 0x40;   // NOLINT(readability-identifier-naming)
 
     constexpr bool emoji() const noexcept { return flags & FlagEmoji; }
     constexpr bool emoji_presentation() const noexcept { return flags & FlagEmojiPresentation; }
@@ -47,6 +48,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     constexpr bool emoji_modifier() const noexcept { return flags & FlagEmojiModifier; }
     constexpr bool emoji_modifier_base() const noexcept { return flags & FlagEmojiModifierBase; }
     constexpr bool extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
+    constexpr bool core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
 
     struct tables_view
     {

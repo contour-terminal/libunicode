@@ -480,6 +480,20 @@ namespace
             properties(codepoint).script = make_script(value).value_or(unicode::Script::Invalid);
         });
 
+        process_properties("DerivedCoreProperties.txt", [&](char32_t codepoint, string_view value) {
+            // Generically written such that we can easily add more core properties here, once relevant.
+            auto static constexpr mappings = array {
+                pair { "Grapheme_Extend", codepoint_properties::FlagCoreGraphemeExtend },
+            };
+            auto const equalName = [=](auto x) {
+                return x.first == value;
+            };
+
+            if (auto const i = find_if(begin(mappings), end(mappings), equalName); i != end(mappings))
+                properties(codepoint).flags |= i->second;
+        });
+
+
         process_properties("extracted/DerivedGeneralCategory.txt",
                            [&](char32_t codepoint, string_view value) {
                                (void) codepoint;
