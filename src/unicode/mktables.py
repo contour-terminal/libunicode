@@ -65,6 +65,16 @@ def uopen(filename):
 def sanitize_identifier(_identifier):
     return _identifier.replace(' ', '_').replace('-', '_')
 
+def minimal_uint(maxValue):
+    if maxValue < 2 ** 8:
+        return 'uint8_t'
+    elif maxValue < 2 ** 16:
+        return 'uint16_t'
+    elif maxValue < 2 ** 32:
+        return 'uint32_t'
+    else:
+        return 'uint64_t'
+
 class EnumBuilder(ABC): # {{{
     @abstractmethod
     def output(self):
@@ -125,18 +135,23 @@ class EnumClassWriter(EnumBuilder): # {{{
         self.file.write(globals()['__doc__'])
         self.file.write('#pragma once\n')
         self.file.write('\n')
+        self.file.write('#include <cstdint>\n')
+        self.file.write('\n')
         self.file.write('namespace unicode\n{\n\n')
 
     def begin(self, _enum_class, _first_value):
         self.enum_class = _enum_class
         self.next_value = _first_value
-        self.file.write('enum class {}\n{{\n'.format(_enum_class))
+        self.collected_enum_values = []
 
     def member(self, _member):
-        self.file.write('    {0} = {1},\n'.format(sanitize_identifier(_member), self.next_value))
-        self.next_value += 1
+        self.collected_enum_values.append(_member)
 
     def end(self):
+        self.file.write('enum class {}: {}\n{{\n'.format(self.enum_class, minimal_uint(len(self.collected_enum_values))))
+        for name in self.collected_enum_values:
+            self.file.write('    {0} = {1},\n'.format(sanitize_identifier(name), self.next_value))
+            self.next_value += 1
         self.file.write("};\n\n")
 
     def output(self):
@@ -353,8 +368,6 @@ class UCDGenerator: # {{{
 
 #include <unicode/ucd_enums.h>
 
-#include <array>
-#include <optional>
 #include <string>
 #include <utility>
 
@@ -369,8 +382,6 @@ namespace unicode
 #include <unicode/ucd_private.h>
 
 #include <array>
-#include <optional>
-#include <string>
 
 namespace unicode
 {
@@ -742,7 +753,7 @@ namespace unicode
         self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
         self.impl.write("} // end namespace tables\n\n")
 
-        self.builder.begin(name, -1)
+        self.builder.begin(name, 0)
         self.builder.member('Invalid')
         self.builder.member('Unknown')
         self.builder.member('Common')

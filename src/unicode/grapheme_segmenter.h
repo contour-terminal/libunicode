@@ -13,6 +13,7 @@
  */
 #pragma once
 
+#include <unicode/codepoint_properties_data.h>
 #include <unicode/ucd.h>
 
 #include <string_view>
@@ -93,8 +94,8 @@ class grapheme_segmenter
         if (control(b))
             return true;
 
-        auto const A = grapheme_cluster_break(a);
-        auto const B = grapheme_cluster_break(b);
+        auto const A = codepoint_properties::get(a).grapheme_cluster_break;
+        auto const B = codepoint_properties::get(b).grapheme_cluster_break;
 
         // Do not break Hangul syllable sequences.
         // GB6:
@@ -118,7 +119,7 @@ class grapheme_segmenter
             return false;
 
         // GB9a: Do not break before SpacingMarks
-        if (spacingMark(b))
+        if (spacing_mark(b))
             return false;
 
         // GB9b: or after Prepend characters.
@@ -143,30 +144,35 @@ class grapheme_segmenter
     static bool nonbreakable(char32_t a, char32_t b) noexcept { return !breakable(a, b); }
 
   private:
-    static bool extend(char32_t _codepoint) noexcept
+    static bool extend(char32_t codepoint) noexcept
     {
-        return contains(Core_Property::Grapheme_Extend, _codepoint)
-               || contains(General_Category::Spacing_Mark, _codepoint)
-               || (emoji_modifier(_codepoint) && _codepoint != 0x200D);
+        auto const& p = codepoint_properties::get(codepoint);
+        return contains(Core_Property::Grapheme_Extend, codepoint)
+               || p.general_category == General_Category::Spacing_Mark
+               || (p.emoji_modifier() && codepoint != 0x200D);
     }
 
     static bool control(char32_t ch) noexcept
     {
-        return contains(General_Category::Line_Separator, ch)
-               || contains(General_Category::Paragraph_Separator, ch)
-               || contains(General_Category::Control, ch) || contains(General_Category::Surrogate, ch)
-               || (contains(General_Category::Unassigned, ch)
-                   && contains(Core_Property::Default_Ignorable_Code_Point, ch))
-               || (contains(General_Category::Format, ch) && ch != 0x000D && ch != 0x000A && ch != 0x200C
-                   && ch != 0x200D);
+        auto const& p = codepoint_properties::get(ch);
+        // clang-format off
+        return p.general_category == General_Category::Line_Separator
+            || p.general_category == General_Category::Paragraph_Separator
+            || p.general_category == General_Category::Control
+            || p.general_category == General_Category::Surrogate
+            || (p.general_category == General_Category::Unassigned && contains(Core_Property::Default_Ignorable_Code_Point, ch))
+            || (p.general_category == General_Category::Format && ch != 0x000D && ch != 0x000A && ch != 0x200C && ch != 0x200D);
+        // clang-format on
     }
 
-    static bool spacingMark(char32_t _codepoint) noexcept
+    static bool spacing_mark(char32_t codepoint) noexcept
     {
-        return general_category::spacing_mark(_codepoint) || _codepoint == 0x0E33 || _codepoint == 0x0EB3;
+        auto const& p = codepoint_properties::get(codepoint);
+        return p.general_category == General_Category::Spacing_Mark || codepoint == 0x0E33
+               || codepoint == 0x0EB3;
     }
 
-    static constexpr bool prepend([[maybe_unused]] char32_t _codepoint) noexcept
+    static constexpr bool prepend([[maybe_unused]] char32_t codepoint) noexcept
     {
         // (NB: wrt "Prepend": Currently there are no characters with this value)
         // return contains(General_Category::Pepend, _codepoint)

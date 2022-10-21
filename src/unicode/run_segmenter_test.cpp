@@ -79,7 +79,7 @@ TEST_CASE("run_segmenter.empty", "[run_segmenter]")
     CHECK_FALSE(rv);
     CHECK(result.start == 0);
     CHECK(result.end == 0);
-    CHECK(get<Script>(result.properties) == Script::Unknown);
+    CHECK(get<Script>(result.properties) == Script::Invalid);
     CHECK(get<PresentationStyle>(result.properties) == PresentationStyle::Text);
 }
 

@@ -14,7 +14,6 @@
 #pragma once
 
 #include <unicode/support.h>
-#include <unicode/ucd.h>
 
 #include <algorithm>
 #include <array>
@@ -29,6 +28,27 @@ enum class PresentationStyle
 {
     Text,
     Emoji
+};
+
+enum class EmojiSegmentationCategory : int8_t
+{
+    Invalid = -1,
+    Emoji = 0,
+    EmojiTextPresentation = 1,
+    EmojiEmojiPresentation = 2,
+    EmojiModifierBase = 3,
+    EmojiModifier = 4,
+    EmojiVSBase = 5,
+    RegionalIndicator = 6,
+    KeyCapBase = 7,
+    CombiningEnclosingKeyCap = 8,
+    CombiningEnclosingCircleBackslash = 9,
+    ZWJ = 10,
+    VS15 = 11,
+    VS16 = 12,
+    TagBase = 13,
+    TagSequence = 14,
+    TagTerm = 15,
 };
 
 /**
@@ -112,3 +132,43 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
 #include <fmt/ostream.h>
 template <> struct fmt::formatter<unicode::PresentationStyle>: fmt::ostream_formatter {};
 // clang-format on
+
+namespace fmt
+{
+template <>
+struct formatter<unicode::EmojiSegmentationCategory>
+{
+    template <typename ParseContext>
+    constexpr auto parse(ParseContext& ctx)
+    {
+        return ctx.begin();
+    }
+    template <typename FormatContext>
+    auto format(unicode::EmojiSegmentationCategory value, FormatContext& ctx)
+    {
+        switch (value)
+        {
+            // clang-format off
+            case unicode::EmojiSegmentationCategory::Invalid: return format_to(ctx.out(), "Invalid");
+            case unicode::EmojiSegmentationCategory::Emoji: return format_to(ctx.out(), "Emoji");
+            case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return format_to(ctx.out(), "EmojiTextPresentation");
+            case unicode::EmojiSegmentationCategory::EmojiEmojiPresentation: return format_to(ctx.out(), "EmojiEmojiPresentation");
+            case unicode::EmojiSegmentationCategory::EmojiModifierBase: return format_to(ctx.out(), "EmojiModifierBase");
+            case unicode::EmojiSegmentationCategory::EmojiModifier: return format_to(ctx.out(), "EmojiModifier");
+            case unicode::EmojiSegmentationCategory::EmojiVSBase: return format_to(ctx.out(), "EmojiVSBase");
+            case unicode::EmojiSegmentationCategory::RegionalIndicator: return format_to(ctx.out(), "RegionalIndicator");
+            case unicode::EmojiSegmentationCategory::KeyCapBase: return format_to(ctx.out(), "KeyCapBase");
+            case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return format_to(ctx.out(), "CombiningEnclosingKeyCap");
+            case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return format_to(ctx.out(), "CombiningEnclosingCircleBackslash");
+            case unicode::EmojiSegmentationCategory::ZWJ: return format_to(ctx.out(), "ZWJ");
+            case unicode::EmojiSegmentationCategory::VS15: return format_to(ctx.out(), "VS15");
+            case unicode::EmojiSegmentationCategory::VS16: return format_to(ctx.out(), "VS16");
+            case unicode::EmojiSegmentationCategory::TagBase: return format_to(ctx.out(), "TagBase");
+            case unicode::EmojiSegmentationCategory::TagSequence: return format_to(ctx.out(), "TagSequence");
+            case unicode::EmojiSegmentationCategory::TagTerm: return format_to(ctx.out(), "TagTerm");
+            // clang-format off
+        }
+        return format_to(ctx.out(), "({})", unsigned(value));
+    }
+};
+}
