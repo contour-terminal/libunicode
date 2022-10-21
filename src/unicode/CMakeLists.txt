@@ -5,8 +5,8 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-gene
         if(NOT EXISTS ${LIBUNICODE_UCD_ZIP_FILE})
             file(DOWNLOAD ${LIBUNICODE_UCD_ZIP_DOWNLOAD_URL} ${LIBUNICODE_UCD_ZIP_FILE} SHOW_PROGRESS STATUS LIBUNICODE_UCD_ZIP_DOWNLOAD_STATUS)
         endif()
+        file(ARCHIVE_EXTRACT INPUT ${LIBUNICODE_UCD_ZIP_FILE} DESTINATION ${LIBUNICODE_UCD_DIR})
     endif()
-    file(ARCHIVE_EXTRACT INPUT ${LIBUNICODE_UCD_ZIP_FILE} DESTINATION ${LIBUNICODE_UCD_DIR})
 endif()
 
 # =========================================================================================================
