@@ -61,13 +61,18 @@ struct LIBUNICODE_PACKED codepoint_properties
         gsl::span<stage2_element_type const> stage2;
         gsl::span<codepoint_properties const> properties;
 
-        codepoint_properties const& get(char32_t codepoint) noexcept
+        codepoint_properties const& get(char32_t codepoint) const noexcept
         {
-            auto const block_number = stage1[codepoint / tables_view::block_size];
+            return unsafe_get(codepoint < 0x11'0000 ? codepoint : 0);
+        }
+
+        codepoint_properties const& unsafe_get(char32_t codepoint) const noexcept
+        {
+            auto const block_number = stage1.data()[codepoint / tables_view::block_size];
             auto const block_start = block_number * tables_view::block_size;
             auto const element_offset = codepoint % tables_view::block_size;
-            auto const property_index = stage2[block_start + element_offset];
-            return properties[property_index];
+            auto const property_index = stage2.data()[block_start + element_offset];
+            return properties.data()[property_index];
         }
     };
 
