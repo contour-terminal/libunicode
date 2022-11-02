@@ -81,12 +81,13 @@ void generate_cxx_properties_table(std::ostream& header,
         // clang-format off
         auto const& properties = propertiesTable[i];
         implementation << "    {"
+                       << static_cast<unsigned>(properties.char_width) << ", "
+                       << (!properties.flags ? "0"s : fmt::format("0b{:08b}", properties.flags)) << ", "
                        << fmt::format("Script::{}, ", properties.script)
                        << fmt::format("Grapheme_Cluster_Break::{}, ", properties.grapheme_cluster_break)
                        << fmt::format("East_Asian_Width::{}, ", properties.east_asian_width)
                        << fmt::format("General_Category::{}, ", properties.general_category)
-                       << fmt::format("EmojiSegmentationCategory::{}, ", properties.emoji_segmentation_category)
-                       << (!properties.flags ? "0"s : fmt::format("0b{:08b}", properties.flags))
+                       << fmt::format("EmojiSegmentationCategory::{} ", properties.emoji_segmentation_category)
                        << "},\n";
         // clang-format on
     }

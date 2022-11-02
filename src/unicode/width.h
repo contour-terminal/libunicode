@@ -17,6 +17,6 @@ namespace unicode
 {
 
 /// Returns the number of text columns the given codepoint would need to be displayed.
-int width(char32_t codepoint);
+int width(char32_t codepoint) noexcept;
 
 } // namespace unicode

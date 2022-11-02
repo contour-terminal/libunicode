@@ -18,46 +18,9 @@
 namespace unicode
 {
 
-int width(char32_t codepoint)
+int width(char32_t codepoint) noexcept
 {
-    // Small optimization to speadup US-ASCII width calculation.
-    if (0x20 <= codepoint && codepoint <= 0xA0)
-        return 1;
-
-    // TODO: make this at most one lookup
-    auto const& properties = codepoint_properties::get(codepoint);
-
-    switch (properties.general_category)
-    {
-        case General_Category::Control: // XXX really?
-        case General_Category::Enclosing_Mark:
-        case General_Category::Format:
-        case General_Category::Line_Separator:
-        // case General_Category::Modifier_Symbol:
-        case General_Category::Nonspacing_Mark:
-        case General_Category::Paragraph_Separator:
-        case General_Category::Spacing_Mark:
-        case General_Category::Surrogate: return 0;
-        default: break;
-    }
-
-    if (properties.emoji_presentation())
-        // UAX #11 §5 Recommendations:
-        //     [UTS51] emoji presentation sequences behave as though they were East Asian Wide,
-        //     regardless of their assigned East_Asian_Width property value.
-        return 2;
-
-    switch (properties.east_asian_width)
-    {
-        case East_Asian_Width::Narrow:
-        case East_Asian_Width::Ambiguous:
-        case East_Asian_Width::Halfwidth:
-        case East_Asian_Width::Neutral: return 1;
-        case East_Asian_Width::Wide:
-        case East_Asian_Width::Fullwidth: return 2;
-    }
-
-    return 1;
+    return codepoint_properties::get(codepoint).char_width;
 }
 
 } // namespace unicode

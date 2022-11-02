@@ -360,6 +360,46 @@ namespace
         }
     };
 
+    inline uint8_t toCharWidth(codepoint_properties const& properties) noexcept
+    {
+        switch (properties.general_category)
+        {
+            case General_Category::Control: // XXX really?
+            case General_Category::Enclosing_Mark:
+            case General_Category::Format:
+            case General_Category::Line_Separator:
+            // case General_Category::Modifier_Symbol:
+            case General_Category::Nonspacing_Mark:
+            case General_Category::Paragraph_Separator:
+            case General_Category::Spacing_Mark:
+            case General_Category::Surrogate: return 0;
+            default: break;
+        }
+
+        if (properties.emoji_presentation())
+            // UAX #11 §5 Recommendations:
+            //     [UTS51] emoji presentation sequences behave as though they were East Asian Wide,
+            //     regardless of their assigned East_Asian_Width property value.
+            return 2;
+
+        switch (properties.east_asian_width)
+        {
+            case East_Asian_Width::Narrow:
+            case East_Asian_Width::Ambiguous:
+            case East_Asian_Width::Halfwidth:
+            case East_Asian_Width::Neutral:
+                //.
+                return 1;
+            case East_Asian_Width::Wide:
+            case East_Asian_Width::Fullwidth:
+                //.
+                return 2;
+        }
+
+        // Should never be reached.
+        return 1;
+    }
+
     inline EmojiSegmentationCategory toEmojiSegmentationCategory(char32_t codepoint,
                                                                  codepoint_properties const& props) noexcept
     {
@@ -397,6 +437,7 @@ namespace
 
         return EmojiSegmentationCategory::Invalid;
     }
+
     class codepoint_properties_loader
     {
       public:
@@ -493,7 +534,6 @@ namespace
                 properties(codepoint).flags |= i->second;
         });
 
-
         process_properties("extracted/DerivedGeneralCategory.txt",
                            [&](char32_t codepoint, string_view value) {
                                (void) codepoint;
@@ -550,6 +590,14 @@ namespace
             for (char32_t codepoint = 0; codepoint < 0x110'000; ++codepoint)
                 properties(codepoint).emoji_segmentation_category =
                     toEmojiSegmentationCategory(codepoint, properties(codepoint));
+        }
+        // }}}
+
+        // {{{ assign char_width
+        {
+            auto const _ = scoped_timer { _log, "Assigning char_width" };
+            for (char32_t codepoint = 0; codepoint < 0x110'000; ++codepoint)
+                properties(codepoint).char_width = toCharWidth(properties(codepoint));
         }
         // }}}
     }
