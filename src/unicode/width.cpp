@@ -41,6 +41,12 @@ int width(char32_t codepoint)
         default: break;
     }
 
+    if (properties.emoji_presentation())
+        // UAX #11 §5 Recommendations:
+        //     [UTS51] emoji presentation sequences behave as though they were East Asian Wide,
+        //     regardless of their assigned East_Asian_Width property value.
+        return 2;
+
     switch (properties.east_asian_width)
     {
         case East_Asian_Width::Narrow:
