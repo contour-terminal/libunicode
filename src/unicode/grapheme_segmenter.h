@@ -138,8 +138,7 @@ class grapheme_segmenter
         // GB12/GB13: Do not break within emoji flag sequences.
         // That is, do not break between regional indicator (RI) symbols
         // if there is an odd number of RI characters before the break point.
-        if (A == Grapheme_Cluster_Break::Regional_Indicator
-            || B == Grapheme_Cluster_Break::Regional_Indicator)
+        if (A == Grapheme_Cluster_Break::Regional_Indicator && A == B)
             return false;
 
         // GB999: Otherwise, break everywhere.
