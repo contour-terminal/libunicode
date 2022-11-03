@@ -1,5 +1,5 @@
 
-## Version 0.1.0
+## 0.1.0 (2022-11-03)
 
 While version 0.1.0 sounds like a small number, this project is out there since quite some years already
 and actively used by Contour Terminal.
