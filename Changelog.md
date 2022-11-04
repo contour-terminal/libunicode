@@ -2,6 +2,7 @@
 
 - Slightly improve performance of grapheme cluster segmentation.
 - Fixes grapheme cluster segmentation of multiple consecutive regional flags.
+- CMake install target also installs header and library (not just tools).
 
 ## 0.1.0 (2022-11-03)
 

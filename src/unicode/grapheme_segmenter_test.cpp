@@ -11,8 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <unicode/grapheme_segmenter.h>
 #include <unicode/convert.h>
+#include <unicode/grapheme_segmenter.h>
 
 #include <catch2/catch.hpp>
 
