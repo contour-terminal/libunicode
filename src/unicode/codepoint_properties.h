@@ -33,7 +33,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     East_Asian_Width east_asian_width = East_Asian_Width::Narrow;
     General_Category general_category = General_Category::Unassigned;
     EmojiSegmentationCategory emoji_segmentation_category = EmojiSegmentationCategory::Invalid;
-    uint8_t pad = 0;
+    Age age = Age::Unassigned;
 
     static uint8_t constexpr FlagEmoji = 0x01;                // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagEmojiPresentation = 0x02;    // NOLINT(readability-identifier-naming)

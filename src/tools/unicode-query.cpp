@@ -22,6 +22,7 @@
 
 #include <fmt/format.h>
 
+#include <cassert>
 #include <charconv>
 #include <iostream>
 #include <optional>
@@ -83,11 +84,21 @@ vector<char32_t> parseChars(std::string_view text)
     return parsedChars;
 }
 
+string prettyAge(unicode::Age age)
+{
+    string str = fmt::format("{}", age);
+    assert(str.at(0) == 'V');
+    str = str.substr(1);
+    replace(str.begin(), str.end(), '_', '.');
+    return str;
+}
+
 void showCodepointProperties(char32_t codepoint)
 {
     auto const properties = unicode::codepoint_properties::get(codepoint);
 
     // clang-format off
+    cout << fmt::format("Unicode Version             : {}\n", prettyAge(properties.age));
     cout << fmt::format("Codepoint                   : U+{:X}\n", uint32_t(codepoint));
     cout << fmt::format("UTF-8                       : {}\n", quotedAndEscaped(unicode::convert_to<char>(codepoint)));
     if (properties.general_category != unicode::General_Category::Control)

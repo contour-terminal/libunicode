@@ -60,6 +60,44 @@ namespace unicode
 namespace
 {
     // {{{ string-to-enum convert helper
+    constexpr optional<unicode::Age> make_age(string_view value) noexcept
+    {
+        auto /*static*/ constexpr mappings = array {
+            pair { "1.1"sv, Age::V1_1 },
+            pair { "10.0"sv, Age::V10_0 },
+            pair { "11.0"sv, Age::V11_0 },
+            pair { "12.0"sv, Age::V12_0 },
+            pair { "12.1"sv, Age::V12_1 },
+            pair { "13.0"sv, Age::V13_0 },
+            pair { "14.0"sv, Age::V14_0 },
+            pair { "15.0"sv, Age::V15_0 },
+            pair { "1.1"sv, Age::V1_1 },
+            pair { "2.0"sv, Age::V2_0 },
+            pair { "2.1"sv, Age::V2_1 },
+            pair { "3.0"sv, Age::V3_0 },
+            pair { "3.1"sv, Age::V3_1 },
+            pair { "3.2"sv, Age::V3_2 },
+            pair { "4.0"sv, Age::V4_0 },
+            pair { "4.1"sv, Age::V4_1 },
+            pair { "5.0"sv, Age::V5_0 },
+            pair { "5.1"sv, Age::V5_1 },
+            pair { "5.2"sv, Age::V5_2 },
+            pair { "6.0"sv, Age::V6_0 },
+            pair { "6.1"sv, Age::V6_1 },
+            pair { "6.2"sv, Age::V6_2 },
+            pair { "6.3"sv, Age::V6_3 },
+            pair { "7.0"sv, Age::V7_0 },
+            pair { "8.0"sv, Age::V8_0 },
+            pair { "9.0"sv, Age::V9_0 },
+        };
+
+        for (auto const& mapping: mappings)
+            if (mapping.first == value)
+                return { mapping.second };
+
+        return nullopt;
+    }
+
     constexpr optional<unicode::General_Category> make_general_category(string_view value) noexcept
     {
         auto /*static*/ constexpr mappings = array {
@@ -475,11 +513,14 @@ namespace
             auto const _ = scoped_timer { _log, fmt::format("Loading file {}", filePathSuffix) };
 
             // clang-format off
-            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_]+))");
-            auto const codepointRangePattern = regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_]+))");
+            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
+            auto const codepointRangePattern = regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
             // clang-format on
 
-            auto f = ifstream(_ucdDataDirectory + "/" + filePathSuffix);
+            auto const filePath = _ucdDataDirectory + "/" + filePathSuffix;
+            auto f = ifstream(filePath);
+            if (!f.good())
+                throw std::runtime_error("Could not open file: "s + filePath);
             while (f.good())
             {
                 string line;
@@ -532,6 +573,10 @@ namespace
 
             if (auto const i = find_if(begin(mappings), end(mappings), equalName); i != end(mappings))
                 properties(codepoint).flags |= i->second;
+        });
+
+        process_properties("DerivedAge.txt", [&](char32_t codepoint, string_view value) {
+            properties(codepoint).age = make_age(value).value_or(unicode::Age::Unassigned);
         });
 
         process_properties("extracted/DerivedGeneralCategory.txt",

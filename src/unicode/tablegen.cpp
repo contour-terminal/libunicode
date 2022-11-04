@@ -87,7 +87,8 @@ void generate_cxx_properties_table(std::ostream& header,
                        << fmt::format("Grapheme_Cluster_Break::{}, ", properties.grapheme_cluster_break)
                        << fmt::format("East_Asian_Width::{}, ", properties.east_asian_width)
                        << fmt::format("General_Category::{}, ", properties.general_category)
-                       << fmt::format("EmojiSegmentationCategory::{} ", properties.emoji_segmentation_category)
+                       << fmt::format("EmojiSegmentationCategory::{}, ", properties.emoji_segmentation_category)
+                       << fmt::format("Age::{} ", properties.age)
                        << "},\n";
         // clang-format on
     }
