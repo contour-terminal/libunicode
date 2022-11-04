@@ -63,7 +63,7 @@ add_library(unicode STATIC
     codepoint_properties.h codepoint_properties.cpp
     convert.h
     emoji_segmenter.h emoji_segmenter.cpp
-    grapheme_segmenter.h
+    grapheme_segmenter.h grapheme_segmenter.cpp
     run_segmenter.h
     scan.h scan.cpp
     script_segmenter.h script_segmenter.cpp

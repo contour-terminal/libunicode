@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/grapheme_segmenter.h>
+#include <unicode/convert.h>
 
 #include <catch2/catch.hpp>
 
@@ -123,4 +124,100 @@ TEST_CASE("grapheme_segmenter.iterator_2", "[grapheme_segmenter]")
     ++gs;
     CHECK(*gs == U"");
     CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.iterator_3: regional flags", "[grapheme_segmenter]")
+{
+    auto const ri_DE = u32string { U"\U0001F1E9\U0001F1E9" };
+    auto const ri_JP = u32string { U"\U0001F1EF\U0001F1F5" };
+    auto const codepoints = ri_DE + ri_DE + ri_JP;
+    auto gs = grapheme_segmenter { codepoints };
+
+    // first grapheme cluster
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // second grapheme cluster
+    ++gs;
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 3rd grapheme cluster
+    ++gs;
+    REQUIRE(*gs == ri_JP);
+    REQUIRE_FALSE(gs.codepointsAvailable());
+
+    // incrementing beyond end of stream
+    ++gs;
+    REQUIRE(*gs == U"");
+    REQUIRE_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.iterator_3: regional flags invalid 1", "[grapheme_segmenter]")
+{
+    auto const ri_DE = u32string { U"\U0001F1E9\U0001F1E9" };
+    auto const ri_J = u32string { U"\U0001F1EF" };
+    auto const codepoints = ri_DE + ri_DE + ri_J + U"P";
+    auto gs = grapheme_segmenter { codepoints };
+
+    // first grapheme cluster
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // second grapheme cluster
+    ++gs;
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 3rd grapheme cluster
+    ++gs;
+    REQUIRE(*gs == ri_J);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 4th grapheme cluster
+    ++gs;
+    REQUIRE(*gs == U"P");
+    REQUIRE_FALSE(gs.codepointsAvailable());
+
+    // incrementing beyond end of stream
+    ++gs;
+    REQUIRE(*gs == U"");
+    REQUIRE_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.iterator_3: regional flags invalid 2", "[grapheme_segmenter]")
+{
+    auto const ri_DE = u32string { U"\U0001F1E9\U0001F1E9" };
+    auto const ri_J = u32string { U"\U0001F1EF" };
+    auto const codepoints = ri_DE + ri_DE + U"Q" + ri_J + U"P";
+    auto gs = grapheme_segmenter { codepoints };
+
+    // 1
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 2
+    ++gs;
+    REQUIRE(*gs == ri_DE);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 3
+    ++gs;
+    REQUIRE(*gs == U"Q");
+    REQUIRE(gs.codepointsAvailable());
+
+    // 4
+    ++gs;
+    REQUIRE(*gs == ri_J);
+    REQUIRE(gs.codepointsAvailable());
+
+    // 5
+    ++gs;
+    REQUIRE(*gs == U"P");
+    REQUIRE_FALSE(gs.codepointsAvailable());
+
+    // incrementing beyond end of stream
+    ++gs;
+    REQUIRE(*gs == U"");
+    REQUIRE_FALSE(gs.codepointsAvailable());
 }

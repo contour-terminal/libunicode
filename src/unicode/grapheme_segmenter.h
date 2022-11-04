@@ -21,38 +21,54 @@
 namespace unicode
 {
 
+/// Grapheme segmentation state struct, used to keep state
+/// while processing each Unicode codepoint,
+/// allow proper processing of regional flags
+/// as well as reducing the number of invocations
+/// to codepoint_properties::get().
+struct grapheme_segmenter_state
+{
+    char32_t previousCodepoint = {};
+    codepoint_properties previousProperties = codepoint_properties::get(0);
+
+    uint8_t ri_counter = 0; // modulo 2
+};
+
+void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept;
+
+/// Tests if codepoint @p a and @p b are breakable, and thus, two different grapheme clusters.
+///
+/// @retval true both codepoints to not belong to the same grapheme cluster
+/// @retval false both codepoints belong to the same grapheme cluster
+bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept;
+
 /// Implements http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
 class grapheme_segmenter
 {
-  private:
-    static constexpr char32_t CR = 0x000D;   // NOLINT
-    static constexpr char32_t LF = 0x000A;   // NOLINT
-    static constexpr char32_t ZWJ = 0x200D;  // NOLINT
-    static constexpr char32_t ZWNJ = 0x200C; // NOLINT
-
   public:
-    constexpr grapheme_segmenter(char32_t const* _begin, char32_t const* _end) noexcept:
-        left_ { _begin }, right_ { _begin }, end_ { _end }
+    grapheme_segmenter(char32_t const* begin, char32_t const* end) noexcept:
+        left_ { begin }, right_ { begin }, end_ { end }, state_ {}
     {
         ++*this;
     }
 
-    constexpr grapheme_segmenter(std::u32string_view const& _sv) noexcept:
-        grapheme_segmenter(_sv.data(), _sv.data() + _sv.size())
+    grapheme_segmenter(std::u32string_view sv) noexcept:
+        grapheme_segmenter(sv.data(), sv.data() + sv.size())
     {
     }
 
-    constexpr grapheme_segmenter() noexcept: grapheme_segmenter({}, {}) {}
+    grapheme_segmenter() noexcept: grapheme_segmenter({}, {}) {}
 
-    constexpr grapheme_segmenter& operator++()
+    grapheme_segmenter& operator++() noexcept
     {
         left_ = right_;
+        if (right_ == end_)
+            return *this;
 
-        while (right_ != end_ && nonbreakable(*right_, *(right_ + 1)))
+        grapheme_process_init(*right_++, state_);
+
+        while (right_ != end_ && !grapheme_process_breakable(*right_, state_))
             ++right_;
-
-        if (right_ != end_)
-            ++right_; // points to the codepoint after the last nonbreakable codepoint.
 
         return *this;
     }
@@ -66,10 +82,10 @@ class grapheme_segmenter
 
     constexpr operator bool() const noexcept { return codepointsAvailable(); }
 
-    constexpr bool operator==(grapheme_segmenter const& _rhs) const noexcept
+    constexpr bool operator==(grapheme_segmenter const& rhs) const noexcept
     {
-        return (!codepointsAvailable() && !_rhs.codepointsAvailable())
-               || (left_ == _rhs.left_ && right_ == _rhs.right_);
+        return (!codepointsAvailable() && !rhs.codepointsAvailable())
+               || (left_ == rhs.left_ && right_ == rhs.right_);
     }
 
     /// Tests if codepoint @p a and @p b are breakable, and thus, two different grapheme clusters.
@@ -78,71 +94,14 @@ class grapheme_segmenter
     /// @retval false both codepoints belong to the same grapheme cluster
     static bool breakable(char32_t a, char32_t b) noexcept
     {
-        // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
-        if (a == CR && b == LF)
-            return false;
-
-        // GB4 (a) + GB5 (b) part 1 (C0 characers) + US-ASCII shortcut
-        // The US-ASCII part is a pure optimization improving performance
-        // in standard Latin text.
-        if (a < 128 && b < 128)
-            return true;
-
-        auto const Pa = codepoint_properties::get(a);
-        auto const A = Pa.grapheme_cluster_break;
-
-        auto const Pb = codepoint_properties::get(b);
-        auto const B = Pb.grapheme_cluster_break;
-
-        // GB4: (part 2)
-        if (A == Grapheme_Cluster_Break::Control)
-            return true;
-
-        // GB5: (part 2)
-        if (B == Grapheme_Cluster_Break::Control)
-            return true;
-
-        // Do not break Hangul syllable sequences.
-        // GB6:
-        if (A == Grapheme_Cluster_Break::L
-            && (B == Grapheme_Cluster_Break::L || B == Grapheme_Cluster_Break::V
-                || B == Grapheme_Cluster_Break::LV || B == Grapheme_Cluster_Break::LVT))
-            return false;
-
-        // GB7:
-        if ((A == Grapheme_Cluster_Break::LV || A == Grapheme_Cluster_Break::V)
-            && (B == Grapheme_Cluster_Break::V || B == Grapheme_Cluster_Break::T))
-            return false;
-
-        // GB8:
-        if ((A == Grapheme_Cluster_Break::LV || A == Grapheme_Cluster_Break::T)
-            && B == Grapheme_Cluster_Break::T)
-            return false;
-
-        // GB9: Do not break before extending characters.
-        if (B == Grapheme_Cluster_Break::Extend || B == Grapheme_Cluster_Break::ZWJ)
-            return false;
-
-        // GB9a: Do not break before SpacingMarks
-        if (B == Grapheme_Cluster_Break::SpacingMark)
-            return false;
-
-        // GB9b: or after Prepend characters.
-        if (A == Grapheme_Cluster_Break::Prepend)
-            return false;
-
-        // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.
-        if (A == Grapheme_Cluster_Break::ZWJ && Pb.extended_pictographic())
-            return false;
-
-        // GB12/GB13: Do not break within emoji flag sequences.
-        // That is, do not break between regional indicator (RI) symbols
-        // if there is an odd number of RI characters before the break point.
-        if (A == Grapheme_Cluster_Break::Regional_Indicator && A == B)
-            return false;
-
-        // GB999: Otherwise, break everywhere.
-        return true; // GB10
+        auto state = grapheme_segmenter_state {};
+        state.previousCodepoint = a;
+        state.previousProperties = codepoint_properties::get(a);
+        state.ri_counter =
+            (state.previousProperties.grapheme_cluster_break == Grapheme_Cluster_Break::Regional_Indicator)
+                ? 1
+                : 0;
+        return grapheme_process_breakable(b, state);
     }
 
     static bool nonbreakable(char32_t a, char32_t b) noexcept { return !breakable(a, b); }
@@ -151,6 +110,7 @@ class grapheme_segmenter
     char32_t const* left_;
     char32_t const* right_;
     char32_t const* end_;
+    grapheme_segmenter_state state_;
 };
 
 } // namespace unicode
