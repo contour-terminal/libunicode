@@ -1,3 +1,6 @@
+## 0.1.1 (unreleased)
+
+- Slightly improve performance of grapheme cluster segmentation.
 
 ## 0.1.0 (2022-11-03)
 

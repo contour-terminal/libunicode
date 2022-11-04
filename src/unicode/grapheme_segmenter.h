@@ -89,18 +89,18 @@ class grapheme_segmenter
             return true;
 
         auto const Pa = codepoint_properties::get(a);
+        auto const A = Pa.grapheme_cluster_break;
+
         auto const Pb = codepoint_properties::get(b);
+        auto const B = Pb.grapheme_cluster_break;
 
         // GB4: (part 2)
-        if (control(a, Pa))
+        if (A == Grapheme_Cluster_Break::Control)
             return true;
 
         // GB5: (part 2)
-        if (control(b, Pb))
+        if (B == Grapheme_Cluster_Break::Control)
             return true;
-
-        auto const A = Pa.grapheme_cluster_break;
-        auto const B = Pb.grapheme_cluster_break;
 
         // Do not break Hangul syllable sequences.
         // GB6:
@@ -120,19 +120,19 @@ class grapheme_segmenter
             return false;
 
         // GB9: Do not break before extending characters.
-        if (extend(b, Pb) || b == ZWJ) // GB9
+        if (B == Grapheme_Cluster_Break::Extend || B == Grapheme_Cluster_Break::ZWJ)
             return false;
 
         // GB9a: Do not break before SpacingMarks
-        if (spacing_mark(b, Pb))
+        if (B == Grapheme_Cluster_Break::SpacingMark)
             return false;
 
         // GB9b: or after Prepend characters.
-        if (prepend(a))
+        if (A == Grapheme_Cluster_Break::Prepend)
             return false;
 
         // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.
-        if (a == ZWJ && extended_pictographic(b))
+        if (A == Grapheme_Cluster_Break::ZWJ && Pb.extended_pictographic())
             return false;
 
         // GB12/GB13: Do not break within emoji flag sequences.
@@ -146,39 +146,6 @@ class grapheme_segmenter
     }
 
     static bool nonbreakable(char32_t a, char32_t b) noexcept { return !breakable(a, b); }
-
-  private:
-    static bool extend(char32_t codepoint, codepoint_properties const& properties) noexcept
-    {
-        return properties.core_grapheme_extend()
-               || properties.general_category == General_Category::Spacing_Mark
-               || (properties.emoji_modifier() && codepoint != ZWJ);
-    }
-
-    static bool control(char32_t ch, codepoint_properties const& properties) noexcept
-    {
-        // clang-format off
-        return properties.general_category == General_Category::Line_Separator
-            || properties.general_category == General_Category::Paragraph_Separator
-            || properties.general_category == General_Category::Control
-            || properties.general_category == General_Category::Surrogate
-            || (properties.general_category == General_Category::Unassigned && contains(Core_Property::Default_Ignorable_Code_Point, ch))
-            || (properties.general_category == General_Category::Format && ch != CR && ch != LF && ch != ZWNJ && ch != ZWJ);
-        // clang-format on
-    }
-
-    static bool spacing_mark(char32_t codepoint, codepoint_properties const& properties) noexcept
-    {
-        return properties.general_category == General_Category::Spacing_Mark || codepoint == 0x0E33
-               || codepoint == 0x0EB3;
-    }
-
-    static constexpr bool prepend([[maybe_unused]] char32_t codepoint) noexcept
-    {
-        // (NB: wrt "Prepend": Currently there are no characters with this value)
-        // return contains(General_Category::Pepend, _codepoint)
-        return false;
-    }
 
   private:
     char32_t const* left_;
