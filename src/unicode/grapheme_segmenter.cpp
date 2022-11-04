@@ -115,4 +115,4 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     return true; // GB10
 }
 
-}
+} // namespace unicode

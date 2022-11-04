@@ -52,8 +52,7 @@ class grapheme_segmenter
         ++*this;
     }
 
-    grapheme_segmenter(std::u32string_view sv) noexcept:
-        grapheme_segmenter(sv.data(), sv.data() + sv.size())
+    grapheme_segmenter(std::u32string_view sv) noexcept: grapheme_segmenter(sv.data(), sv.data() + sv.size())
     {
     }
 
