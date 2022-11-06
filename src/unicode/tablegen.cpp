@@ -13,6 +13,7 @@
  */
 #include <unicode/codepoint_properties.h>
 #include <unicode/codepoint_properties_loader.h>
+#include <unicode/support/scoped_timer.h>
 #include <unicode/ucd_fmt.h>
 
 #include <fmt/format.h>
@@ -39,11 +40,11 @@ std::string_view minimum_uint_t(std::vector<T> const& values)
 }
 
 template <typename T>
-void generate_cxx_table(std::ostream& header,
-                        std::ostream& implementation,
-                        std::vector<T> const& table,
-                        std::string_view name,
-                        bool commentOnBlock)
+void write_cxx_table(std::ostream& header,
+                     std::ostream& implementation,
+                     std::vector<T> const& table,
+                     std::string_view name,
+                     bool commentOnBlock)
 {
     auto constexpr ColumnCount = 16;
 
@@ -66,10 +67,10 @@ void generate_cxx_table(std::ostream& header,
     implementation << fmt::format("}};\n\n");
 }
 
-void generate_cxx_properties_table(std::ostream& header,
-                                   std::ostream& implementation,
-                                   std::vector<unicode::codepoint_properties> const& propertiesTable,
-                                   std::string_view tableName)
+void write_cxx_properties_table(std::ostream& header,
+                                std::ostream& implementation,
+                                std::vector<unicode::codepoint_properties> const& propertiesTable,
+                                std::string_view tableName)
 {
     using namespace unicode;
     header << "extern std::array<codepoint_properties, " << propertiesTable.size() << "> const " << tableName
@@ -95,11 +96,13 @@ void generate_cxx_properties_table(std::ostream& header,
     implementation << "}};\n\n";
 }
 
-void generate_cxx_tables(unicode::codepoint_properties_table const& tables,
-                         std::ostream& header,
-                         std::ostream& implementation,
-                         std::string_view namespaceName)
+void write_cxx_tables(unicode::codepoint_properties_table const& tables,
+                      std::ostream& header,
+                      std::ostream& implementation,
+                      std::string_view namespaceName)
 {
+    auto const _ = support::scoped_timer(&std::cout, "Writing C++ table files");
+
     auto const disclaimer = fmt::format("// This file was auto-generated using {}.\n", __FILE__);
 
     header << disclaimer;
@@ -127,9 +130,9 @@ void generate_cxx_tables(unicode::codepoint_properties_table const& tables,
     implementation << "namespace " << namespaceName << "\n";
     implementation << "{\n\n";
 
-    generate_cxx_table(header, implementation, tables.stage1, "stage1", false);
-    generate_cxx_table(header, implementation, tables.stage2, "stage2", true);
-    generate_cxx_properties_table(header, implementation, tables.properties, "properties");
+    write_cxx_table(header, implementation, tables.stage1, "stage1", false);
+    write_cxx_table(header, implementation, tables.stage2, "stage2", true);
+    write_cxx_properties_table(header, implementation, tables.stage3, "properties");
 
     implementation << "} // end namespace " << namespaceName << "\n";
 
@@ -148,9 +151,9 @@ int main(int argc, char const* argv[])
 
     auto headerFile = std::ofstream(cxxHeaderFileName);
     auto implementationFile = std::ofstream(cxxImplementationFileName);
-    auto const props = unicode::codepoint_properties_table::load_from_directory(ucdDataDirectory, &std::cout);
+    auto const props = unicode::load_from_directory(ucdDataDirectory, &std::cout);
 
-    generate_cxx_tables(props, headerFile, implementationFile, namespaceName);
+    write_cxx_tables(props, headerFile, implementationFile, namespaceName);
 
     return EXIT_SUCCESS;
 }

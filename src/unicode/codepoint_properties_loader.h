@@ -14,33 +14,22 @@
 #pragma once
 
 #include <unicode/codepoint_properties.h>
+#include <unicode/support/multistage_table_generator.h>
 
 #include <vector>
 
 namespace unicode
 {
 
-/**
- * Loads Unicode properties as two-stage lookup tables from an extracted UCD.zip location.
- */
-struct codepoint_properties_table
-{
-    operator codepoint_properties::tables_view() const noexcept
-    {
-        return codepoint_properties::tables_view { stage1, stage2, properties };
-    }
+using codepoint_properties_table = support::multistage_table<codepoint_properties,
+                                                             uint32_t,     // source type
+                                                             uint8_t,      // stage 1
+                                                             uint16_t,     // stage 2
+                                                             256,          // block size
+                                                             0x110'000 - 1 // max value
+                                                             >;
 
-    [[nodiscard]] codepoint_properties const& operator[](char32_t codepoint) const noexcept
-    {
-        return codepoint_properties::tables_view(*this).get(codepoint);
-    }
-
-    std::vector<codepoint_properties::tables_view::stage1_element_type> stage1 {}; // codepoint -> block
-    std::vector<codepoint_properties::tables_view::stage2_element_type> stage2 {}; // block items -> property
-    std::vector<codepoint_properties> properties {};
-
-    static codepoint_properties_table load_from_directory(std::string const& ucdDataDirectory,
-                                                          std::ostream* log = nullptr);
-};
+codepoint_properties_table load_from_directory(std::string const& ucdDataDirectory,
+                                               std::ostream* log = nullptr);
 
 } // namespace unicode

@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 #include <unicode/codepoint_properties_loader.h>
+#include <unicode/support/multistage_table_generator.h>
+#include <unicode/support/scoped_timer.h>
 #include <unicode/ucd_enums.h>
 #include <unicode/ucd_fmt.h>
 
@@ -62,6 +64,7 @@ namespace
     // {{{ string-to-enum convert helper
     constexpr optional<unicode::Age> make_age(string_view value) noexcept
     {
+        // clang-format off
         auto /*static*/ constexpr mappings = array {
             pair { "1.1"sv, Age::V1_1 },
             pair { "10.0"sv, Age::V10_0 },
@@ -90,6 +93,7 @@ namespace
             pair { "8.0"sv, Age::V8_0 },
             pair { "9.0"sv, Age::V9_0 },
         };
+        // clang-format on
 
         for (auto const& mapping: mappings)
             if (mapping.first == value)
@@ -374,29 +378,7 @@ namespace
     }
     // }}}
 
-    struct scoped_timer
-    {
-        std::chrono::time_point<std::chrono::steady_clock> _start;
-        std::ostream* _output;
-        std::string _message;
-
-        scoped_timer(std::ostream* output, std::string message):
-            _start { std::chrono::steady_clock::now() }, _output { output }, _message { std::move(message) }
-        {
-            if (_output)
-                *_output << _message << " ...\n";
-        }
-
-        ~scoped_timer()
-        {
-            if (!_output)
-                return;
-            auto const finish = std::chrono::steady_clock::now();
-            auto const diff = finish - _start;
-            *_output << _message << " " << std::chrono::duration_cast<std::chrono::milliseconds>(diff).count()
-                     << " ms\n";
-        }
-    };
+    using scoped_timer = support::scoped_timer;
 
     inline uint8_t toCharWidth(codepoint_properties const& properties) noexcept
     {
@@ -483,24 +465,12 @@ namespace
                                                               std::ostream* log = nullptr);
 
       private:
-        auto static constexpr block_size = codepoint_properties::tables_view::block_size;
         using tables_view = codepoint_properties::tables_view;
-        using stage1_element_type = tables_view::stage1_element_type;
-        using stage2_element_type = tables_view::stage2_element_type;
 
         codepoint_properties_loader(string ucdDataDirectory, std::ostream* log = nullptr);
 
         void load();
         void create_multistage_tables();
-        [[nodiscard]] optional<size_t> find_same_block(size_t baseCodepoint) const noexcept;
-        [[nodiscard]] bool is_same_block(size_t a, size_t b) const noexcept;
-        [[nodiscard]] stage1_element_type get_or_create_index_to_stage2_block(char32_t blockStart);
-        [[nodiscard]] stage2_element_type get_or_create_index_to_property(char32_t codepoint);
-
-#if !defined(NDEBUG)
-        void verify();
-        void verify_block(uint32_t blockNumber);
-#endif
 
         [[nodiscard]] codepoint_properties& properties(char32_t codepoint) noexcept
         {
@@ -513,7 +483,8 @@ namespace
             auto const _ = scoped_timer { _log, fmt::format("Loading file {}", filePathSuffix) };
 
             // clang-format off
-            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
+            // [SPACE] ALNUMDOT ([SPACE] ALNUMDOT)::= (\s+[A-Za-z_0-9\.]+)?
+            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+(\s+[A-Za-z_0-9\.]+)?))");
             auto const codepointRangePattern = regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
             // clang-format on
 
@@ -552,8 +523,7 @@ namespace
     {
         _codepoints.resize(0x110'000);
 
-        // stage1-table is always fixed size, depending on the block size.
-        _output.stage1.resize(0x110'000 / block_size);
+        // _output.names.emplace_back(""); // All unassigned codepoints point here.
     }
 
     void codepoint_properties_loader::load()
@@ -581,8 +551,6 @@ namespace
 
         process_properties("extracted/DerivedGeneralCategory.txt",
                            [&](char32_t codepoint, string_view value) {
-                               (void) codepoint;
-                               (void) value;
                                properties(codepoint).general_category = make_general_category(value).value();
                            });
 
@@ -654,106 +622,18 @@ namespace
         loader.load();
         loader.create_multistage_tables();
 
-#if !defined(NDEBUG)
-        loader.verify();
-#endif
-
         return std::move(loader._output);
-    }
-
-    bool codepoint_properties_loader::is_same_block(size_t a, size_t b) const noexcept
-    {
-        assert(a % block_size == 0);
-        assert(b % block_size == 0);
-        assert(a + block_size <= _codepoints.size());
-        assert(b + block_size <= _codepoints.size());
-
-        for (size_t i = 0; i < block_size; ++i)
-            if (_codepoints[a + i] != _codepoints[b + i])
-                return false;
-        return true;
     }
 
     void codepoint_properties_loader::create_multistage_tables()
     {
-        auto const _ = scoped_timer { _log, "Creating multi stage tables" };
-        for (char32_t blockStart = 0; blockStart <= 0x110'000 - block_size; blockStart += block_size)
-            _output.stage1[blockStart / block_size] = get_or_create_index_to_stage2_block(blockStart);
+        auto const _ = scoped_timer { _log, "Creating multistage tables" };
+        auto input = gsl::span<codepoint_properties const>(_codepoints.data(), _codepoints.size());
+        support::generate(input, _output);
     }
-
-    codepoint_properties_loader::stage1_element_type codepoint_properties_loader::
-        get_or_create_index_to_stage2_block(char32_t blockStart)
-    {
-        if (auto other_block = find_same_block(static_cast<size_t>(blockStart)))
-            return _output.stage1[other_block.value()];
-
-        // Block has not been seen yet. Create a new block.
-        auto const stage2Index = _output.stage2.size() / block_size;
-        assert(stage2Index < numeric_limits<stage1_element_type>::max());
-
-        for (char32_t codepoint = blockStart; codepoint < blockStart + block_size; ++codepoint)
-            _output.stage2.emplace_back(get_or_create_index_to_property(codepoint));
-
-        assert(_output.stage2.size() % block_size == 0);
-
-        return static_cast<stage1_element_type>(stage2Index);
-    }
-
-    optional<size_t> codepoint_properties_loader::find_same_block(size_t blockStart) const noexcept
-    {
-        assert(blockStart % block_size == 0);
-        assert(blockStart + block_size <= _codepoints.size());
-
-        for (size_t otherBlockStart = 0; otherBlockStart < blockStart; otherBlockStart += block_size)
-            if (is_same_block(otherBlockStart, blockStart))
-                return { otherBlockStart / block_size };
-        return nullopt;
-    }
-
-    codepoint_properties_loader::stage2_element_type codepoint_properties_loader::
-        get_or_create_index_to_property(char32_t codepoint)
-    {
-        auto& properties = _output.properties;
-        auto const propertyIterator = find(properties.begin(), properties.end(), _codepoints[codepoint]);
-        if (propertyIterator != properties.end())
-            return static_cast<stage2_element_type>(distance(properties.begin(), propertyIterator));
-
-        properties.emplace_back(_codepoints[codepoint]);
-        auto const resultingIndex = properties.size() - 1;
-        assert(resultingIndex < numeric_limits<stage2_element_type>::max());
-        return static_cast<stage2_element_type>(resultingIndex);
-    }
-
-#if !defined(NDEBUG)
-    void codepoint_properties_loader::verify()
-    {
-        for (uint32_t blockStart = 0; blockStart <= 0x110'000 - block_size; ++blockStart)
-            verify_block(blockStart / block_size);
-    }
-
-    void codepoint_properties_loader::verify_block(uint32_t blockNumber)
-    {
-        for (uint32_t codepoint = blockNumber * block_size; codepoint < (blockNumber + 1) * block_size;
-             ++codepoint)
-        {
-            auto const& a = _codepoints[codepoint];
-            auto const& b = _output[codepoint];
-            if (a != b)
-            {
-                throw runtime_error(fmt::format("U+{:X} mismatch in properties. "
-                                                "Expected : {}; "
-                                                "Actual   : {}",
-                                                (unsigned) codepoint,
-                                                a,
-                                                b));
-            }
-        }
-    }
-#endif
 } // namespace
 
-codepoint_properties_table codepoint_properties_table::load_from_directory(string const& ucdDataDirectory,
-                                                                           std::ostream* log)
+codepoint_properties_table load_from_directory(std::string const& ucdDataDirectory, std::ostream* log)
 {
     return codepoint_properties_loader::load_from_directory(ucdDataDirectory, log);
 }
