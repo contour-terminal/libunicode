@@ -17,8 +17,12 @@
 namespace unicode
 {
 
-codepoint_properties::tables_view codepoint_properties::configured_tables { precompiled::stage1,
-                                                                            precompiled::stage2,
-                                                                            precompiled::properties };
+using table_view = codepoint_properties::tables_view;
+
+codepoint_properties::tables_view codepoint_properties::configured_tables {
+    gsl::span<table_view::stage1_element_type const>(precompiled::stage1.data(), precompiled::stage1.size()),
+    gsl::span<table_view::stage2_element_type const>(precompiled::stage2.data(), precompiled::stage2.size()),
+    gsl::span<codepoint_properties const>(precompiled::properties.data(), precompiled::properties.size())
+};
 
 } // namespace unicode

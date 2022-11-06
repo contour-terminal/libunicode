@@ -15,7 +15,8 @@
 
 #include <unicode/emoji_segmenter.h> // Only for EmojiSegmentationCategory.
 #include <unicode/support.h>         // Only for LIBUNICODE_PACKED.
-#include <unicode/ucd_enums.h>       // Only for the UCD enums.
+#include <unicode/support/multistage_table_view.h>
+#include <unicode/ucd_enums.h> // Only for the UCD enums.
 
 #include <gsl/span>
 
@@ -33,7 +34,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     East_Asian_Width east_asian_width = East_Asian_Width::Narrow;
     General_Category general_category = General_Category::Unassigned;
     EmojiSegmentationCategory emoji_segmentation_category = EmojiSegmentationCategory::Invalid;
-    uint8_t pad = 0;
+    Age age = Age::Unassigned;
 
     static uint8_t constexpr FlagEmoji = 0x01;                // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagEmojiPresentation = 0x02;    // NOLINT(readability-identifier-naming)
@@ -51,31 +52,13 @@ struct LIBUNICODE_PACKED codepoint_properties
     constexpr bool extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
     constexpr bool core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
 
-    struct tables_view
-    {
-        static constexpr uint32_t block_size = 256; // Must be power of two.
-        static_assert((block_size & (block_size - 1)) == 0, "block_size must be power of two");
-
-        using stage1_element_type = uint8_t;
-        using stage2_element_type = uint16_t;
-        gsl::span<stage1_element_type const> stage1;
-        gsl::span<stage2_element_type const> stage2;
-        gsl::span<codepoint_properties const> properties;
-
-        codepoint_properties const& get(char32_t codepoint) const noexcept
-        {
-            return unsafe_get(codepoint < 0x11'0000 ? codepoint : 0);
-        }
-
-        codepoint_properties const& unsafe_get(char32_t codepoint) const noexcept
-        {
-            auto const block_number = stage1.data()[codepoint / tables_view::block_size];
-            auto const block_start = block_number * tables_view::block_size;
-            auto const element_offset = codepoint % tables_view::block_size;
-            auto const property_index = stage2.data()[block_start + element_offset];
-            return properties.data()[property_index];
-        }
-    };
+    using tables_view = support::multistage_table_view<codepoint_properties,
+                                                       uint32_t,     // source type
+                                                       uint8_t,      // stage 1
+                                                       uint16_t,     // stage 2
+                                                       256,          // block size
+                                                       0x110'000 - 1 // max value
+                                                       >;
 
     static tables_view configured_tables;
 
