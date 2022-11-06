@@ -149,26 +149,26 @@ struct formatter<unicode::EmojiSegmentationCategory>
         switch (value)
         {
             // clang-format off
-            case unicode::EmojiSegmentationCategory::Invalid: return format_to(ctx.out(), "Invalid");
-            case unicode::EmojiSegmentationCategory::Emoji: return format_to(ctx.out(), "Emoji");
-            case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return format_to(ctx.out(), "EmojiTextPresentation");
-            case unicode::EmojiSegmentationCategory::EmojiEmojiPresentation: return format_to(ctx.out(), "EmojiEmojiPresentation");
-            case unicode::EmojiSegmentationCategory::EmojiModifierBase: return format_to(ctx.out(), "EmojiModifierBase");
-            case unicode::EmojiSegmentationCategory::EmojiModifier: return format_to(ctx.out(), "EmojiModifier");
-            case unicode::EmojiSegmentationCategory::EmojiVSBase: return format_to(ctx.out(), "EmojiVSBase");
-            case unicode::EmojiSegmentationCategory::RegionalIndicator: return format_to(ctx.out(), "RegionalIndicator");
-            case unicode::EmojiSegmentationCategory::KeyCapBase: return format_to(ctx.out(), "KeyCapBase");
-            case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return format_to(ctx.out(), "CombiningEnclosingKeyCap");
-            case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return format_to(ctx.out(), "CombiningEnclosingCircleBackslash");
-            case unicode::EmojiSegmentationCategory::ZWJ: return format_to(ctx.out(), "ZWJ");
-            case unicode::EmojiSegmentationCategory::VS15: return format_to(ctx.out(), "VS15");
-            case unicode::EmojiSegmentationCategory::VS16: return format_to(ctx.out(), "VS16");
-            case unicode::EmojiSegmentationCategory::TagBase: return format_to(ctx.out(), "TagBase");
-            case unicode::EmojiSegmentationCategory::TagSequence: return format_to(ctx.out(), "TagSequence");
-            case unicode::EmojiSegmentationCategory::TagTerm: return format_to(ctx.out(), "TagTerm");
+            case unicode::EmojiSegmentationCategory::Invalid: return fmt::format_to(ctx.out(), "Invalid");
+            case unicode::EmojiSegmentationCategory::Emoji: return fmt::format_to(ctx.out(), "Emoji");
+            case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return fmt::format_to(ctx.out(), "EmojiTextPresentation");
+            case unicode::EmojiSegmentationCategory::EmojiEmojiPresentation: return fmt::format_to(ctx.out(), "EmojiEmojiPresentation");
+            case unicode::EmojiSegmentationCategory::EmojiModifierBase: return fmt::format_to(ctx.out(), "EmojiModifierBase");
+            case unicode::EmojiSegmentationCategory::EmojiModifier: return fmt::format_to(ctx.out(), "EmojiModifier");
+            case unicode::EmojiSegmentationCategory::EmojiVSBase: return fmt::format_to(ctx.out(), "EmojiVSBase");
+            case unicode::EmojiSegmentationCategory::RegionalIndicator: return fmt::format_to(ctx.out(), "RegionalIndicator");
+            case unicode::EmojiSegmentationCategory::KeyCapBase: return fmt::format_to(ctx.out(), "KeyCapBase");
+            case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return fmt::format_to(ctx.out(), "CombiningEnclosingKeyCap");
+            case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return fmt::format_to(ctx.out(), "CombiningEnclosingCircleBackslash");
+            case unicode::EmojiSegmentationCategory::ZWJ: return fmt::format_to(ctx.out(), "ZWJ");
+            case unicode::EmojiSegmentationCategory::VS15: return fmt::format_to(ctx.out(), "VS15");
+            case unicode::EmojiSegmentationCategory::VS16: return fmt::format_to(ctx.out(), "VS16");
+            case unicode::EmojiSegmentationCategory::TagBase: return fmt::format_to(ctx.out(), "TagBase");
+            case unicode::EmojiSegmentationCategory::TagSequence: return fmt::format_to(ctx.out(), "TagSequence");
+            case unicode::EmojiSegmentationCategory::TagTerm: return fmt::format_to(ctx.out(), "TagTerm");
             // clang-format off
         }
-        return format_to(ctx.out(), "({})", unsigned(value));
-    }
+        return fmt::format_to(ctx.out(), "({})", unsigned(value));
+}
 };
 }

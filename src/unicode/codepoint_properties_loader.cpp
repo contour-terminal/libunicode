@@ -41,13 +41,13 @@ struct formatter<unicode::codepoint_properties>
     template <typename FormatContext>
     auto format(unicode::codepoint_properties const& value, FormatContext& ctx)
     {
-        return format_to(ctx.out(),
-                         "({}, {}, {}, {}, {})",
-                         value.emoji() ? "Emoji" : "Text",
-                         value.east_asian_width,
-                         value.script,
-                         value.general_category,
-                         value.grapheme_cluster_break);
+        return fmt::format_to(ctx.out(),
+                              "({}, {}, {}, {}, {})",
+                              value.emoji() ? "Emoji" : "Text",
+                              value.east_asian_width,
+                              value.script,
+                              value.general_category,
+                              value.grapheme_cluster_break);
     }
 };
 } // namespace fmt

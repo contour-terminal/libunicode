@@ -242,14 +242,14 @@ class EnumFmtWriter(EnumBuilder): # {{{
 
     def member(self, _member):
         self.file.write(
-                '            case {0}::{1}: return format_to(ctx.out(), "{2}");\n'.format(
+                '            case {0}::{1}: return fmt::format_to(ctx.out(), "{2}");\n'.format(
             self.enum_class, sanitize_identifier(_member), _member)
         )
 
     def end(self):
         self.file.write('            // clang-format off\n')
         self.file.write("        }\n")
-        self.file.write('        return format_to(ctx.out(), "({})", unsigned(value));\n')
+        self.file.write('        return fmt::format_to(ctx.out(), "({})", unsigned(value));\n')
         self.file.write("    }\n")
         self.file.write("};\n\n")
 
