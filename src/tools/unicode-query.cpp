@@ -98,6 +98,7 @@ void showCodepointProperties(char32_t codepoint)
     auto const properties = unicode::codepoint_properties::get(codepoint);
 
     // clang-format off
+    cout << fmt::format("Name                        : {}\n", unicode::codepoint_properties::name(codepoint));
     cout << fmt::format("Unicode Version             : {}\n", prettyAge(properties.age));
     cout << fmt::format("Codepoint                   : U+{:X}\n", uint32_t(codepoint));
     cout << fmt::format("UTF-8                       : {}\n", quotedAndEscaped(unicode::convert_to<char>(codepoint)));

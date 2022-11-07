@@ -3,6 +3,8 @@
 - Slightly improve performance of grapheme cluster segmentation.
 - Fixes grapheme cluster segmentation of multiple consecutive regional flags.
 - Add access to Age property of a codepoint (giving information about at which Unicode version a codepoint was introduced).
+- Add access to the assigned name of a codepoint.
+- unicode-query: Now also prints name and age properties.
 - CMake install target also installs header and library (not just tools).
 
 ## 0.1.0 (2022-11-03)

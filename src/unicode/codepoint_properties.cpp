@@ -25,4 +25,12 @@ codepoint_properties::tables_view codepoint_properties::configured_tables {
     gsl::span<codepoint_properties const>(precompiled::properties.data(), precompiled::properties.size())
 };
 
+codepoint_properties::names_view codepoint_properties::configured_names {
+    gsl::span<table_view::stage1_element_type const>(precompiled::names_stage1.data(),
+                                                     precompiled::names_stage1.size()),
+    gsl::span<table_view::stage2_element_type const>(precompiled::names_stage2.data(),
+                                                     precompiled::names_stage2.size()),
+    gsl::span<std::string_view const>(precompiled::names_stage3.data(), precompiled::names_stage3.size())
+};
+
 } // namespace unicode
