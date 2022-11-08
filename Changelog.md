@@ -7,6 +7,7 @@
 - unicode-query: Now also prints name and age properties.
 - CMake install target also installs header and library (not just tools).
 - Reduce number of dependencies down to fmtlib and (for unit tests) Catch2.
+- Enables libunicode to be found via CMake's `find_package()`.
 
 ## 0.1.0 (2022-11-03)
 

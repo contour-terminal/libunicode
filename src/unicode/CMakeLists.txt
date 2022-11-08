@@ -35,8 +35,9 @@ add_library(unicode_ucd STATIC
     ucd_ostream.h
 )
 add_library(unicode::ucd ALIAS unicode_ucd)
-target_include_directories(unicode_ucd PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_ucd PUBLIC fmt::fmt-header-only)
+target_include_directories(unicode_ucd PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+                                              $<INSTALL_INTERFACE:include>)
+target_link_libraries(unicode_ucd PUBLIC fmt::fmt)
 
 # =========================================================================================================
 
@@ -59,8 +60,9 @@ add_custom_command(
 
 add_library(unicode_loader STATIC codepoint_properties_loader.h codepoint_properties_loader.cpp)
 add_library(unicode::loader ALIAS unicode_loader)
-target_include_directories(unicode_loader PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_loader PUBLIC fmt::fmt-header-only unicode::ucd)
+target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+                                                 $<INSTALL_INTERFACE:include>)
+target_link_libraries(unicode_loader PUBLIC fmt::fmt unicode::ucd)
 
 # =========================================================================================================
 
@@ -97,19 +99,48 @@ set(public_headers
 set_target_properties(unicode PROPERTIES PUBLIC_HEADER "${public_headers}")
 
 add_library(unicode::core ALIAS unicode)
-target_include_directories(unicode PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode PUBLIC unicode::ucd fmt::fmt-header-only)
-
-install(TARGETS unicode
-        LIBRARY DESTINATION lib
-        PUBLIC_HEADER DESTINATION include/unicode)
+target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+                                          $<INSTALL_INTERFACE:include>)
+target_link_libraries(unicode PUBLIC unicode::ucd fmt::fmt)
 
 add_executable(unicode_tablegen tablegen.cpp)
-target_include_directories(unicode_tablegen PRIVATE ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_tablegen PRIVATE unicode::loader fmt::fmt-header-only)
+target_link_libraries(unicode_tablegen PRIVATE unicode::loader fmt::fmt)
 
-# --------------------------------------------------------------------------------------------------------
-# unicode_test
+# {{{ installation
+set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
+set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether or not to install CMake config and -version files.")
+
+set(INSTALL_TARGETS unicode_ucd unicode_loader unicode)
+set(TARGETS_EXPORT_NAME unicode-targets)
+
+# Create and install package configuration and version files.
+# Install library and headers.
+install(TARGETS ${INSTALL_TARGETS}
+        EXPORT ${TARGETS_EXPORT_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/unicode"
+        FRAMEWORK DESTINATION "."
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if(LIBUNICODE_INSTALL_CMAKE_FILES)
+    set(version "${CMAKE_PROJECT_VERSION}")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libunicode-config.cmake.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config.cmake @ONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libunicode-config-version.cmake.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config-version.cmake @ONLY)
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config.cmake
+                  ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config-version.cmake
+            DESTINATION ${LIBUNICODE_CMAKE_DIR})
+
+    # Install version, config and target files.
+    install(EXPORT ${TARGETS_EXPORT_NAME} DESTINATION ${LIBUNICODE_CMAKE_DIR} NAMESPACE unicode::)
+endif()
+# }}}
+
+# {{{ unicode_test
 if(LIBUNICODE_TESTING)
     enable_testing()
     add_executable(unicode_test
@@ -130,3 +161,4 @@ if(LIBUNICODE_TESTING)
     target_link_libraries(unicode_test unicode Catch2::Catch2)
     add_test(unicode_test unicode_test)
 endif()
+# }}}

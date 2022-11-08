@@ -59,6 +59,7 @@ jobs:
 
   ubuntu_matrix:
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           [

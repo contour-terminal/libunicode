@@ -68,6 +68,9 @@ else()
     set(USING_CCACHE_STRING "${CCACHE}")
 endif()
 
+# Export the cmake package to the cmake package registry (~/.cmake/packages/)
+export(PACKAGE libunicode)
+
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "    libunicode (version ${libunicode_VERSION}${libunicode_VERSION_SUFFIX})")
 message(STATUS "------------------------------------------------------------------------------")
