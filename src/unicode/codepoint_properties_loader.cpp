@@ -461,8 +461,8 @@ namespace
     class codepoint_properties_loader
     {
       public:
-        static codepoint_properties_table load_from_directory(string const& ucdDataDirectory,
-                                                              std::ostream* log = nullptr);
+        static std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
+            string const& ucdDataDirectory, std::ostream* log = nullptr);
 
       private:
         using tables_view = codepoint_properties::tables_view;
@@ -483,8 +483,8 @@ namespace
             auto const _ = scoped_timer { _log, fmt::format("Loading file {}", filePathSuffix) };
 
             // clang-format off
-            // [SPACE] ALNUMDOT ([SPACE] ALNUMDOT)::= (\s+[A-Za-z_0-9\.]+)?
-            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+(\s+[A-Za-z_0-9\.]+)?))");
+            // [SPACE] ALNUMDOT ([SPACE] ALNUMDOT)::= (\s+[A-Za-z_0-9\.]+)*
+            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+(\s+[A-Za-z_0-9\.]+)*))");
             auto const codepointRangePattern = regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
             // clang-format on
 
@@ -516,12 +516,16 @@ namespace
         std::ostream* _log;
         vector<codepoint_properties> _codepoints {}; // Meh!
         codepoint_properties_table _output {};
+
+        vector<std::string> _names {};
+        codepoint_names_table _outputNames {};
     };
 
     codepoint_properties_loader::codepoint_properties_loader(string ucdDataDirectory, std::ostream* log):
         _ucdDataDirectory { std::move(ucdDataDirectory) }, _log { log }
     {
         _codepoints.resize(0x110'000);
+        _names.resize(0x110'000);
 
         // _output.names.emplace_back(""); // All unassigned codepoints point here.
     }
@@ -553,6 +557,11 @@ namespace
                            [&](char32_t codepoint, string_view value) {
                                properties(codepoint).general_category = make_general_category(value).value();
                            });
+
+        // Prep-work for names loading
+        process_properties("extracted/DerivedName.txt", [&](char32_t codepoint, string_view value) {
+            _names[static_cast<size_t>(codepoint)] = string(value.data(), value.size());
+        });
 
         process_properties("auxiliary/GraphemeBreakProperty.txt", [&](char32_t codepoint, string_view value) {
             properties(codepoint).grapheme_cluster_break = make_gb(value).value();
@@ -615,25 +624,34 @@ namespace
         // }}}
     }
 
-    codepoint_properties_table codepoint_properties_loader::load_from_directory(
-        string const& ucdDataDirectory, std::ostream* log)
+    std::tuple<codepoint_properties_table, codepoint_names_table> codepoint_properties_loader::
+        load_from_directory(string const& ucdDataDirectory, std::ostream* log)
     {
         auto loader = codepoint_properties_loader { ucdDataDirectory, log };
         loader.load();
         loader.create_multistage_tables();
 
-        return std::move(loader._output);
+        return { std::move(loader._output), std::move(loader._outputNames) };
     }
 
     void codepoint_properties_loader::create_multistage_tables()
     {
-        auto const _ = scoped_timer { _log, "Creating multistage tables" };
-        auto input = gsl::span<codepoint_properties const>(_codepoints.data(), _codepoints.size());
-        support::generate(input, _output);
+        {
+            auto const _ = scoped_timer { _log, "Creating multistage tables (properties)" };
+            auto input = gsl::span<codepoint_properties const>(_codepoints.data(), _codepoints.size());
+            support::generate(input, _output);
+        }
+
+        {
+            auto const _ = scoped_timer { _log, "Creating multistage tables (names)" };
+            auto const names = gsl::span<string const>(_names.data(), _names.size());
+            support::generate(names, _outputNames);
+        }
     }
 } // namespace
 
-codepoint_properties_table load_from_directory(std::string const& ucdDataDirectory, std::ostream* log)
+std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
+    std::string const& ucdDataDirectory, std::ostream* log)
 {
     return codepoint_properties_loader::load_from_directory(ucdDataDirectory, log);
 }

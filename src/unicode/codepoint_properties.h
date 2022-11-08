@@ -60,13 +60,24 @@ struct LIBUNICODE_PACKED codepoint_properties
                                                        0x110'000 - 1 // max value
                                                        >;
 
+    using names_view = support::multistage_table_view<std::string_view,
+                                                      uint32_t,     // source type
+                                                      uint8_t,      // stage 1
+                                                      uint16_t,     // stage 2
+                                                      256,          // block size
+                                                      0x110'000 - 1 // max value
+                                                      >;
+
     static tables_view configured_tables;
+    static names_view configured_names;
 
     /// Retrieves the codepoint properties for the given codepoint.
     [[nodiscard]] static codepoint_properties const& get(char32_t codepoint) noexcept
     {
         return configured_tables.get(codepoint);
     }
+
+    [[nodiscard]] static std::string_view name(char32_t codepoint) { return configured_names.get(codepoint); }
 };
 
 static_assert(std::has_unique_object_representations_v<codepoint_properties>);

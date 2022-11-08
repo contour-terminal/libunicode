@@ -96,9 +96,26 @@ void write_cxx_properties_table(std::ostream& header,
     implementation << "}};\n\n";
 }
 
+void write_cxx_properties_table(std::ostream& header,
+                                std::ostream& implementation,
+                                std::vector<std::string> const& propertiesTable,
+                                std::string_view tableName)
+{
+    using namespace unicode;
+    header << "extern std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName
+           << ";\n";
+    implementation << "std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName
+                   << "{{\n";
+    for (size_t i = 0; i < propertiesTable.size(); ++i)
+        implementation << fmt::format("    \"{}\"sv,\n", propertiesTable[i]);
+    implementation << "}};\n\n";
+}
+
 void write_cxx_tables(unicode::codepoint_properties_table const& tables,
+                      unicode::codepoint_names_table const& namesTables,
                       std::ostream& header,
                       std::ostream& implementation,
+                      std::ostream& namesFile,
                       std::string_view namespaceName)
 {
     auto const _ = support::scoped_timer(&std::cout, "Writing C++ table files");
@@ -124,19 +141,43 @@ void write_cxx_tables(unicode::codepoint_properties_table const& tables,
     implementation << "\n";
     implementation << "#include <array>\n";
     implementation << "#include <cstdint>\n";
+    implementation << "#include <string_view>\n";
     implementation << "\n";
     implementation << "using namespace unicode;\n";
     implementation << "\n";
     implementation << "namespace " << namespaceName << "\n";
     implementation << "{\n\n";
-
     write_cxx_table(header, implementation, tables.stage1, "stage1", false);
     write_cxx_table(header, implementation, tables.stage2, "stage2", true);
     write_cxx_properties_table(header, implementation, tables.stage3, "properties");
-
     implementation << "} // end namespace " << namespaceName << "\n";
 
+    namesFile << disclaimer;
+    namesFile << "#include <unicode/codepoint_properties_data.h>\n";
+    namesFile << "\n";
+    namesFile << "#include <array>\n";
+    namesFile << "#include <string_view>\n";
+    namesFile << "#include <cstdint>\n";
+    namesFile << "\n";
+    namesFile << "using namespace unicode;\n";
+    namesFile << "using namespace std::string_view_literals;\n";
+    namesFile << "\n";
+    namesFile << "namespace " << namespaceName << "\n";
+    namesFile << "{\n\n";
+    write_cxx_table(header, namesFile, namesTables.stage1, "names_stage1", false);
+    write_cxx_table(header, namesFile, namesTables.stage2, "names_stage2", true);
+    write_cxx_properties_table(header, namesFile, namesTables.stage3, "names_stage3");
+    namesFile << "} // end namespace " << namespaceName << "\n";
+
     header << "\n} // end namespace " << namespaceName << "\n";
+}
+
+char const* consumeParamterOrDefault(int& i, int argc, char const* argv[], char const* defaultValue) noexcept
+{
+    if (argc > i)
+        return argv[i++];
+    else
+        return defaultValue;
 }
 
 } // namespace
@@ -144,16 +185,21 @@ void write_cxx_tables(unicode::codepoint_properties_table const& tables,
 // Usage: unicode_tablgen UCD_directory CPP_OUTPUTFILE NAMESPACE
 int main(int argc, char const* argv[])
 {
-    auto const ucdDataDirectory = argc >= 2 ? argv[1] : "_ucd/ucd-15.0.0";
-    auto const cxxImplementationFileName = argc >= 3 ? argv[2] : "codepoint_properties_data.cpp";
-    auto const cxxHeaderFileName = argc >= 4 ? argv[3] : "codepoint_properties_data.h";
-    auto const namespaceName = argc >= 5 ? argv[4] : "unicode::precompiled";
+    // clang-format off
+    int i = 1;
+    auto const ucdDataDirectory = consumeParamterOrDefault(i, argc, argv, "_ucd/ucd-15.0.0");
+    auto const cxxHeaderFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.h");
+    auto const cxxImplementationFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.cpp");
+    auto const cxxNamesFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_names_data.cpp");
+    auto const namespaceName = consumeParamterOrDefault(i, argc, argv, "unicode::precompiled");
+    // clang-format on
 
     auto headerFile = std::ofstream(cxxHeaderFileName);
     auto implementationFile = std::ofstream(cxxImplementationFileName);
-    auto const props = unicode::load_from_directory(ucdDataDirectory, &std::cout);
+    auto namesFile = std::ofstream(cxxNamesFileName);
+    auto const [props, names] = unicode::load_from_directory(ucdDataDirectory, &std::cout);
 
-    write_cxx_tables(props, headerFile, implementationFile, namespaceName);
+    write_cxx_tables(props, names, headerFile, implementationFile, namesFile, namespaceName);
 
     return EXIT_SUCCESS;
 }

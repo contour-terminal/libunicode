@@ -29,7 +29,15 @@ using codepoint_properties_table = support::multistage_table<codepoint_propertie
                                                              0x110'000 - 1 // max value
                                                              >;
 
-codepoint_properties_table load_from_directory(std::string const& ucdDataDirectory,
-                                               std::ostream* log = nullptr);
+using codepoint_names_table = support::multistage_table<std::string,
+                                                        uint32_t,     // source type
+                                                        uint8_t,      // stage 1
+                                                        uint16_t,     // stage 2
+                                                        256,          // block size
+                                                        0x110'000 - 1 // max value
+                                                        >;
+
+std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
+    std::string const& ucdDataDirectory, std::ostream* log);
 
 } // namespace unicode
