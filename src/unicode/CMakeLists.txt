@@ -36,7 +36,7 @@ add_library(unicode_ucd STATIC
 )
 add_library(unicode::ucd ALIAS unicode_ucd)
 target_include_directories(unicode_ucd PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_ucd PUBLIC fmt::fmt-header-only Microsoft.GSL::GSL)
+target_link_libraries(unicode_ucd PUBLIC fmt::fmt-header-only)
 
 # =========================================================================================================
 
@@ -60,7 +60,7 @@ add_custom_command(
 add_library(unicode_loader STATIC codepoint_properties_loader.h codepoint_properties_loader.cpp)
 add_library(unicode::loader ALIAS unicode_loader)
 target_include_directories(unicode_loader PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_loader PUBLIC fmt::fmt-header-only Microsoft.GSL::GSL unicode::ucd)
+target_link_libraries(unicode_loader PUBLIC fmt::fmt-header-only unicode::ucd)
 
 # =========================================================================================================
 
@@ -98,7 +98,7 @@ set_target_properties(unicode PROPERTIES PUBLIC_HEADER "${public_headers}")
 
 add_library(unicode::core ALIAS unicode)
 target_include_directories(unicode PUBLIC ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode PUBLIC unicode::ucd fmt::fmt-header-only Microsoft.GSL::GSL)
+target_link_libraries(unicode PUBLIC unicode::ucd fmt::fmt-header-only)
 
 install(TARGETS unicode
         LIBRARY DESTINATION lib
@@ -106,7 +106,7 @@ install(TARGETS unicode
 
 add_executable(unicode_tablegen tablegen.cpp)
 target_include_directories(unicode_tablegen PRIVATE ${PROJECT_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(unicode_tablegen PRIVATE unicode::loader fmt::fmt-header-only Microsoft.GSL::GSL)
+target_link_libraries(unicode_tablegen PRIVATE unicode::loader fmt::fmt-header-only)
 
 # --------------------------------------------------------------------------------------------------------
 # unicode_test

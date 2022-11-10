@@ -78,14 +78,6 @@ fetch_and_unpack_fmtlib()
         https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz
 }
 
-fetch_and_unpack_gsl()
-{
-    fetch_and_unpack \
-        GSL-3.1.0 \
-        gsl-3.1.0.tar.gz \
-        https://github.com/microsoft/GSL/archive/refs/tags/v3.1.0.tar.gz
-}
-
 fetch_and_unpack_yaml_cpp()
 {
     fetch_and_unpack \
@@ -137,7 +129,6 @@ install_deps_ubuntu()
         fi
     fi
 
-    fetch_and_unpack_gsl
     case $RELEASE in
         "18.04" | "19.04" | "20.04" | "21.04")
             # Older Ubuntu's don't have a recent enough fmt / range-v3, so supply it.
@@ -168,7 +159,6 @@ install_deps_FreeBSD()
         catch \
         cmake \
         libfmt \
-        microsoft-gsl \
         ninja \
         pkgconf \
         range-v3
@@ -184,15 +174,19 @@ install_deps_arch()
         catch2 \
         cmake \
         git \
-        microsoft-gsl \
         ninja \
         range-v3
 }
 
 install_deps_fedora()
 {
-    fetch_and_unpack_gsl
-    fetch_and_unpack_fmtlib
+    version=`cat /etc/fedora-release | awk '{print $3}'`
+
+    # Fedora 37+ contains fmtlib 9.1.0+, prefer this and fallback to embedding otherwise.
+    should_embed_fmtlib=yes
+    [ $version -ge 37 ] && should_embed_fmtlib=no
+
+    [ x$should_embed_fmtlib = xyes ] && fetch_and_unpack_fmtlib
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
     # catch-devel
@@ -204,7 +198,7 @@ install_deps_fedora()
         pkgconf
         range-v3-devel
     "
-    # Sadly, gsl-devel system package is too old to be used.
+    [ x$should_embed_fmtlib != xyes ] || packages="$packages fmt-devel"
     sudo dnf install $SYSDEP_ASSUME_YES $packages
 }
 
@@ -218,7 +212,6 @@ install_deps_darwin()
     # NB: Also available in brew: mimalloc
     # catch2: available in brew, but too new (version 3+)
     brew install $SYSDEP_ASSUME_YES \
-        cpp-gsl \
         fmt \
         pkg-config \
         range-v3
