@@ -18,9 +18,6 @@
 
 #include <fmt/format.h>
 
-#include <gsl/span>
-#include <gsl/span_ext>
-
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -48,12 +45,7 @@ struct multistage_table
     std::vector<Stage2ElementType> stage2; // mod
     std::vector<T> stage3;                 // values
 
-    auto to_view() const noexcept
-    {
-        return view_type { gsl::span<Stage1ElementType const>(stage1.data(), stage1.size()),
-                           gsl::span<Stage2ElementType const>(stage2.data(), stage2.size()),
-                           gsl::span<T const>(stage3.data(), stage3.size()) };
-    }
+    auto to_view() const noexcept { return view_type { stage1.data(), stage2.data(), stage3.data() }; }
 
     T const& get(SourceType index) const noexcept { return to_view().get(index); }
 };
@@ -67,20 +59,21 @@ template <typename T,
 class multistage_table_generator
 {
   public:
-    gsl::span<T const> _input;
+    T const* _input;
+    size_t _inputSize;
     multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& _output;
 
     void generate()
     {
-        assert(_input.size() % BlockSize == 0);
-        _output.stage1.resize(_input.size());
-        for (SourceType blockStart = 0; blockStart <= _input.size() - BlockSize; blockStart += BlockSize)
+        assert(_inputSize % BlockSize == 0);
+        _output.stage1.resize(_inputSize);
+        for (SourceType blockStart = 0; blockStart <= _inputSize - BlockSize; blockStart += BlockSize)
             _output.stage1[blockStart / BlockSize] = get_or_create_index_to_stage2_block(blockStart);
     }
 
     void verify() const
     {
-        for (SourceType blockStart = 0; blockStart <= _input.size() - BlockSize; ++blockStart)
+        for (SourceType blockStart = 0; blockStart <= _inputSize - BlockSize; ++blockStart)
             verify_block(blockStart / BlockSize);
     }
 
@@ -124,7 +117,7 @@ class multistage_table_generator
     std::optional<size_t> find_same_block(size_t blockStart) const noexcept
     {
         assert(blockStart % BlockSize == 0);
-        assert(blockStart + BlockSize <= _input.size());
+        assert(blockStart + BlockSize <= _inputSize);
 
         for (size_t otherBlockStart = 0; otherBlockStart < blockStart; otherBlockStart += BlockSize)
             if (is_same_block(otherBlockStart, blockStart))
@@ -139,8 +132,8 @@ class multistage_table_generator
     {
         assert(a % BlockSize == 0);
         assert(b % BlockSize == 0);
-        assert(a + BlockSize <= _input.size());
-        assert(b + BlockSize <= _input.size());
+        assert(a + BlockSize <= _inputSize);
+        assert(b + BlockSize <= _inputSize);
 
         for (size_t i = 0; i < BlockSize; ++i)
             if (_input[a + i] != _input[b + i])
@@ -170,12 +163,13 @@ template <typename T,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 void generate(
-    gsl::span<T const> input,
+    T const* input,
+    size_t inputSize,
     multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output)
 {
     auto builder =
         multistage_table_generator<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue> {
-            input, output
+            input, inputSize, output
         };
     builder.generate();
 }

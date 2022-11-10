@@ -638,14 +638,12 @@ namespace
     {
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (properties)" };
-            auto input = gsl::span<codepoint_properties const>(_codepoints.data(), _codepoints.size());
-            support::generate(input, _output);
+            support::generate(_codepoints.data(), _codepoints.size(), _output);
         }
 
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (names)" };
-            auto const names = gsl::span<string const>(_names.data(), _names.size());
-            support::generate(names, _outputNames);
+            support::generate(_names.data(), _names.size(), _outputNames);
         }
     }
 } // namespace

@@ -18,8 +18,6 @@
 #include <unicode/support/multistage_table_view.h>
 #include <unicode/ucd_enums.h> // Only for the UCD enums.
 
-#include <gsl/span>
-
 #include <type_traits>
 
 namespace unicode

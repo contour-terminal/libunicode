@@ -13,9 +13,6 @@
  */
 #pragma once
 
-#include <gsl/span>
-#include <gsl/span_ext>
-
 #include <cstdint>
 #include <limits>
 
@@ -35,13 +32,13 @@ struct multistage_table_view
     using stage2_element_type = Stage2ElementType;
     using value_type = T;
 
-    gsl::span<stage1_element_type const> stage1; // div
-    gsl::span<stage2_element_type const> stage2; // mod
-    gsl::span<value_type const> stage3;          // values
+    stage1_element_type const* stage1; // div
+    stage2_element_type const* stage2; // mod
+    value_type const* stage3;          // values
 
     static size_t constexpr block_size = BlockSize;
 
-    size_t size() const noexcept { return stage1.size(); }
+    // size_t size() const noexcept { return stage1.size(); }
 
     value_type const& get(source_type index, source_type fallback = source_type {}) const noexcept
     {
@@ -50,11 +47,11 @@ struct multistage_table_view
 
     value_type const& unsafe_get(source_type index) const noexcept
     {
-        auto const block_number = stage1.data()[index / BlockSize];
+        auto const block_number = stage1[index / BlockSize];
         auto const block_start = block_number * BlockSize;
         auto const element_offset = index % BlockSize;
-        auto const property_index = stage2.data()[block_start + element_offset];
-        return stage3.data()[property_index];
+        auto const property_index = stage2[block_start + element_offset];
+        return stage3[property_index];
     }
 };
 
