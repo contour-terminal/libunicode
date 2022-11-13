@@ -70,7 +70,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     static names_view configured_names;
 
     /// Retrieves the codepoint properties for the given codepoint.
-    [[nodiscard]] static codepoint_properties const& get(char32_t codepoint) noexcept
+    [[nodiscard]] static codepoint_properties get(char32_t codepoint) noexcept
     {
         return configured_tables.get(codepoint);
     }
