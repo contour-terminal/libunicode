@@ -131,17 +131,11 @@ install_deps_ubuntu()
 
     case $RELEASE in
         "18.04" | "19.04" | "20.04" | "21.04")
-            # Older Ubuntu's don't have a recent enough fmt / range-v3, so supply it.
-            fetch_and_unpack \
-                range-v3-0.11.0 \
-                range-v3-0.11.0.tar.gz \
-                https://github.com/ericniebler/range-v3/archive/refs/tags/0.11.0.tar.gz
-
             fetch_and_unpack_fmtlib
             fetch_and_unpack_Catch2
             ;;
         *)
-            packages="$packages libfmt-dev librange-v3-dev catch2"
+            packages="$packages libfmt-dev catch2"
             ;;
     esac
 
