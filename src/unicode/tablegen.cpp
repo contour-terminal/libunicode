@@ -14,10 +14,11 @@
 #include <unicode/codepoint_properties.h>
 #include <unicode/codepoint_properties_loader.h>
 #include <unicode/support/scoped_timer.h>
-#include <unicode/ucd_fmt.h>
+#include <unicode/ucd_ostream.h>
 
-#include <fmt/format.h>
-
+#include <fstream>
+#include <iomanip>
+#include <ios>
 #include <iostream>
 #include <string>
 
@@ -25,6 +26,16 @@ using namespace std::string_literals;
 
 namespace
 {
+
+std::string binstr(uint32_t n)
+{
+    std::string ss;
+    ss += "0b";
+    int const highestOrderBit = n <= 0xFF ? 7 : n <= 0xFFFF ? 15 : 31;
+    for (int i = highestOrderBit; i >= 0; --i)
+        ss += ((n & (1u << i)) != 0) ? '1' : '0';
+    return ss;
+}
 
 template <typename T>
 std::string_view minimum_uint_t(std::vector<T> const& values)
@@ -50,21 +61,20 @@ void write_cxx_table(std::ostream& header,
 
     auto const elementTypeName = minimum_uint_t(table);
 
-    header << fmt::format("extern std::array<{}, {}> const {};\n", elementTypeName, table.size(), name);
-    implementation << fmt::format("std::array<{}, {}> const {} {{", elementTypeName, table.size(), name);
+    header << "extern std::array<" << elementTypeName << ", " << table.size() << "> const " << name << ";\n";
+    implementation << "std::array<" << elementTypeName << ", " << table.size() << "> const " << name << " {";
     for (size_t i = 0; i < table.size(); ++i)
     {
         if (i % ColumnCount == 0)
             implementation << "\n    ";
 
         if (commentOnBlock && i % unicode::codepoint_properties::tables_view::block_size == 0)
-            implementation << fmt::format("// block number: {}\n    ",
-                                          i / unicode::codepoint_properties::tables_view::block_size);
+            implementation << "// block number: "
+                           << (i / unicode::codepoint_properties::tables_view::block_size) << "\n    ";
 
-        implementation << fmt::format("{:>4},", table[i]);
+        implementation << std::right << std::setw(4) << unsigned(table[i]) << ',';
     }
-    implementation << "\n";
-    implementation << fmt::format("}};\n\n");
+    implementation << "\n};\n\n";
 }
 
 void write_cxx_properties_table(std::ostream& header,
@@ -83,13 +93,13 @@ void write_cxx_properties_table(std::ostream& header,
         auto const& properties = propertiesTable[i];
         implementation << "    {"
                        << static_cast<unsigned>(properties.char_width) << ", "
-                       << (!properties.flags ? "0"s : fmt::format("0b{:08b}", properties.flags)) << ", "
-                       << fmt::format("Script::{}, ", properties.script)
-                       << fmt::format("Grapheme_Cluster_Break::{}, ", properties.grapheme_cluster_break)
-                       << fmt::format("East_Asian_Width::{}, ", properties.east_asian_width)
-                       << fmt::format("General_Category::{}, ", properties.general_category)
-                       << fmt::format("EmojiSegmentationCategory::{}, ", properties.emoji_segmentation_category)
-                       << fmt::format("Age::{} ", properties.age)
+                       << (!properties.flags ? "0"s : binstr(properties.flags)) << ", "
+                       << "Script::" << properties.script << ", "
+                       << "Grapheme_Cluster_Break::" << properties.grapheme_cluster_break << ", "
+                       << "East_Asian_Width::" << properties.east_asian_width << ", "
+                       << "General_Category::" << properties.general_category << ", "
+                       << "EmojiSegmentationCategory::" << properties.emoji_segmentation_category << ", "
+                       << "Age::" << properties.age
                        << "},\n";
         // clang-format on
     }
@@ -107,7 +117,7 @@ void write_cxx_properties_table(std::ostream& header,
     implementation << "std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName
                    << "{{\n";
     for (size_t i = 0; i < propertiesTable.size(); ++i)
-        implementation << fmt::format("    \"{}\"sv,\n", propertiesTable[i]);
+        implementation << "    \"" << propertiesTable[i] << "\"sv,\n";
     implementation << "}};\n\n";
 }
 
@@ -120,7 +130,7 @@ void write_cxx_tables(unicode::codepoint_properties_table const& tables,
 {
     auto const _ = support::scoped_timer(&std::cout, "Writing C++ table files");
 
-    auto const disclaimer = fmt::format("// This file was auto-generated using {}.\n", __FILE__);
+    auto const disclaimer = "// This file was auto-generated using " __FILE__ ".\n";
 
     header << disclaimer;
     header << "#pragma once\n";

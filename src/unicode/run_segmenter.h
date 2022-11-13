@@ -178,8 +178,3 @@ class basic_run_segmenter
 using run_segmenter = basic_run_segmenter<script_segmenter, emoji_segmenter>;
 
 } // namespace unicode
-
-// clang-format off
-#include <fmt/ostream.h>
-template <> struct fmt::formatter<unicode::run_segmenter::range>: fmt::ostream_formatter {};
-// clang-format on

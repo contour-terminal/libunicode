@@ -13,7 +13,7 @@
  */
 #pragma once
 
-#include <unicode/codepoint_properties_data.h>
+#include <unicode/codepoint_properties.h>
 #include <unicode/ucd.h>
 
 #include <string_view>

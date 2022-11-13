@@ -16,14 +16,14 @@
 #include <unicode/support/multistage_table_view.h>
 #include <unicode/support/scoped_timer.h>
 
-#include <fmt/format.h>
-
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <iomanip>
 #include <iterator>
 #include <limits>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -87,12 +87,10 @@ class multistage_table_generator
             auto const& b = _output.get(codepoint);
             if (a != b)
             {
-                throw runtime_error(fmt::format("U+{:X} mismatch in properties. "
-                                                "Expected : {}; "
-                                                "Actual   : {}",
-                                                (unsigned) codepoint,
-                                                a,
-                                                b));
+                throw runtime_error((std::ostringstream() << "U+" << std::hex << unsigned(codepoint)
+                                                          << " mismatch in properties.\n"
+                                                          << "Expected : " << a << "\nActual   : " << b)
+                                        .str());
             }
         }
     }

@@ -15,43 +15,15 @@
 #include <unicode/support/multistage_table_generator.h>
 #include <unicode/support/scoped_timer.h>
 #include <unicode/ucd_enums.h>
-#include <unicode/ucd_fmt.h>
-
-#include <fmt/format.h>
 
 #include <cassert>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <optional>
 #include <regex>
 #include <string_view>
 #include <utility>
-
-// {{{ fmtlib formatters
-namespace fmt
-{
-template <>
-struct formatter<unicode::codepoint_properties>
-{
-    template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx)
-    {
-        return ctx.begin();
-    }
-    template <typename FormatContext>
-    auto format(unicode::codepoint_properties const& value, FormatContext& ctx)
-    {
-        return fmt::format_to(ctx.out(),
-                              "({}, {}, {}, {}, {})",
-                              value.emoji() ? "Emoji" : "Text",
-                              value.east_asian_width,
-                              value.script,
-                              value.general_category,
-                              value.grapheme_cluster_break);
-    }
-};
-} // namespace fmt
-// }}}
 
 using namespace std;
 using namespace std::string_view_literals;
@@ -480,7 +452,7 @@ namespace
         template <typename T>
         void process_properties(string const& filePathSuffix, T callback)
         {
-            auto const _ = scoped_timer { _log, fmt::format("Loading file {}", filePathSuffix) };
+            auto const _ = scoped_timer { _log, "Loading file " + filePathSuffix };
 
             // clang-format off
             // [SPACE] ALNUMDOT ([SPACE] ALNUMDOT)::= (\s+[A-Za-z_0-9\.]+)*

@@ -36,7 +36,7 @@ struct multistage_table_view
     stage2_element_type const* stage2; // mod
     value_type const* stage3;          // values
 
-    static size_t constexpr block_size = BlockSize;
+    static std::size_t constexpr block_size = BlockSize;
 
     // size_t size() const noexcept { return stage1.size(); }
 

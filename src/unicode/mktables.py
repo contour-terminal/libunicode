@@ -200,12 +200,6 @@ class EnumOstreamWriter(EnumBuilder): # {{{
 
     def close(self):
         self.file.write("} // namespace unicode\n")
-        self.file.write("\n")
-        self.file.write("// clang-format off\n")
-        self.file.write("#include <fmt/ostream.h>\n")
-        for name in self.names:
-            self.file.write(f"template <> struct fmt::formatter<unicode::{name}>: fmt::ostream_formatter {{}};\n")
-        self.file.write("// clang-format off\n")
         self.file.close()
     # }}}
 class EnumFmtWriter(EnumBuilder): # {{{
