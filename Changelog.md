@@ -1,4 +1,4 @@
-## 0.1.1 (unreleased)
+## 0.2.0 (2022-11-13)
 
 - Slightly improve performance of grapheme cluster segmentation.
 - Fixes grapheme cluster segmentation of multiple consecutive regional flags.
