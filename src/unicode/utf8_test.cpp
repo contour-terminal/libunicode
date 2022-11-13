@@ -26,6 +26,9 @@
 using namespace std;
 using namespace unicode;
 
+namespace
+{
+
 std::string binstr(unsigned n)
 {
     string ss;
@@ -33,6 +36,8 @@ std::string binstr(unsigned n)
         ss += ((n & (1u << i)) != 0) ? '1' : '0';
     return ss;
 }
+
+} // namespace
 
 TEST_CASE("utf8.bytes_1", "[utf8]")
 {

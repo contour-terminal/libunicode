@@ -16,8 +16,6 @@
 #include <unicode/utf8.h>
 #include <unicode/width.h>
 
-#include <fmt/format.h>
-
 #include <algorithm>
 #include <cassert>
 #include <iterator>

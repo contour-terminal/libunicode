@@ -1,3 +1,4 @@
+include(GNUInstallDirs)
 
 # Automatically fetch Unicode database if not present.
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-generated
@@ -37,7 +38,6 @@ add_library(unicode_ucd STATIC
 add_library(unicode::ucd ALIAS unicode_ucd)
 target_include_directories(unicode_ucd PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                               $<INSTALL_INTERFACE:include>)
-target_link_libraries(unicode_ucd PUBLIC fmt::fmt)
 
 # =========================================================================================================
 
@@ -62,7 +62,7 @@ add_library(unicode_loader STATIC codepoint_properties_loader.h codepoint_proper
 add_library(unicode::loader ALIAS unicode_loader)
 target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                                  $<INSTALL_INTERFACE:include>)
-target_link_libraries(unicode_loader PUBLIC fmt::fmt unicode::ucd)
+target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 
 # =========================================================================================================
 
@@ -101,14 +101,15 @@ set_target_properties(unicode PROPERTIES PUBLIC_HEADER "${public_headers}")
 add_library(unicode::core ALIAS unicode)
 target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                           $<INSTALL_INTERFACE:include>)
-target_link_libraries(unicode PUBLIC unicode::ucd fmt::fmt)
+target_link_libraries(unicode PUBLIC unicode::ucd)
 
 add_executable(unicode_tablegen tablegen.cpp)
-target_link_libraries(unicode_tablegen PRIVATE unicode::loader fmt::fmt)
+target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
 
 # {{{ installation
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
 set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether or not to install CMake config and -version files.")
+message(NOTICE "HELLO HERE: ${LIBUNICODE_CMAKE_DIR}")
 
 set(INSTALL_TARGETS unicode_ucd unicode_loader unicode)
 set(TARGETS_EXPORT_NAME unicode-targets)
@@ -122,6 +123,15 @@ install(TARGETS ${INSTALL_TARGETS}
         PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/unicode"
         FRAMEWORK DESTINATION "."
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(
+    FILES
+        ucd.h
+        ucd_enums.h
+        ucd_fmt.h
+        ucd_ostream.h
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/unicode"
+)
 
 if(LIBUNICODE_INSTALL_CMAKE_FILES)
     set(version "${CMAKE_PROJECT_VERSION}")
@@ -158,7 +168,7 @@ if(LIBUNICODE_TESTING)
         width_test.cpp
         word_segmenter_test.cpp
     )
-    target_link_libraries(unicode_test unicode Catch2::Catch2)
+    target_link_libraries(unicode_test unicode Catch2::Catch2 fmt::fmt-header-only)
     add_test(unicode_test unicode_test)
 endif()
 # }}}

@@ -126,12 +126,41 @@ inline std::ostream& operator<<(std::ostream& os, PresentationStyle ps)
     return os;
 }
 
+inline std::ostream& operator<<(std::ostream& os, EmojiSegmentationCategory value)
+{
+    switch (value)
+    {
+        // clang-format off
+        case unicode::EmojiSegmentationCategory::Invalid: return os << "Invalid";
+        case unicode::EmojiSegmentationCategory::Emoji: return os << "Emoji";
+        case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return os << "EmojiTextPresentation";
+        case unicode::EmojiSegmentationCategory::EmojiEmojiPresentation: return os << "EmojiEmojiPresentation";
+        case unicode::EmojiSegmentationCategory::EmojiModifierBase: return os << "EmojiModifierBase";
+        case unicode::EmojiSegmentationCategory::EmojiModifier: return os << "EmojiModifier";
+        case unicode::EmojiSegmentationCategory::EmojiVSBase: return os << "EmojiVSBase";
+        case unicode::EmojiSegmentationCategory::RegionalIndicator: return os << "RegionalIndicator";
+        case unicode::EmojiSegmentationCategory::KeyCapBase: return os << "KeyCapBase";
+        case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return os << "CombiningEnclosingKeyCap";
+        case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return os << "CombiningEnclosingCircleBackslash";
+        case unicode::EmojiSegmentationCategory::ZWJ: return os << "ZWJ";
+        case unicode::EmojiSegmentationCategory::VS15: return os << "VS15";
+        case unicode::EmojiSegmentationCategory::VS16: return os << "VS16";
+        case unicode::EmojiSegmentationCategory::TagBase: return os << "TagBase";
+        case unicode::EmojiSegmentationCategory::TagSequence: return os << "TagSequence";
+        case unicode::EmojiSegmentationCategory::TagTerm: return os << "TagTerm";
+        // clang-format off
+    }
+    return os;
+}
+
 } // namespace unicode
 
 // clang-format off
+#if __has_include(<fmt/ostream.h>)
 #include <fmt/ostream.h>
+#if FMT_VERSION >= (9 * 10000 + 1 * 100 + 0)
 template <> struct fmt::formatter<unicode::PresentationStyle>: fmt::ostream_formatter {};
-// clang-format on
+
 
 namespace fmt
 {
@@ -172,3 +201,6 @@ struct formatter<unicode::EmojiSegmentationCategory>
 }
 };
 }
+#endif
+#endif
+// clang-format on

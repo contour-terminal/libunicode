@@ -17,15 +17,15 @@
 #include <unicode/grapheme_segmenter.h>
 #include <unicode/ucd.h>
 #include <unicode/ucd_enums.h>
-#include <unicode/ucd_fmt.h>
+#include <unicode/ucd_ostream.h>
 #include <unicode/utf8_grapheme_segmenter.h>
-
-#include <fmt/format.h>
 
 #include <cassert>
 #include <charconv>
+#include <iomanip>
 #include <iostream>
 #include <optional>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -35,16 +35,17 @@ namespace
 
 std::string quotedAndEscaped(std::string const& text)
 {
-    auto result = "\""s;
+    auto result = stringstream {};
+    result << '"';
     for (char const ch: text)
     {
         if (std::isprint(ch) && ch != '"')
-            result += ch;
+            result << ch;
         else
-            result += fmt::format("\\x{:02X}", uint8_t(ch));
+            result << "\\x" << setw(2) << std::hex << (unsigned(ch) & 0xFF);
     }
-    result += "\"";
-    return result;
+    result << "\"";
+    return result.str();
 }
 
 int printUsage(int exitCode)
@@ -86,7 +87,9 @@ vector<char32_t> parseChars(std::string_view text)
 
 string prettyAge(unicode::Age age)
 {
-    string str = fmt::format("{}", age);
+    // clang-format off
+    string str = [=]() { auto s = ostringstream(); s << age; return s.str(); }();
+    // clang-format on
     assert(str.at(0) == 'V');
     str = str.substr(1);
     replace(str.begin(), str.end(), '_', '.');
@@ -98,20 +101,20 @@ void showCodepointProperties(char32_t codepoint)
     auto const properties = unicode::codepoint_properties::get(codepoint);
 
     // clang-format off
-    cout << fmt::format("Name                        : {}\n", unicode::codepoint_properties::name(codepoint));
-    cout << fmt::format("Unicode Version             : {}\n", prettyAge(properties.age));
-    cout << fmt::format("Codepoint                   : U+{:X}\n", uint32_t(codepoint));
-    cout << fmt::format("UTF-8                       : {}\n", quotedAndEscaped(unicode::convert_to<char>(codepoint)));
+    cout << "Name                        : " << unicode::codepoint_properties::name(codepoint) << '\n';
+    cout << "Unicode Version             : " << prettyAge(properties.age) << '\n';
+    cout << "Codepoint                   : U+" << hex << uint32_t(codepoint) << '\n';
+    cout << "UTF-8                       : " << quotedAndEscaped(unicode::convert_to<char>(codepoint)) << '\n';
     if (properties.general_category != unicode::General_Category::Control)
-        cout << fmt::format("Display                     : {}\n", unicode::convert_to<char>(codepoint));
-    cout << fmt::format("Plane                       : {}\n", unicode::plane(codepoint));
-    cout << fmt::format("Block                       : {}\n", unicode::block(codepoint));
-    cout << fmt::format("Script                      : {}\n", unicode::script(codepoint));
-    cout << fmt::format("General Category            : {}\n", properties.general_category);
-    cout << fmt::format("East Asian Width            : {}\n", properties.east_asian_width);
-    cout << fmt::format("Character width             : {}\n", properties.char_width);
-    cout << fmt::format("Emoji Segmentation Category : {}\n", properties.emoji_segmentation_category);
-    cout << fmt::format("Grapheme Cluster Break      : {}\n", properties.grapheme_cluster_break);
+        cout << "Display                     : " << unicode::convert_to<char>(codepoint) << '\n';
+    cout << "Plane                       : " << unicode::plane(codepoint) << '\n';
+    cout << "Block                       : " << unicode::block(codepoint) << '\n';
+    cout << "Script                      : " << unicode::script(codepoint) << '\n';
+    cout << "General Category            : " << properties.general_category << '\n';
+    cout << "East Asian Width            : " << properties.east_asian_width << '\n';
+    cout << "Character width             : " << properties.char_width << '\n';
+    cout << "Emoji Segmentation Category : " << properties.emoji_segmentation_category << '\n';
+    cout << "Grapheme Cluster Break      : " << properties.grapheme_cluster_break << '\n';
     cout << "\n";
     // clang-format off
 }

@@ -7,6 +7,6 @@ if(LIBUNICODE_TOOLS)
     # install(TARGETS uc-inspect DESTINATION bin)
 
     add_executable(unicode-query unicode-query.cpp)
-    target_link_libraries(unicode-query fmt::fmt-header-only unicode)
+    target_link_libraries(unicode-query unicode)
     install(TARGETS unicode-query DESTINATION bin)
 endif()

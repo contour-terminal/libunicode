@@ -21,6 +21,7 @@
 #include <catch2/catch.hpp>
 
 #include <array>
+#include <sstream>
 #include <string>
 #include <string_view>
 
@@ -57,11 +58,10 @@ void test_run_segmentation(int lineNo, std::vector<Expectation> const& expectati
     unicode::run_segmenter::range actualSegment;
     for (size_t i = 0; i < expectations.size(); ++i)
     {
-        INFO(fmt::format("Line {}: run segmentation failed for part {}: \"{}\" to be {}",
-                         lineNo,
-                         i,
-                         to_utf8(expectations[i].text),
-                         expects[i]));
+        auto s = std::ostringstream {};
+        s << "Line " << lineNo << ": run segmentation failed for part " << i << ": \""
+          << to_utf8(expectations[i].text) << "\" to be " << expects[i];
+        INFO(s.str());
         bool const consumeSuccess = segmenter.consume(out(actualSegment));
         REQUIRE(consumeSuccess);
         CHECK(actualSegment == expects[i]);
