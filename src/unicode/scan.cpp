@@ -38,6 +38,7 @@ namespace unicode
 
 namespace
 {
+#if defined(__SSE2__)
     int countTrailingZeroBits(unsigned int value) noexcept
     {
 #if defined(_WIN32)
@@ -46,6 +47,7 @@ namespace
         return __builtin_ctz(value);
 #endif
     }
+#endif
 
     template <typename T>
     constexpr bool ascending(T low, T val, T high) noexcept
@@ -76,7 +78,7 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
 
-#if defined(__SSE2__)
+#if defined(__SSE2__) // TODO: support __aarch64__
     __m128i const ControlCodeMax = _mm_set1_epi8(0x20); // 0..0x1F
     __m128i const Complex = _mm_set1_epi8(static_cast<char>(0x80));
 

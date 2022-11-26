@@ -9,6 +9,7 @@
 - Reduce number of dependencies down to fmtlib and (for unit tests) Catch2.
 - Enables libunicode to be found via CMake's `find_package()`.
 - Improved default installation directories on UNIX via GNUInstallDirs helper.
+- Enable compiling on ARM64.
 
 ## 0.1.0 (2022-11-03)
 
