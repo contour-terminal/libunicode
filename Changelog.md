@@ -1,3 +1,7 @@
+## 0.2.1 (unreleased)
+
+- Fixes unicode-query's output for "character width".
+
 ## 0.2.0 (2022-11-13)
 
 - Slightly improve performance of grapheme cluster segmentation.

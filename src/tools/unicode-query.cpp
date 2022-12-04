@@ -112,7 +112,7 @@ void showCodepointProperties(char32_t codepoint)
     cout << "Script                      : " << unicode::script(codepoint) << '\n';
     cout << "General Category            : " << properties.general_category << '\n';
     cout << "East Asian Width            : " << properties.east_asian_width << '\n';
-    cout << "Character width             : " << properties.char_width << '\n';
+    cout << "Character width             : " << unsigned(properties.char_width) << '\n';
     cout << "Emoji Segmentation Category : " << properties.emoji_segmentation_category << '\n';
     cout << "Grapheme Cluster Break      : " << properties.grapheme_cluster_break << '\n';
     cout << "\n";
