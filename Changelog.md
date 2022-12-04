@@ -1,6 +1,7 @@
 ## 0.2.1 (unreleased)
 
 - Fixes unicode-query's output for "character width".
+- unicode-query is now linked statically on UNIX platforms.
 
 ## 0.2.0 (2022-11-13)
 

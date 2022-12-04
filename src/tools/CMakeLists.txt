@@ -8,5 +8,8 @@ if(LIBUNICODE_TOOLS)
 
     add_executable(unicode-query unicode-query.cpp)
     target_link_libraries(unicode-query unicode)
+    if(UNIX)
+        target_link_libraries(unicode-query "-static")
+    endif()
     install(TARGETS unicode-query DESTINATION bin)
 endif()
