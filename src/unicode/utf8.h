@@ -137,7 +137,10 @@ inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
             _state.character = _byte & 0b0000'0111;
         }
         else
+        {
+            _state.currentLength = 1;
             return Invalid {};
+        }
     }
     else
     {

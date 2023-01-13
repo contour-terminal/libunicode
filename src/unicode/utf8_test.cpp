@@ -138,6 +138,14 @@ TEST_CASE("utf8.from_utf8", "[utf8]")
     CHECK(b32 == U"😖:-)");
 }
 
+TEST_CASE("utf8.from_utf8.invalid", "[utf8]")
+{
+    // Ensure invalid bytes are consumed and ignored accordingly.
+    auto const a8 = string { "Hi\xb1Ho" };
+    auto const a32 = from_utf8(a8);
+    CHECK(a32 == U"HiHo");
+}
+
 TEST_CASE("utf8.iter", "[utf8]")
 {
     auto constexpr values = string_view {
