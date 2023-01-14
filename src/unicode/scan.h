@@ -20,6 +20,7 @@
 namespace unicode
 {
 
+/// Holds the result of a call to scan_test().
 struct scan_result
 {
     /// Number of columns scanned.
@@ -38,10 +39,41 @@ struct scan_result
     char const* end;
 };
 
+/// Holds the state to keep through a consecutive sequence of calls to scan_test().
+///
+/// This state holds the UTF-8 decoding state, if processing had to be stopped
+/// at an incomplete UTF-8 byte sequence,
+/// and the last decoded Unicode codepoint necessary for grapheme cluster segmentation.
 struct scan_state
 {
     utf8_decoder_state utf8 {};
     char32_t lastCodepointHint {};
+};
+
+/// Callback-interface that allows precisely understanding the structure of a UTF-8 sequence.
+class grapheme_cluster_receiver
+{
+  public:
+    virtual ~grapheme_cluster_receiver() = default;
+
+    virtual void receiveAsciiSequence(std::string_view codepoints) noexcept = 0;
+    virtual void receiveGraphemeCluster(std::string_view codepoints, size_t columnCount) noexcept = 0;
+    virtual void receiveInvalidGraphemeCluster() noexcept = 0;
+};
+
+/// Quite obviousely, this grapheme_cluster_receiver will do nothing.
+class null_receiver final: public grapheme_cluster_receiver
+{
+  public:
+    void receiveAsciiSequence(std::string_view) noexcept override {}
+    void receiveGraphemeCluster(std::string_view, size_t) noexcept override {}
+    void receiveInvalidGraphemeCluster() noexcept override {}
+
+    static null_receiver& get() noexcept
+    {
+        static null_receiver instance {};
+        return instance;
+    }
 };
 
 namespace detail
@@ -49,7 +81,8 @@ namespace detail
     size_t scan_for_text_ascii(std::string_view text, size_t maxColumnCount) noexcept;
     scan_result scan_for_text_nonascii(scan_state& state,
                                        std::string_view text,
-                                       size_t maxColumnCount) noexcept;
+                                       size_t maxColumnCount,
+                                       grapheme_cluster_receiver& receiver) noexcept;
 } // namespace detail
 
 /// Scans a sequence of UTF-8 encoded bytes.
@@ -69,6 +102,11 @@ namespace detail
 /// @return scanned textual result. This is, a sequence of
 ///         either valid or invalid UTF-8 codepoints,
 ///         but not incomplete codepoints at the end.
-scan_result scan_for_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept;
+scan_result scan_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept;
+
+scan_result scan_text(scan_state& state,
+                      std::string_view text,
+                      size_t maxColumnCount,
+                      grapheme_cluster_receiver& receiver) noexcept;
 
 } // namespace unicode

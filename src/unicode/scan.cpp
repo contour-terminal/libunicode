@@ -110,7 +110,8 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
 
 scan_result detail::scan_for_text_nonascii(scan_state& state,
                                            string_view text,
-                                           size_t maxColumnCount) noexcept
+                                           size_t maxColumnCount,
+                                           grapheme_cluster_receiver& receiver) noexcept
 {
     size_t count = 0;
 
@@ -128,8 +129,22 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
     char const* resultStart = state.utf8.expectedLength ? start - state.utf8.currentLength : start;
     char const* resultEnd = resultStart;
 
-    while (input != end && count <= maxColumnCount && is_complex(*input))
+    while (input != end && count <= maxColumnCount)
     {
+        if (is_control(*input) || !is_complex(*input))
+        {
+            // Incomplete UTF-8 sequence hit. That's invalid as well.
+            if (state.utf8.expectedLength)
+            {
+                ++count;
+                receiver.receiveInvalidGraphemeCluster();
+                state.utf8 = {};
+            }
+            state.lastCodepointHint = 0;
+            resultEnd = input;
+            break;
+        }
+
         auto const result = from_utf8(state.utf8, static_cast<uint8_t>(*input++));
         ++byteCount;
 
@@ -154,6 +169,7 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
                     input -= byteCount;
                     break;
                 }
+                receiver.receiveGraphemeCluster(string_view(clusterStart, byteCount), currentClusterWidth);
 
                 // And start a new grapheme cluster.
                 currentClusterWidth = nextWidth;
@@ -185,25 +201,30 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
         else
         {
             assert(holds_alternative<Invalid>(result));
-            ++count;
+            count++;
+            receiver.receiveInvalidGraphemeCluster();
             currentClusterWidth = 0;
             state.lastCodepointHint = 0;
+            state.utf8.expectedLength = 0;
             byteCount = 0;
         }
     }
     count += currentClusterWidth;
-
-    // if (count)
-    //     fmt::print("countNonAsciiTextChars: {} codepoints: \"{}\"\n",
-    //                count,
-    //                string_view(start, size_t(distance(start, input))));
 
     assert(resultStart <= resultEnd);
 
     return { count, input, resultStart, resultEnd };
 }
 
-scan_result scan_for_text(scan_state& state, string_view text, size_t maxColumnCount) noexcept
+scan_result scan_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept
+{
+    return scan_text(state, text, maxColumnCount, null_receiver::get());
+}
+
+scan_result scan_text(scan_state& state,
+                      std::string_view text,
+                      size_t maxColumnCount,
+                      grapheme_cluster_receiver& receiver) noexcept
 {
     //       ----(a)--->   A   -------> END
     //                   ^   |
@@ -225,10 +246,13 @@ scan_result scan_for_text(scan_state& state, string_view text, size_t maxColumnC
     // attempt to finish that one first.
     if (state.utf8.expectedLength != 0)
     {
-        result = detail::scan_for_text_nonascii(state, text, maxColumnCount);
+        result = detail::scan_for_text_nonascii(state, text, maxColumnCount, receiver);
         text = std::string_view(result.end,
                                 static_cast<size_t>(std::distance(result.end, text.data() + text.size())));
     }
+
+    if (text.empty())
+        return result;
 
     auto nextState = is_complex(text.front()) ? NextState::Complex : NextState::Trivial;
     while (result.count < maxColumnCount && result.next != (text.data() + text.size()))
@@ -239,6 +263,7 @@ scan_result scan_for_text(scan_state& state, string_view text, size_t maxColumnC
                 auto const count = detail::scan_for_text_ascii(text, maxColumnCount - result.count);
                 if (!count)
                     return result;
+                receiver.receiveAsciiSequence(text.substr(0, count));
                 result.count += count;
                 result.next += count;
                 result.end += count;
@@ -247,10 +272,13 @@ scan_result scan_for_text(scan_state& state, string_view text, size_t maxColumnC
                 break;
             }
             case NextState::Complex: {
-                auto const sub = detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count);
+                auto const sub =
+                    detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count, receiver);
+                result.next = sub.next;
+                if (!sub.count)
+                    return result;
                 nextState = NextState::Trivial;
                 result.count += sub.count;
-                result.next = sub.next;
                 result.end = sub.end;
                 text.remove_prefix(static_cast<size_t>(std::distance(sub.start, sub.end)));
                 break;
