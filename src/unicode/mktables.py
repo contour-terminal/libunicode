@@ -313,10 +313,10 @@ class UCDGenerator: # {{{
         self.header = open(_header_file, 'w', encoding='utf-8', newline='\u000A')
         self.impl = open(_impl_file, 'w', encoding='utf-8', newline='\u000A')
 
-        self.singleValueRE = re.compile('([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
-        self.rangeValueRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
-        self.singleValueMultiRE = re.compile('([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
-        self.rangeValueMultiRE = re.compile('([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
+        self.singleValueRE = re.compile(r'([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
+        self.rangeValueRE = re.compile(r'([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*(\w+)\s*#\s*(.*)$')
+        self.singleValueMultiRE = re.compile(r'([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
+        self.rangeValueMultiRE = re.compile(r'([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([\w\s]+)#\s*(.*)$')
 
         self.general_category_map = dict()
         self.general_category = list()
@@ -393,8 +393,8 @@ namespace unicode
 
         with uopen(self.ucd_dir + '/' + PropertyValueAliases_fname) as f:
             # gc ; C   ; Other    # Cc | Cf | Cn | Co | Cs
-            headerRE = re.compile('^#\s*(\w+) \((\w+)\)$')
-            lineRE = re.compile('^(\w+)\s*;\s*([a-zA-Z0-9_\.]+)\s*;\s*([a-zA-Z0-9_]+).*$')
+            headerRE = re.compile(r'^#\s*(\w+) \((\w+)\)$')
+            lineRE = re.compile(r'^(\w+)\s*;\s*([a-zA-Z0-9_\.]+)\s*;\s*([a-zA-Z0-9_]+).*$')
             property_values = dict()
 
             while True:
@@ -514,7 +514,7 @@ namespace unicode
 
     def load_general_category(self): # {{{
         with uopen(self.ucd_dir + DerivedGeneralCategory_fname) as f:
-            headerRE = re.compile('^#\s*General_Category=(\w+)$')
+            headerRE = re.compile(r'^#\s*General_Category=(\w+)$')
             property_values = self.property_values['General_Category']
             cat_name = ''
             cats_grouped = dict()
@@ -646,7 +646,7 @@ namespace unicode
 
     def load_properties(self, filename: str, prop_key: str): # {{{
         with uopen(filename) as f:
-            headerRE = re.compile('^#\s*{}:\s*(\w+)$'.format(prop_key))
+            headerRE = re.compile(r'^#\s*{}:\s*(\w+)$'.format(prop_key))
 
             # collect
             props_name = ''
@@ -767,7 +767,7 @@ namespace unicode
     def load_blocks(self): # {{{
         filename = self.ucd_dir + '/' + Blocks_fname
         with uopen(filename) as f:
-            line_regex = re.compile('^([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+);\s*(.*)$')
+            line_regex = re.compile(r'^([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+);\s*(.*)$')
             blocks = list()
             while True:
                 line = f.readline()
