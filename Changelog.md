@@ -2,6 +2,7 @@
 
 - Fixes unicode-query's output for "character width".
 - Fixes decoding invalid UTF-8 locking up.
+- Fixes stage1 multistage-table sizes, reducing memory footprint a bit.
 - unicode-query is now linked statically on UNIX platforms.
 
 ## 0.2.0 (2022-11-13)

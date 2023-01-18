@@ -66,7 +66,7 @@ class multistage_table_generator
     void generate()
     {
         assert(_inputSize % BlockSize == 0);
-        _output.stage1.resize(_inputSize);
+        _output.stage1.resize(_inputSize / BlockSize);
         for (SourceType blockStart = 0; blockStart <= _inputSize - BlockSize; blockStart += BlockSize)
             _output.stage1[blockStart / BlockSize] = get_or_create_index_to_stage2_block(blockStart);
     }
