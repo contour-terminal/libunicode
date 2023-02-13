@@ -87,6 +87,7 @@ set(public_headers
     convert.h
     emoji_segmenter.h
     grapheme_segmenter.h
+    intrinsics.h
     run_segmenter.h
     scan.h
     script_segmenter.h
