@@ -13,7 +13,7 @@
  */
 #pragma once
 
-#if defined(__x86_64__)
+#if defined(__x86_64__) || defined(_M_AMD64)
     #include <emmintrin.h> // AVX, AVX2, FMP
     #include <immintrin.h> // SSE2
 #endif
@@ -34,7 +34,7 @@ struct platform_intrinsics;
     #pragma GCC diagnostic ignored "-Wignored-attributes"
 #endif
 
-#if defined(__x86_64__) // {{{
+#if defined(__x86_64__) || defined(_M_AMD64) // {{{
 
 template <>
 struct platform_intrinsics<__m128i>
