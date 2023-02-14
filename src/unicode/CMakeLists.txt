@@ -87,6 +87,7 @@ set(public_headers
     convert.h
     emoji_segmenter.h
     grapheme_segmenter.h
+    intrinsics.h
     run_segmenter.h
     scan.h
     script_segmenter.h
@@ -109,7 +110,6 @@ target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
 # {{{ installation
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
 set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether or not to install CMake config and -version files.")
-message(NOTICE "HELLO HERE: ${LIBUNICODE_CMAKE_DIR}")
 
 set(INSTALL_TARGETS unicode_ucd unicode_loader unicode)
 set(TARGETS_EXPORT_NAME unicode-targets)

@@ -12,6 +12,7 @@
  * limitations under the License.
  */
 #include <unicode/grapheme_segmenter.h>
+#include <unicode/intrinsics.h>
 #include <unicode/scan.h>
 #include <unicode/utf8.h>
 #include <unicode/width.h>
@@ -38,16 +39,14 @@ namespace unicode
 
 namespace
 {
-#if defined(__SSE2__)
     [[maybe_unused]] int countTrailingZeroBits(unsigned int value) noexcept
     {
-    #if defined(_WIN32)
+#if defined(_WIN32)
         return _tzcnt_u32(value);
-    #else
+#else
         return __builtin_ctz(value);
-    #endif
-    }
 #endif
+    }
 
     template <typename T>
     constexpr bool ascending(T low, T val, T high) noexcept
@@ -78,26 +77,24 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
 
-#if defined(__SSE2__)                                   // TODO: support __aarch64__
-    __m128i const ControlCodeMax = _mm_set1_epi8(0x20); // 0..0x1F
-    __m128i const Complex = _mm_set1_epi8(static_cast<char>(0x80));
+    intrinsics::m128i const ControlCodeMax = intrinsics::set1_epi8(0x20); // 0..0x1F
+    intrinsics::m128i const Complex = intrinsics::set1_epi8(-128);        // equals to 0x80 (0b1000'0000)
 
-    while (input < end - sizeof(__m128i))
+    while (input < end - sizeof(intrinsics::m128i))
     {
-        __m128i batch = _mm_loadu_si128((__m128i*) input);
-        __m128i isControl = _mm_cmplt_epi8(batch, ControlCodeMax);
-        __m128i isComplex = _mm_and_si128(batch, Complex);
-        //__m128i isComplex = _mm_cmplt_epi8(batch, Complex);
-        __m128i testPack = _mm_or_si128(isControl, isComplex);
-        if (int const check = _mm_movemask_epi8(testPack); check != 0)
+        intrinsics::m128i batch = intrinsics::load_unaligned((intrinsics::m128i*) input);
+        intrinsics::m128i isControl = intrinsics::compare_less(batch, ControlCodeMax);
+        intrinsics::m128i isComplex = intrinsics::and128(batch, Complex);
+        // intrinsics::m128i isComplex = _mm_cmplt_epi8(batch, Complex);
+        intrinsics::m128i testPack = intrinsics::or128(isControl, isComplex);
+        if (int const check = intrinsics::movemask_epi8(testPack); check != 0)
         {
             int advance = countTrailingZeroBits(static_cast<unsigned>(check));
             input += advance;
             break;
         }
-        input += sizeof(__m128i);
+        input += sizeof(intrinsics::m128i);
     }
-#endif
 
     while (input != end && is_ascii(*input))
         ++input;
