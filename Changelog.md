@@ -1,6 +1,6 @@
 ## 0.2.2 (unreleased)
 
-- ...
+- Fixes build error on GCC 13.
 
 ## 0.2.1 (2023-02-14)
 
