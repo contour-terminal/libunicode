@@ -14,6 +14,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <iterator>
 #include <optional>
 #include <string_view>
