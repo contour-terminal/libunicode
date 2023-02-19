@@ -16,6 +16,7 @@
 #include <array>
 #include <iterator>
 #include <optional>
+#include <cstdint>
 #include <string_view>
 #include <type_traits>
 
