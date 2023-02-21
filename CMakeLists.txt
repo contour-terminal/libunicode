@@ -38,6 +38,10 @@ option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [d
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 
+if(LIBUNICODE_TESTING)
+    enable_testing()
+endif()
+
 # ----------------------------------------------------------------------------
 set(LIBUNICODE_UCD_VERSION "15.0.0" CACHE STRING "libunicode: Unicode version")
 set(LIBUNICODE_UCD_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_ucd" CACHE PATH "Path to directory for downloaded files & extracted directories.")

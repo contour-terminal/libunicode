@@ -152,7 +152,6 @@ endif()
 
 # {{{ unicode_test
 if(LIBUNICODE_TESTING)
-    enable_testing()
     add_executable(unicode_test
         capi_test.cpp
         convert_test.cpp
