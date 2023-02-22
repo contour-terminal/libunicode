@@ -3,6 +3,7 @@
 - Fixes build error on GCC 13.
 - Fixes properly stopping at control characters in complex sub-state in scan API.
 - Fixes successful processing invalid UTF-8 in scan API.
+- Changes project and include directory from `unicode` to `libunicode` to avoid include path conflict with `ICU`.
 
 ## 0.2.1 (2023-02-14)
 

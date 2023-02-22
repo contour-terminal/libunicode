@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-#include <unicode/codepoint_properties_loader.h>
-#include <unicode/convert.h>
-#include <unicode/grapheme_segmenter.h>
-#include <unicode/ucd.h>
-#include <unicode/ucd_enums.h>
-#include <unicode/ucd_ostream.h>
-#include <unicode/utf8_grapheme_segmenter.h>
+#include <libunicode/codepoint_properties_loader.h>
+#include <libunicode/convert.h>
+#include <libunicode/grapheme_segmenter.h>
+#include <libunicode/ucd.h>
+#include <libunicode/ucd_enums.h>
+#include <libunicode/ucd_ostream.h>
+#include <libunicode/utf8_grapheme_segmenter.h>
 
 #include <cassert>
 #include <charconv>

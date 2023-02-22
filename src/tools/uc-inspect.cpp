@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-#include <unicode/convert.h>
-#include <unicode/grapheme_segmenter.h>
-#include <unicode/run_segmenter.h>
-#include <unicode/ucd.h>
-#include <unicode/ucd_ostream.h>
-#include <unicode/utf8.h>
-#include <unicode/width.h>
+#include <libunicode/convert.h>
+#include <libunicode/grapheme_segmenter.h>
+#include <libunicode/run_segmenter.h>
+#include <libunicode/ucd.h>
+#include <libunicode/ucd_ostream.h>
+#include <libunicode/utf8.h>
+#include <libunicode/width.h>
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>

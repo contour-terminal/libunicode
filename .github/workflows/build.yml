@@ -55,7 +55,7 @@ jobs:
       - name: "build"
         run: cmake --build build/ -- -j3
       - name: "test"
-        run: ./build/src/unicode/unicode_test
+        run: ./build/src/libunicode/unicode_test
 
   ubuntu_matrix:
     strategy:
@@ -98,7 +98,7 @@ jobs:
       - name: "build"
         run: cmake --build build/ -- -j3
       - name: "test"
-        run: ./build/src/unicode/unicode_test
+        run: ./build/src/libunicode/unicode_test
 
   windows:
     name: "Windows"
@@ -132,4 +132,4 @@ jobs:
       - name: "Build"
         run: cmake --build build/ --config Release
       - name: "test: libterminal"
-        run: .\build\src\unicode\Release\unicode_test.exe
+        run: .\build\src\libunicode\Release\unicode_test.exe
