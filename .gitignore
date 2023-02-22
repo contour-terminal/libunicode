@@ -6,8 +6,8 @@
 /.vscode/
 /sandbox/
 /target/
-src/unicode/ucd.cpp
-src/unicode/ucd.h
-src/unicode/ucd_enums.h
-src/unicode/ucd_fmt.h
-src/unicode/ucd_ostream.h
+src/libunicode/ucd.cpp
+src/libunicode/ucd.h
+src/libunicode/ucd_enums.h
+src/libunicode/ucd_fmt.h
+src/libunicode/ucd_ostream.h
