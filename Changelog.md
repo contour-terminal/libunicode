@@ -1,6 +1,8 @@
 ## 0.2.2 (unreleased)
 
 - Fixes build error on GCC 13.
+- Fixes properly stopping at control characters in complex sub-state in scan API.
+- Fixes successful processing invalid UTF-8 in scan API.
 
 ## 0.2.1 (2023-02-14)
 
