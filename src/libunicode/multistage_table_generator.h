@@ -13,8 +13,8 @@
  */
 #pragma once
 
-#include <libunicode/support/multistage_table_view.h>
-#include <libunicode/support/scoped_timer.h>
+#include <libunicode/multistage_table_view.h>
+#include <libunicode/scoped_timer.h>
 
 #include <algorithm>
 #include <cassert>
