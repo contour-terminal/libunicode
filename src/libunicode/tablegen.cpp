@@ -13,7 +13,7 @@
  */
 #include <libunicode/codepoint_properties.h>
 #include <libunicode/codepoint_properties_loader.h>
-#include <libunicode/support/scoped_timer.h>
+#include <libunicode/scoped_timer.h>
 #include <libunicode/ucd_ostream.h>
 
 #include <fstream>

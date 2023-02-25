@@ -88,16 +88,24 @@ set(public_headers
     emoji_segmenter.h
     grapheme_segmenter.h
     intrinsics.h
+    multistage_table_view.h
     run_segmenter.h
     scan.h
     script_segmenter.h
+    support.h
     utf8.h
     utf8_grapheme_segmenter.h
     width.h
     word_segmenter.h
 )
 
+set(private_headers
+    multistage_table_generator.h
+    scoped_timer.h
+)
+
 set_target_properties(unicode PROPERTIES PUBLIC_HEADER "${public_headers}")
+set_target_properties(unicode PROPERTIES PRIVATE_HEADER "${private_headers}")
 
 add_library(unicode::core ALIAS unicode)
 target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
@@ -121,6 +129,7 @@ install(TARGETS ${INSTALL_TARGETS}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/libunicode"
+        PRIVATE_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/libunicode"
         FRAMEWORK DESTINATION "."
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 

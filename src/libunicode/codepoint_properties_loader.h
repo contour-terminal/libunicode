@@ -14,7 +14,7 @@
 #pragma once
 
 #include <libunicode/codepoint_properties.h>
-#include <libunicode/support/multistage_table_generator.h>
+#include <libunicode/multistage_table_generator.h>
 
 #include <vector>
 

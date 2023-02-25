@@ -12,8 +12,8 @@
  * limitations under the License.
  */
 #include <libunicode/codepoint_properties_loader.h>
-#include <libunicode/support/multistage_table_generator.h>
-#include <libunicode/support/scoped_timer.h>
+#include <libunicode/multistage_table_generator.h>
+#include <libunicode/scoped_timer.h>
 #include <libunicode/ucd_enums.h>
 
 #include <cassert>

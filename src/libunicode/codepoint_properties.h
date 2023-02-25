@@ -14,8 +14,8 @@
 #pragma once
 
 #include <libunicode/emoji_segmenter.h> // Only for EmojiSegmentationCategory.
-#include <libunicode/support.h>         // Only for LIBUNICODE_PACKED.
-#include <libunicode/support/multistage_table_view.h>
+#include <libunicode/multistage_table_view.h>
+#include <libunicode/support.h>   // Only for LIBUNICODE_PACKED.
 #include <libunicode/ucd_enums.h> // Only for the UCD enums.
 
 #include <type_traits>
