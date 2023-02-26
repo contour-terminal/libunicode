@@ -6,6 +6,7 @@
 - Fixes installing missing headers for use of this API as non-embedded library.
 - Changes project and include directory from `unicode` to `libunicode` to avoid include path conflict with `ICU`.
 - Adds compile time option to either build static or dynamic binaries (`LIBUNICODE_BUILD_STATIC`).
+- Adds SONAME version to libraries.
 
 ## 0.2.1 (2023-02-14)
 
