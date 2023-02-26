@@ -44,6 +44,10 @@ add_library(unicode_ucd ${LIBUNICODE_LIB_MODE}
     ucd_ostream.h
 )
 add_library(unicode::ucd ALIAS unicode_ucd)
+set_target_properties(unicode_ucd PROPERTIES
+    VERSION "${PROJECT_VERSION}"
+    SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+)
 target_include_directories(unicode_ucd PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                               $<INSTALL_INTERFACE:include>)
 
@@ -68,6 +72,10 @@ add_custom_command(
 
 add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
 add_library(unicode::loader ALIAS unicode_loader)
+set_target_properties(unicode_loader PROPERTIES
+    VERSION "${PROJECT_VERSION}"
+    SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+)
 target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                                  $<INSTALL_INTERFACE:include>)
 target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
@@ -114,6 +122,10 @@ set(private_headers
 
 set_target_properties(unicode PROPERTIES PUBLIC_HEADER "${public_headers}")
 set_target_properties(unicode PROPERTIES PRIVATE_HEADER "${private_headers}")
+set_target_properties(unicode PROPERTIES
+    VERSION "${PROJECT_VERSION}"
+    SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+)
 
 add_library(unicode::core ALIAS unicode)
 target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
