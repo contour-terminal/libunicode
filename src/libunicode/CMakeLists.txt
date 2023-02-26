@@ -28,7 +28,15 @@ if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
     )
 endif()
 
-add_library(unicode_ucd STATIC
+set(LIBUNICODE_LIB_MODE)
+if(LIBUNICODE_BUILD_STATIC)
+    set(LIBUNICODE_LIB_MODE "STATIC")
+else()
+    set(LIBUNICODE_LIB_MODE "SHARED")
+endif()
+message(STATUS "+++ LIBUNICODE_LIB_MODE: ${LIBUNICODE_LIB_MODE} +++")
+
+add_library(unicode_ucd ${LIBUNICODE_LIB_MODE}
     ucd.cpp
     ucd.h
     ucd_enums.h
@@ -58,7 +66,7 @@ add_custom_command(
     VERBATIM
 )
 
-add_library(unicode_loader STATIC codepoint_properties_loader.h codepoint_properties_loader.cpp)
+add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
 add_library(unicode::loader ALIAS unicode_loader)
 target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
                                                  $<INSTALL_INTERFACE:include>)
@@ -66,7 +74,7 @@ target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 
 # =========================================================================================================
 
-add_library(unicode STATIC
+add_library(unicode ${LIBUNICODE_LIB_MODE}
     capi.cpp
     codepoint_properties.cpp
     emoji_segmenter.cpp

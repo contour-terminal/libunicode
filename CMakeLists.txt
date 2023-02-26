@@ -9,6 +9,12 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     set(MASTER_PROJECT ON)
 endif()
 
+if(MASTER_PROJECT AND NOT WIN32)
+    set(LIBUNICODE_BUILD_STATIC_DEFAULT OFF)
+else()
+    set(LIBUNICODE_BUILD_STATIC_DEFAULT ON)
+endif()
+
 # setting defaults
 if (NOT("${CMAKE_CXX_STANDARD}"))
     set(CMAKE_CXX_STANDARD 20)
@@ -37,6 +43,7 @@ option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
 option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
+option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
 
 if(LIBUNICODE_TESTING)
     enable_testing()
@@ -72,6 +79,12 @@ else()
     set(USING_CCACHE_STRING "${CCACHE}")
 endif()
 
+if(LIBUNICODE_BUILD_STATIC)
+    set(LIBUNICODE_BUILD_MODE "static")
+else()
+    set(LIBUNICODE_BUILD_MODE "dynamic")
+endif()
+
 # Export the cmake package to the cmake package registry (~/.cmake/packages/)
 export(PACKAGE libunicode)
 
@@ -79,6 +92,7 @@ message(STATUS "----------------------------------------------------------------
 message(STATUS "    libunicode (version ${libunicode_VERSION}${libunicode_VERSION_SUFFIX})")
 message(STATUS "------------------------------------------------------------------------------")
 message(STATUS "Build type:                  ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build mode:                  ${LIBUNICODE_BUILD_MODE}")
 message(STATUS "Build unit tests:            ${LIBUNICODE_TESTING}")
 message(STATUS "Build tools:                 ${LIBUNICODE_TOOLS}")
 message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
