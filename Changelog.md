@@ -1,4 +1,4 @@
-## 0.3.0 (unreleased)
+## 0.3.0 (2023-03-01)
 
 - Fixes build error on GCC 13.
 - Fixes properly stopping at control characters in complex sub-state in scan API.
