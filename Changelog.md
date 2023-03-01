@@ -1,3 +1,7 @@
+## 0.3.1 (unreleased)
+
+- ...
+
 ## 0.3.0 (2023-03-01)
 
 - Fixes build error on GCC 13.
