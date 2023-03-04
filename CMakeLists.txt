@@ -55,7 +55,7 @@ set(LIBUNICODE_UCD_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_ucd" CACHE PATH "Path 
 
 set(LIBUNICODE_UCD_ZIP_DOWNLOAD_URL "https://www.unicode.org/Public/${LIBUNICODE_UCD_VERSION}/ucd/UCD.zip")
 set(LIBUNICODE_UCD_ZIP_FILE "${LIBUNICODE_UCD_BASE_DIR}/ucd-${LIBUNICODE_UCD_VERSION}.zip")
-set(LIBUNICODE_UCD_DIR "${LIBUNICODE_UCD_BASE_DIR}/ucd-${LIBUNICODE_UCD_VERSION}")
+set(LIBUNICODE_UCD_DIR "${LIBUNICODE_UCD_BASE_DIR}/ucd-${LIBUNICODE_UCD_VERSION}" CACHE PATH "Path to UCD directory.")
 
 # ----------------------------------------------------------------------------
 # code coverage
@@ -96,7 +96,6 @@ message(STATUS "Build mode:                  ${LIBUNICODE_BUILD_MODE}")
 message(STATUS "Build unit tests:            ${LIBUNICODE_TESTING}")
 message(STATUS "Build tools:                 ${LIBUNICODE_TOOLS}")
 message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
-message(STATUS "Using UCD version:           ${LIBUNICODE_UCD_VERSION}")
 message(STATUS "Using UCD directory:         ${LIBUNICODE_UCD_DIR}")
 message(STATUS "Enable clang-tidy:           ${ENABLE_TIDY} (${CMAKE_CXX_CLANG_TIDY})")
 message(STATUS "------------------------------------------------------------------------------")
