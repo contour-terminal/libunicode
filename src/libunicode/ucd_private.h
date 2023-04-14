@@ -19,24 +19,24 @@
 namespace unicode
 {
 
-struct Interval
+struct Interval // NOLINT(readability-identifier-naming)
 {
     char32_t from;
     char32_t to;
 };
 
 template <size_t N>
-constexpr bool contains(std::array<Interval, N> const& _ranges, char32_t _codepoint) noexcept
+constexpr bool contains(std::array<Interval, N> const& ranges, char32_t codepoint) noexcept
 {
     auto a = size_t { 0 };
-    auto b = static_cast<size_t>(_ranges.size()) - 1;
+    auto b = static_cast<size_t>(ranges.size()) - 1;
     while (a < b)
     {
         auto const i = ((b + a) / 2);
-        auto const& I = _ranges[i];
-        if (I.to < _codepoint)
+        auto const& I = ranges[i];
+        if (I.to < codepoint)
             a = i + 1;
-        else if (I.from > _codepoint)
+        else if (I.from > codepoint)
         {
             if (i == 0)
                 return false;
@@ -45,36 +45,36 @@ constexpr bool contains(std::array<Interval, N> const& _ranges, char32_t _codepo
         else
             return true;
     }
-    return a == b && _ranges[a].from <= _codepoint && _codepoint <= _ranges[a].to;
+    return a == b && ranges[a].from <= codepoint && codepoint <= ranges[a].to;
 }
 
 template <typename T>
-struct Prop
+struct Prop // NOLINT(readability-identifier-naming)
 {
     Interval interval;
     T property;
 };
 
 template <typename T, size_t N>
-constexpr std::optional<T> search(std::array<Prop<T>, N> const& _ranges, char32_t _codepoint)
+constexpr std::optional<T> search(std::array<Prop<T>, N> const& ranges, char32_t codepoint)
 {
     auto a = size_t { 0 };
-    auto b = static_cast<size_t>(_ranges.size()) - 1;
+    auto b = static_cast<size_t>(ranges.size()) - 1;
 
     while (a < b)
     {
         auto const i = static_cast<size_t>((b + a) / 2);
-        auto const& I = _ranges[i];
-        if (I.interval.to < _codepoint)
+        auto const& I = ranges[i];
+        if (I.interval.to < codepoint)
             a = i + 1;
-        else if (I.interval.from > _codepoint)
+        else if (I.interval.from > codepoint)
             b = i - 1;
         else
             return I.property;
     }
 
-    if (a == b && _ranges[a].interval.from <= _codepoint && _codepoint <= _ranges[a].interval.to)
-        return _ranges[a].property;
+    if (a == b && ranges[a].interval.from <= codepoint && codepoint <= ranges[a].interval.to)
+        return ranges[a].property;
 
     return std::nullopt;
 }
