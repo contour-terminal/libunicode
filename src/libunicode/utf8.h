@@ -152,7 +152,7 @@ inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 }
 
 template <typename T = char32_t>
-inline std::basic_string<T> from_utf8(std::string_view const& _bytes)
+inline std::basic_string<T> from_utf8(std::string_view _bytes)
 {
     static_assert(sizeof(T) == 4);
     std::basic_string<T> s;
