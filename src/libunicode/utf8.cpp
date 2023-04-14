@@ -16,51 +16,51 @@
 namespace unicode
 {
 
-ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
+ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value)
 {
-    if (!_state.expectedLength)
+    if (!state.expectedLength)
     {
-        if ((_byte & 0b1000'0000) == 0)
+        if ((value & 0b1000'0000) == 0)
         {
-            _state.currentLength = 1;
-            return Success { _byte };
+            state.currentLength = 1;
+            return Success { value };
         }
-        else if ((_byte & 0b1110'0000) == 0b1100'0000)
+        else if ((value & 0b1110'0000) == 0b1100'0000)
         {
-            _state.currentLength = 1;
-            _state.expectedLength = 2;
-            _state.character = _byte & 0b0001'1111;
+            state.currentLength = 1;
+            state.expectedLength = 2;
+            state.character = value & 0b0001'1111;
         }
-        else if ((_byte & 0b1111'0000) == 0b1110'0000)
+        else if ((value & 0b1111'0000) == 0b1110'0000)
         {
-            _state.currentLength = 1;
-            _state.expectedLength = 3;
-            _state.character = _byte & 0b0000'1111;
+            state.currentLength = 1;
+            state.expectedLength = 3;
+            state.character = value & 0b0000'1111;
         }
-        else if ((_byte & 0b1111'1000) == 0b1111'0000)
+        else if ((value & 0b1111'1000) == 0b1111'0000)
         {
-            _state.currentLength = 1;
-            _state.expectedLength = 4;
-            _state.character = _byte & 0b0000'0111;
+            state.currentLength = 1;
+            state.expectedLength = 4;
+            state.character = value & 0b0000'0111;
         }
         else
         {
-            _state.currentLength = 1;
+            state.currentLength = 1;
             return Invalid {};
         }
     }
     else
     {
-        _state.character <<= 6;
-        _state.character |= _byte & 0b0011'1111;
-        _state.currentLength++;
+        state.character <<= 6;
+        state.character |= value & 0b0011'1111;
+        state.currentLength++;
     }
 
-    if (_state.currentLength < _state.expectedLength)
+    if (state.currentLength < state.expectedLength)
         return { Incomplete {} };
 
-    _state.expectedLength = 0; // reset state
-    return { Success { _state.character } };
+    state.expectedLength = 0; // reset state
+    return { Success { state.character } };
 }
 
 } // namespace unicode
