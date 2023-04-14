@@ -146,6 +146,77 @@ TEST_CASE("utf8.from_utf8.invalid", "[utf8]")
     CHECK(a32 == U"HiHo");
 }
 
+TEST_CASE("utf8.from_utf8.incomplete.2", "[utf8]")
+{
+    // Ensure incomplete bytes are consumed and reported as Invalid accordingly.
+    auto state = utf8_decoder_state {};
+
+    // We start with an incomplete 2-byte sequence.
+    auto const r0 = from_utf8(state, 0xC7);
+    REQUIRE(holds_alternative<Incomplete>(r0));
+
+    // Continue with another 2-byte sequence,
+    // while the first one is still incomplete.
+    auto const r1 = from_utf8(state, 0xC7);
+    REQUIRE(holds_alternative<Invalid>(r1));
+    auto const r2 = from_utf8(state, 0x8E);
+    REQUIRE(holds_alternative<Success>(r2));
+    REQUIRE((unsigned) get<Success>(r2).value == 0x01CE);
+}
+
+TEST_CASE("utf8.from_utf8.incomplete.3", "[utf8]")
+{
+    // Ensure incomplete bytes are consumed and reported as Invalid accordingly.
+    auto state = utf8_decoder_state {};
+
+    // We start with an incomplete 2-byte sequence.
+    auto const r0 = from_utf8(state, 0xE2);
+    REQUIRE(holds_alternative<Incomplete>(r0));
+    auto const r1 = from_utf8(state, 0x82);
+    REQUIRE(holds_alternative<Incomplete>(r1));
+
+    // Continue with another 2-byte sequence,
+    // while the first one is still incomplete.
+    auto const r2 = from_utf8(state, 0xE2);
+    REQUIRE(holds_alternative<Invalid>(r2));
+    auto const r3 = from_utf8(state, 0x82);
+    REQUIRE(holds_alternative<Incomplete>(r3));
+    auto const r4 = from_utf8(state, 0xAC);
+    REQUIRE(holds_alternative<Success>(r4));
+    REQUIRE((unsigned) get<Success>(r4).value == 0x20AC);
+}
+
+TEST_CASE("utf8.from_utf8.incomplete.4", "[utf8]")
+{
+    auto constexpr sequence = "\xF0\x9F\x8D\xA3"sv;
+    auto constexpr codepoint = 0x1F363;
+
+    auto state = utf8_decoder_state {};
+
+    // Generate an incomplete multi-byte sequence.
+    for (size_t i = 0; i < sequence.size() - 1; ++i)
+    {
+        CAPTURE(i, unsigned(sequence[i]));
+        auto const r = from_utf8(state, (uint8_t) sequence[i]);
+        REQUIRE(holds_alternative<Incomplete>(r));
+    }
+
+    // Now fill the multi-byte sequence, but completely.
+    auto const r0 = from_utf8(state, (uint8_t) sequence[0]);
+    REQUIRE(holds_alternative<Invalid>(r0));
+
+    for (size_t i = 1; i < sequence.size() - 1; ++i)
+    {
+        CAPTURE(i, unsigned(sequence[i]));
+        auto const ri = from_utf8(state, (uint8_t) sequence[i]);
+        REQUIRE(holds_alternative<Incomplete>(ri));
+    }
+
+    auto const last = from_utf8(state, (uint8_t) sequence.back());
+    REQUIRE(holds_alternative<Success>(last));
+    REQUIRE(get<Success>(last).value == codepoint);
+}
+
 TEST_CASE("utf8.iter", "[utf8]")
 {
     auto constexpr values = string_view {

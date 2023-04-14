@@ -109,52 +109,7 @@ struct Success
 using ConvertResult = std::variant<Invalid, Incomplete, Success>;
 
 /// Progressively decodes a UTF-8 codepoint.
-inline ConvertResult from_utf8(utf8_decoder_state& _state, uint8_t _byte)
-{
-    if (!_state.expectedLength)
-    {
-        if ((_byte & 0b1000'0000) == 0)
-        {
-            _state.currentLength = 1;
-            return Success { _byte };
-        }
-        else if ((_byte & 0b1110'0000) == 0b1100'0000)
-        {
-            _state.currentLength = 1;
-            _state.expectedLength = 2;
-            _state.character = _byte & 0b0001'1111;
-        }
-        else if ((_byte & 0b1111'0000) == 0b1110'0000)
-        {
-            _state.currentLength = 1;
-            _state.expectedLength = 3;
-            _state.character = _byte & 0b0000'1111;
-        }
-        else if ((_byte & 0b1111'1000) == 0b1111'0000)
-        {
-            _state.currentLength = 1;
-            _state.expectedLength = 4;
-            _state.character = _byte & 0b0000'0111;
-        }
-        else
-        {
-            _state.currentLength = 1;
-            return Invalid {};
-        }
-    }
-    else
-    {
-        _state.character <<= 6;
-        _state.character |= _byte & 0b0011'1111;
-        _state.currentLength++;
-    }
-
-    if (_state.currentLength < _state.expectedLength)
-        return { Incomplete {} };
-
-    _state.expectedLength = 0; // reset state
-    return { Success { _state.character } };
-}
+ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value) noexcept;
 
 inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
 {
@@ -197,7 +152,7 @@ inline ConvertResult from_utf8(char const* _bytes, size_t* _size)
 }
 
 template <typename T = char32_t>
-inline std::basic_string<T> from_utf8(std::string_view const& _bytes)
+inline std::basic_string<T> from_utf8(std::string_view _bytes)
 {
     static_assert(sizeof(T) == 4);
     std::basic_string<T> s;
