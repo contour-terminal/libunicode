@@ -16,7 +16,7 @@
 namespace unicode
 {
 
-ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value)
+ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value) noexcept
 {
     if (!state.expectedLength)
     {

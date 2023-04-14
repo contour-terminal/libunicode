@@ -109,7 +109,7 @@ struct Success
 using ConvertResult = std::variant<Invalid, Incomplete, Success>;
 
 /// Progressively decodes a UTF-8 codepoint.
-ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value);
+ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value) noexcept;
 
 inline unsigned from_utf8i(utf8_decoder_state& _state, uint8_t _byte)
 {
