@@ -37,26 +37,26 @@ template <typename T>
 class out
 {
   public:
-    constexpr out(std::reference_wrapper<T> _ref) noexcept: ref_ { &_ref.value() } {}
-    constexpr explicit out(T& _ref) noexcept: ref_ { &_ref } {}
+    constexpr out(std::reference_wrapper<T> ref) noexcept: _ref { &ref.value() } {}
+    constexpr explicit out(T& ref) noexcept: _ref { &ref } {}
     constexpr out(out const&) noexcept = default;
     constexpr out(out&&) noexcept = default;
     constexpr out& operator=(out const&) noexcept = default;
     constexpr out& operator=(out&&) noexcept = default;
 
-    constexpr T& get() noexcept { return *ref_; }
-    constexpr T const& get() const noexcept { return *ref_; }
+    constexpr T& get() noexcept { return *_ref; }
+    constexpr T const& get() const noexcept { return *_ref; }
 
-    constexpr T& operator*() noexcept { return *ref_; }
-    constexpr T const& operator*() const noexcept { return *ref_; }
+    constexpr T& operator*() noexcept { return *_ref; }
+    constexpr T const& operator*() const noexcept { return *_ref; }
 
-    constexpr T* operator->() noexcept { return ref_; }
-    constexpr T const* operator->() const noexcept { return ref_; }
+    constexpr T* operator->() noexcept { return _ref; }
+    constexpr T const* operator->() const noexcept { return _ref; }
 
-    constexpr void assign(T _value) { *ref_ = std::move(_value); }
+    constexpr void assign(T value) { *_ref = std::move(value); }
 
   private:
-    T* ref_;
+    T* _ref;
 };
 
 // dynamic array with a fixed capacity.
@@ -82,11 +82,11 @@ class fs_array
     constexpr size_t size() const noexcept { return size_; }
     constexpr bool empty() const noexcept { return size_ == 0; }
 
-    constexpr bool push_back(T _value) noexcept
+    constexpr bool push_back(T value) noexcept
     {
         if (size_ == N)
             return false;
-        values_[size_++] = std::move(_value);
+        values_[size_++] = std::move(value);
         return true;
     }
 
