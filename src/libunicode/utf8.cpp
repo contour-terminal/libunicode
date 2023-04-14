@@ -46,8 +46,22 @@ ConvertResult from_utf8(utf8_decoder_state& state, uint8_t value) noexcept
         else
         {
             state.currentLength = 1;
+            state.expectedLength = 0;
             return Invalid {};
         }
+    }
+    // clang-format off
+    else if ((value & 0b1110'0000) == 0b1100'0000
+          || (value & 0b1111'0000) == 0b1110'0000
+          || (value & 0b1111'1000) == 0b1111'0000)
+    // clang-format on
+    {
+        // We have a new codepoint, but the previous one was incomplete.
+        state.expectedLength = 0;
+        // Return Invalid for the current incomplete codepoint,
+        // but have already started the next codepoint.
+        from_utf8(state, value);
+        return { Invalid {} };
     }
     else
     {

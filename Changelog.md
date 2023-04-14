@@ -1,6 +1,6 @@
 ## 0.3.1 (unreleased)
 
-- ...
+- Fix UTF-8 decoding of incomplete UTF-8 multibyte sequences to properly report `Invalid`.
 
 ## 0.3.0 (2023-03-01)
 
