@@ -176,23 +176,21 @@ install_deps_fedora()
 {
     version=`cat /etc/fedora-release | awk '{print $3}'`
 
-    # Fedora 37+ contains fmtlib 9.1.0+, prefer this and fallback to embedding otherwise.
-    should_embed_fmtlib=yes
-    [ $version -ge 37 ] && should_embed_fmtlib=no
-
-    [ x$should_embed_fmtlib = xyes ] && fetch_and_unpack_fmtlib
-    [ x$PREPARE_ONLY_EMBEDS = xON ] && return
-
-    # catch-devel
     local packages="
-        catch-devel
         cmake
         gcc-c++
         ninja-build
         pkgconf
         range-v3-devel
     "
-    [ x$should_embed_fmtlib != xyes ] || packages="$packages fmt-devel"
+
+    # Fedora 37+ contains fmtlib 9.1.0+, prefer this and fallback to embedding otherwise.
+    # Fedora 38+ contains Catch2 3.0.0+, prefer older (embedded) version then.
+    [ $version -ge 37 ] && packages="$packages fmt-devel" || fetch_and_unpack_fmtlib
+    [ $version -ge 38 ] && fetch_and_unpack_Catch2 || packages="$packages catch-devel"
+
+    [ x$PREPARE_ONLY_EMBEDS = xON ] && return
+
     sudo dnf install $SYSDEP_ASSUME_YES $packages
 }
 
