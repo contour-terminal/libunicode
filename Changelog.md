@@ -2,6 +2,7 @@
 
 - Fix UTF-8 decoding of incomplete UTF-8 multibyte sequences to properly report `Invalid`.
 - Change signature of `inline from_utf8(string_view const&)` slightly by dropping its cref.
+- Move `scan_result.next` to `scan_state.next`.
 
 ## 0.3.0 (2023-03-01)
 

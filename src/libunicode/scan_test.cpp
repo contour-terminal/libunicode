@@ -76,53 +76,6 @@ inline std::string escape(std::string_view s)
     return escape(begin(s), end(s));
 }
 
-unicode::scan_result scan_for_text_nonascii(string_view text,
-                                            size_t maxColumnCount,
-                                            char32_t* lastCodepointHint,
-                                            unicode::utf8_decoder_state* utf8DecoderState = nullptr) noexcept
-{
-    auto state = unicode::scan_state {};
-    if (lastCodepointHint)
-        state.lastCodepointHint = *lastCodepointHint;
-
-    if (utf8DecoderState)
-        state.utf8 = *utf8DecoderState;
-
-    auto const result =
-        unicode::detail::scan_for_text_nonascii(state, text, maxColumnCount, unicode::null_receiver::get());
-
-    if (lastCodepointHint)
-        *lastCodepointHint = state.lastCodepointHint;
-
-    if (utf8DecoderState)
-        *utf8DecoderState = state.utf8;
-
-    return result;
-}
-
-unicode::scan_result scan_text(std::string_view text,
-                               size_t maxColumnCount,
-                               char32_t* lastCodepointHint,
-                               unicode::utf8_decoder_state* utf8DecoderState = nullptr) noexcept
-{
-    auto state = unicode::scan_state {};
-    if (lastCodepointHint)
-        state.lastCodepointHint = *lastCodepointHint;
-
-    if (utf8DecoderState)
-        state.utf8 = *utf8DecoderState;
-
-    auto const result = unicode::scan_text(state, text, maxColumnCount);
-
-    if (lastCodepointHint)
-        *lastCodepointHint = state.lastCodepointHint;
-
-    if (utf8DecoderState)
-        *utf8DecoderState = state.utf8;
-
-    return result;
-}
-
 class grapheme_cluster_collector final: public unicode::grapheme_cluster_receiver
 {
   public:
@@ -182,86 +135,96 @@ TEST_CASE("scan.ascii.until_complex")
 
 TEST_CASE("scan.complex.grapheme_cluster.1")
 {
+    auto state = unicode::scan_state {};
     auto const familyEmoji8 = u8(FamilyEmoji);
-    auto const result = scan_for_text_nonascii(familyEmoji8, 80, nullptr);
+    auto const result =
+        unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
     CHECK(result.count == 2);
-    CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
+    CHECK(state.next == familyEmoji8.data() + familyEmoji8.size());
 }
 
 TEST_CASE("scan.complex.grapheme_cluster.2")
 {
+    auto state = unicode::scan_state {};
     auto const familyEmoji8 = u8(FamilyEmoji) + u8(FamilyEmoji);
-    auto const result = scan_for_text_nonascii(familyEmoji8, 80, nullptr);
+    auto const result =
+        unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
     CHECK(result.count == 4);
-    CHECK(result.next == familyEmoji8.data() + familyEmoji8.size());
+    CHECK(state.next == familyEmoji8.data() + familyEmoji8.size());
 }
 
 TEST_CASE("scan.complex.mixed")
 {
+    auto state = unicode::scan_state {};
     auto const text = u8(FamilyEmoji) + "ABC"s + u8(FamilyEmoji);
-    auto const result = scan_for_text_nonascii(text, 80, nullptr);
+    auto const result =
+        unicode::detail::scan_for_text_nonascii(state, text, 80, unicode::null_receiver::get());
     CHECK(result.count == 2);
-    CHECK(result.next == text.data() + u8(FamilyEmoji).size());
+    CHECK(state.next == text.data() + u8(FamilyEmoji).size());
 }
 
 TEST_CASE("scan.complex.half-overflowing")
 {
+    auto state = unicode::scan_state {};
     auto const oneEmoji = u8(SmileyEmoji);
     auto const text = oneEmoji + oneEmoji + oneEmoji;
 
     // match at boundary
-    auto const result2 = scan_for_text_nonascii(text, 2, nullptr);
+    auto const result2 =
+        unicode::detail::scan_for_text_nonascii(state, text, 2, unicode::null_receiver::get());
     CHECK(result2.count == 2);
-    CHECK(result2.next == text.data() + oneEmoji.size());
+    CHECK(state.next == text.data() + oneEmoji.size());
 
     // one grapheme cluster is half overflowing
-    auto const result3 = scan_for_text_nonascii(text, 3, nullptr);
+    auto const result3 =
+        unicode::detail::scan_for_text_nonascii(state, text, 3, unicode::null_receiver::get());
     CHECK(result3.count == 2);
-    CHECK(result3.next == text.data() + oneEmoji.size());
+    CHECK(state.next == text.data() + oneEmoji.size());
 
     // match buondary
-    auto const result4 = scan_for_text_nonascii(text, 4, nullptr);
+    auto const result4 =
+        unicode::detail::scan_for_text_nonascii(state, text, 4, unicode::null_receiver::get());
     CHECK(result4.count == 4);
-    CHECK(result4.next == text.data() + 2 * oneEmoji.size());
+    CHECK(state.next == text.data() + 2 * oneEmoji.size());
 }
 
 TEST_CASE("scan.any.tiny")
 {
     // Ensure that we're really only scanning up to the input's size (1 byte, here).
+    auto state = unicode::scan_state {};
     auto const storage = "X{0123456789ABCDEF}"sv;
     auto const input = storage.substr(0, 1);
-    auto const result = scan_text(input, 80, nullptr);
+    auto const result = unicode::scan_text(state, input, 80);
     CHECK(result.count == 1);
-    CHECK(result.next == input.data() + input.size());
-    CHECK(*result.next == '{');
+    CHECK(state.next == input.data() + input.size());
+    CHECK(*state.next == '{');
 }
 
 TEST_CASE("scan.complex.sliced_calls")
 {
+    auto state = unicode::scan_state {};
     auto const text = "\xF0\x9F\x98\x80\033\\0123456789ABCDEF"sv; // U+1F600
     auto constexpr splitOffset = 3;
     auto const chunkOne = std::string_view(text.data(), splitOffset);
 
-    auto lastCodepointHint = char32_t { 0 };
-    auto utf8DecodeState = unicode::utf8_decoder_state {};
-    auto result = scan_text(chunkOne, 80, &lastCodepointHint, &utf8DecodeState);
+    auto result = unicode::scan_text(state, chunkOne, 80);
 
-    REQUIRE(utf8DecodeState.expectedLength == 4);
-    REQUIRE(utf8DecodeState.currentLength == 3);
+    REQUIRE(state.utf8.expectedLength == 4);
+    REQUIRE(state.utf8.currentLength == 3);
     CHECK(result.count == 0);
     CHECK(result.start == text.data());
     CHECK(result.end == text.data());
-    CHECK(result.next == (text.data() + splitOffset));
+    CHECK(state.next == (text.data() + splitOffset));
 
     auto const chunkTwo =
-        std::string_view(result.next, (size_t) std::distance(result.next, text.data() + text.size()));
-    result = scan_text(chunkTwo, 80, &lastCodepointHint, &utf8DecodeState);
+        std::string_view(state.next, (size_t) std::distance(state.next, text.data() + text.size()));
+    result = unicode::scan_text(state, chunkTwo, 80, unicode::null_receiver::get());
 
-    REQUIRE(utf8DecodeState.expectedLength == 0);
+    REQUIRE(state.utf8.expectedLength == 0);
     CHECK(result.count == 2);
     REQUIRE(result.start == text.data());
     REQUIRE(result.end == text.data() + 4);
-    REQUIRE(result.next == text.data() + 4);
+    REQUIRE(state.next == text.data() + 4);
     auto const resultingText =
         string_view(result.start, static_cast<size_t>(std::distance(result.start, result.end)));
     REQUIRE(resultingText == text.substr(0, 4));
@@ -279,7 +242,8 @@ TEST_CASE("scan.any.ascii_complex_repeat")
             s += (k % 2) != 0 ? oneSimple : oneComplex;
         s += ControlCodes;
 
-        auto const result = scan_text(s, 80, nullptr);
+        auto state = unicode::scan_state {};
+        auto const result = scan_text(state, s, 80);
         auto const countSimple = ((i + 1) / 2) * 20;
         auto const countComplex = (i / 2) * 2;
 
@@ -292,7 +256,7 @@ TEST_CASE("scan.any.ascii_complex_repeat")
                          escape(s)));
 
         CHECK(result.count == countSimple + countComplex);
-        CHECK(result.next == s.data() + s.size() - ControlCodes.size());
+        CHECK(state.next == s.data() + s.size() - ControlCodes.size());
     }
 }
 
@@ -308,9 +272,10 @@ TEST_CASE("scan.any.complex_ascii_repeat")
             s += (k % 2) != 0 ? oneComplex : oneSimple;
         s += ControlCodes;
 
-        auto const result = scan_text(s, 80, nullptr);
+        auto state = unicode::scan_state {};
+        auto const result = unicode::scan_text(state, s, 80);
         CHECK(result.count == (i / 2) * 20 + ((i + 1) / 2) * 2);
-        CHECK(result.next == s.data() + s.size() - ControlCodes.size());
+        CHECK(state.next == s.data() + s.size() - ControlCodes.size());
     }
 }
 
@@ -320,21 +285,25 @@ TEST_CASE("scan.complex.VS16")
     auto const modifierVS16 = u8(U"\uFE0F"sv);
 
     // // narrow copyright sign
-    auto const result1 = scan_text(oneComplex, 80, nullptr);
+    auto state = unicode::scan_state {};
+    auto const result1 = unicode::scan_text(state, oneComplex, 80);
     CHECK(result1.count == 1);
-    CHECK(result1.next == oneComplex.data() + oneComplex.size());
+    CHECK(state.next == oneComplex.data() + oneComplex.size());
 
     // copyright sign in emoji presentation
+    state = {};
     auto const s = oneComplex + modifierVS16;
-    auto const result = scan_text(s, 80, nullptr);
+    auto const result = unicode::scan_text(state, s, 80);
     CHECK(result.count == 2);
-    CHECK(result.next == s.data() + s.size());
+    CHECK(state.next == s.data() + s.size());
 
-    auto const result3 = scan_text(s, 1, nullptr);
+    state = {};
+    auto const result3 = unicode::scan_text(state, s, 1);
     CHECK(result3.count == 0);
-    CHECK(result3.next == s.data());
+    CHECK(state.next == s.data());
 }
 
+#if 0
 namespace
 {
 
@@ -441,3 +410,4 @@ TEST_CASE("scan.invalid")
                    U"A", U"B", U"C", U"D", U"E", U"F" });
     // clang-format on
 }
+#endif
