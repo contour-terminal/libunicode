@@ -28,9 +28,6 @@ struct scan_result
     /// Codepoints with property East Asian Width Wide are treated as two columns.
     size_t count;
 
-    /// Pointer to one byte after the last scanned codepoint.
-    char const* next;
-
     /// Pointer to UTF-8 grapheme cluster start.
     char const* start;
 
@@ -48,6 +45,9 @@ struct scan_state
 {
     utf8_decoder_state utf8 {};
     char32_t lastCodepointHint {};
+
+    /// Pointer to one byte after the last scanned codepoint.
+    char const* next {};
 };
 
 /// Callback-interface that allows precisely understanding the structure of a UTF-8 sequence.

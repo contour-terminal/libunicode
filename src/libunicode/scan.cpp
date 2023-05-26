@@ -213,7 +213,8 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
 
     assert(resultStart <= resultEnd);
 
-    return { count, input, resultStart, resultEnd };
+    state.next = input;
+    return { count, resultStart, resultEnd };
 }
 
 scan_result scan_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept
@@ -240,7 +241,10 @@ scan_result scan_text(scan_state& state,
         Complex
     };
 
-    auto result = scan_result { 0, text.data(), text.data(), text.data() };
+    auto result = scan_result { 0, text.data(), text.data() };
+
+    if (state.next == nullptr)
+        state.next = text.data();
 
     // If state indicates that we previously started consuming a UTF-8 sequence but did not complete yet,
     // attempt to finish that one first.
@@ -255,7 +259,7 @@ scan_result scan_text(scan_state& state,
         return result;
 
     auto nextState = is_complex(text.front()) ? NextState::Complex : NextState::Trivial;
-    while (result.count < maxColumnCount && result.next != (text.data() + text.size()))
+    while (result.count < maxColumnCount && state.next != (text.data() + text.size()))
     {
         switch (nextState)
         {
@@ -265,7 +269,7 @@ scan_result scan_text(scan_state& state,
                     return result;
                 receiver.receiveAsciiSequence(text.substr(0, count));
                 result.count += count;
-                result.next += count;
+                state.next += count;
                 result.end += count;
                 nextState = NextState::Complex;
                 text.remove_prefix(count);
@@ -274,7 +278,6 @@ scan_result scan_text(scan_state& state,
             case NextState::Complex: {
                 auto const sub =
                     detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count, receiver);
-                result.next = sub.next;
                 if (!sub.count)
                     return result;
                 nextState = NextState::Trivial;
@@ -287,7 +290,7 @@ scan_result scan_text(scan_state& state,
     }
 
     assert(result.start <= result.end);
-    assert(result.end <= result.next);
+    assert(result.end <= state.next);
 
     return result;
 }
