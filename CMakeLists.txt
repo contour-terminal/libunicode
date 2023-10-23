@@ -36,7 +36,6 @@ endif()
 include(EnableCcache)
 include(ClangTidy)
 include(PedanticCompiler)
-include(ThirdParties)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
@@ -44,6 +43,8 @@ option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [d
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
+
+include(ThirdParties)
 
 if(LIBUNICODE_TESTING)
     enable_testing()

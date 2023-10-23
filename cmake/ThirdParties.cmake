@@ -36,7 +36,7 @@ endmacro()
 # via find_package, usually system installed packages.
 
 if(LIBUNICODE_TESTING)
-    if (TARGET Catch2::Catch2)
+    if(TARGET Catch2::Catch2WithMain)
         set(THIRDPARTY_BUILTIN_Catch2 "embedded")
     else()
         find_package(Catch2 REQUIRED)

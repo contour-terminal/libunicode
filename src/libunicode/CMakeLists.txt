@@ -197,7 +197,7 @@ if(LIBUNICODE_TESTING)
         width_test.cpp
         word_segmenter_test.cpp
     )
-    target_link_libraries(unicode_test unicode Catch2::Catch2 fmt::fmt-header-only)
+    target_link_libraries(unicode_test PRIVATE unicode Catch2::Catch2WithMain fmt::fmt-header-only)
     add_test(unicode_test unicode_test)
 endif()
 # }}}
