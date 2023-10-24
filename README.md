@@ -1,7 +1,7 @@
-[![C++17](https://img.shields.io/badge/standard-C%2B%2B%2017-blue.svg?logo=C%2B%2B)](https://isocpp.org/)
+[![C++20](https://img.shields.io/badge/standard-C%2B%2B%2020-blue.svg?logo=C%2B%2B)](https://isocpp.org/)
 [![CI Build](https://github.com/contour-terminal/libunicode/workflows/Build/badge.svg)](https://github.com/contour-terminal/libunicode/actions?query=workflow%3ABuild)
 
-# Modern C++17 Unicode Library
+# Modern C++20 Unicode Library
 
 The goal of this library is to bring painless unicode support to C++ with simple and easy to understand APIs.
 
@@ -37,7 +37,7 @@ git submodule add --name libunicode https://github.com/contour-terminal/libunico
 add_subdirectory(3rdparty/libunicode)
 
 add_executable(your_tool your_tool.cpp)
-target_link_libraries(your_tool PUBLIC unicode::core)
+target_link_libraries(your_tool PRIVATE unicode::unicode)
 ```
 
 ### Contributing
@@ -64,7 +64,7 @@ library, creating pull requests, or even just constructive feedback.
 ### License
 
 ```
-libunicode - a modern C++17 unicode library
+libunicode - a modern C++20 unicode library
 -------------------------------------------
 
 Licensed under the Apache License, Version 2.0 (the "License");
