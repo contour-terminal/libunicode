@@ -101,3 +101,5 @@ message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
 message(STATUS "Using UCD directory:         ${LIBUNICODE_UCD_DIR}")
 message(STATUS "Enable clang-tidy:           ${ENABLE_TIDY} (${CMAKE_CXX_CLANG_TIDY})")
 message(STATUS "------------------------------------------------------------------------------")
+
+ThirdPartiesSummary2()
