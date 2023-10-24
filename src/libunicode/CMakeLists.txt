@@ -128,9 +128,11 @@ set_target_properties(unicode PROPERTIES
     SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
 )
 
+add_library(unicode::unicode ALIAS unicode)
 add_library(unicode::core ALIAS unicode)
-target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-                                          $<INSTALL_INTERFACE:include>)
+target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/src>
+                                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
 target_link_libraries(unicode PUBLIC unicode::ucd)
 
 add_executable(unicode_tablegen tablegen.cpp)
@@ -140,17 +142,14 @@ target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
 set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether or not to install CMake config and -version files.")
 
-set(INSTALL_TARGETS unicode_ucd unicode_loader unicode)
-set(TARGETS_EXPORT_NAME unicode-targets)
-
 # Create and install package configuration and version files.
 # Install library and headers.
-install(TARGETS ${INSTALL_TARGETS}
-        EXPORT ${TARGETS_EXPORT_NAME}
+install(TARGETS unicode_ucd unicode_loader unicode
+        EXPORT libunicode-targets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/libunicode"
-        PRIVATE_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/libunicode"
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libunicode"
+        PRIVATE_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libunicode"
         FRAMEWORK DESTINATION "."
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
@@ -162,21 +161,32 @@ install(
         ucd_ostream.h
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libunicode"
 )
+# }}}
 
+# {{{ Generate the version, config and target files
 if(LIBUNICODE_INSTALL_CMAKE_FILES)
-    set(version "${CMAKE_PROJECT_VERSION}")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libunicode-config.cmake.in
-                   ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config.cmake @ONLY)
+    # Install version, config and target files.
+    include(CMakePackageConfigHelpers)
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libunicode-config-version.cmake.in
-                   ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config-version.cmake @ONLY)
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/libunicode-config-version.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    configure_package_config_file(libunicode-config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libunicode
+    )
 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config.cmake
                   ${CMAKE_CURRENT_BINARY_DIR}/libunicode-config-version.cmake
-            DESTINATION ${LIBUNICODE_CMAKE_DIR})
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libunicode
+    )
 
-    # Install version, config and target files.
-    install(EXPORT ${TARGETS_EXPORT_NAME} DESTINATION ${LIBUNICODE_CMAKE_DIR} NAMESPACE unicode::)
+    install(EXPORT libunicode-targets
+            DESTINATION ${LIBUNICODE_CMAKE_DIR}
+            NAMESPACE unicode::
+    )
 endif()
 # }}}
 
