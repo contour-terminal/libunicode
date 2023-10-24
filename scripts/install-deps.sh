@@ -65,9 +65,9 @@ fetch_and_unpack()
 fetch_and_unpack_Catch2()
 {
     fetch_and_unpack \
-        Catch2-2.13.7 \
-        Catch2-2.13.7.tar.gz \
-        https://github.com/catchorg/Catch2/archive/refs/tags/v2.13.7.tar.gz
+        Catch2-3.4.0 \
+        Catch2-3.4.0.tar.gz \
+        https://github.com/catchorg/Catch2/archive/refs/tags/v3.4.0.tar.gz
 }
 
 fetch_and_unpack_fmtlib()

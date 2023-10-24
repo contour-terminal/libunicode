@@ -14,9 +14,9 @@ class ThirdParty
 $ThirdParties =
 @(
     [ThirdParty]@{
-        Folder="Catch2-2.13.7";
-        Archive="Catch2-2.13.7.zip";
-        URI="https://github.com/catchorg/Catch2/archive/refs/tags/v2.13.7.zip"
+        Folder="Catch2-3.4.0";
+        Archive="Catch2-3.4.0.zip";
+        URI="https://github.com/catchorg/Catch2/archive/refs/tags/v3.4.0.zip"
     };
 )
 
