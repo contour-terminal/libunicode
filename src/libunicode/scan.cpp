@@ -42,7 +42,11 @@ namespace
     [[maybe_unused]] int countTrailingZeroBits(unsigned int value) noexcept
     {
 #if defined(_WIN32)
-        return _tzcnt_u32(value);
+        // return _tzcnt_u32(value);
+        // Don't do _tzcnt_u32, because that's only available on x86-64, but not on ARM64.
+        unsigned long r = 0;
+        _BitScanForward(&r, value);
+        return r;
 #else
         return __builtin_ctz(value);
 #endif
