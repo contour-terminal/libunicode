@@ -34,7 +34,7 @@ if(LIBUNICODE_BUILD_STATIC)
 else()
     set(LIBUNICODE_LIB_MODE "SHARED")
 endif()
-message(STATUS "+++ LIBUNICODE_LIB_MODE: ${LIBUNICODE_LIB_MODE} +++")
+message(STATUS "libunicode library build mode: ${LIBUNICODE_LIB_MODE}")
 
 add_library(unicode_ucd ${LIBUNICODE_LIB_MODE}
     ucd.cpp
