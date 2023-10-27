@@ -1,12 +1,22 @@
 include(GNUInstallDirs)
 
+function(ExtractZipArchive ZIP_FILE OUTPUT_DIR)
+    if(CMAKE_VERSION VERSION_LESS 3.18)
+        # Use the older method for versions prior to CMake 3.18
+        execute_process(COMMAND unzip -o "${ZIP_FILE}" -d "${OUTPUT_DIR}")
+    else()
+        # Use the newer method introduced in CMake 3.18 and later
+        file(ARCHIVE_EXTRACT INPUT ${ZIP_FILE} DESTINATION ${OUTPUT_DIR})
+    endif()
+endfunction()
+
 # Automatically fetch Unicode database if not present.
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-generated
     if(NOT IS_DIRECTORY ${LIBUNICODE_UCD_DIR})
         if(NOT EXISTS ${LIBUNICODE_UCD_ZIP_FILE})
             file(DOWNLOAD ${LIBUNICODE_UCD_ZIP_DOWNLOAD_URL} ${LIBUNICODE_UCD_ZIP_FILE} SHOW_PROGRESS STATUS LIBUNICODE_UCD_ZIP_DOWNLOAD_STATUS EXPECTED_MD5 ${LIBUNICODE_UCD_MD5})
         endif()
-        file(ARCHIVE_EXTRACT INPUT ${LIBUNICODE_UCD_ZIP_FILE} DESTINATION ${LIBUNICODE_UCD_DIR})
+        ExtractZipArchive("${LIBUNICODE_UCD_ZIP_FILE}" "${LIBUNICODE_UCD_DIR}")
     endif()
 endif()
 
