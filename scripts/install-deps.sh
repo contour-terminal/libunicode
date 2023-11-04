@@ -239,7 +239,11 @@ main()
             install_deps_FreeBSD
             ;;
         *)
-            echo "OS not supported."
+            fetch_and_unpack_Catch2
+            fetch_and_unpack_fmtlib
+            fetch_and_unpack_yaml_cpp
+            echo "OS $ID not supported."
+            echo "Dependencies were fetch manually and most likely libunicode will compile."
             ;;
     esac
 }
