@@ -40,14 +40,14 @@ jobs:
             "Clang 11",
             "Clang 12"
           ]
-    name: "Ubuntu Linux 20.04 (${{ matrix.compiler }})"
-    runs-on: ubuntu-20.04
+    name: "Ubuntu Linux 22.04 (${{ matrix.compiler }})"
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          key: "ccache-ubuntu_2204-${{ matrix.compiler }}"
           max-size: 256M
       - name: "Update package database"
         run: sudo apt -q update
@@ -60,6 +60,35 @@ jobs:
       - name: "cmake"
         env:
           COMPILER: "${{ matrix.compiler }}"
+        run: |
+          BUILD_DIR="build" \
+            CMAKE_BUILD_TYPE="RelWithDebInfo" \
+            ./scripts/ci-prepare.sh
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/libunicode/unicode_test
+
+
+  unknown_os:
+    strategy:
+      fail-fast: false
+    name: "Unknown OS"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        run: OS_OVERRIDE=UNKNOWN ./scripts/install-deps.sh
+      - name: "create build directory"
+        run: mkdir build
+      - name: "cmake"
         run: |
           BUILD_DIR="build" \
             CMAKE_BUILD_TYPE="RelWithDebInfo" \
