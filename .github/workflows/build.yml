@@ -40,6 +40,48 @@ jobs:
             "Clang 11",
             "Clang 12"
           ]
+    name: "Ubuntu Linux 20.04 (${{ matrix.compiler }})"
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        env:
+          COMPILER: "${{ matrix.compiler }}"
+        run: ./scripts/install-deps.sh
+      - name: "create build directory"
+        run: mkdir build
+      - name: "cmake"
+        env:
+          COMPILER: "${{ matrix.compiler }}"
+        run: |
+          BUILD_DIR="build" \
+            CMAKE_BUILD_TYPE="RelWithDebInfo" \
+            ./scripts/ci-prepare.sh
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/libunicode/unicode_test
+
+
+  ubuntu_matrix_22:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          [
+            "GCC 10",
+            "GCC 13",
+            "Clang 11",
+            "Clang 15"
+          ]
+          # gcc 13 only in github runners and not inside official repo
     name: "Ubuntu Linux 22.04 (${{ matrix.compiler }})"
     runs-on: ubuntu-22.04
     steps:

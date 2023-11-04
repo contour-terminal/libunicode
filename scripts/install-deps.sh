@@ -130,7 +130,7 @@ install_deps_ubuntu()
     fi
 
     case $RELEASE in
-        "18.04" | "19.04" | "20.04" | "21.04")
+        "18.04" | "19.04" | "20.04" | "21.04" | "22.04")
             fetch_and_unpack_fmtlib
             fetch_and_unpack_Catch2
             ;;
