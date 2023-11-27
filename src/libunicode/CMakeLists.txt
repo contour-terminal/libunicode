@@ -35,6 +35,7 @@ if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
         COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_DIR}"
         VERBATIM
+        USES_TERMINAL
     )
 endif()
 
@@ -78,6 +79,7 @@ add_custom_command(
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
     COMMENT "Generating UCD codepoint properties tables from ${LIBUNICODE_UCD_DIR}"
     VERBATIM
+    USES_TERMINAL
 )
 
 add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
