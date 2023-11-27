@@ -1,4 +1,4 @@
-## 0.3.1 (unreleased)
+## 0.4.0 (2023-11-27)
 
 - Fix UTF-8 decoding of incomplete UTF-8 multibyte sequences to properly report `Invalid`.
 - Change signature of `inline from_utf8(string_view const&)` slightly by dropping its cref.
