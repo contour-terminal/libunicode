@@ -81,6 +81,7 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
 
+#if defined(USE_INTRINSICS)
     intrinsics::m128i const ControlCodeMax = intrinsics::set1_epi8(0x20); // 0..0x1F
     intrinsics::m128i const Complex = intrinsics::set1_epi8(-128);        // equals to 0x80 (0b1000'0000)
 
@@ -99,6 +100,7 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
         }
         input += sizeof(intrinsics::m128i);
     }
+#endif
 
     while (input != end && is_ascii(*input))
         ++input;
