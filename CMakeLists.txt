@@ -43,6 +43,7 @@ option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [d
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
+option(LIBUNICODE_USE_INTRINSICS "libunicode: Use SIMD extenstion during text read [default: ON]" ON)
 
 include(ThirdParties)
 

@@ -110,6 +110,10 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     codepoint_properties_names.cpp
 )
 
+if(LIBUNICODE_USE_INTRINSICS)
+    target_compile_definitions(unicode PRIVATE USE_INTRINSICS)
+endif()
+
 set(public_headers
     capi.h
     codepoint_properties.h
