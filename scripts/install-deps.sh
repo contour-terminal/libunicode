@@ -130,7 +130,7 @@ install_deps_ubuntu()
     fi
 
     case $RELEASE in
-        "18.04" | "19.04" | "20.04" | "21.04")
+        "18.04" | "19.04" | "20.04" | "21.04" | "22.04")
             fetch_and_unpack_fmtlib
             fetch_and_unpack_Catch2
             ;;
@@ -239,7 +239,11 @@ main()
             install_deps_FreeBSD
             ;;
         *)
-            echo "OS not supported."
+            fetch_and_unpack_Catch2
+            fetch_and_unpack_fmtlib
+            fetch_and_unpack_yaml_cpp
+            echo "OS $ID not supported."
+            echo "Dependencies were fetch manually and most likely libunicode will compile."
             ;;
     esac
 }
