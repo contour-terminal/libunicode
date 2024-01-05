@@ -185,9 +185,9 @@ install_deps_fedora()
     "
 
     # Fedora 37+ contains fmtlib 9.1.0+, prefer this and fallback to embedding otherwise.
-    # Fedora 38+ contains Catch2 3.0.0+, prefer older (embedded) version then.
+    # Fedora 38+ contains Catch2 3.0.0+, prefer this and fallback to embedding otherwise.
     [ $version -ge 37 ] && packages="$packages fmt-devel" || fetch_and_unpack_fmtlib
-    [ $version -ge 38 ] && fetch_and_unpack_Catch2 || packages="$packages catch-devel"
+    [ $version -ge 38 ] && packages="$packages catch-devel" || fetch_and_unpack_Catch2
 
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
