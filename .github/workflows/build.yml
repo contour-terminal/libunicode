@@ -156,7 +156,7 @@ jobs:
         with:
           vcpkgArguments: fmt range-v3
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgGitCommitId: 927006b24c3a28dfd8aa0ec5f8ce43098480a7f1
+          vcpkgGitCommitId: 21fa4ccecfefd96bb16faac4af17fcb900d4f8b3
           vcpkgTriplet: x64-windows
       - name: "create build directory"
         shell: powershell
