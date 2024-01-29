@@ -173,3 +173,22 @@ jobs:
         run: cmake --build build/ --config Release
       - name: "test: libterminal"
         run: .\build\src\libunicode\Release\unicode_test.exe
+
+  Fedora:
+    name: Fedora
+    runs-on: ubuntu-22.04
+    container: fedora:rawhide
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: |
+          PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
+          dnf install -y unicode-ucd
+      - name: CMake build
+        run: |
+          cmake . -G Ninja -B build -DBUILD_SHARED_LIBS=ON -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+          cmake --build build -j$(nproc)
+      - name: test
+        run: |
+          ctest --test-dir build
