@@ -228,10 +228,15 @@ if(LIBUNICODE_TESTING)
         # supress conversion warnings for Catch2
         # https://github.com/catchorg/Catch2/issues/2583
         # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt#L18-L22
-        set_target_properties(Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
-        set_target_properties(Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
-        get_target_property(CATCH2_INCLUDE_DIRS Catch2 INTERFACE_INCLUDE_DIRECTORIES)
-        target_include_directories(Catch2 SYSTEM INTERFACE ${CATCH2_INCLUDE_DIRS})
+        set(catch2_prefix "")
+        # check if system is Windows
+        if(WIN32)
+            set(catch2_prefix "Catch2::")
+        endif()
+        set_target_properties(${catch2_prefix}Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
+        set_target_properties(${catch2_prefix}Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+        get_target_property(CATCH2_INCLUDE_DIRS ${catch2_prefix}Catch2 INTERFACE_INCLUDE_DIRECTORIES)
+        target_include_directories(${catch2_prefix}Catch2 SYSTEM INTERFACE ${CATCH2_INCLUDE_DIRS})
     endif()
 
     target_link_libraries(unicode_test unicode Catch2::Catch2WithMain fmt::fmt-header-only)
