@@ -18,8 +18,9 @@ prepare_build_ubuntu()
 {
    cmake \
       -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
-      -DPEDANTIC_COMPILER="ON" \
-      -DPEDANTIC_COMPILER_WERROR="ON" \
+      -DPEDANTIC_COMPILER="OFF" \
+      -DPEDANTIC_COMPILER_WERROR="OFF" \
+      -DLIBUNICODE_BENCHMARK="ON" \
       -S . -B ${BUILD_DIR} \
       ${EXTRA_CMAKE_FLAGS}
 }

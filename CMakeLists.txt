@@ -41,10 +41,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ${MASTER_PROJECT})
 option(LIBUNICODE_COVERAGE "libunicode: Builds with codecov [default: OFF]" OFF)
 option(LIBUNICODE_EXAMPLES "libunicode: Enables building of example programs. [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_TESTING "libunicode: Enables building of unittests for libunicode [default: ${MASTER_PROJECT}" ${MASTER_PROJECT})
+option(LIBUNICODE_BENCHMARK "libunicode: Enables building of benchmark for libunicode [default: OFF]" OFF)
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
 option(LIBUNICODE_USE_INTRINSICS "libunicode: Use SIMD extenstion during text read [default: ON]" ON)
+option(LIBUNICODE_USE_STD_SIMD "libunicode: Use std::simd as SIMD extenstion during text read (takes precedence over own intrinsics) [default: ON]" ${LIBUNICODE_USE_INTRINSICS})
 
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable testing of the benchmark library." FORCE)
 include(ThirdParties)
 
 if(LIBUNICODE_TESTING)
