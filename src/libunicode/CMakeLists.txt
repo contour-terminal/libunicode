@@ -110,6 +110,9 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     codepoint_properties_names.cpp
 )
 
+if(LIBUNICODE_USE_STD_SIMD)
+    target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
+endif()
 if(LIBUNICODE_USE_INTRINSICS)
     target_compile_definitions(unicode PRIVATE USE_INTRINSICS)
 endif()
@@ -236,5 +239,17 @@ if(LIBUNICODE_TESTING)
 
     target_link_libraries(unicode_test unicode Catch2::Catch2WithMain fmt::fmt-header-only)
     add_test(unicode_test unicode_test)
+endif()
+# }}}
+
+
+
+# {{{ unicode_test
+if(LIBUNICODE_BENCHMARK)
+    add_executable(libunicode_benchmark
+        benchmark.cpp
+    )
+    target_compile_features(libunicode_benchmark PRIVATE cxx_std_20)
+    target_link_libraries(libunicode_benchmark PRIVATE benchmark::benchmark unicode)
 endif()
 # }}}

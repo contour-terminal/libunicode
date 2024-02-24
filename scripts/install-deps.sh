@@ -70,6 +70,15 @@ fetch_and_unpack_Catch2()
         https://github.com/catchorg/Catch2/archive/refs/tags/v3.4.0.tar.gz
 }
 
+fetch_and_unpack_benchmark()
+{
+    fetch_and_unpack \
+        benchmark-1.8.3 \
+        benchmark-1.8.3.tar.gz \
+        https://github.com/google/benchmark/archive/refs/tags/v1.8.3.tar.gz
+}
+
+
 fetch_and_unpack_fmtlib()
 {
     fetch_and_unpack \
@@ -164,7 +173,7 @@ install_deps_arch()
     fetch_and_unpack_fmtlib
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
-    pacman -S -y \
+    sudo pacman -S -y --needed \
         catch2 \
         cmake \
         git \
@@ -246,6 +255,8 @@ main()
             echo "Dependencies were fetch manually and most likely libunicode will compile."
             ;;
     esac
+
+    fetch_and_unpack_benchmark
 }
 
 main $*

@@ -110,6 +110,8 @@ jobs:
         run: cmake --build build/ -- -j3
       - name: "test"
         run: ./build/src/libunicode/unicode_test
+      - name: "benchmark"
+        run: ./build/src/libunicode/libunicode_benchmark
 
 
   unknown_os:

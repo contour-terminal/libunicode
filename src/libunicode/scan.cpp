@@ -17,13 +17,22 @@
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
+#include <iostream>
 #include <algorithm>
 #include <cassert>
 #include <iterator>
 #include <numeric>
 #include <string_view>
 
-#if defined(__SSE2__)
+#if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD)
+    #define USE_STD_SIMD
+    #include <experimental/simd>
+    namespace stdx = std::experimental;
+#elif __has_include(<simd>) && defined(LIBUNICODE_USE_STD_SIMD)
+    #define USE_STD_SIMD
+    #include <simd>
+    namespace stdx = std;
+#elif defined(__SSE2__)
     #include <immintrin.h>
 #endif
 
@@ -80,8 +89,24 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
 {
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
+#if defined(USE_STD_SIMD)
+    constexpr int numberOfElements = stdx::simd_abi::max_fixed_size<char>;
+    stdx::fixed_size_simd<char, numberOfElements> simd_text {};
+    while (input  < end - numberOfElements)
+    {
+        simd_text.copy_from(input, stdx::element_aligned);
 
-#if defined(USE_INTRINSICS)
+        // check for control
+        // TODO check for complex
+        auto const simd_mask_text = (simd_text < 0x20);
+        if (stdx::popcount(simd_mask_text) > 0)
+        {
+            input += stdx::find_first_set(simd_mask_text);
+            break;
+        }
+        input += numberOfElements;
+    }
+#elif defined(USE_INTRINSICS)
     intrinsics::m128i const ControlCodeMax = intrinsics::set1_epi8(0x20); // 0..0x1F
     intrinsics::m128i const Complex = intrinsics::set1_epi8(-128);        // equals to 0x80 (0b1000'0000)
 
