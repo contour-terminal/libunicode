@@ -17,13 +17,12 @@
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
-#include <iostream>
 #include <algorithm>
 #include <cassert>
 #include <iterator>
-#include <numeric>
 #include <string_view>
 
+// clang-format off
 #if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD)
     #define USE_STD_SIMD
     #include <experimental/simd>
@@ -35,6 +34,7 @@
 #elif defined(__SSE2__)
     #include <immintrin.h>
 #endif
+// clang-format on
 
 using std::distance;
 using std::get;
@@ -92,7 +92,7 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
 #if defined(USE_STD_SIMD)
     constexpr int numberOfElements = stdx::simd_abi::max_fixed_size<char>;
     stdx::fixed_size_simd<char, numberOfElements> simd_text {};
-    while (input  < end - numberOfElements)
+    while (input < end - numberOfElements)
     {
         simd_text.copy_from(input, stdx::element_aligned);
 

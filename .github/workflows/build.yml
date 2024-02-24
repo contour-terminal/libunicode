@@ -37,13 +37,13 @@ jobs:
             "GCC 10",
             "Clang 9",
             "Clang 10",
-            "Clang 11",
+            # (CI related error) "Clang 11",
             "Clang 12"
           ]
     name: "Ubuntu Linux 20.04 (${{ matrix.compiler }})"
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
@@ -78,14 +78,14 @@ jobs:
           [
             "GCC 10",
             "GCC 13",
-            "Clang 11",
+            # (CI related error) "Clang 11",
             "Clang 15"
           ]
           # gcc 13 only in github runners and not inside official repo
     name: "Ubuntu Linux 22.04 (${{ matrix.compiler }})"
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
@@ -113,68 +113,49 @@ jobs:
       - name: "benchmark"
         run: ./build/src/libunicode/libunicode_benchmark
 
-
   unknown_os:
-    strategy:
-      fail-fast: false
     name: "Unknown OS"
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          key: "ccache-ubuntu_2004-unknown-os"
           max-size: 256M
       - name: "Update package database"
         run: sudo apt -q update
       - name: "install dependencies"
-        run: OS_OVERRIDE=UNKNOWN ./scripts/install-deps.sh
-      - name: "create build directory"
-        run: mkdir build
-      - name: "cmake"
         run: |
-          BUILD_DIR="build" \
-            CMAKE_BUILD_TYPE="RelWithDebInfo" \
-            ./scripts/ci-prepare.sh
+            set -ex
+            sudo apt install -q -y ninja-build gcc build-essential cmake debhelper dpkg-dev g++ libc6-dev
+            OS_OVERRIDE=UNKNOWN ./scripts/install-deps.sh
+      - name: "cmake"
+        run: cmake --preset linux-gcc-release
       - name: "build"
-        run: cmake --build build/ -- -j3
+        run: cmake --build --preset linux-gcc-release -j3
       - name: "test"
-        run: ./build/src/libunicode/unicode_test
+        run: ctest --preset linux-gcc-release
 
   windows:
     name: "Windows"
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: "Fetch embedded dependencies"
-        shell: powershell
-        run: |
-          ./scripts/install-deps.ps1
-          type ./_deps/sources/CMakeLists.txt
+      - uses: actions/checkout@v4
       - name: "vcpkg: Install dependencies"
-        uses: lukka/run-vcpkg@v5
+        uses: lukka/run-vcpkg@v11.1
         id: runvcpkg
         with:
-          vcpkgArguments: fmt range-v3
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgGitCommitId: 21fa4ccecfefd96bb16faac4af17fcb900d4f8b3
-          vcpkgTriplet: x64-windows
-      - name: "create build directory"
-        shell: powershell
-        run: |
-          If (!(Test-Path build))
-          {
-              New-Item -ItemType Directory -Force -Path build
-          }
+          vcpkgGitCommitId: 80403036a665cb8fcc1a1b3e17593d20b03b2489
+      - name: "List cmake presets"
+        run: cmake --list-presets
       - name: "Generate build files"
-        env:
-          WORKSPACE: ${{ runner.workspace }}
-        run: ./scripts/ci-prepare.ps1
+        run: cmake --preset windows-cl-release -DCMAKE_TOOLCHAIN_FILE="${{ runner.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake"
       - name: "Build"
-        run: cmake --build build/ --config Release
-      - name: "test: libterminal"
-        run: .\build\src\libunicode\Release\unicode_test.exe
+        run: cmake --build --preset windows-cl-release
+      - name: "test"
+        run: ctest --preset windows-cl-release
 
   Fedora:
     name: Fedora
@@ -185,12 +166,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install build dependencies
         run: |
+          dnf install -y curl
           PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
           dnf install -y unicode-ucd
       - name: CMake build
         run: |
-          cmake . -G Ninja -B build -DBUILD_SHARED_LIBS=ON -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
-          cmake --build build -j$(nproc)
+          cmake --preset linux-gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+          cmake --build --preset linux-gcc-debug -j$(nproc)
       - name: test
         run: |
-          ctest --test-dir build
+          ctest --preset linux-gcc-debug

@@ -1,0 +1,61 @@
+{
+    "version": 6,
+    "include": [ "common.json" ],
+    "configurePresets": [
+        {
+            "name": "linux-common",
+            "inherits": "libunicode-common",
+            "generator": "Ninja",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "linux-clang-debug",
+            "displayName": "Linux (Clang) Debug",
+            "inherits": ["linux-common", "debug", "clang"]
+        },
+        {
+            "name": "linux-clang-release",
+            "displayName": "Linux (Clang) Release",
+            "inherits": ["linux-common", "release", "clang"]
+        },
+        {
+            "name": "linux-gcc-debug",
+            "displayName": "Linux (GCC) Debug",
+            "inherits": ["linux-common", "debug", "gcc"]
+        },
+        {
+            "name": "linux-gcc-release",
+            "displayName": "Linux (GCC) Release",
+            "inherits": ["linux-common", "release", "gcc"]
+        },
+        {
+            "name": "linux-native-clang-release",
+            "displayName": "Linux (Clang, Native arch, Release)",
+            "inherits": ["linux-common", "release", "arch-native", "clang"]
+        },
+        {
+            "name": "linux-native-gcc-release",
+            "displayName": "Linux (GCC, Native arch, Release)",
+            "inherits": ["linux-common", "release", "arch-native", "gcc"]
+        }
+    ],
+    "buildPresets": [
+        { "name": "linux-clang-debug", "configurePreset": "linux-clang-debug" },
+        { "name": "linux-clang-release", "configurePreset": "linux-clang-release" },
+        { "name": "linux-gcc-debug", "configurePreset": "linux-gcc-debug" },
+        { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release" },
+        { "name": "linux-native-clang-release", "configurePreset": "linux-native-clang-release" },
+        { "name": "linux-native-gcc-release", "configurePreset": "linux-native-gcc-release" }
+    ],
+    "testPresets": [
+        { "name": "linux-clang-debug", "configurePreset": "linux-clang-debug", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "linux-clang-release", "configurePreset": "linux-clang-release", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "linux-gcc-debug", "configurePreset": "linux-gcc-debug", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } }
+    ]
+}

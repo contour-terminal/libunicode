@@ -5,70 +5,9 @@
         "minor": 27,
         "patch": 0
     },
-    "configurePresets": [
-         {
-            "name": "local-devel",
-            "hidden": true,
-            "cacheVariables": {
-                "CMAKE_CXX_FLAGS": "-march=native"
-            }
-        },
-        {
-            "name": "libunicode-common",
-            "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "LIBUNICODE_TESTING": "ON",
-                "LIBUNICODE_BENCHMARK": "ON",
-                "PEDANTIC_COMPILER": "OFF",
-                "PEDANTIC_COMPILER_WERROR": "ON"
-            }
-        },
-        {
-            "name": "release",
-            "hidden": true,
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-            }
-        },
-        {
-            "name": "linux-clang-release",
-            "displayName": "Linux 64-bit",
-            "inherits": ["libunicode-common", "release"],
-            "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "linux-gcc-release",
-            "displayName": "Linux 64-bit",
-            "inherits": ["libunicode-common", "release"],
-            "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "g++"
-            }
-        },
-        {
-            "name": "linux-devel-clang-release",
-            "displayName": "Linux 64-bit",
-            "inherits": ["libunicode-common", "release", "local-devel"],
-            "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "linux-devel-gcc-release",
-            "displayName": "Linux 64-bit",
-            "inherits": ["libunicode-common", "release", "local-devel"],
-            "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "g++"
-            }
-        }
-    ],
-    "buildPresets": [
-        { "name": "linux-clang-release", "configurePreset": "linux-clang-release" },
-        { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release" },
-        { "name": "linux-devel-clang-release", "configurePreset": "linux-devel-clang-release" },
-        { "name": "linux-devel-gcc-release", "configurePreset": "linux-devel-gcc-release" }
+    "include": [
+        "cmake/presets/os-linux.json",
+        "cmake/presets/os-macos.json",
+        "cmake/presets/os-windows.json"
     ]
 }
