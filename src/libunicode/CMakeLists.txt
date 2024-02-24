@@ -246,6 +246,13 @@ endif()
 
 # {{{ unicode_test
 if(LIBUNICODE_BENCHMARK)
+    if(NOT benchmark_FOUND)
+        # supress warnings for benchmark
+        get_target_property(BENCHMARK_INCLUDE_DIRS benchmark INTERFACE_INCLUDE_DIRECTORIES)
+        set_target_properties(benchmark PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
+        target_include_directories(benchmark SYSTEM INTERFACE ${BENCHMARK_INCLUDE_DIRS})
+    endif()
+
     add_executable(libunicode_benchmark
         benchmark.cpp
     )

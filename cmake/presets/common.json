@@ -1,0 +1,21 @@
+{
+    "version": 6,
+    "configurePresets": [
+        { "name": "debug", "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        { "name": "release", "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
+        { "name": "arch-native", "hidden": true, "cacheVariables": { "CMAKE_CXX_FLAGS": "-march=native" } },
+        { "name": "clang", "hidden": true, "cacheVariables": { "CMAKE_CXX_COMPILER": "clang++" } },
+        { "name": "gcc", "hidden": true, "cacheVariables": { "CMAKE_CXX_COMPILER": "g++" } },
+        {
+            "name": "libunicode-common",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "LIBUNICODE_BENCHMARK": "ON",
+                "LIBUNICODE_TESTING": "ON",
+                "PEDANTIC_COMPILER": "ON",
+                "PEDANTIC_COMPILER_WERROR": "ON"
+            }
+        }
+    ]
+}

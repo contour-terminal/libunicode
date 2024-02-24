@@ -87,14 +87,6 @@ fetch_and_unpack_fmtlib()
         https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz
 }
 
-fetch_and_unpack_yaml_cpp()
-{
-    fetch_and_unpack \
-        yaml-cpp-yaml-cpp-0.7.0 \
-        yaml-cpp-0.7.0.tar.gz \
-        https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.tar.gz
-}
-
 prepare_fetch_and_unpack()
 {
     mkdir -p "${SYSDEPS_BASE_DIR}"
@@ -139,7 +131,7 @@ install_deps_ubuntu()
     fi
 
     case $RELEASE in
-        "18.04" | "19.04" | "20.04" | "21.04" | "22.04")
+        "20.04" | "22.04")
             fetch_and_unpack_fmtlib
             fetch_and_unpack_Catch2
             ;;
@@ -147,6 +139,8 @@ install_deps_ubuntu()
             packages="$packages libfmt-dev catch2"
             ;;
     esac
+
+    fetch_and_unpack_benchmark
 
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
@@ -156,6 +150,8 @@ install_deps_ubuntu()
 
 install_deps_FreeBSD()
 {
+    fetch_and_unpack_benchmark
+
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
     su root -c "pkg install $SYSDEP_ASSUME_YES \
@@ -171,6 +167,7 @@ install_deps_FreeBSD()
 install_deps_arch()
 {
     fetch_and_unpack_fmtlib
+    fetch_and_unpack_benchmark
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
     sudo pacman -S -y --needed \
@@ -186,17 +183,14 @@ install_deps_fedora()
     version=`cat /etc/fedora-release | awk '{print $3}'`
 
     local packages="
+        catch-devel
         cmake
+        fmt-devel
         gcc-c++
+        google-benchmark-devel
         ninja-build
         pkgconf
-        range-v3-devel
     "
-
-    # Fedora 37+ contains fmtlib 9.1.0+, prefer this and fallback to embedding otherwise.
-    # Fedora 38+ contains Catch2 3.0.0+, prefer this and fallback to embedding otherwise.
-    [ $version -ge 37 ] && packages="$packages fmt-devel" || fetch_and_unpack_fmtlib
-    [ $version -ge 38 ] && packages="$packages catch-devel" || fetch_and_unpack_Catch2
 
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
@@ -207,6 +201,7 @@ install_deps_fedora()
 install_deps_darwin()
 {
     fetch_and_unpack_Catch2
+    fetch_and_unpack_benchmark
 
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
@@ -250,13 +245,11 @@ main()
         *)
             fetch_and_unpack_Catch2
             fetch_and_unpack_fmtlib
-            fetch_and_unpack_yaml_cpp
+            fetch_and_unpack_benchmark
             echo "OS $ID not supported."
             echo "Dependencies were fetch manually and most likely libunicode will compile."
             ;;
     esac
-
-    fetch_and_unpack_benchmark
 }
 
 main $*

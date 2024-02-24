@@ -22,6 +22,8 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_COLOR_DIAGNOSTICS ON)
+
 if(("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
     add_compile_options(-Wall)
     add_compile_options(-Wextra)
@@ -100,6 +102,7 @@ message(STATUS "----------------------------------------------------------------
 message(STATUS "Build type:                  ${CMAKE_BUILD_TYPE}")
 message(STATUS "Build mode:                  ${LIBUNICODE_BUILD_MODE}")
 message(STATUS "Build unit tests:            ${LIBUNICODE_TESTING}")
+message(STATUS "Build benchmark:             ${LIBUNICODE_BENCHMARK}")
 message(STATUS "Build tools:                 ${LIBUNICODE_TOOLS}")
 message(STATUS "Using ccache:                ${USING_CCACHE_STRING}")
 message(STATUS "Using UCD directory:         ${LIBUNICODE_UCD_DIR}")

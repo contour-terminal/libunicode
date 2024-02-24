@@ -1,0 +1,27 @@
+{
+    "version": 6,
+    "include": [ "common.json" ],
+    "configurePresets": [
+        {
+            "name": "macos-common",
+            "inherits": "libunicode-common",
+            "generator": "Ninja",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        { "name": "macos-debug", "displayName": "MacOS Debug", "inherits": ["macos-common", "debug"] },
+        { "name": "macos-release", "displayName": "MacOS Release", "inherits": ["macos-common", "release"] }
+    ],
+    "buildPresets": [
+        { "name": "macos-debug", "configurePreset": "macos-debug" },
+        { "name": "macos-release", "configurePreset": "macos-release" }
+    ],
+    "testPresets": [
+        { "name": "macos-debug", "configurePreset": "macos-debug", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "macos-release", "configurePreset": "macos-release", "output": {"outputOnFailure": true}, "execution": { "noTestsAction": "error", "stopOnFailure": true } }
+    ]
+}
