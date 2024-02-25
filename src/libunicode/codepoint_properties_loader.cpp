@@ -16,8 +16,6 @@
 #include <libunicode/scoped_timer.h>
 #include <libunicode/ucd_enums.h>
 
-#include <cassert>
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -25,8 +23,9 @@
 #include <string_view>
 #include <utility>
 
-using namespace std;
+using namespace std::string_literals;
 using namespace std::string_view_literals;
+using std::pair;
 
 namespace unicode
 {
@@ -34,10 +33,10 @@ namespace unicode
 namespace
 {
     // {{{ string-to-enum convert helper
-    constexpr optional<unicode::Age> make_age(string_view value) noexcept
+    constexpr std::optional<unicode::Age> make_age(std::string_view value) noexcept
     {
         // clang-format off
-        auto /*static*/ constexpr mappings = array {
+        auto /*static*/ constexpr mappings = std::array {
             pair { "1.1"sv, Age::V1_1 },
             pair { "10.0"sv, Age::V10_0 },
             pair { "11.0"sv, Age::V11_0 },
@@ -71,12 +70,12 @@ namespace
             if (mapping.first == value)
                 return { mapping.second };
 
-        return nullopt;
+        return std::nullopt;
     }
 
-    constexpr optional<unicode::General_Category> make_general_category(string_view value) noexcept
+    constexpr std::optional<unicode::General_Category> make_general_category(std::string_view value) noexcept
     {
-        auto /*static*/ constexpr mappings = array {
+        auto /*static*/ constexpr mappings = std::array {
             pair { "Cn"sv, General_Category::Unassigned },
 
             pair { "Lu"sv, General_Category::Uppercase_Letter },
@@ -121,12 +120,12 @@ namespace
             if (mapping.first == value)
                 return { mapping.second };
 
-        return nullopt;
+        return std::nullopt;
     }
 
-    constexpr optional<unicode::Script> make_script(string_view value) noexcept
+    constexpr std::optional<unicode::Script> make_script(std::string_view value) noexcept
     {
-        auto /*static*/ constexpr mappings = array {
+        auto /*static*/ constexpr mappings = std::array {
             pair { "Adlam"sv, Script::Adlam },
             pair { "Ahom"sv, Script::Ahom },
             pair { "Anatolian_Hieroglyphs"sv, Script::Anatolian_Hieroglyphs },
@@ -296,12 +295,12 @@ namespace
             if (mapping.first == value)
                 return { mapping.second };
 
-        return nullopt;
+        return std::nullopt;
     }
 
-    constexpr optional<unicode::East_Asian_Width> make_width(string_view value) noexcept
+    constexpr std::optional<unicode::East_Asian_Width> make_width(std::string_view value) noexcept
     {
-        auto /*static*/ constexpr mappings = array {
+        auto /*static*/ constexpr mappings = std::array {
             pair { "A"sv, unicode::East_Asian_Width::Ambiguous },
             pair { "F"sv, unicode::East_Asian_Width::Fullwidth },
             pair { "H"sv, unicode::East_Asian_Width::Halfwidth },
@@ -314,12 +313,12 @@ namespace
             if (mapping.first == value)
                 return mapping.second;
 
-        return nullopt;
+        return std::nullopt;
     }
 
-    constexpr optional<unicode::Grapheme_Cluster_Break> make_gb(string_view value) noexcept
+    constexpr std::optional<unicode::Grapheme_Cluster_Break> make_gb(std::string_view value) noexcept
     {
-        auto /*static*/ constexpr mappings = array {
+        auto /*static*/ constexpr mappings = std::array {
             pair { "LV"sv, unicode::Grapheme_Cluster_Break::LV },
             pair { "Undefined"sv, unicode::Grapheme_Cluster_Break::Undefined },
             pair { "CR"sv, unicode::Grapheme_Cluster_Break::CR },
@@ -346,7 +345,7 @@ namespace
             if (mapping.first == value)
                 return mapping.second;
 
-        return nullopt;
+        return std::nullopt;
     }
     // }}}
 
@@ -434,12 +433,12 @@ namespace
     {
       public:
         static std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
-            string const& ucdDataDirectory, std::ostream* log = nullptr);
+            std::string const& ucdDataDirectory, std::ostream* log = nullptr);
 
       private:
         using tables_view = codepoint_properties::tables_view;
 
-        codepoint_properties_loader(string ucdDataDirectory, std::ostream* log = nullptr);
+        codepoint_properties_loader(std::string ucdDataDirectory, std::ostream* log = nullptr);
 
         void load();
         void create_multistage_tables();
@@ -450,26 +449,26 @@ namespace
         }
 
         template <typename T>
-        void process_properties(string const& filePathSuffix, T callback)
+        void process_properties(std::string const& filePathSuffix, T callback)
         {
             auto const _ = scoped_timer { _log, "Loading file " + filePathSuffix };
 
             // clang-format off
             // [SPACE] ALNUMDOT ([SPACE] ALNUMDOT)::= (\s+[A-Za-z_0-9\.]+)*
-            auto const singleCodepointPattern = regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+(\s+[A-Za-z_0-9\.]+)*))");
-            auto const codepointRangePattern = regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
+            auto const singleCodepointPattern = std::regex(R"(^([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+(\s+[A-Za-z_0-9\.]+)*))");
+            auto const codepointRangePattern = std::regex(R"(^([0-9A-F]+)\.\.([0-9A-F]+)\s*;\s*([A-Za-z_0-9\.]+))");
             // clang-format on
 
             auto const filePath = _ucdDataDirectory + "/" + filePathSuffix;
-            auto f = ifstream(filePath);
+            auto f = std::ifstream(filePath);
             if (!f.good())
                 throw std::runtime_error("Could not open file: "s + filePath);
             while (f.good())
             {
-                string line;
-                getline(f, line);
-                auto sm = smatch {};
-                if (regex_search(line, sm, singleCodepointPattern))
+                std::string line;
+                std::getline(f, line);
+                auto sm = std::smatch {};
+                if (std::regex_search(line, sm, singleCodepointPattern))
                 {
                     auto const codepoint = static_cast<char32_t>(stoul(sm[1], nullptr, 16));
                     callback(codepoint, sm.str(2));
@@ -484,16 +483,16 @@ namespace
             }
         }
 
-        string _ucdDataDirectory;
+        std::string _ucdDataDirectory;
         std::ostream* _log;
-        vector<codepoint_properties> _codepoints {}; // Meh!
+        std::vector<codepoint_properties> _codepoints {}; // Meh!
         codepoint_properties_table _output {};
 
-        vector<std::string> _names {};
+        std::vector<std::string> _names {};
         codepoint_names_table _outputNames {};
     };
 
-    codepoint_properties_loader::codepoint_properties_loader(string ucdDataDirectory, std::ostream* log):
+    codepoint_properties_loader::codepoint_properties_loader(std::string ucdDataDirectory, std::ostream* log):
         _ucdDataDirectory { std::move(ucdDataDirectory) }, _log { log }
     {
         _codepoints.resize(0x110'000);
@@ -504,13 +503,13 @@ namespace
 
     void codepoint_properties_loader::load()
     {
-        process_properties("Scripts.txt", [&](char32_t codepoint, string_view value) {
+        process_properties("Scripts.txt", [&](char32_t codepoint, std::string_view value) {
             properties(codepoint).script = make_script(value).value_or(unicode::Script::Invalid);
         });
 
-        process_properties("DerivedCoreProperties.txt", [&](char32_t codepoint, string_view value) {
+        process_properties("DerivedCoreProperties.txt", [&](char32_t codepoint, std::string_view value) {
             // Generically written such that we can easily add more core properties here, once relevant.
-            auto static constexpr mappings = array {
+            auto static constexpr mappings = std::array {
                 pair { "Grapheme_Extend", codepoint_properties::FlagCoreGraphemeExtend },
             };
             auto const equalName = [=](auto x) {
@@ -521,25 +520,26 @@ namespace
                 properties(codepoint).flags |= i->second;
         });
 
-        process_properties("DerivedAge.txt", [&](char32_t codepoint, string_view value) {
+        process_properties("DerivedAge.txt", [&](char32_t codepoint, std::string_view value) {
             properties(codepoint).age = make_age(value).value_or(unicode::Age::Unassigned);
         });
 
         process_properties("extracted/DerivedGeneralCategory.txt",
-                           [&](char32_t codepoint, string_view value) {
+                           [&](char32_t codepoint, std::string_view value) {
                                properties(codepoint).general_category = make_general_category(value).value();
                            });
 
         // Prep-work for names loading
-        process_properties("extracted/DerivedName.txt", [&](char32_t codepoint, string_view value) {
-            _names[static_cast<size_t>(codepoint)] = string(value.data(), value.size());
+        process_properties("extracted/DerivedName.txt", [&](char32_t codepoint, std::string_view value) {
+            _names[static_cast<size_t>(codepoint)] = std::string(value.data(), value.size());
         });
 
-        process_properties("auxiliary/GraphemeBreakProperty.txt", [&](char32_t codepoint, string_view value) {
-            properties(codepoint).grapheme_cluster_break = make_gb(value).value();
-        });
+        process_properties("auxiliary/GraphemeBreakProperty.txt",
+                           [&](char32_t codepoint, std::string_view value) {
+                               properties(codepoint).grapheme_cluster_break = make_gb(value).value();
+                           });
 
-        process_properties("EastAsianWidth.txt", [&](char32_t codepoint, string_view value) {
+        process_properties("EastAsianWidth.txt", [&](char32_t codepoint, std::string_view value) {
             properties(codepoint).east_asian_width = make_width(value).value();
         });
 
@@ -558,12 +558,12 @@ namespace
             properties(ch).emoji_segmentation_category = EmojiSegmentationCategory::TagSequence;
         properties(0xE007F).emoji_segmentation_category = EmojiSegmentationCategory::TagTerm;
 
-        for (char32_t const codepoint: array<char32_t, 12> { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*' })
+        for (char32_t const codepoint: std::array<char32_t, 12> { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*' })
             properties(codepoint).emoji_segmentation_category = EmojiSegmentationCategory::KeyCapBase;
         // clang-format on
 
-        process_properties("emoji/emoji-data.txt", [&](char32_t codepoint, string_view value) -> void {
-            auto static constexpr mappings = array {
+        process_properties("emoji/emoji-data.txt", [&](char32_t codepoint, std::string_view value) -> void {
+            auto static constexpr mappings = std::array {
                 pair { "Emoji", codepoint_properties::FlagEmoji },
                 pair { "Emoji_Component", codepoint_properties::FlagEmojiComponent },
                 pair { "Emoji_Modifier", codepoint_properties::FlagEmojiModifier },
@@ -597,7 +597,7 @@ namespace
     }
 
     std::tuple<codepoint_properties_table, codepoint_names_table> codepoint_properties_loader::
-        load_from_directory(string const& ucdDataDirectory, std::ostream* log)
+        load_from_directory(std::string const& ucdDataDirectory, std::ostream* log)
     {
         auto loader = codepoint_properties_loader { ucdDataDirectory, log };
         loader.load();
