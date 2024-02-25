@@ -43,6 +43,21 @@ if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
     )
 endif()
 
+add_executable(apigen apigen.cpp)
+
+# TODO(pr)
+# add_custom_command(
+#     OUTPUT ${LIBUNICODE_UCD_GENERATED_FILES}
+#     COMMAND apigen "${LIBUNICODE_UCD_DIR}" ${LIBUNICODE_UCD_GENERATED_FILES}
+#     DEPENDS apigen
+#     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+#     COMMENT "Generating UCD API from ${LIBUNICODE_UCD_DIR}"
+#     VERBATIM
+#     USES_TERMINAL
+# )
+
+# =========================================================================================================
+
 set(LIBUNICODE_LIB_MODE)
 if(LIBUNICODE_BUILD_STATIC)
     set(LIBUNICODE_LIB_MODE "STATIC")
