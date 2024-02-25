@@ -1,7 +1,7 @@
 {
     "version": 6,
     "configurePresets": [
-        { "name": "debug", "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        { "name": "debug", "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "LIBUNICODE_TABLEGEN_FASTBUILD": "ON" } },
         { "name": "release", "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
         { "name": "arch-native", "hidden": true, "cacheVariables": { "CMAKE_CXX_FLAGS": "-march=native" } },
         { "name": "clang", "hidden": true, "cacheVariables": { "CMAKE_CXX_COMPILER": "clang++" } },

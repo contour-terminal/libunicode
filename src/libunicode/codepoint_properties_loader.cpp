@@ -610,12 +610,32 @@ namespace
     {
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (properties)" };
-            support::generate(_codepoints.data(), _codepoints.size(), _output);
+            support::generate(_codepoints.data(),
+                              _codepoints.size(),
+                              _output,
+                              [](auto const& begin, auto const& end, auto value) noexcept {
+                                  return std::find(begin, end, value);
+                              });
         }
 
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (names)" };
-            support::generate(_names.data(), _names.size(), _outputNames);
+            support::generate(_names.data(),
+                              _names.size(),
+                              _outputNames,
+                              [&](auto const& begin, auto const& end, auto value) noexcept {
+#if defined(LIBUNICODE_TABLEGEN_FASTBUILD)
+                                  if (value.empty())
+                                      // This case is happening for unassigned codepoints (and quite a lot)
+                                      // We want to keep the names table as small as possible, so we don't
+                                      // re-add empty strings to it.
+                                      return std::find(begin, end, value);
+                                  // Non-empty names are mostly unique (~1.6% are duplicates, that's okay)
+                                  return end;
+#else
+                                  return std::find(begin, end, value);
+#endif
+                              });
         }
     }
 } // namespace

@@ -207,7 +207,7 @@ int main(int argc, char const* argv[])
     auto headerFile = std::ofstream(cxxHeaderFileName);
     auto implementationFile = std::ofstream(cxxImplementationFileName);
     auto namesFile = std::ofstream(cxxNamesFileName);
-    auto const [props, names] = unicode::load_from_directory(ucdDataDirectory, &std::cout);
+    auto const [props, names] = unicode::load_from_directory(ucdDataDirectory, &std::clog);
 
     write_cxx_tables(props, names, headerFile, implementationFile, namesFile, namespaceName);
 
