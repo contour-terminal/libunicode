@@ -54,6 +54,7 @@ template <typename T,
           typename SourceType,
           typename Stage1ElementType,
           typename Stage2ElementType,
+          typename Stage3Finder,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 class multistage_table_generator
@@ -62,6 +63,7 @@ class multistage_table_generator
     T const* _input;
     size_t _inputSize;
     multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& _output;
+    Stage3Finder _stage3Finder;
 
     void generate()
     {
@@ -143,7 +145,8 @@ class multistage_table_generator
     Stage2ElementType get_or_create_stage3_index(SourceType stage1Index)
     {
         auto& properties = _output.stage3;
-        auto const propertyIterator = find(properties.begin(), properties.end(), _input[stage1Index]);
+        auto const propertyIterator =
+            _stage3Finder(properties.begin(), properties.end(), _input[stage1Index]);
         if (propertyIterator != properties.end())
             return static_cast<Stage2ElementType>(distance(properties.begin(), propertyIterator));
 
@@ -158,17 +161,24 @@ template <typename T,
           typename SourceType,
           typename Stage1ElementType,
           typename Stage2ElementType,
+          typename Stage3Finder,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 void generate(
     T const* input,
     size_t inputSize,
-    multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output)
+    multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output,
+    Stage3Finder&& stage3Finder)
 {
-    auto builder =
-        multistage_table_generator<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue> {
-            input, inputSize, output
-        };
+    auto builder = multistage_table_generator<T,
+                                              SourceType,
+                                              Stage1ElementType,
+                                              Stage2ElementType,
+                                              Stage3Finder,
+                                              BlockSize,
+                                              MaxValue> {
+        input, inputSize, output, std::forward<Stage3Finder>(stage3Finder)
+    };
     builder.generate();
 }
 
