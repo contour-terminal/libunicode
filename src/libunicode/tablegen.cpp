@@ -27,6 +27,15 @@ using namespace std::string_literals;
 namespace
 {
 
+struct tablegen_configuration
+{
+    std::string ucdDataDirectory;
+    std::string namespaceName;
+    std::ofstream cxxHeaderFile;
+    std::ofstream cxxImplementationFile;
+    std::ofstream cxxNamesFile;
+};
+
 std::string binstr(uint32_t n)
 {
     std::string ss;
@@ -182,34 +191,37 @@ void write_cxx_tables(unicode::codepoint_properties_table const& tables,
     header << "\n} // end namespace " << namespaceName << "\n";
 }
 
-char const* consumeParamterOrDefault(int& i, int argc, char const* argv[], char const* defaultValue) noexcept
-{
-    if (argc > i)
-        return argv[i++];
-    else
-        return defaultValue;
-}
-
 } // namespace
 
-// Usage: unicode_tablgen UCD_directory CPP_OUTPUTFILE NAMESPACE
 int main(int argc, char const* argv[])
 {
-    // clang-format off
-    int i = 1;
-    auto const ucdDataDirectory = consumeParamterOrDefault(i, argc, argv, "_ucd/ucd-15.0.0");
-    auto const cxxHeaderFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.h");
-    auto const cxxImplementationFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.cpp");
-    auto const cxxNamesFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_names_data.cpp");
-    auto const namespaceName = consumeParamterOrDefault(i, argc, argv, "unicode::precompiled");
-    // clang-format on
+    if (argc != 5)
+    {
+        std::cerr << "Usage: " << argv[0]         // should be: libunicode_tablegen
+                  << " <ucd-data-directory>"      // e.g. _ucd/ucd-15.0.0
+                  << " <cxx-header-file>"         // e.g. codepoint_properties_data.h
+                  << " <cxx-implementation-file>" // e.g. codepoint_properties_data.cpp
+                  << " <cxx-names-file>"          // e.g. codepoint_names_data.cpp
+                  << "\n";
+        return EXIT_FAILURE;
+    }
 
-    auto headerFile = std::ofstream(cxxHeaderFileName);
-    auto implementationFile = std::ofstream(cxxImplementationFileName);
-    auto namesFile = std::ofstream(cxxNamesFileName);
-    auto const [props, names] = unicode::load_from_directory(ucdDataDirectory, &std::clog);
+    auto config = tablegen_configuration {
+        .ucdDataDirectory = argv[1],
+        .namespaceName = "unicode::precompiled",
+        .cxxHeaderFile = std::ofstream(argv[2]),
+        .cxxImplementationFile = std::ofstream(argv[3]),
+        .cxxNamesFile = std::ofstream(argv[4]),
+    };
 
-    write_cxx_tables(props, names, headerFile, implementationFile, namesFile, namespaceName);
+    auto const [props, names] = unicode::load_from_directory(config.ucdDataDirectory, &std::clog);
+
+    write_cxx_tables(props,
+                     names,
+                     config.cxxHeaderFile,
+                     config.cxxImplementationFile,
+                     config.cxxNamesFile,
+                     config.namespaceName);
 
     return EXIT_SUCCESS;
 }

@@ -21,19 +21,23 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-gene
 endif()
 
 # =========================================================================================================
+# Generate UCD API from Unicode database (the order of filenames is important)
+set(LIBUNICODE_UCD_GENERATED_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_fmt.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+)
+
 if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_custom_command(
-        OUTPUT
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_fmt.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+        OUTPUT ${LIBUNICODE_UCD_GENERATED_FILES}
         COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_DIR}"
         DEPENDS mktables.py
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-        COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_DIR}"
+        COMMENT "Generating UCD API ${LIBUNICODE_UCD_DIR}"
         VERBATIM
         USES_TERMINAL
     )
@@ -74,7 +78,6 @@ add_custom_command(
         "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
-        "unicode::precompiled"
     DEPENDS unicode_tablegen unicode::ucd
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
     COMMENT "Generating UCD codepoint properties tables from ${LIBUNICODE_UCD_DIR}"
