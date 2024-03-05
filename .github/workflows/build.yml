@@ -32,10 +32,7 @@ jobs:
       matrix:
         compiler:
           [
-            "GCC 8",
-            "GCC 9",
             "GCC 10",
-            "Clang 9",
             "Clang 10",
             # (CI related error) "Clang 11",
             "Clang 12"
