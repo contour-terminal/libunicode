@@ -9,20 +9,20 @@
 using std::string_view;
 
 template <size_t L>
-static void benchmarkWithLength(benchmark::State& state)
+static void benchmarkWithLength(benchmark::State& benchmarkState)
 {
     auto TestText = std::string(L, 'a') + "\u00A9";
-    for (auto _: state)
+    for (auto _: benchmarkState)
     {
         benchmark::DoNotOptimize(unicode::detail::scan_for_text_ascii(TestText, L + 10));
     }
 }
 
 template <size_t L>
-static void benchmarkWithOffset(benchmark::State& state)
+static void benchmarkWithOffset(benchmark::State& benchmarkState)
 {
-    auto TestText = std::string(L, 'a') + "\u0001F600" + std::string(1000, 'a');
-    for (auto _: state)
+    auto TestText = std::string(L, 'a') + "\U0001F600" + std::string(1000, 'a');
+    for (auto _: benchmarkState)
     {
         benchmark::DoNotOptimize(unicode::detail::scan_for_text_ascii(TestText, L + 10));
     }
