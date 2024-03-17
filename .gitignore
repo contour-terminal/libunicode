@@ -4,6 +4,7 @@
 /_ucd/
 /.clangd/
 /compile_commands.json
+/.vs/
 /.vscode/
 /sandbox/
 /target/

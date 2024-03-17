@@ -29,7 +29,7 @@ std::string escape(std::string const& s)
 {
     std::string t;
     for (char ch: s)
-        if (std::isprint(ch))
+        if (ch >= 0x20 && ch <= 0x7E) // printable ASCII (We don't use isprint() due to MSVC)
             t += ch;
         else
             t += fmt::format("\\x{:02X}", ((unsigned) ch) & 0xFF);
