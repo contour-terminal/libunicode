@@ -18,7 +18,7 @@
 namespace unicode
 {
 
-int width(char32_t codepoint) noexcept
+unsigned width(char32_t codepoint) noexcept
 {
     return codepoint_properties::get(codepoint).char_width;
 }
