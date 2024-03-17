@@ -21,7 +21,7 @@ static void benchmarkWithLength(benchmark::State& state)
 template <size_t L>
 static void benchmarkWithOffset(benchmark::State& state)
 {
-    auto TestText = std::string(L, 'a') + "\u0001F600" + std::string(1000, 'a');
+    auto TestText = std::string(L, 'a') + "\U0001F600" + std::string(1000, 'a');
     for (auto _: state)
     {
         benchmark::DoNotOptimize(unicode::detail::scan_for_text_ascii(TestText, L + 10));
