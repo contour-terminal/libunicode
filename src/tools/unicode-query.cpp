@@ -15,8 +15,10 @@
 #include <libunicode/codepoint_properties_loader.h>
 #include <libunicode/convert.h>
 #include <libunicode/grapheme_segmenter.h>
+#include <libunicode/run_segmenter.h>
 #include <libunicode/ucd.h>
 #include <libunicode/ucd_enums.h>
+#include <libunicode/ucd_fmt.h>
 #include <libunicode/ucd_ostream.h>
 #include <libunicode/utf8_grapheme_segmenter.h>
 
@@ -28,15 +30,31 @@
 #include <sstream>
 #include <string>
 
+#if !defined(_WIN32)
+    #include <unistd.h>
+#endif
+
 using namespace std;
 
 namespace
 {
 
-std::string quotedAndEscaped(std::string const& text)
+std::string escapeControlCodes(std::string const& text)
 {
     auto result = stringstream {};
-    result << '"';
+    for (char const ch: text)
+    {
+        if (ch < 0x20)
+            result << "\\x" << setw(2) << std::hex << (unsigned(ch) & 0xFF);
+        else
+            result << ch;
+    }
+    return result.str();
+}
+
+std::string escaped(std::string const& text)
+{
+    auto result = stringstream {};
     for (char const ch: text)
     {
         if (std::isprint(ch) && ch != '"')
@@ -44,16 +62,39 @@ std::string quotedAndEscaped(std::string const& text)
         else
             result << "\\x" << setw(2) << std::hex << (unsigned(ch) & 0xFF);
     }
-    result << "\"";
     return result.str();
+}
+
+std::string quotedAndEscaped(std::string const& text)
+{
+    return '"' + escaped(text) + '"';
 }
 
 int printUsage(int exitCode)
 {
-    cout << "unicode-query [properties] U+XXXX [...]\n";
+    cout << "unicode-query [properties] U+XXXX [...]\n"
+         << "              gc [-e] [--] \"Text string\"\n"
+         << "              runs [-e] [--] \"Text string\"\n";
     return exitCode;
 }
 
+std::string_view seq(std::string_view const& text)
+{
+    static const bool isTTY = []() {
+#if !defined(_WIN32)
+        auto const isPTY = isatty(STDOUT_FILENO);
+        return isPTY;
+#else
+        return false;
+#endif
+    }();
+    if (isTTY)
+        return text;
+    else
+        return {};
+}
+
+// {{{ properties
 optional<char32_t> parseChar(std::string_view text)
 {
     if (text.size() >= 3 && text[0] == 'U' && text[1] == '+')
@@ -116,7 +157,7 @@ void showCodepointProperties(char32_t codepoint)
     cout << "Emoji Segmentation Category : " << properties.emoji_segmentation_category << '\n';
     cout << "Grapheme Cluster Break      : " << properties.grapheme_cluster_break << '\n';
     cout << "\n";
-    // clang-format off
+    // clang-format on
 }
 
 int showCodepointProperties(int argc, char const* argv[])
@@ -134,7 +175,99 @@ int showCodepointProperties(int argc, char const* argv[])
     }
     return EXIT_SUCCESS;
 }
+// }}}
 
+// {{{ grapheme clusters
+int showGraphemeClusters(int argc, char const* argv[])
+{
+    int i = 0;
+    bool escapeText = false;
+    for (; i < argc; ++i)
+    {
+        auto const arg = string_view(argv[i]);
+        if (arg == "-e")
+            escapeText = true;
+        else if (arg == "--")
+        {
+            ++i;
+            break;
+        }
+        else if (arg.starts_with('-'))
+            return printUsage(EXIT_FAILURE);
+        else
+            break;
+    }
+    for (; i < argc; ++i)
+    {
+        auto const text = string_view(argv[i]);
+        auto const gcs = unicode::utf8_grapheme_segmenter(text);
+        for (auto const& gc: gcs)
+        {
+            auto const text32 = std::u32string_view(gc);
+            auto const text8 = unicode::convert_to<char>(text32);
+            std::cout << (escapeText ? escaped(text8) : escapeControlCodes(text8)) << "\n";
+        }
+    }
+    return EXIT_SUCCESS;
+}
+// }}}
+
+// {{{ runs
+int showRuns(istream& in, bool escapeRunText)
+{
+    string bytes((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
+    u32string const codepoints = unicode::convert_to<char32_t>(string_view(bytes));
+
+    unicode::run_segmenter rs(codepoints);
+    unicode::run_segmenter::range run;
+
+    while (rs.consume(unicode::out(run)))
+    {
+        auto const script = get<unicode::Script>(run.properties);
+        auto const presentationStyle = get<unicode::PresentationStyle>(run.properties);
+
+        auto const text32 = u32string_view(codepoints.data() + run.start, run.end - run.start);
+        auto const text8 = unicode::convert_to<char>(text32);
+        auto const textEscaped = escapeRunText ? escaped(text8) : escapeControlCodes(text8);
+
+        cout << run.start << "-" << run.end - 1 << " (" << run.end - run.start << "): " << script << " " << presentationStyle
+             << "\n"
+             << '"' << seq("\033[32m") << textEscaped << seq("\033[m") << "\"\n\n";
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int showRuns(int argc, char const* argv[])
+{
+    // [-e]
+    int i = 0;
+    bool escaped = false;
+    for (; i < argc; ++i)
+    {
+        auto const arg = string_view(argv[i]);
+        if (arg == "-e")
+            escaped = true;
+        else if (arg == "--")
+        {
+            ++i;
+            break;
+        }
+        else if (arg.starts_with('-'))
+            return printUsage(EXIT_FAILURE);
+        else
+            break;
+    }
+
+    for (; i < argc; ++i)
+    {
+        auto in = std::istringstream(argv[i]);
+        showRuns(in, escaped);
+    }
+
+    return EXIT_SUCCESS;
+}
+// }}}
 } // namespace
 
 // Example usage:
@@ -153,6 +286,18 @@ int main(int argc, char const* argv[])
     int argIndex = 1;
     if (string_view(argv[argIndex]) == "help")
         return printUsage(EXIT_SUCCESS);
+
+    if (string_view(argv[argIndex]) == "runs")
+    {
+        ++argIndex;
+        return showRuns(argc - argIndex, argv + argIndex);
+    }
+
+    if (string_view(argv[argIndex]) == "gc")
+    {
+        ++argIndex;
+        return showGraphemeClusters(argc - argIndex, argv + argIndex);
+    }
 
     if (string_view(argv[argIndex]) == "properties")
         ++argIndex;
