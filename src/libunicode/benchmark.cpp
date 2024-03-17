@@ -1,5 +1,5 @@
 #include <libunicode/convert.h>
-#include <libunicode/scan.h>
+#include <libunicode/grapheme_line_segmenter.h>
 #include <libunicode/utf8.h>
 
 #include <string_view>
@@ -14,7 +14,7 @@ static void benchmarkWithLength(benchmark::State& benchmarkState)
     auto TestText = std::string(L, 'a') + "\u00A9";
     for (auto _: benchmarkState)
     {
-        benchmark::DoNotOptimize(unicode::detail::scan_for_text_ascii(TestText, L + 10));
+        benchmark::DoNotOptimize(unicode::detail::process_only_ascii(std::string_view(TestText).substr(0, L + 10)));
     }
 }
 
@@ -24,7 +24,9 @@ static void benchmarkWithOffset(benchmark::State& benchmarkState)
     auto TestText = std::string(L, 'a') + "\U0001F600" + std::string(1000, 'a');
     for (auto _: benchmarkState)
     {
-        benchmark::DoNotOptimize(unicode::detail::scan_for_text_ascii(TestText, L + 10));
+        auto state = unicode::detail::unicode_process_state {};
+        auto eventHandler = unicode::detail::EventHandler{};
+        benchmark::DoNotOptimize(unicode::detail::process_only_complex_unicode(eventHandler, state, TestText, L + 10));
     }
 }
 
