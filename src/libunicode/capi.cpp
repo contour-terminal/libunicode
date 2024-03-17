@@ -49,7 +49,7 @@ int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
     while (segmenter.codepointsAvailable())
     {
         auto const cluster = *segmenter;
-        int thisWidth = unicode::width(cluster.front());
+        int thisWidth = static_cast<int>(unicode::width(cluster.front()));
         if (mode != GC_WIDTH_MODE_NON_MODIFIABLE)
         {
             for (size_t i = 1; i < size; ++i)
@@ -60,7 +60,7 @@ int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
                     {
                         case 0xFE0E: return 1;
                         case 0xFE0F: return 2;
-                        default: return unicode::width(codepoint);
+                        default: return static_cast<int>(unicode::width(codepoint));
                     }
                 }();
                 if (width && width != thisWidth)
