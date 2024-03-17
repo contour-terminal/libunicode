@@ -102,7 +102,6 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     codepoint_properties.cpp
     emoji_segmenter.cpp
     grapheme_segmenter.cpp
-    scan.cpp
     script_segmenter.cpp
     utf8.cpp
     width.cpp
@@ -114,10 +113,10 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
 )
 
 if(LIBUNICODE_USE_STD_SIMD)
-    target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
+    target_compile_definitions(unicode PUBLIC LIBUNICODE_USE_STD_SIMD)
 endif()
 if(LIBUNICODE_USE_INTRINSICS)
-    target_compile_definitions(unicode PRIVATE USE_INTRINSICS)
+    target_compile_definitions(unicode PUBLIC LIBUNICODE_USE_INTRINSICS)
 endif()
 
 set(public_headers
@@ -125,11 +124,11 @@ set(public_headers
     codepoint_properties.h
     convert.h
     emoji_segmenter.h
+    grapheme_line_segmenter.h
     grapheme_segmenter.h
     intrinsics.h
     multistage_table_view.h
     run_segmenter.h
-    scan.h
     script_segmenter.h
     support.h
     utf8.h
@@ -160,7 +159,6 @@ target_link_libraries(unicode PUBLIC unicode::ucd)
 add_executable(unicode_tablegen tablegen.cpp)
 set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
 target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
-
 
 # {{{ installation
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
@@ -220,9 +218,9 @@ if(LIBUNICODE_TESTING)
         capi_test.cpp
         convert_test.cpp
         emoji_segmenter_test.cpp
+        grapheme_line_segmenter_test.cpp
         grapheme_segmenter_test.cpp
         run_segmenter_test.cpp
-        scan_test.cpp
         script_segmenter_test.cpp
         test_main.cpp
         unicode_test.cpp
@@ -246,8 +244,6 @@ if(LIBUNICODE_TESTING)
     add_test(unicode_test unicode_test)
 endif()
 # }}}
-
-
 
 # {{{ unicode_test
 if(LIBUNICODE_BENCHMARK)
