@@ -13,6 +13,7 @@
             "cacheVariables": {
                 "LIBUNICODE_BENCHMARK": "ON",
                 "LIBUNICODE_TESTING": "ON",
+                "LIBUNICODE_BUILD_STATIC": "ON",
                 "PEDANTIC_COMPILER": "ON",
                 "PEDANTIC_COMPILER_WERROR": "ON"
             }
