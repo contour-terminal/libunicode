@@ -30,109 +30,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler:
-          [
-            "GCC 10",
-            "Clang 10",
-            # (CI related error) "Clang 11",
-            "Clang 12"
-          ]
-    name: "Ubuntu Linux 20.04 (${{ matrix.compiler }})"
-    runs-on: ubuntu-20.04
+        os_version: ['20.04', '22.04', '24.04']
+    name: "Ubuntu ${{ matrix.os_version }}"
+    runs-on: ubuntu-${{ matrix.os_version }}
     steps:
       - uses: actions/checkout@v4
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: "ccache-ubuntu_2004-${{ matrix.compiler }}"
+          key: "ccache-ubuntu_${{ matrix.os_version }}"
           max-size: 256M
       - name: "Update package database"
         run: sudo apt -q update
       - name: "install dependencies"
-        env:
-          COMPILER: "${{ matrix.compiler }}"
         run: ./scripts/install-deps.sh
       - name: "create build directory"
         run: mkdir build
       - name: "cmake"
-        env:
-          COMPILER: "${{ matrix.compiler }}"
         run: |
-          BUILD_DIR="build" \
-            CMAKE_BUILD_TYPE="RelWithDebInfo" \
-            ./scripts/ci-prepare.sh
+          cmake -S . -B build -G Ninja \
+            -D CMAKE_BUILD_TYPE="RelWithDebInfo" \
+            -D LIBUNICODE_BENCHMARK=ON \
+            -D LIBUNICODE_TESTING=ON
       - name: "build"
         run: cmake --build build/ -- -j3
       - name: "test"
         run: ./build/src/libunicode/unicode_test
-
-
-  ubuntu_matrix_22:
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler:
-          [
-            "GCC 10",
-            "GCC 13",
-            # (CI related error) "Clang 11",
-            "Clang 15"
-          ]
-          # gcc 13 only in github runners and not inside official repo
-    name: "Ubuntu Linux 22.04 (${{ matrix.compiler }})"
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: "ccache-ubuntu_2204-${{ matrix.compiler }}"
-          max-size: 256M
-      - name: "Update package database"
-        run: sudo apt -q update
-      - name: "install dependencies"
-        env:
-          COMPILER: "${{ matrix.compiler }}"
-        run: ./scripts/install-deps.sh
-      - name: "create build directory"
-        run: mkdir build
-      - name: "cmake"
-        env:
-          COMPILER: "${{ matrix.compiler }}"
-        run: |
-          BUILD_DIR="build" \
-            CMAKE_BUILD_TYPE="RelWithDebInfo" \
-            ./scripts/ci-prepare.sh
-      - name: "build"
-        run: cmake --build build/ -- -j3
-      - name: "test"
-        run: ./build/src/libunicode/unicode_test
-      - name: "benchmark"
-        run: ./build/src/libunicode/libunicode_benchmark
-
-  unknown_os:
-    name: "Unknown OS"
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: "ccache-ubuntu_2004-unknown-os"
-          max-size: 256M
-      - name: "Update package database"
-        run: sudo apt -q update
-      - name: "install dependencies"
-        run: |
-            set -ex
-            sudo apt install -q -y ninja-build gcc build-essential cmake debhelper dpkg-dev g++ libc6-dev
-            OS_OVERRIDE=UNKNOWN ./scripts/install-deps.sh
-      - name: "cmake"
-        run: cmake --preset linux-gcc-release
-      - name: "build"
-        run: cmake --build --preset linux-gcc-release -j3
-      - name: "test"
-        run: ctest --preset linux-gcc-release
 
   windows:
     name: "Windows"
@@ -156,8 +79,8 @@ jobs:
 
   Fedora:
     name: Fedora
-    runs-on: ubuntu-22.04
-    container: fedora:rawhide
+    runs-on: ubuntu-24.04
+    container: fedora:latest
 
     steps:
       - uses: actions/checkout@v4

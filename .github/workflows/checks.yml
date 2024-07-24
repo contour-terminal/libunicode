@@ -31,12 +31,12 @@ jobs:
     name: "Check C++ style"
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Run clang-format style check for C/C++/Protobuf programs.
-      uses: jidicula/clang-format-action@v4.4.0
-      with:
-        clang-format-version: '14'
-        check-path: 'src'
-
-
-
+    - uses: actions/checkout@v4
+    - name: Install clang
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 18
+        sudo apt-get install clang-format-18
+    - name: "Clang-format"
+      run: find ./src/ -name "*.cpp" -o -name "*.h" | xargs clang-format-18 --Werror --dry-run
