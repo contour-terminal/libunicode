@@ -32,19 +32,14 @@ class script_segmenter
     constexpr script_segmenter(script_segmenter const&) noexcept = default;
     constexpr script_segmenter(script_segmenter&&) noexcept = default;
 
-    constexpr explicit script_segmenter(char32_t const* data) noexcept:
-        script_segmenter { data, getStringLength(data) }
-    {
-    }
+    constexpr explicit script_segmenter(char32_t const* data) noexcept: script_segmenter { data, getStringLength(data) } {}
 
-    constexpr script_segmenter(char32_t const* data, size_t size) noexcept:
-        data_ { data }, offset_ { 0 }, size_ { size }
+    constexpr script_segmenter(char32_t const* data, size_t size) noexcept: data_ { data }, offset_ { 0 }, size_ { size }
     {
         currentScriptSet_.push_back(Script::Common);
     }
 
-    constexpr script_segmenter(std::u32string_view data) noexcept:
-        data_ { data.data() }, offset_ { 0 }, size_ { data.size() }
+    constexpr script_segmenter(std::u32string_view data) noexcept: data_ { data.data() }, offset_ { 0 }, size_ { data.size() }
     {
         currentScriptSet_.push_back(Script::Common);
     }

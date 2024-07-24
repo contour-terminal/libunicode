@@ -103,8 +103,7 @@ class emoji_segmenter
     {
         // TODO: provide such an accessor in text_run_segmenter
         if (currentCursorEnd_ > 0)
-            return std::u32string_view(buffer_ + currentCursorBegin_,
-                                       currentCursorEnd_ - currentCursorBegin_);
+            return std::u32string_view(buffer_ + currentCursorBegin_, currentCursorEnd_ - currentCursorBegin_);
         else
             return std::u32string_view {};
     }
@@ -130,7 +129,7 @@ inline std::ostream& operator<<(std::ostream& os, EmojiSegmentationCategory valu
 {
     switch (value)
     {
-        // clang-format off
+            // clang-format off
         case unicode::EmojiSegmentationCategory::Invalid: return os << "Invalid";
         case unicode::EmojiSegmentationCategory::Emoji: return os << "Emoji";
         case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return os << "EmojiTextPresentation";

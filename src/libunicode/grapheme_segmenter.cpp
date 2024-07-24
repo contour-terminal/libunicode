@@ -73,8 +73,8 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // Do not break Hangul syllable sequences.
     // GB6:
     if (A == Grapheme_Cluster_Break::L
-        && (B == Grapheme_Cluster_Break::L || B == Grapheme_Cluster_Break::V
-            || B == Grapheme_Cluster_Break::LV || B == Grapheme_Cluster_Break::LVT))
+        && (B == Grapheme_Cluster_Break::L || B == Grapheme_Cluster_Break::V || B == Grapheme_Cluster_Break::LV
+            || B == Grapheme_Cluster_Break::LVT))
         return false;
 
     // GB7:

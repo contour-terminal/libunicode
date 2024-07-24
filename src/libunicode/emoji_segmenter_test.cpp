@@ -34,8 +34,7 @@ struct Expectation
     PresentationStyle presentationStyle;
 };
 
-void test_segments(int lineNo,
-                   std::vector<std::pair<std::u32string_view, PresentationStyle>> const& expectations)
+void test_segments(int lineNo, std::vector<std::pair<std::u32string_view, PresentationStyle>> const& expectations)
 {
     vector<Expectation> expects;
     u32string fullText;
@@ -130,13 +129,13 @@ TEST_CASE("emoji_segmenter.emoji.text.emoji", "[emoji_segmenter]")
 
 TEST_CASE("emoji_segmenter.mixed_complex", "[emoji_segmenter]")
 {
-    test_segments(__LINE__,
-                  {
-                      { U"Hello(", PresentationStyle::Text }, // Latin text
-                      { U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F",
-                        PresentationStyle::Emoji },                     // 🤦🏼‍♂️ Face Palm
-                      { U"\u270c\ufe0e :-)", PresentationStyle::Text }, // ✌ Waving hand (text presentation)
-                      { U"\u270c", PresentationStyle::Emoji },          // ✌ Waving hand
-                      { U")合!", PresentationStyle::Text },             // Kanji text
-                  });
+    test_segments(
+        __LINE__,
+        {
+            { U"Hello(", PresentationStyle::Text },                                        // Latin text
+            { U"\u270c\U0001F926\U0001F3FC\u200D\u2642\uFE0F", PresentationStyle::Emoji }, // 🤦🏼‍♂️ Face Palm
+            { U"\u270c\ufe0e :-)", PresentationStyle::Text },                              // ✌ Waving hand (text presentation)
+            { U"\u270c", PresentationStyle::Emoji },                                       // ✌ Waving hand
+            { U")合!", PresentationStyle::Text },                                          // Kanji text
+        });
 }

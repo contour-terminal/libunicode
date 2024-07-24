@@ -302,12 +302,9 @@ namespace
     constexpr optional<unicode::East_Asian_Width> make_width(string_view value) noexcept
     {
         auto /*static*/ constexpr mappings = array {
-            pair { "A"sv, unicode::East_Asian_Width::Ambiguous },
-            pair { "F"sv, unicode::East_Asian_Width::Fullwidth },
-            pair { "H"sv, unicode::East_Asian_Width::Halfwidth },
-            pair { "N"sv, unicode::East_Asian_Width::Neutral },
-            pair { "Na"sv, unicode::East_Asian_Width::Narrow },
-            pair { "W"sv, unicode::East_Asian_Width::Wide },
+            pair { "A"sv, unicode::East_Asian_Width::Ambiguous }, pair { "F"sv, unicode::East_Asian_Width::Fullwidth },
+            pair { "H"sv, unicode::East_Asian_Width::Halfwidth }, pair { "N"sv, unicode::East_Asian_Width::Neutral },
+            pair { "Na"sv, unicode::East_Asian_Width::Narrow },   pair { "W"sv, unicode::East_Asian_Width::Wide },
         };
 
         for (auto const& mapping: mappings)
@@ -392,8 +389,7 @@ namespace
         return 1;
     }
 
-    inline EmojiSegmentationCategory toEmojiSegmentationCategory(char32_t codepoint,
-                                                                 codepoint_properties const& props) noexcept
+    inline EmojiSegmentationCategory toEmojiSegmentationCategory(char32_t codepoint, codepoint_properties const& props) noexcept
     {
         if (codepoint == 0x20e3)
             return EmojiSegmentationCategory::CombiningEnclosingKeyCap;
@@ -433,8 +429,8 @@ namespace
     class codepoint_properties_loader
     {
       public:
-        static std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
-            string const& ucdDataDirectory, std::ostream* log = nullptr);
+        static std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(string const& ucdDataDirectory,
+                                                                                                 std::ostream* log = nullptr);
 
       private:
         using tables_view = codepoint_properties::tables_view;
@@ -525,10 +521,9 @@ namespace
             properties(codepoint).age = make_age(value).value_or(unicode::Age::Unassigned);
         });
 
-        process_properties("extracted/DerivedGeneralCategory.txt",
-                           [&](char32_t codepoint, string_view value) {
-                               properties(codepoint).general_category = make_general_category(value).value();
-                           });
+        process_properties("extracted/DerivedGeneralCategory.txt", [&](char32_t codepoint, string_view value) {
+            properties(codepoint).general_category = make_general_category(value).value();
+        });
 
         // Prep-work for names loading
         process_properties("extracted/DerivedName.txt", [&](char32_t codepoint, string_view value) {
@@ -582,8 +577,7 @@ namespace
         {
             auto const _ = scoped_timer { _log, "Assigning EmojiSegmentationCategory" };
             for (char32_t codepoint = 0; codepoint < 0x110'000; ++codepoint)
-                properties(codepoint).emoji_segmentation_category =
-                    toEmojiSegmentationCategory(codepoint, properties(codepoint));
+                properties(codepoint).emoji_segmentation_category = toEmojiSegmentationCategory(codepoint, properties(codepoint));
         }
         // }}}
 
@@ -596,8 +590,8 @@ namespace
         // }}}
     }
 
-    std::tuple<codepoint_properties_table, codepoint_names_table> codepoint_properties_loader::
-        load_from_directory(string const& ucdDataDirectory, std::ostream* log)
+    std::tuple<codepoint_properties_table, codepoint_names_table> codepoint_properties_loader::load_from_directory(
+        string const& ucdDataDirectory, std::ostream* log)
     {
         auto loader = codepoint_properties_loader { ucdDataDirectory, log };
         loader.load();
@@ -610,38 +604,34 @@ namespace
     {
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (properties)" };
-            support::generate(_codepoints.data(),
-                              _codepoints.size(),
-                              _output,
-                              [](auto const& begin, auto const& end, auto value) noexcept {
-                                  return std::find(begin, end, value);
-                              });
+            support::generate(
+                _codepoints.data(), _codepoints.size(), _output, [](auto const& begin, auto const& end, auto value) noexcept {
+                    return std::find(begin, end, value);
+                });
         }
 
         {
             auto const _ = scoped_timer { _log, "Creating multistage tables (names)" };
-            support::generate(_names.data(),
-                              _names.size(),
-                              _outputNames,
-                              [&](auto const& begin, auto const& end, auto value) noexcept {
+            support::generate(
+                _names.data(), _names.size(), _outputNames, [&](auto const& begin, auto const& end, auto value) noexcept {
 #if defined(LIBUNICODE_TABLEGEN_FASTBUILD)
-                                  if (value.empty())
-                                      // This case is happening for unassigned codepoints (and quite a lot)
-                                      // We want to keep the names table as small as possible, so we don't
-                                      // re-add empty strings to it.
-                                      return std::find(begin, end, value);
-                                  // Non-empty names are mostly unique (~1.6% are duplicates, that's okay)
-                                  return end;
+                    if (value.empty())
+                        // This case is happening for unassigned codepoints (and quite a lot)
+                        // We want to keep the names table as small as possible, so we don't
+                        // re-add empty strings to it.
+                        return std::find(begin, end, value);
+                    // Non-empty names are mostly unique (~1.6% are duplicates, that's okay)
+                    return end;
 #else
                                   return std::find(begin, end, value);
 #endif
-                              });
+                });
         }
     }
 } // namespace
 
-std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
-    std::string const& ucdDataDirectory, std::ostream* log)
+std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(std::string const& ucdDataDirectory,
+                                                                                  std::ostream* log)
 {
     return codepoint_properties_loader::load_from_directory(ucdDataDirectory, log);
 }

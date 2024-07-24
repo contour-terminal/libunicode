@@ -52,9 +52,7 @@ class grapheme_segmenter
         ++*this;
     }
 
-    grapheme_segmenter(std::u32string_view sv) noexcept: grapheme_segmenter(sv.data(), sv.data() + sv.size())
-    {
-    }
+    grapheme_segmenter(std::u32string_view sv) noexcept: grapheme_segmenter(sv.data(), sv.data() + sv.size()) {}
 
     grapheme_segmenter() noexcept: grapheme_segmenter({}, {}) {}
 
@@ -83,8 +81,7 @@ class grapheme_segmenter
 
     constexpr bool operator==(grapheme_segmenter const& rhs) const noexcept
     {
-        return (!codepointsAvailable() && !rhs.codepointsAvailable())
-               || (left_ == rhs.left_ && right_ == rhs.right_);
+        return (!codepointsAvailable() && !rhs.codepointsAvailable()) || (left_ == rhs.left_ && right_ == rhs.right_);
     }
 
     /// Tests if codepoint @p a and @p b are breakable, and thus, two different grapheme clusters.
@@ -97,9 +94,7 @@ class grapheme_segmenter
         state.previousCodepoint = a;
         state.previousProperties = codepoint_properties::get(a);
         state.ri_counter =
-            (state.previousProperties.grapheme_cluster_break == Grapheme_Cluster_Break::Regional_Indicator)
-                ? 1
-                : 0;
+            (state.previousProperties.grapheme_cluster_break == Grapheme_Cluster_Break::Regional_Indicator) ? 1 : 0;
         return grapheme_process_breakable(b, state);
     }
 

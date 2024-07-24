@@ -34,10 +34,7 @@ namespace
 
       public:
         RagelIterator(char32_t const* buffer, size_t size, size_t cursor) noexcept:
-            category_ { EmojiSegmentationCategory::Invalid },
-            buffer_ { buffer },
-            size_ { size },
-            currentCursorEnd_ { cursor }
+            category_ { EmojiSegmentationCategory::Invalid }, buffer_ { buffer }, size_ { size }, currentCursorEnd_ { cursor }
         {
             updateCategory();
         }
@@ -111,8 +108,7 @@ namespace
 #include "emoji_presentation_scanner.c"
 } // namespace
 
-emoji_segmenter::emoji_segmenter(char32_t const* buffer, size_t size) noexcept:
-    buffer_ { buffer }, size_ { size }
+emoji_segmenter::emoji_segmenter(char32_t const* buffer, size_t size) noexcept: buffer_ { buffer }, size_ { size }
 {
     if (size_)
         consume_once();
