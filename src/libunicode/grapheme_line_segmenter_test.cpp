@@ -20,8 +20,18 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <iostream>
 #include <string_view>
 #include <variant>
+
+#if 0 || defined(LIBUNICODE_TRACE)
+    #include <format>
+    #include <iostream>
+
+    #define TRACE(...) std::cout << std::format(__VA_ARGS__)
+#else
+    #define TRACE(...) ((void) 0)
+#endif
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
@@ -54,6 +64,31 @@ std::ostream& operator<<(std::ostream& os, expectation const& e)
 
 } // namespace std
 // }}}
+
+namespace fmt
+{
+
+template <>
+struct formatter<expectation>: formatter<std::string_view>
+{
+    template <typename FormatContext>
+    auto format(expectation const& e, FormatContext& ctx) const
+    {
+        return format_to(ctx.out(), "{{ offset: {}, size: {}, width: {} }}", e.offset, e.size, e.width);
+    }
+};
+
+template <>
+struct formatter<std::pair<unicode::StopCondition, unsigned>>: formatter<std::string_view>
+{
+    template <typename FormatContext>
+    auto format(std::pair<unicode::StopCondition, unsigned> const& v, FormatContext& ctx) const
+    {
+        return format_to(ctx.out(), "{{{}, {}}}", v.first, v.second);
+    }
+};
+
+} // namespace fmt
 
 // {{{ helpers
 namespace
@@ -120,12 +155,34 @@ struct complex_unicode_sequence
     return os << "{ value: \"" << e(seq.value) << "\", width: " << seq.width << " }";
 }
 
+using Record = std::variant<invalid_sequence, ascii_sequence, complex_unicode_sequence>;
+
 } // namespace
+
+namespace fmt
+{
+template <>
+struct formatter<Record>: formatter<std::string_view>
+{
+    template <typename FormatContext>
+    auto format(Record const& r, FormatContext& ctx) const
+    {
+        if (std::holds_alternative<invalid_sequence>(r))
+            return fmt::format_to(ctx.out(), "invalid_sequence {{ value: \"{}\" }}", std::get<invalid_sequence>(r).value);
+        else if (std::holds_alternative<ascii_sequence>(r))
+            return fmt::format_to(ctx.out(), "ascii_sequence {{ value: \"{}\" }}", std::get<ascii_sequence>(r).value);
+        else
+            return fmt::format_to(ctx.out(),
+                                  "complex_unicode_sequence {{ value: \"{}\", width: {} }}",
+                                  std::get<complex_unicode_sequence>(r).value,
+                                  std::get<complex_unicode_sequence>(r).width);
+    }
+};
+
+} // namespace fmt
 
 namespace
 {
-
-using Record = std::variant<invalid_sequence, ascii_sequence, complex_unicode_sequence>;
 
 auto constexpr FamilyEmoji = U"\U0001F468\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466"sv;
 auto constexpr SmileyEmoji = U"\U0001F600"sv;
@@ -648,4 +705,91 @@ TEST_CASE("grapheme_line_segmenter.complex.sliced_calls")
     CHECK(result2.width == 2);
     CHECK(result2.stop_condition == StopCondition::UnexpectedInput); // control character \033
     REQUIRE(e(result2.text) == e(u8(SmileyEmoji)));
+}
+
+TEST_CASE("grapheme_utf8.0")
+{
+    auto constexpr text = "\xC3\xB6"sv; // 'ö'
+
+    const auto* input = text.data();
+    const auto* const end = text.data() + text.size();
+
+    auto recorder = event_recorder { "single_utf8" };
+    auto segmenter = grapheme_line_segmenter { recorder, ""sv };
+
+    auto const chunk = std::string_view(input, end);
+    TRACE("Processing {}...{} ({})\n", (void*) input, (void*) end, std::distance(input, end));
+    segmenter.reset(chunk);
+
+    auto const result = segmenter.process(10);
+    TRACE("result: [text: \"{}\", width: {}, stop: {}]\n", result.text, result.width, [](auto val) {
+        switch (val)
+        {
+            case unicode::StopCondition::UnexpectedInput: return "UnexpectedInput";
+            case unicode::StopCondition::EndOfWidth: return "EndOfWidth";
+            case unicode::StopCondition::EndOfInput: return "EndOfInput";
+        }
+        return "Unknown";
+    }(result.stop_condition));
+
+    CHECK(result.text == text);
+    CHECK(result.width == 0);
+}
+
+TEST_CASE("grapheme_utf8.1")
+{
+    auto constexpr text = "\xC3\xB6 "sv; // 'ö '
+
+    const auto* input = text.data();
+    const auto* const end = text.data() + text.size();
+
+    auto recorder = event_recorder { "single_utf8" };
+    auto segmenter = grapheme_line_segmenter { recorder, ""sv };
+
+    auto const chunk = std::string_view(input, end);
+    TRACE("Processing {}...{} ({})\n", (void*) input, (void*) end, std::distance(input, end));
+    segmenter.reset(chunk);
+
+    auto const result = segmenter.process(10);
+    TRACE("result: [text: \"{}\", width: {}, stop: {}]\n", result.text, result.width, [](auto val) {
+        switch (val)
+        {
+            case unicode::StopCondition::UnexpectedInput: return "UnexpectedInput";
+            case unicode::StopCondition::EndOfWidth: return "EndOfWidth";
+            case unicode::StopCondition::EndOfInput: return "EndOfInput";
+        }
+        return "Unknown";
+    }(result.stop_condition));
+
+    CHECK(result.text == text);
+    CHECK(result.width == 2);
+}
+
+TEST_CASE("grapheme_utf8.2")
+{
+    auto constexpr text = "a\xC3\xB6a"sv; // 'aöa'
+
+    const auto* input = text.data();
+    const auto* const end = text.data() + text.size();
+
+    auto recorder = event_recorder { "single_utf8" };
+    auto segmenter = grapheme_line_segmenter { recorder, ""sv };
+
+    auto const chunk = std::string_view(input, end);
+    TRACE("Processing {}...{} ({})\n", (void*) input, (void*) end, std::distance(input, end));
+    segmenter.reset(chunk);
+
+    auto const result = segmenter.process(10);
+    TRACE("result: [text: \"{}\", width: {}, stop: {}]\n", result.text, result.width, [](auto val) {
+        switch (val)
+        {
+            case unicode::StopCondition::UnexpectedInput: return "UnexpectedInput";
+            case unicode::StopCondition::EndOfWidth: return "EndOfWidth";
+            case unicode::StopCondition::EndOfInput: return "EndOfInput";
+        }
+        return "Unknown";
+    }(result.stop_condition));
+
+    CHECK(result.text == text);
+    CHECK(result.width == 3);
 }

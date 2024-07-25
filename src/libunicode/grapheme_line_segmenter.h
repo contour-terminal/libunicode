@@ -16,7 +16,9 @@
 #include <libunicode/grapheme_segmenter.h>
 #include <libunicode/support.h>
 
-#if defined(LIBUNICODE_TRACE)
+#include <fmt/core.h>
+
+#if 0 || defined(LIBUNICODE_TRACE)
     #include <format>
     #include <iostream>
 
@@ -457,9 +459,11 @@ namespace detail
     //
     // @returns a sequence of grapheme clusters up to maxWidth width.
     template <OptionalGraphemeSegmentationListenerConcept EventHandlerT>
-    LIBUNICODE_INLINE auto process_only_complex_unicode(
-        EventHandlerT& eventHandler, unicode_process_state& state, char const* start, char const* end, unsigned maxWidth) noexcept
-        -> detail::unicode_process_result
+    LIBUNICODE_INLINE auto process_only_complex_unicode(EventHandlerT& eventHandler,
+                                                        unicode_process_state& state,
+                                                        char const* start,
+                                                        char const* end,
+                                                        unsigned maxWidth) noexcept -> detail::unicode_process_result
     {
         if (!state.utf8DecodeNext)
         {
@@ -537,6 +541,10 @@ namespace detail
                         state.utf8DecodeNext = state.currentClusterStart;
                         return make_scan_result(consumedWidths, state.currentClusterStart, StopCondition::EndOfWidth);
                     }
+                }
+                else
+                {
+                    // Boundary of a grapheme not found yet.
                 }
             }
             else if (std::holds_alternative<unicode::Invalid>(result))
@@ -660,15 +668,22 @@ class grapheme_line_segmenter<OptionalEventListener>
             return { .text = {}, .width = 0, .stop_condition = StopCondition::EndOfInput };
 
         // Points to the beginning of a grapheme cluster.
-        char const* const resultStart = _complexUnicodeState.currentClusterStart;
+        char const* const resultStart = _complexUnicodeState.currentCodepointStart;
         char const* const endAtMaxWidth = std::min(end(), next() + maxWidth);
 
+        LIBUNICODE_TRACE_SEGMENTER("resultStart: {}\n", (void*) resultStart);
         // Total number of widths used in the current line.
         unsigned processedTotalWidth = 0;
 
         while (true)
         {
-            switch (detail::make_state(next(), end(), processedTotalWidth, maxWidth))
+            auto const state = detail::make_state(next(), end(), processedTotalWidth, maxWidth);
+            LIBUNICODE_TRACE_SEGMENTER("currentClusterStart: {}, end: {} , processedTotalWidth: {}, state: {} \n",
+                       (void*) _complexUnicodeState.currentClusterStart,
+                       (void*) end(),
+                       processedTotalWidth,
+                       state);
+            switch (state)
             {
                 case State::EndOfInput:
                     return { .text = { resultStart, _complexUnicodeState.currentClusterStart },
@@ -725,14 +740,24 @@ class grapheme_line_segmenter<OptionalEventListener>
                                                std::string_view(start, chunk.end),
                                                (long) std::distance(start, chunk.end),
                                                chunk.totalWidth,
-                                               (int) chunk.stop_condition);
+                                               [](auto stop) {
+                                                   switch (stop)
+                                                   {
+                                                       case StopCondition::UnexpectedInput: return "UnexpectedInput";
+                                                       case StopCondition::EndOfInput: return "EndOfInput";
+                                                       case StopCondition::EndOfWidth: return "EndOfWidth";
+                                                   }
+                                                   return "INVALID";
+                                               }(chunk.stop_condition));
                     processedTotalWidth += chunk.totalWidth;
                     assert(processedTotalWidth <= maxWidth);
                     if (chunk.stop_condition != StopCondition::UnexpectedInput)
+                    {
                         // The most recent grapheme cluster does not fit into the current line or the input is exhausted.
-                        return { .text = std::string_view { resultStart, _complexUnicodeState.currentClusterStart },
+                        return { .text = std::string_view { resultStart, chunk.end },
                                  .width = processedTotalWidth,
                                  .stop_condition = chunk.stop_condition };
+                    }
                     break;
                 }
             }
@@ -828,4 +853,28 @@ inline std::ostream& operator<<(std::ostream& os, unicode::grapheme_segmentation
               << ", stop: " << value.stop_condition << "}";
 }
 } // namespace std
+
+namespace fmt
+{
+template <>
+struct formatter<unicode::detail::State>: formatter<std::string_view>
+{
+    template <typename FormatContext>
+    auto format(unicode::detail::State const& value, FormatContext& ctx)
+    {
+        std::string_view name;
+        switch (value)
+        {
+            case unicode::detail::State::EndOfInput: name = "EndOfInput"; break;
+            case unicode::detail::State::EndOfWidth: name = "EndOfWidth"; break;
+            case unicode::detail::State::C0: name = "C0"; break;
+            case unicode::detail::State::ASCII: name = "ASCII"; break;
+            case unicode::detail::State::ComplexUnicode: name = "ComplexUnicode"; break;
+        }
+        return formatter<std::string_view>::format(name, ctx);
+    }
+};
+
+} // namespace fmt
+
 // }}}
