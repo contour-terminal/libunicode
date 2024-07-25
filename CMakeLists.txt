@@ -32,7 +32,8 @@ if(("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MAT
     endif()
 elseif(DEFINED MSVC)
     add_definitions(-DNOMINMAX)
-    add_compile_options(/utf-8)
+    add_compile_options(/nologo)
+    set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /nologo")
 endif()
 
 include(EnableCcache)
@@ -47,7 +48,7 @@ option(LIBUNICODE_BENCHMARK "libunicode: Enables building of benchmark for libun
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
 option(LIBUNICODE_USE_INTRINSICS "libunicode: Use SIMD extenstion during text read [default: ON]" ON)
-option(LIBUNICODE_USE_STD_SIMD "libunicode: Use std::simd as SIMD extenstion during text read (takes precedence over own intrinsics) [default: ON]" ${LIBUNICODE_USE_INTRINSICS})
+option(LIBUNICODE_USE_STD_SIMD "libunicode: Use std::simd as SIMD extenstion during text read (takes precedence over own intrinsics) [default: ON]" ON)
 option(LIBUNICODE_TABLEGEN_FASTBUILD "libunicode: Use fast table generation (takes more memory in final tables) [default: OFF]" OFF)
 
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable testing of the benchmark library." FORCE)

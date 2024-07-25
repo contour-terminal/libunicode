@@ -4,6 +4,7 @@
 /_ucd/
 /.clangd/
 /compile_commands.json
+/.vs/
 /.vscode/
 /sandbox/
 /target/
@@ -12,3 +13,4 @@ src/libunicode/ucd.h
 src/libunicode/ucd_enums.h
 src/libunicode/ucd_fmt.h
 src/libunicode/ucd_ostream.h
+/.cache/

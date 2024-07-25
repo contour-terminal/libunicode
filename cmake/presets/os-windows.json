@@ -16,8 +16,8 @@
             "cacheVariables": {
                 "VCPKG_TARGET_TRIPLET": "x64-windows",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_VERBOSE_MAKEFILE": "ON",
-                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake"
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_VERBOSE_MAKEFILE": "ON"
             }
         },
         { "name": "windows-cl-debug", "inherits": ["windows-common", "debug"], "displayName": "Windows (MSVC) Debug", "description": "Using MSVC compiler (64-bit)" },

@@ -1,6 +1,6 @@
 /**
  * This file is part of the "libunicode" project
- *   Copyright (c) 2020 Christian Parpart <christian@parpart.family>
+ *   Copyright (c) 2024 Christian Parpart <christian@parpart.family>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,15 +11,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define CATCH_CONFIG_RUNNER
 #include <catch2/catch_session.hpp>
 
-int main(int argc, char const* argv[])
-{
-    int const result = Catch::Session().run(argc, argv);
+#if defined(_WIN32)
+    #include <Windows.h>
+#endif
 
-    // avoid closing extern console to close on VScode/windows
-    // system("pause");
+namespace
+{
+
+struct setup_teardown
+{
+#if defined(_WIN32)
+    const DWORD stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    const DWORD savedOutputCP = GetConsoleOutputCP();
+    const DWORD savedOutputMode = []() -> DWORD {
+        DWORD mode;
+        GetConsoleMode(stdoutHandle, &mode);
+        return mode;
+    }();
+#endif
+
+    setup_teardown()
+    {
+#if defined(_WIN32)
+        SetConsoleMode(stdoutHandle,
+                       savedOutputMode | ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT
+                           | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        SetConsoleOutputCP(CP_UTF8);
+#endif
+    }
+
+    ~setup_teardown()
+    {
+#if defined(_WIN32)
+        SetConsoleMode(stdoutHandle, savedOutputMode);
+        SetConsoleOutputCP(savedOutputCP);
+#endif
+    }
+};
+
+} // namespace
+
+int main(int argc, char* argv[])
+{
+    [[maybe_unused]] auto const _ = setup_teardown {};
+
+    int result = Catch::Session().run(argc, argv);
 
     return result;
 }

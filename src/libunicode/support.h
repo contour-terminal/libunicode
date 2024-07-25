@@ -14,16 +14,29 @@
 #pragma once
 
 #include <array>
-#include <cstdint>
 #include <functional>
 
 namespace unicode
 {
 
+// Generally, the compiler may decide to inline or not,
+// but when debugging, we want to make sure that certain functions are not inlined.
+#if !defined(NDEBUG)
+    #if defined(__GNUC__) || defined(__clang__)
+        #define LIBUNICODE_INLINE __attribute__((noinline)) inline
+    #elif defined(_MSC_VER)
+        #define LIBUNICODE_INLINE __declspec(noinline) inline
+    #else
+        #define LIBUNICODE_INLINE inline
+    #endif
+#else
+    #define LIBUNICODE_INLINE inline
+#endif
+
 #if defined(__GNUC__) || defined(__clang__)
     #define LIBUNICODE_PACKED __attribute__((packed))
 #else
-    #define LIBUNICODE_PACKED /*!*/
+    #define LIBUNICODE_PACKED
 #endif
 
 #if defined(__cpp_char8_t)
