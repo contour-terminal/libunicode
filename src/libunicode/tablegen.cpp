@@ -51,11 +51,8 @@ std::string_view minimum_uint_t(std::vector<T> const& values)
 }
 
 template <typename T>
-void write_cxx_table(std::ostream& header,
-                     std::ostream& implementation,
-                     std::vector<T> const& table,
-                     std::string_view name,
-                     bool commentOnBlock)
+void write_cxx_table(
+    std::ostream& header, std::ostream& implementation, std::vector<T> const& table, std::string_view name, bool commentOnBlock)
 {
     auto constexpr ColumnCount = 16;
 
@@ -69,8 +66,7 @@ void write_cxx_table(std::ostream& header,
             implementation << "\n    ";
 
         if (commentOnBlock && i % unicode::codepoint_properties::tables_view::block_size == 0)
-            implementation << "// block number: "
-                           << (i / unicode::codepoint_properties::tables_view::block_size) << "\n    ";
+            implementation << "// block number: " << (i / unicode::codepoint_properties::tables_view::block_size) << "\n    ";
 
         implementation << std::right << std::setw(4) << unsigned(table[i]) << ',';
     }
@@ -83,10 +79,8 @@ void write_cxx_properties_table(std::ostream& header,
                                 std::string_view tableName)
 {
     using namespace unicode;
-    header << "extern std::array<codepoint_properties, " << propertiesTable.size() << "> const " << tableName
-           << ";\n";
-    implementation << "std::array<codepoint_properties, " << propertiesTable.size() << "> const " << tableName
-                   << "{{\n";
+    header << "extern std::array<codepoint_properties, " << propertiesTable.size() << "> const " << tableName << ";\n";
+    implementation << "std::array<codepoint_properties, " << propertiesTable.size() << "> const " << tableName << "{{\n";
     for (size_t i = 0; i < propertiesTable.size(); ++i)
     {
         // clang-format off
@@ -112,10 +106,8 @@ void write_cxx_properties_table(std::ostream& header,
                                 std::string_view tableName)
 {
     using namespace unicode;
-    header << "extern std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName
-           << ";\n";
-    implementation << "std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName
-                   << "{{\n";
+    header << "extern std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName << ";\n";
+    implementation << "std::array<std::string_view, " << propertiesTable.size() << "> const " << tableName << "{{\n";
     for (size_t i = 0; i < propertiesTable.size(); ++i)
         implementation << "    \"" << propertiesTable[i] << "\"sv,\n";
     implementation << "}};\n\n";

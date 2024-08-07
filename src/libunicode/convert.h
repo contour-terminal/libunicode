@@ -110,9 +110,8 @@ struct decoder<char> // {{{
         return character;
     }
 
-    template <
-        typename InputIterator,
-        std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0>
+    template <typename InputIterator,
+              std::enable_if_t<std::is_convertible_v<decltype(*std::declval<InputIterator>()), char>, int> = 0>
     constexpr std::optional<char32_t> operator()(InputIterator& input)
     {
         using std::nullopt;
@@ -169,8 +168,7 @@ struct decoder<char> // {{{
             auto const ch4 = uint8_t(*input++);
             if (ch4 >> 6 != 2)
                 return nullopt;
-            auto const a =
-                static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
+            auto const a = static_cast<uint32_t>((ch0 << 24u) + (ch1 << 18u) + (ch2 << 12u) + (ch3 << 6u) + ch4);
             return static_cast<char32_t>(a - 0xFA082080lu);
         }
         if (ch0 < 0xFE) // 1111_110x 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx 10xx_xxxx
@@ -190,8 +188,7 @@ struct decoder<char> // {{{
             auto const ch5 = uint8_t(*input++);
             if (ch5 >> 6 != 2)
                 return nullopt;
-            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12)
-                                                 + (ch4 << 6) + ch5);
+            auto const a = static_cast<uint32_t>((ch0 << 30) + (ch1 << 24) + (ch2 << 18) + (ch3 << 12) + (ch4 << 6) + ch5);
             return static_cast<char32_t>(a - 0x82082080);
         }
         return nullopt;
@@ -351,11 +348,9 @@ std::basic_string<T> convert_to(std::basic_string_view<S> in)
     return out;
 }
 
-template <
-    typename T,
-    typename S,
-    std::enable_if_t<std::is_same_v<S, char> || std::is_same_v<S, char16_t> || std::is_same_v<S, char32_t>,
-                     int> = 0>
+template <typename T,
+          typename S,
+          std::enable_if_t<std::is_same_v<S, char> || std::is_same_v<S, char16_t> || std::is_same_v<S, char32_t>, int> = 0>
 std::basic_string<T> convert_to(S input)
 {
     std::basic_string_view<S> in(&input, 1);

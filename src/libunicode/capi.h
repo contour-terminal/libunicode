@@ -77,7 +77,7 @@ extern "C"
 /**
  * Returns @p _codepoint with all unused bits cleared.
  */
-#define u32_unused_bit_cleared(_codepoint) ((_codepoint) &U32_CODEPOINT_MASK)
+#define u32_unused_bit_cleared(_codepoint) ((_codepoint) & U32_CODEPOINT_MASK)
 
     /**
      * Counts the number of grapheme clusters for given sequence of codepoints.

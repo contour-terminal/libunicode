@@ -100,14 +100,12 @@ inline utf8_grapheme_segmenter::iterator::iterator(char const* data, char const*
     }
 }
 
-inline utf8_grapheme_segmenter::iterator::value_type const& utf8_grapheme_segmenter::iterator::value()
-    const noexcept
+inline utf8_grapheme_segmenter::iterator::value_type const& utf8_grapheme_segmenter::iterator::value() const noexcept
 {
     return _cluster;
 }
 
-inline utf8_grapheme_segmenter::iterator::value_type const& utf8_grapheme_segmenter::iterator::operator*()
-    const noexcept
+inline utf8_grapheme_segmenter::iterator::value_type const& utf8_grapheme_segmenter::iterator::operator*() const noexcept
 {
     return _cluster;
 }

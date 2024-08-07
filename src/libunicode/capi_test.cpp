@@ -52,8 +52,7 @@ TEST_CASE("capi.u8u32_stream_convert_and_inverse")
 
     // Verify inverse conversion (UTF-32 to UTF-8) works, too.
     array<u8_char_t, 32> inverse {};
-    auto const ilen =
-        u32u8_convert((u32_char_t const*) expected.data(), expected.size(), inverse.data(), inverse.size());
+    auto const ilen = u32u8_convert((u32_char_t const*) expected.data(), expected.size(), inverse.data(), inverse.size());
     CHECK(ilen == (int) input.size());
     auto const inverseSV = string_view { inverse.data(), static_cast<size_t>(ilen) };
     CHECK(inverseSV == input);

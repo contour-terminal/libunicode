@@ -63,8 +63,7 @@ std::string escape(uint8_t ch)
 template <typename T>
 std::string escape(T begin, T end)
 {
-    static_assert(sizeof(*std::declval<T>()) == 1,
-                  "should be only 1 byte, such as: char, char8_t, uint8_t, byte, ...");
+    static_assert(sizeof(*std::declval<T>()) == 1, "should be only 1 byte, such as: char, char8_t, uint8_t, byte, ...");
     auto result = std::string {};
     while (begin != end)
         result += escape(static_cast<uint8_t>(*begin++));
@@ -137,8 +136,7 @@ TEST_CASE("scan.complex.grapheme_cluster.1")
 {
     auto state = unicode::scan_state {};
     auto const familyEmoji8 = u8(FamilyEmoji);
-    auto const result =
-        unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
+    auto const result = unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
     CHECK(result.count == 2);
     CHECK(state.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -147,8 +145,7 @@ TEST_CASE("scan.complex.grapheme_cluster.2")
 {
     auto state = unicode::scan_state {};
     auto const familyEmoji8 = u8(FamilyEmoji) + u8(FamilyEmoji);
-    auto const result =
-        unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
+    auto const result = unicode::detail::scan_for_text_nonascii(state, familyEmoji8, 80, unicode::null_receiver::get());
     CHECK(result.count == 4);
     CHECK(state.next == familyEmoji8.data() + familyEmoji8.size());
 }
@@ -157,8 +154,7 @@ TEST_CASE("scan.complex.mixed")
 {
     auto state = unicode::scan_state {};
     auto const text = u8(FamilyEmoji) + "ABC"s + u8(FamilyEmoji);
-    auto const result =
-        unicode::detail::scan_for_text_nonascii(state, text, 80, unicode::null_receiver::get());
+    auto const result = unicode::detail::scan_for_text_nonascii(state, text, 80, unicode::null_receiver::get());
     CHECK(result.count == 2);
     CHECK(state.next == text.data() + u8(FamilyEmoji).size());
 }
@@ -170,20 +166,17 @@ TEST_CASE("scan.complex.half-overflowing")
     auto const text = oneEmoji + oneEmoji + oneEmoji;
 
     // match at boundary
-    auto const result2 =
-        unicode::detail::scan_for_text_nonascii(state, text, 2, unicode::null_receiver::get());
+    auto const result2 = unicode::detail::scan_for_text_nonascii(state, text, 2, unicode::null_receiver::get());
     CHECK(result2.count == 2);
     CHECK(state.next == text.data() + oneEmoji.size());
 
     // one grapheme cluster is half overflowing
-    auto const result3 =
-        unicode::detail::scan_for_text_nonascii(state, text, 3, unicode::null_receiver::get());
+    auto const result3 = unicode::detail::scan_for_text_nonascii(state, text, 3, unicode::null_receiver::get());
     CHECK(result3.count == 2);
     CHECK(state.next == text.data() + oneEmoji.size());
 
     // match buondary
-    auto const result4 =
-        unicode::detail::scan_for_text_nonascii(state, text, 4, unicode::null_receiver::get());
+    auto const result4 = unicode::detail::scan_for_text_nonascii(state, text, 4, unicode::null_receiver::get());
     CHECK(result4.count == 4);
     CHECK(state.next == text.data() + 2 * oneEmoji.size());
 }
@@ -216,8 +209,7 @@ TEST_CASE("scan.complex.sliced_calls")
     CHECK(result.end == text.data());
     CHECK(state.next == (text.data() + splitOffset));
 
-    auto const chunkTwo =
-        std::string_view(state.next, (size_t) std::distance(state.next, text.data() + text.size()));
+    auto const chunkTwo = std::string_view(state.next, (size_t) std::distance(state.next, text.data() + text.size()));
     result = unicode::scan_text(state, chunkTwo, 80, unicode::null_receiver::get());
 
     REQUIRE(state.utf8.expectedLength == 0);
@@ -225,8 +217,7 @@ TEST_CASE("scan.complex.sliced_calls")
     REQUIRE(result.start == text.data());
     REQUIRE(result.end == text.data() + 4);
     REQUIRE(state.next == text.data() + 4);
-    auto const resultingText =
-        string_view(result.start, static_cast<size_t>(std::distance(result.start, result.end)));
+    auto const resultingText = string_view(result.start, static_cast<size_t>(std::distance(result.start, result.end)));
     REQUIRE(resultingText == text.substr(0, 4));
 }
 

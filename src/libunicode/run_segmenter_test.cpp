@@ -59,8 +59,8 @@ void test_run_segmentation(int lineNo, std::vector<Expectation> const& expectati
     for (size_t i = 0; i < expectations.size(); ++i)
     {
         auto s = std::ostringstream {};
-        s << "Line " << lineNo << ": run segmentation failed for part " << i << ": \""
-          << to_utf8(expectations[i].text) << "\" to be " << expects[i];
+        s << "Line " << lineNo << ": run segmentation failed for part " << i << ": \"" << to_utf8(expectations[i].text)
+          << "\" to be " << expects[i];
         INFO(s.str());
         bool const consumeSuccess = segmenter.consume(out(actualSegment));
         REQUIRE(consumeSuccess);
@@ -131,9 +131,8 @@ TEST_CASE("run_segmenter.OneSpace", "[run_segmenter]")
 
 TEST_CASE("run_segmenter.ArabicHangul", "[run_segmenter]")
 {
-    test_run_segmentation(__LINE__,
-                          { { U"نص", Script::Arabic, PresentationStyle::Text },
-                            { U"키스의", Script::Hangul, PresentationStyle::Text } });
+    test_run_segmentation(
+        __LINE__, { { U"نص", Script::Arabic, PresentationStyle::Text }, { U"키스의", Script::Hangul, PresentationStyle::Text } });
 }
 
 TEST_CASE("run_segmenter.JapaneseHindiEmojiMix", "[run_segmenter]")
@@ -195,11 +194,10 @@ TEST_CASE("run_segmenter.PunctuationCommonSideways", "[run_segmenter]")
 
 TEST_CASE("run_segmenter.JapanesePunctuationMixedInsideHorizontal", "[run_segmenter]")
 {
-    test_run_segmentation(
-        __LINE__,
-        {
-            { U"いろはに.…¡ほへと", Script::Hiragana, PresentationStyle::Text }, // Orientation::Keep
-        });
+    test_run_segmentation(__LINE__,
+                          {
+                              { U"いろはに.…¡ほへと", Script::Hiragana, PresentationStyle::Text }, // Orientation::Keep
+                          });
 }
 
 TEST_CASE("run_segmenter.PunctuationDevanagariCombining", "[run_segmenter]")
@@ -212,15 +210,14 @@ TEST_CASE("run_segmenter.PunctuationDevanagariCombining", "[run_segmenter]")
 
 TEST_CASE("run_segmenter.EmojiZWJSequences", "[run_segmenter]")
 {
-    test_run_segmentation(__LINE__,
-                          {
-                              { U"👩‍👩‍👧‍👦👩‍❤️‍💋‍👨",
-                                Script::Latin,
-                                PresentationStyle::Emoji },
-                              { U"abcd", Script::Latin, PresentationStyle::Text },
-                              { U"👩‍👩", Script::Latin, PresentationStyle::Emoji },
-                              { U"\U0000200D‍efg", Script::Latin, PresentationStyle::Text },
-                          });
+    test_run_segmentation(
+        __LINE__,
+        {
+            { U"👩‍👩‍👧‍👦👩‍❤️‍💋‍👨", Script::Latin, PresentationStyle::Emoji },
+            { U"abcd", Script::Latin, PresentationStyle::Text },
+            { U"👩‍👩", Script::Latin, PresentationStyle::Emoji },
+            { U"\U0000200D‍efg", Script::Latin, PresentationStyle::Text },
+        });
 }
 
 // TODO: Orientation
@@ -244,8 +241,7 @@ TEST_CASE("run_segmenter.EmojiZWJSequences", "[run_segmenter]")
 
 TEST_CASE("run_segmenter.DingbatsMiscSymbolsModifier", "[run_segmenter]")
 {
-    test_run_segmentation(__LINE__,
-                          { { U"⛹🏻✍🏻✊🏼", Script::Common, PresentationStyle::Emoji } });
+    test_run_segmentation(__LINE__, { { U"⛹🏻✍🏻✊🏼", Script::Common, PresentationStyle::Emoji } });
 }
 
 TEST_CASE("run_segmenter.ArmenianCyrillicCase", "[run_segmenter]")

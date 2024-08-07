@@ -37,7 +37,7 @@ using codepoint_names_table = support::multistage_table<std::string,
                                                         0x110'000 - 1 // max value
                                                         >;
 
-std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(
-    std::string const& ucdDataDirectory, std::ostream* log);
+std::tuple<codepoint_properties_table, codepoint_names_table> load_from_directory(std::string const& ucdDataDirectory,
+                                                                                  std::ostream* log);
 
 } // namespace unicode

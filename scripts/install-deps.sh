@@ -108,30 +108,15 @@ install_deps_ubuntu()
         g++
         libc6-dev
         make
+        ninja-build
     "
-
-    if [ ! "$COMPILER" = "" ]; then
-        local PKGVER=`echo $COMPILER | awk '{print $2}'`
-        local PKGNAME=`echo $COMPILER | awk '{print tolower($1);}'`
-        test "$PKGNAME" = "gcc" && PKGNAME="g++"
-        packages="$packages $PKGNAME-$PKGVER"
-    fi
 
     RELEASE=`grep VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '"'`
 
     local NAME=`grep ^NAME /etc/os-release | cut -d= -f2 | cut -f1 | tr -d '"'`
 
-    if [ ! "${NAME}" = "Debian GNU/Linux" ]; then
-        # We cannot use [[ nor < here because that's not in /bin/sh.
-        if [ "$RELEASE" = "18.04" ]; then
-            # Old Ubuntu's (especially 18.04 LTS) doesn't have a proper std::filesystem implementation.
-            #packages+=libboost-all-dev
-            packages="$packages g++-8"
-        fi
-    fi
-
     case $RELEASE in
-        "20.04" | "22.04")
+        "20.04" | "22.04" | "24.04")
             fetch_and_unpack_fmtlib
             fetch_and_unpack_Catch2
             ;;

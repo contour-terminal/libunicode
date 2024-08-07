@@ -25,10 +25,7 @@ class word_segmenter
     using iterator = char_type const*;
     using view_type = std::basic_string_view<char_type>;
 
-    constexpr word_segmenter(std::basic_string_view<char_type> const& str):
-        word_segmenter(str.data(), str.data() + str.size())
-    {
-    }
+    constexpr word_segmenter(std::basic_string_view<char_type> const& str): word_segmenter(str.data(), str.data() + str.size()) {}
 
     constexpr word_segmenter(): word_segmenter({}, {}) {}
 
@@ -63,10 +60,7 @@ class word_segmenter
         return *this;
     }
 
-    constexpr bool operator==(word_segmenter const& rhs) const noexcept
-    {
-        return _left == rhs._left && _right == rhs._right;
-    }
+    constexpr bool operator==(word_segmenter const& rhs) const noexcept { return _left == rhs._left && _right == rhs._right; }
 
     constexpr bool operator!=(word_segmenter const& rhs) const noexcept { return !(*this == rhs); }
 

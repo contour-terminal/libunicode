@@ -138,8 +138,7 @@ class basic_run_segmenter
     template <size_t I, typename Current, typename... Remaining>
     void consumeAllUntilSplitPosition()
     {
-        consumeUntilSplitPosition(
-            std::get<Current>(segmenter_), out(positions_[I]), out(std::get<I>(properties_)));
+        consumeUntilSplitPosition(std::get<Current>(segmenter_), out(positions_[I]), out(std::get<I>(properties_)));
         consumeAllUntilSplitPosition<I + 1, Remaining...>();
     }
 

@@ -25,8 +25,7 @@ int u32_gc_count(u32_char_t const* codepoints, size_t size)
         return 0;
 
     int count = 1;
-    auto segmenter =
-        unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
+    auto segmenter = unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
     while (segmenter.codepointsAvailable())
     {
         ++segmenter;
@@ -44,8 +43,7 @@ int u8_gc_count(u8_char_t const* codepoints, size_t size)
 int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
 {
     int totalWidth = 0;
-    auto segmenter =
-        unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
+    auto segmenter = unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
     while (segmenter.codepointsAvailable())
     {
         auto const cluster = *segmenter;

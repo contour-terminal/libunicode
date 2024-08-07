@@ -102,8 +102,7 @@ inline string escape(uint8_t ch)
 template <typename T>
 inline string escape(T begin, T end)
 {
-    return std::accumulate(
-        begin, end, string {}, [](auto const& a, auto ch) { return a + escape(static_cast<uint8_t>(ch)); });
+    return std::accumulate(begin, end, string {}, [](auto const& a, auto ch) { return a + escape(static_cast<uint8_t>(ch)); });
     // auto result = string{};
     // for (T cur = begin; cur != end; ++cur)
     //     result += *cur;
@@ -236,8 +235,7 @@ int runs(istream& in) // {{{
         auto const script = get<unicode::Script>(run.properties);
         auto const presentationStyle = get<unicode::PresentationStyle>(run.properties);
 
-        cout << fmt::format(
-            "{}-{} ({}): {} {}\n", run.start, run.end - 1, run.end - run.start, script, presentationStyle);
+        cout << fmt::format("{}-{} ({}): {} {}\n", run.start, run.end - 1, run.end - run.start, script, presentationStyle);
         auto const text32 = u32string_view(codepoints.data() + run.start, run.end - run.start);
         auto const text8 = convert_to<char>(text32);
         auto const textEscaped = replaceAll("\033"sv, "\\033"sv, string_view(text8));
@@ -266,11 +264,10 @@ auto parseArgs(int argc, char const* argv[]) -> optional<pair<Cmd, InputStream>>
 
     string_view const arg = argv[1];
 
-    static auto constexpr mappings =
-        array<pair<string_view, Cmd>, 4> { pair { "codepoints"sv, Cmd::Codepoints },
-                                           pair { "cp"sv, Cmd::Codepoints },
-                                           pair { "runs"sv, Cmd::Runs },
-                                           pair { "scripts"sv, Cmd::Scripts } };
+    static auto constexpr mappings = array<pair<string_view, Cmd>, 4> { pair { "codepoints"sv, Cmd::Codepoints },
+                                                                        pair { "cp"sv, Cmd::Codepoints },
+                                                                        pair { "runs"sv, Cmd::Runs },
+                                                                        pair { "scripts"sv, Cmd::Scripts } };
 
     for (auto const& mapping: mappings)
         if (mapping.first == arg)
@@ -297,8 +294,8 @@ int run(int argc, char const* argv[])
     }
 
     auto& [cmd, inputStreamVar] = *args;
-    istream& in = holds_alternative<istream*>(inputStreamVar) ? *get<istream*>(inputStreamVar)
-                                                              : *get<unique_ptr<istream>>(inputStreamVar);
+    istream& in =
+        holds_alternative<istream*>(inputStreamVar) ? *get<istream*>(inputStreamVar) : *get<unique_ptr<istream>>(inputStreamVar);
 
     switch (cmd)
     {

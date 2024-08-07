@@ -38,8 +38,7 @@ template <typename T,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 struct multistage_table
 {
-    using view_type =
-        multistage_table_view<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>;
+    using view_type = multistage_table_view<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>;
 
     std::vector<Stage1ElementType> stage1; // div
     std::vector<Stage2ElementType> stage2; // mod
@@ -82,16 +81,15 @@ class multistage_table_generator
   private:
     void verify_block(SourceType blockNumber) const
     {
-        for (SourceType codepoint = blockNumber * BlockSize; codepoint < (blockNumber + 1) * BlockSize;
-             ++codepoint)
+        for (SourceType codepoint = blockNumber * BlockSize; codepoint < (blockNumber + 1) * BlockSize; ++codepoint)
         {
             auto const& a = _input[codepoint];
             auto const& b = _output.get(codepoint);
             if (a != b)
             {
-                throw runtime_error((std::ostringstream() << "U+" << std::hex << unsigned(codepoint)
-                                                          << " mismatch in properties.\n"
-                                                          << "Expected : " << a << "\nActual   : " << b)
+                throw runtime_error((std::ostringstream()
+                                     << "U+" << std::hex << unsigned(codepoint) << " mismatch in properties.\n"
+                                     << "Expected : " << a << "\nActual   : " << b)
                                         .str());
             }
         }
@@ -145,8 +143,7 @@ class multistage_table_generator
     Stage2ElementType get_or_create_stage3_index(SourceType stage1Index)
     {
         auto& properties = _output.stage3;
-        auto const propertyIterator =
-            _stage3Finder(properties.begin(), properties.end(), _input[stage1Index]);
+        auto const propertyIterator = _stage3Finder(properties.begin(), properties.end(), _input[stage1Index]);
         if (propertyIterator != properties.end())
             return static_cast<Stage2ElementType>(distance(properties.begin(), propertyIterator));
 
@@ -164,21 +161,15 @@ template <typename T,
           typename Stage3Finder,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
-void generate(
-    T const* input,
-    size_t inputSize,
-    multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output,
-    Stage3Finder&& stage3Finder)
+void generate(T const* input,
+              size_t inputSize,
+              multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output,
+              Stage3Finder&& stage3Finder)
 {
-    auto builder = multistage_table_generator<T,
-                                              SourceType,
-                                              Stage1ElementType,
-                                              Stage2ElementType,
-                                              Stage3Finder,
-                                              BlockSize,
-                                              MaxValue> {
-        input, inputSize, output, std::forward<Stage3Finder>(stage3Finder)
-    };
+    auto builder =
+        multistage_table_generator<T, SourceType, Stage1ElementType, Stage2ElementType, Stage3Finder, BlockSize, MaxValue> {
+            input, inputSize, output, std::forward<Stage3Finder>(stage3Finder)
+        };
     builder.generate();
 }
 

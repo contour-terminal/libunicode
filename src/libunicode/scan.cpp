@@ -282,8 +282,7 @@ scan_result scan_text(scan_state& state,
     if (state.utf8.expectedLength != 0)
     {
         result = detail::scan_for_text_nonascii(state, text, maxColumnCount, receiver);
-        text = std::string_view(result.end,
-                                static_cast<size_t>(std::distance(result.end, text.data() + text.size())));
+        text = std::string_view(result.end, static_cast<size_t>(std::distance(result.end, text.data() + text.size())));
     }
 
     if (text.empty())
@@ -307,8 +306,7 @@ scan_result scan_text(scan_state& state,
                 break;
             }
             case NextState::Complex: {
-                auto const sub =
-                    detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count, receiver);
+                auto const sub = detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count, receiver);
                 if (!sub.count)
                     return result;
                 nextState = NextState::Trivial;

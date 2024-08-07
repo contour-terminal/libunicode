@@ -47,8 +47,7 @@ struct platform_intrinsics<__m128i>
 
     static inline m128i load32(uint32_t a, uint32_t b, uint32_t c, uint32_t d) noexcept
     {
-        return _mm_set_epi32(
-            static_cast<int>(a), static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
+        return _mm_set_epi32(static_cast<int>(a), static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
     }
 
     static inline m128i xor128(m128i a, m128i b) noexcept { return _mm_xor_si128(a, b); }
@@ -58,17 +57,11 @@ struct platform_intrinsics<__m128i>
     // Computes the bitwise OR of the 128-bit value in a and the 128-bit value in b.
     static inline m128i or128(m128i a, m128i b) { return _mm_or_si128(a, b); }
 
-    static inline m128i load_unaligned(m128i const* p) noexcept
-    {
-        return _mm_loadu_si128(static_cast<m128i const*>(p));
-    }
+    static inline m128i load_unaligned(m128i const* p) noexcept { return _mm_loadu_si128(static_cast<m128i const*>(p)); }
 
     static inline int32_t to_i32(m128i a) { return _mm_cvtsi128_si32(a); }
 
-    static inline bool compare(m128i a, m128i b) noexcept
-    {
-        return _mm_movemask_epi8(_mm_cmpeq_epi32(a, b)) == 0xFFFF;
-    }
+    static inline bool compare(m128i a, m128i b) noexcept { return _mm_movemask_epi8(_mm_cmpeq_epi32(a, b)) == 0xFFFF; }
 
     static inline m128i compare_less(m128i a, m128i b) noexcept { return _mm_cmplt_epi8(a, b); }
 
@@ -126,10 +119,7 @@ struct platform_intrinsics<int64x2_t>
 
     // Loads 128-bit value. :
     // https://msdn.microsoft.com/zh-cn/library/f4k12ae8(v=vs.90).aspx
-    static inline m128i load_unaligned(m128i const* p) noexcept
-    {
-        return vreinterpretq_s64_s32(vld1q_s32((int32_t const*) p));
-    }
+    static inline m128i load_unaligned(m128i const* p) noexcept { return vreinterpretq_s64_s32(vld1q_s32((int32_t const*) p)); }
 
     // Copy the lower 32-bit integer in a to dst.
     //
@@ -140,9 +130,7 @@ struct platform_intrinsics<int64x2_t>
 
     static inline bool compare(m128i a, m128i b) noexcept
     {
-        return movemask_epi8(
-                   vreinterpretq_s64_u32(vceqq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b))))
-               == 0xFFFF;
+        return movemask_epi8(vreinterpretq_s64_u32(vceqq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)))) == 0xFFFF;
     }
 
     static inline m128i compare_less(m128i a, m128i b) noexcept
