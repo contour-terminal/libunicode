@@ -98,7 +98,8 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
 
         // check for control
         // TODO check for complex
-        auto const simd_mask_text = (simd_text < 0x20);
+        auto const whitespace = stdx::fixed_size_simd<char, numberOfElements>(0x20);
+        auto const simd_mask_text = (simd_text < whitespace);
         if (stdx::popcount(simd_mask_text) > 0)
         {
             input += stdx::find_first_set(simd_mask_text);
