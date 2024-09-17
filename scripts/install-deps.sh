@@ -194,6 +194,7 @@ install_deps_darwin()
     # catch2: available in brew, but too new (version 3+)
     brew install $SYSDEP_ASSUME_YES \
         fmt \
+        ninja \
         pkg-config \
         range-v3
 }
