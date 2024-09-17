@@ -57,6 +57,36 @@ jobs:
       - name: "test"
         run: ./build/src/libunicode/unicode_test
 
+  # {{{ macOS
+  osx:
+    name: "macOS"
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-osx_qt${{ steps.set_vars.outputs.QTVER }}-r1
+          max-size: 256M
+      - name: "Install dependencies"
+        # Sometimes, brew thinks it needs to install from source rather than binary.
+        # For Qt this may take ages (many many hours). Let's not waste our CPU credits here,
+        # and limit the run time.
+        timeout-minutes: 15
+        run: |
+          set -ex
+          #brew update
+          ./scripts/install-deps.sh
+      - name: "Create build directory"
+        run: mkdir build
+      - name: "Generate build files"
+        run: cmake --preset macos-release
+      - name: "Build"
+        run: cmake --build --preset macos-release
+      - name: "Test"
+        run: ctest --preset macos-release
+  # }}}
+
   windows:
     name: "Windows"
     runs-on: windows-latest
