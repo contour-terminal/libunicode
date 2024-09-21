@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os_version: ['20.04', '22.04', '24.04']
+        os_version: ['24.04']
     name: "Ubuntu ${{ matrix.os_version }}"
     runs-on: ubuntu-${{ matrix.os_version }}
     steps:
@@ -44,8 +44,6 @@ jobs:
         run: sudo apt -q update
       - name: "install dependencies"
         run: ./scripts/install-deps.sh
-      - name: "create build directory"
-        run: mkdir build
       - name: "cmake"
         run: |
           cmake -S . -B build -G Ninja \
@@ -77,8 +75,6 @@ jobs:
           set -ex
           #brew update
           ./scripts/install-deps.sh
-      - name: "Create build directory"
-        run: mkdir build
       - name: "Generate build files"
         run: cmake --preset macos-release
       - name: "Build"

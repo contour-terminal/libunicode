@@ -13,11 +13,10 @@
  */
 #include <libunicode/capi.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
+#include <format>
 #include <utility>
 
 using namespace std;

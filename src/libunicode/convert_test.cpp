@@ -15,10 +15,9 @@
 #include <libunicode/support.h>
 #include <libunicode/utf8.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
 
+#include <format>
 #include <iterator>
 
 using namespace unicode;

@@ -15,12 +15,11 @@
 #include <libunicode/ucd_ostream.h>
 #include <libunicode/utf8.h>
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
-
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
+#include <format>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <string_view>

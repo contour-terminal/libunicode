@@ -15,10 +15,8 @@
 
 #include <libunicode/support.h>
 
-#include <algorithm>
-#include <array>
+#include <format>
 #include <ostream>
-#include <utility>
 
 namespace unicode
 {
@@ -129,7 +127,6 @@ inline std::ostream& operator<<(std::ostream& os, EmojiSegmentationCategory valu
 {
     switch (value)
     {
-            // clang-format off
         case unicode::EmojiSegmentationCategory::Invalid: return os << "Invalid";
         case unicode::EmojiSegmentationCategory::Emoji: return os << "Emoji";
         case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return os << "EmojiTextPresentation";
@@ -140,66 +137,62 @@ inline std::ostream& operator<<(std::ostream& os, EmojiSegmentationCategory valu
         case unicode::EmojiSegmentationCategory::RegionalIndicator: return os << "RegionalIndicator";
         case unicode::EmojiSegmentationCategory::KeyCapBase: return os << "KeyCapBase";
         case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return os << "CombiningEnclosingKeyCap";
-        case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return os << "CombiningEnclosingCircleBackslash";
+        case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash:
+            return os << "CombiningEnclosingCircleBackslash";
         case unicode::EmojiSegmentationCategory::ZWJ: return os << "ZWJ";
         case unicode::EmojiSegmentationCategory::VS15: return os << "VS15";
         case unicode::EmojiSegmentationCategory::VS16: return os << "VS16";
         case unicode::EmojiSegmentationCategory::TagBase: return os << "TagBase";
         case unicode::EmojiSegmentationCategory::TagSequence: return os << "TagSequence";
         case unicode::EmojiSegmentationCategory::TagTerm: return os << "TagTerm";
-        // clang-format off
     }
     return os;
 }
 
 } // namespace unicode
 
-// clang-format off
-#if __has_include(<fmt/ostream.h>)
-#include <fmt/ostream.h>
-#if FMT_VERSION >= (9 * 10000 + 1 * 100 + 0)
-template <> struct fmt::formatter<unicode::PresentationStyle>: fmt::ostream_formatter {};
-
-
-namespace fmt
-{
 template <>
-struct formatter<unicode::EmojiSegmentationCategory>
+struct std::formatter<unicode::PresentationStyle>: std::formatter<std::string_view>
 {
-    template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx)
+    auto format(unicode::PresentationStyle value, auto& ctx) const
     {
-        return ctx.begin();
-    }
-    template <typename FormatContext>
-    auto format(unicode::EmojiSegmentationCategory value, FormatContext& ctx)
-    {
+        string_view name;
         switch (value)
         {
-            // clang-format off
-            case unicode::EmojiSegmentationCategory::Invalid: return fmt::format_to(ctx.out(), "Invalid");
-            case unicode::EmojiSegmentationCategory::Emoji: return fmt::format_to(ctx.out(), "Emoji");
-            case unicode::EmojiSegmentationCategory::EmojiTextPresentation: return fmt::format_to(ctx.out(), "EmojiTextPresentation");
-            case unicode::EmojiSegmentationCategory::EmojiEmojiPresentation: return fmt::format_to(ctx.out(), "EmojiEmojiPresentation");
-            case unicode::EmojiSegmentationCategory::EmojiModifierBase: return fmt::format_to(ctx.out(), "EmojiModifierBase");
-            case unicode::EmojiSegmentationCategory::EmojiModifier: return fmt::format_to(ctx.out(), "EmojiModifier");
-            case unicode::EmojiSegmentationCategory::EmojiVSBase: return fmt::format_to(ctx.out(), "EmojiVSBase");
-            case unicode::EmojiSegmentationCategory::RegionalIndicator: return fmt::format_to(ctx.out(), "RegionalIndicator");
-            case unicode::EmojiSegmentationCategory::KeyCapBase: return fmt::format_to(ctx.out(), "KeyCapBase");
-            case unicode::EmojiSegmentationCategory::CombiningEnclosingKeyCap: return fmt::format_to(ctx.out(), "CombiningEnclosingKeyCap");
-            case unicode::EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: return fmt::format_to(ctx.out(), "CombiningEnclosingCircleBackslash");
-            case unicode::EmojiSegmentationCategory::ZWJ: return fmt::format_to(ctx.out(), "ZWJ");
-            case unicode::EmojiSegmentationCategory::VS15: return fmt::format_to(ctx.out(), "VS15");
-            case unicode::EmojiSegmentationCategory::VS16: return fmt::format_to(ctx.out(), "VS16");
-            case unicode::EmojiSegmentationCategory::TagBase: return fmt::format_to(ctx.out(), "TagBase");
-            case unicode::EmojiSegmentationCategory::TagSequence: return fmt::format_to(ctx.out(), "TagSequence");
-            case unicode::EmojiSegmentationCategory::TagTerm: return fmt::format_to(ctx.out(), "TagTerm");
-            // clang-format off
+            case unicode::PresentationStyle::Text: name = "Text"; break;
+            case unicode::PresentationStyle::Emoji: name = "Emoji"; break;
         }
-        return fmt::format_to(ctx.out(), "({})", unsigned(value));
-}
+        return formatter<string_view>::format(name, ctx);
+    }
 };
-}
-#endif
-#endif
-// clang-format on
+
+template <>
+struct std::formatter<unicode::EmojiSegmentationCategory>: std::formatter<std::string_view>
+{
+    auto format(unicode::EmojiSegmentationCategory value, auto& ctx) const
+    {
+        using unicode::EmojiSegmentationCategory;
+        string_view name;
+        switch (value)
+        {
+            case EmojiSegmentationCategory::Invalid: name = "Invalid"; break;
+            case EmojiSegmentationCategory::Emoji: name = "Emoji"; break;
+            case EmojiSegmentationCategory::EmojiTextPresentation: name = "EmojiTextPresentation"; break;
+            case EmojiSegmentationCategory::EmojiEmojiPresentation: name = "EmojiEmojiPresentation"; break;
+            case EmojiSegmentationCategory::EmojiModifierBase: name = "EmojiModifierBase"; break;
+            case EmojiSegmentationCategory::EmojiModifier: name = "EmojiModifier"; break;
+            case EmojiSegmentationCategory::EmojiVSBase: name = "EmojiVSBase"; break;
+            case EmojiSegmentationCategory::RegionalIndicator: name = "RegionalIndicator"; break;
+            case EmojiSegmentationCategory::KeyCapBase: name = "KeyCapBase"; break;
+            case EmojiSegmentationCategory::CombiningEnclosingKeyCap: name = "CombiningEnclosingKeyCap"; break;
+            case EmojiSegmentationCategory::CombiningEnclosingCircleBackslash: name = "CombiningEnclosingCircleBackslash"; break;
+            case EmojiSegmentationCategory::ZWJ: name = "ZWJ"; break;
+            case EmojiSegmentationCategory::VS15: name = "VS15"; break;
+            case EmojiSegmentationCategory::VS16: name = "VS16"; break;
+            case EmojiSegmentationCategory::TagBase: name = "TagBase"; break;
+            case EmojiSegmentationCategory::TagSequence: name = "TagSequence"; break;
+            case EmojiSegmentationCategory::TagTerm: name = "TagTerm"; break;
+        }
+        return formatter<string_view>::format(name, ctx);
+    }
+};

@@ -13,10 +13,9 @@
  */
 #include <libunicode/utf8_grapheme_segmenter.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
 
+#include <format>
 #include <string_view>
 
 using namespace std::string_literals;
@@ -32,7 +31,7 @@ std::string escape(std::string const& s)
         if (std::isprint(ch))
             t += ch;
         else
-            t += fmt::format("\\x{:02X}", ((unsigned) ch) & 0xFF);
+            t += std::format("\\x{:02X}", ((unsigned) ch) & 0xFF);
     return t;
 }
 
@@ -51,7 +50,7 @@ void test_utf8_grapheme_cluster_segmentation(Ts... expects)
     };
 
     auto const checkOne = [&](std::u32string_view expected) -> void {
-        INFO(fmt::format("expects: {}, actual {}", s8(expected), s8(*i)));
+        INFO(std::format("expects: {}, actual {}", s8(expected), s8(*i)));
         REQUIRE(s8(*i) == s8(expected));
         REQUIRE(i != e);
         ++i;

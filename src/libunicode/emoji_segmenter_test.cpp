@@ -16,9 +16,9 @@
 #include <libunicode/run_segmenter.h>
 #include <libunicode/utf8.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
+
+#include <format>
 
 using namespace unicode;
 using namespace std::string_literals;
@@ -46,14 +46,14 @@ void test_segments(int lineNo, std::vector<std::pair<std::u32string_view, Presen
         i += text.size();
     }
 
-    INFO(fmt::format("Testing emoji segmentation from line {}: {}", lineNo, to_utf8(fullText)));
+    INFO(std::format("Testing emoji segmentation from line {}: {}", lineNo, to_utf8(fullText)));
 
     size_t size {};
     auto presentationStyle = PresentationStyle {};
     auto segmenter = unicode::emoji_segmenter { fullText };
     for (size_t i = 0; i < expectations.size(); ++i)
     {
-        INFO(fmt::format("run segmentation for part {}: \"{}\" to be {}",
+        INFO(std::format("run segmentation for part {}: \"{}\" to be {}",
                          i,
                          to_utf8(expectations[i].first),
                          (unsigned) expectations[i].second));

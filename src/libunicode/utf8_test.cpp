@@ -14,13 +14,12 @@
 #include <libunicode/support.h>
 #include <libunicode/utf8.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
 #include <cassert>
 #include <cstdlib>
+#include <format>
 #include <variant>
 
 using namespace std;
@@ -54,20 +53,20 @@ TEST_CASE("utf8.bytes_1", "[utf8]")
     auto const r1 = from_utf8(state, C);
     REQUIRE(holds_alternative<Success>(r1));
     char32_t const b = get<Success>(r1).value;
-    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned) b));
+    INFO(std::format("char32_t : 0x{:04X}", (unsigned) b));
     REQUIRE(b == C);
 }
 
 TEST_CASE("utf8.bytes_2", "[utf8]")
 {
     char32_t constexpr C { 0xF6 }; // 0xC3 0xB6, 'ö'
-    INFO(fmt::format("codepoint : 0x{:04X}", (unsigned) C));
+    INFO(std::format("codepoint : 0x{:04X}", (unsigned) C));
 
     // encode
     uint8_t actual[2] = {};
     auto const count = to_utf8(C, actual);
-    INFO(fmt::format("utf8      : {:X} {:X}", actual[0], actual[1]));
-    INFO(fmt::format("binary    : {} {}", binstr(actual[0]), binstr(actual[1])));
+    INFO(std::format("utf8      : {:X} {:X}", actual[0], actual[1]));
+    INFO(std::format("binary    : {} {}", binstr(actual[0]), binstr(actual[1])));
     REQUIRE(count == 2);
     CHECK(actual[0] == 0xC3);
     CHECK(actual[1] == 0xB6);
@@ -77,7 +76,7 @@ TEST_CASE("utf8.bytes_2", "[utf8]")
     auto const a = from_utf8(actual, &len);
     REQUIRE(holds_alternative<Success>(a));
     char32_t b = get<Success>(a).value;
-    INFO(fmt::format("char32_t : 0x{:04X} ==? 0x{:04X}", (unsigned) b, (unsigned) C));
+    INFO(std::format("char32_t : 0x{:04X} ==? 0x{:04X}", (unsigned) b, (unsigned) C));
     REQUIRE(b == C);
 }
 
@@ -91,15 +90,15 @@ TEST_CASE("utf8.bytes_3", "[utf8]")
     CHECK(b3[1] == 0x82);
     CHECK(b3[2] == 0xAC);
 
-    INFO(fmt::format("{:02X} {:02X} {:02X}", b3[0], b3[1], b3[2]));
-    INFO(fmt::format("{} {} {}", binstr(b3[0]), binstr(b3[1]), binstr(b3[2])));
+    INFO(std::format("{:02X} {:02X} {:02X}", b3[0], b3[1], b3[2]));
+    INFO(std::format("{} {} {}", binstr(b3[0]), binstr(b3[1]), binstr(b3[2])));
 
     // decode
     size_t len = 0;
     auto const a = from_utf8(b3, &len);
     REQUIRE(holds_alternative<Success>(a));
     char32_t const b = get<Success>(a).value;
-    INFO(fmt::format("char32_t : 0x{:04X}", (unsigned) b));
+    INFO(std::format("char32_t : 0x{:04X}", (unsigned) b));
     REQUIRE(b == 0x20AC);
 }
 
@@ -114,8 +113,8 @@ TEST_CASE("utf8.bytes_3_dash", "[utf8]")
     CHECK(d3[1] == 0x94);
     CHECK(d3[2] == 0x9C);
 
-    INFO(fmt::format("{:02X} {:02X} {:02X}", d3[0], d3[1], d3[2]));
-    INFO(fmt::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
+    INFO(std::format("{:02X} {:02X} {:02X}", d3[0], d3[1], d3[2]));
+    INFO(std::format("{} {} {}", binstr(d3[0]), binstr(d3[1]), binstr(d3[2])));
 
     // decode
     auto constexpr u8s = array<uint8_t, 4> { 0xe2, 0x94, 0x9c, 0x61 /*a*/ };
