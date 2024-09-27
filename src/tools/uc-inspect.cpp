@@ -20,10 +20,8 @@
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
-
 #include <array>
+#include <format>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -93,9 +91,9 @@ inline string escape(uint8_t ch)
         case '"': return "\\\"";
         default:
             if (std::isprint(static_cast<char>(ch)))
-                return fmt::format("{}", static_cast<char>(ch));
+                return std::format("{}", static_cast<char>(ch));
             else
-                return fmt::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
+                return std::format("\\x{:02X}", static_cast<uint8_t>(ch) & 0xFF);
     }
 }
 
@@ -154,7 +152,7 @@ void codepoints(istream& in) // {{{
             {
                 string const u8 = escape(unicode::to_utf8(wc));
 
-                cout << fmt::format("{:>3}: U+{:08X} [{}] [{:<10}] {} width:{} UTF8:{}\n",
+                cout << std::format("{:>3}: U+{:08X} [{}] [{:<10}] {} width:{} UTF8:{}\n",
                                     lastOffset,
                                     static_cast<uint32_t>(wc),
                                     isEmoji(wc) ? "EMOJI" : "TEXT ",
@@ -185,7 +183,7 @@ string scriptExtensionsString(char32_t codepoint)
     {
         if (i)
             sstr << ", ";
-        sstr << fmt::format("{}", scripts[i]);
+        sstr << std::format("{}", scripts[i]);
     }
     return sstr.str();
 }
@@ -204,11 +202,11 @@ int scripts(istream& in) // {{{
     cout << "   INDEX     CODEPOINT    TEXT  WIDTH   SCRIPT          SCRIPT EXTS\n";
     while (segmenter.consume(out(nextPosition), out(script)))
     {
-        cout << fmt::format("{}-{}: {}\n", frontPosition, nextPosition - 1, script);
+        cout << std::format("{}-{}: {}\n", frontPosition, nextPosition - 1, script);
         for (size_t i = frontPosition; i < nextPosition; ++i)
         {
             auto const cp = codepoints[i];
-            cout << fmt::format("    {:>04}:    U+{:08X}   {}\t∆ {}\t{:<12}\t({})\n",
+            cout << std::format("    {:>04}:    U+{:08X}   {}\t∆ {}\t{:<12}\t({})\n",
                                 i,
                                 unsigned(cp),
                                 convert_to<char>(cp),
@@ -235,7 +233,7 @@ int runs(istream& in) // {{{
         auto const script = get<unicode::Script>(run.properties);
         auto const presentationStyle = get<unicode::PresentationStyle>(run.properties);
 
-        cout << fmt::format("{}-{} ({}): {} {}\n", run.start, run.end - 1, run.end - run.start, script, presentationStyle);
+        cout << std::format("{}-{} ({}): {} {}\n", run.start, run.end - 1, run.end - run.start, script, presentationStyle);
         auto const text32 = u32string_view(codepoints.data() + run.start, run.end - run.start);
         auto const text8 = convert_to<char>(text32);
         auto const textEscaped = replaceAll("\033"sv, "\\033"sv, string_view(text8));
@@ -315,7 +313,7 @@ int main(int argc, char const* argv[])
     }
     catch (std::exception const& e)
     {
-        std::cerr << fmt::format("Unhandled exception caught ({}). {}\n", typeid(e).name(), e.what());
+        std::cerr << std::format("Unhandled exception caught ({}). {}\n", typeid(e).name(), e.what());
         return EXIT_FAILURE;
     }
     catch (...)

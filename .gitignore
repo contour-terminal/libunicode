@@ -2,6 +2,7 @@
 /out/
 /_deps/
 /_ucd/
+/.cache/
 /.clangd/
 /compile_commands.json
 /.vscode/

@@ -1,6 +1,6 @@
 if(LIBUNICODE_TOOLS)
     add_executable(unicode-query unicode-query.cpp)
-    target_link_libraries(unicode-query unicode fmt::fmt-header-only)
+    target_link_libraries(unicode-query unicode)
     if(LIBUNICODE_BUILD_STATIC)
         target_link_libraries(unicode-query "-static")
     endif()

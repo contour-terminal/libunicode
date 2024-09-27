@@ -212,38 +212,30 @@ class EnumFmtWriter(EnumBuilder): # {{{
         self.file.write('\n')
         self.file.write('#include <libunicode/ucd_enums.h>\n')
         self.file.write('\n')
-        self.file.write('#include <fmt/format.h>\n')
+        self.file.write('#include <format>\n')
         self.file.write('\n')
-        self.file.write('namespace fmt\n{\n\n')
 
     def begin(self, _enum_class, _first):
         self.enum_class = 'unicode::' + _enum_class
         self.file.write('template <>\n')
-        self.file.write('struct formatter<{}>\n{{\n'.format(self.enum_class))
-
-        self.file.write('    template <typename ParseContext>\n')
-        self.file.write('    constexpr auto parse(ParseContext& ctx)\n')
+        self.file.write('struct std::formatter<{}>: std::formatter<std::string_view>\n{{\n'.format(self.enum_class))
+        self.file.write('    auto format({} value, auto& ctx) const\n'.format(self.enum_class))
         self.file.write('    {\n')
-        self.file.write('        return ctx.begin();\n')
-        self.file.write('    }\n')
-
-        self.file.write('    template <typename FormatContext>\n')
-        self.file.write('    auto format({} value, FormatContext& ctx)\n'.format(self.enum_class))
-        self.file.write('    {\n')
+        self.file.write('        std::string_view name;\n')
         self.file.write('        switch (value)\n')
         self.file.write('        {\n')
         self.file.write('            // clang-format off\n')
 
     def member(self, _member):
         self.file.write(
-                '            case {0}::{1}: return fmt::format_to(ctx.out(), "{2}");\n'.format(
+            '            case {0}::{1}: name = "{2}"; break;\n'.format(
             self.enum_class, sanitize_identifier(_member), _member)
         )
 
     def end(self):
         self.file.write('            // clang-format off\n')
         self.file.write("        }\n")
-        self.file.write('        return fmt::format_to(ctx.out(), "({})", unsigned(value));\n')
+        self.file.write('        return formatter<string_view>::format(name, ctx);\n')
         self.file.write("    }\n")
         self.file.write("};\n\n")
 
@@ -251,7 +243,6 @@ class EnumFmtWriter(EnumBuilder): # {{{
         return self.filename
 
     def close(self):
-        self.file.write("} // namespace fmt\n")
         self.file.close()
     # }}}
 class MergedRange: # {{{

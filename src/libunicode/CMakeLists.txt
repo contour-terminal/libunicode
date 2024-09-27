@@ -242,7 +242,7 @@ if(LIBUNICODE_TESTING)
         target_include_directories(Catch2 SYSTEM INTERFACE ${CATCH2_INCLUDE_DIRS})
     endif()
 
-    target_link_libraries(unicode_test unicode Catch2::Catch2WithMain fmt::fmt-header-only)
+    target_link_libraries(unicode_test unicode Catch2::Catch2WithMain)
     add_test(unicode_test unicode_test)
 endif()
 # }}}

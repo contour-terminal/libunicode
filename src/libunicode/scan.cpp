@@ -131,7 +131,7 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
         ++input;
 
     // if (static_cast<size_t>(distance(text.data(), input)))
-    //     fmt::print(
+    //     std::print(
     //         "countAsciiTextChars: {} bytes: \"{}\"\n",
     //         static_cast<size_t>(distance(text.data(), input)),
     //         (string_view(text.data(), static_cast<size_t>(distance(text.data(), input)))));

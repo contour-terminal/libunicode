@@ -15,10 +15,9 @@
 #include <libunicode/scan.h>
 #include <libunicode/utf8.h>
 
-#include <fmt/format.h>
-
 #include <catch2/catch_test_macros.hpp>
 
+#include <format>
 #include <string_view>
 
 using std::string_view;
@@ -52,11 +51,11 @@ std::string escape(uint8_t ch)
         case '"': return "\\\"";
         default:
             if (ch < 0x20)
-                return fmt::format("\\{:03o}", static_cast<uint8_t>(ch) & 0xFF);
+                return std::format("\\{:03o}", static_cast<uint8_t>(ch) & 0xFF);
             else if (ch < 0x80)
-                return fmt::format("{}", static_cast<char>(ch));
+                return std::format("{}", static_cast<char>(ch));
             else
-                return fmt::format("\\x{:02x}", static_cast<uint8_t>(ch) & 0xFF);
+                return std::format("\\x{:02x}", static_cast<uint8_t>(ch) & 0xFF);
     }
 }
 
@@ -238,7 +237,7 @@ TEST_CASE("scan.any.ascii_complex_repeat")
         auto const countSimple = ((i + 1) / 2) * 20;
         auto const countComplex = (i / 2) * 2;
 
-        INFO(fmt::format("i = {}, ascii# {}, complex# {}, count {}, actual {}, s = \"{}\"",
+        INFO(std::format("i = {}, ascii# {}, complex# {}, count {}, actual {}, s = \"{}\"",
                          i,
                          countSimple,
                          countComplex,
@@ -340,7 +339,7 @@ void testScanText(int lineNo,
                   uint8_t stopByte,
                   std::vector<std::u32string_view> const& analyzedGraphemeClusters)
 {
-    INFO(fmt::format("Testing scan segment from line {}: {} ({:02X})", lineNo, hex(expectation), stopByte));
+    INFO(std::format("Testing scan segment from line {}: {} ({:02X})", lineNo, hex(expectation), stopByte));
     auto const maxColumnCount = 80;
 
     std::string fullText;
@@ -363,7 +362,7 @@ void testScanText(int lineNo,
     auto const iMax = std::min(analyzedGraphemeClusters.size(), graphemeClusterCollector.output.size());
     for (size_t i = 0; i < iMax; ++i)
     {
-        INFO(fmt::format("i: {}, lhs: {}, rhs: {}",
+        INFO(std::format("i: {}, lhs: {}, rhs: {}",
                          i,
                          u8(std::u32string_view(graphemeClusterCollector.output[i].data(),
                                                 graphemeClusterCollector.output[i].size())),

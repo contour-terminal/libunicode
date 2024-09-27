@@ -79,14 +79,6 @@ fetch_and_unpack_benchmark()
 }
 
 
-fetch_and_unpack_fmtlib()
-{
-    fetch_and_unpack \
-        fmt-9.1.0 \
-        fmtlib-9.1.0.tar.gz \
-        https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz
-}
-
 prepare_fetch_and_unpack()
 {
     mkdir -p "${SYSDEPS_BASE_DIR}"
@@ -105,7 +97,6 @@ install_deps_ubuntu()
         cmake
         debhelper
         dpkg-dev
-        g++
         libc6-dev
         make
         ninja-build
@@ -116,12 +107,13 @@ install_deps_ubuntu()
     local NAME=`grep ^NAME /etc/os-release | cut -d= -f2 | cut -f1 | tr -d '"'`
 
     case $RELEASE in
-        "20.04" | "22.04" | "24.04")
-            fetch_and_unpack_fmtlib
+        "24.04")
             fetch_and_unpack_Catch2
+            packages="$packages g++-14"
             ;;
         *)
-            packages="$packages libfmt-dev catch2"
+            packages="$packages g++"
+            packages="$packages catch2"
             ;;
     esac
 
@@ -142,7 +134,6 @@ install_deps_FreeBSD()
     su root -c "pkg install $SYSDEP_ASSUME_YES \
         catch \
         cmake \
-        libfmt \
         ninja \
         pkgconf \
         range-v3
@@ -151,7 +142,6 @@ install_deps_FreeBSD()
 
 install_deps_arch()
 {
-    fetch_and_unpack_fmtlib
     fetch_and_unpack_benchmark
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
@@ -170,7 +160,6 @@ install_deps_fedora()
     local packages="
         catch-devel
         cmake
-        fmt-devel
         gcc-c++
         google-benchmark-devel
         ninja-build
@@ -193,7 +182,6 @@ install_deps_darwin()
     # NB: Also available in brew: mimalloc
     # catch2: available in brew, but too new (version 3+)
     brew install $SYSDEP_ASSUME_YES \
-        fmt \
         ninja \
         pkg-config \
         range-v3
@@ -230,7 +218,6 @@ main()
             ;;
         *)
             fetch_and_unpack_Catch2
-            fetch_and_unpack_fmtlib
             fetch_and_unpack_benchmark
             echo "OS $ID not supported."
             echo "Dependencies were fetch manually and most likely libunicode will compile."
