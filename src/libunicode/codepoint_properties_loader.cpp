@@ -46,6 +46,7 @@ namespace
             pair { "13.0"sv, Age::V13_0 },
             pair { "14.0"sv, Age::V14_0 },
             pair { "15.0"sv, Age::V15_0 },
+            pair { "16.0"sv, Age::V16_0 },
             pair { "1.1"sv, Age::V1_1 },
             pair { "2.0"sv, Age::V2_0 },
             pair { "2.1"sv, Age::V2_1 },
