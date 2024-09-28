@@ -63,7 +63,7 @@ constexpr std::optional<T> search(std::array<Prop<T>, N> const& ranges, char32_t
 
     while (a < b)
     {
-        auto const i = static_cast<size_t>((b + a) / 2);
+        auto const i = a + static_cast<size_t>((b - a) / 2);
         auto const& I = ranges[i];
         if (I.interval.to < codepoint)
             a = i + 1;
