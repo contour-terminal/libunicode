@@ -113,10 +113,9 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     codepoint_properties_names.cpp
 )
 
-if(LIBUNICODE_USE_STD_SIMD)
+if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std")
     target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
-endif()
-if(LIBUNICODE_USE_INTRINSICS)
+elseif(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
     target_compile_definitions(unicode PRIVATE USE_INTRINSICS)
 endif()
 

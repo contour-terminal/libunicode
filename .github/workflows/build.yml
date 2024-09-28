@@ -115,10 +115,10 @@ jobs:
           dnf install -y curl
           PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
           dnf install -y unicode-ucd
-      - name: CMake build
-        run: |
-          cmake --preset linux-gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
-          cmake --build --preset linux-gcc-debug -j$(nproc)
+      - name: configure
+        run: cmake --preset linux-gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+      - name: build
+        run: cmake --build --preset linux-gcc-debug -j$(nproc)
       - name: test
         run: |
           ctest --preset linux-gcc-debug
