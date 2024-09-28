@@ -7,7 +7,6 @@
                 "request": "launch",
                 "program": "${workspaceRoot}/build/linux-clang-debug/src/libunicode/unicode_test",
                 "args": [
-                    "run_segmenter.LatinEmoji"
                 ],
                 "cwd": "${workspaceRoot}",
                 "externalConsole": true,
