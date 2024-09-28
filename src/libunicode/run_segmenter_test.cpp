@@ -17,8 +17,6 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <array>
-#include <format>
 #include <ostream>
 #include <sstream>
 #include <string>
@@ -144,7 +142,7 @@ TEST_CASE("run_segmenter.JapaneseHindiEmojiMix", "[run_segmenter]")
                             { U"🌱🌲", Script::Han, PresentationStyle::Emoji } });
 }
 
-TEST_CASE("run_segmenter.CombiningCirlce", "[run_segmenter]")
+TEST_CASE("run_segmenter.CombiningCircle", "[run_segmenter]")
 {
     test_run_segmentation(__LINE__, { { U"◌́◌̀◌̈◌̂◌̄◌̊", Script::Common, PresentationStyle::Text } });
 }
