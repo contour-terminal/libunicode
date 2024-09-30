@@ -15,13 +15,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <string>
 #include <string_view>
 
 using namespace std::string_view_literals;
-using namespace std::string_view_literals;
-using std::optional;
-using unicode::script_segmenter;
 
 TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
 {
@@ -35,15 +31,32 @@ TEST_CASE("script_segmenter.private_use_area", "[script_segmenter]")
     CHECK(res1.script == unicode::Script::Unknown);
 }
 
+TEST_CASE("script_segmenter.common_to_specific", "[script_segmenter]")
+{
+    // '1' is script property Common, 'a' is script property Latin, so the whole string is Latin.
+
+    auto constexpr str = U"1a"sv;
+    auto seg = unicode::script_segmenter { str.data(), str.size() };
+
+    std::optional<unicode::script_segmenter::result> const r1 = seg.consume();
+    REQUIRE(r1.has_value());
+    auto const res1 = r1.value();
+    CHECK(res1.size == str.size());
+    CHECK(res1.script == unicode::Script::Latin);
+
+    auto const r2 = seg.consume();
+    REQUIRE_FALSE(r2.has_value());
+}
+
 TEST_CASE("script_segmenter.greek_kanji_greek", "[script_segmenter]")
 {
     char32_t const* str = U"λ 合気道 λ;";
-    auto seg = script_segmenter { str };
+    auto seg = unicode::script_segmenter { str };
 
     // greek text
-    optional<script_segmenter::result> const r1 = seg.consume();
+    std::optional<unicode::script_segmenter::result> const r1 = seg.consume();
     REQUIRE(r1.has_value());
-    script_segmenter::result const res1 = r1.value();
+    unicode::script_segmenter::result const res1 = r1.value();
     CHECK(res1.size == 2);
     CHECK(res1.script == unicode::Script::Greek);
 

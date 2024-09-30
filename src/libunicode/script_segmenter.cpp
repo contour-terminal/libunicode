@@ -60,7 +60,7 @@ optional<script_segmenter::result> script_segmenter::consume()
     return res;
 }
 
-bool script_segmenter::mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet)
+bool script_segmenter::mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet) noexcept
 {
     if (nextSet.empty() || currentSet.empty())
         return false;
@@ -122,7 +122,7 @@ bool script_segmenter::mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet
     return true;
 }
 
-script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t codepoint)
+script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t codepoint) noexcept
 {
     ScriptSet scriptSet;
 

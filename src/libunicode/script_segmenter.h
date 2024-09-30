@@ -18,7 +18,6 @@
 
 #include <optional>
 #include <string_view>
-#include <vector>
 
 namespace unicode
 {
@@ -81,13 +80,13 @@ class script_segmenter
     }
 
     /// Returnes all scripts that this @p _codepoint is associated with.
-    ScriptSet getScriptsFor(char32_t codepoint);
+    ScriptSet getScriptsFor(char32_t codepoint) noexcept;
 
     /// Intersects @p _nextSet into @p _currentSet.
     ///
     /// @retval true Intersection succeed, meaning that no boundary was found.
     /// @retval false The resulting intersection is empty, meaning, a script boundary was found.
-    bool mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet);
+    bool mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet) noexcept;
 
     /// Returns the resolved script.
     ///

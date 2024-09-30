@@ -13,6 +13,6 @@ src/libunicode/ucd.h
 src/libunicode/ucd_enums.h
 src/libunicode/ucd_fmt.h
 src/libunicode/ucd_ostream.h
-/src/libunicode/codepoint_properties_data.cpp
-/src/libunicode/codepoint_properties_data.h
-/src/libunicode/codepoint_properties_names.cpp
+src/libunicode/codepoint_properties_data.cpp
+src/libunicode/codepoint_properties_data.h
+src/libunicode/codepoint_properties_names.cpp

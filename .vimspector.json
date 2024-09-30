@@ -1,0 +1,24 @@
+{
+    "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json#",
+    "configurations": {
+        "ModelTest": {
+            "adapter": "vscode-cpptools",
+            "configuration": {
+                "request": "launch",
+                "program": "${workspaceRoot}/build/linux-clang-debug/src/libunicode/unicode_test",
+                "args": [
+                ],
+                "cwd": "${workspaceRoot}",
+                "externalConsole": true,
+                "stopAtEntry": false,
+                "MIMode": "gdb"
+            },
+            "breakpoints": {
+                "exception": {
+                    "caught": "Y",
+                    "uncaught": "Y"
+                }
+            }
+        }
+    }
+}
