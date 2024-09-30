@@ -144,7 +144,7 @@ TEST_CASE("run_segmenter.JapaneseHindiEmojiMix", "[run_segmenter]")
 
 TEST_CASE("run_segmenter.CombiningCircle", "[run_segmenter]")
 {
-    test_run_segmentation(__LINE__, { { U"◌́◌̀◌̈◌̂◌̄◌̊", Script::Common, PresentationStyle::Text } });
+    test_run_segmentation(__LINE__, { { U"◌́◌̀◌̈◌̂◌̄◌̊", Script::Latin, PresentationStyle::Text } });
 }
 
 TEST_CASE("run_segmenter.Arab_Hangul", "[run_segmenter]")
