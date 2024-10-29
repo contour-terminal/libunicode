@@ -14,6 +14,7 @@
 #include <libunicode/grapheme_segmenter.h>
 #include <libunicode/intrinsics.h>
 #include <libunicode/scan.h>
+#include <libunicode/simd_detector.h>
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
@@ -87,6 +88,15 @@ namespace
 
 size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
+    static auto simd_size = max_simd_size();
+    if (simd_size == 512)
+    {
+        return scan_for_text_ascii_512(text, maxColumnCount);
+    }
+    else if (simd_size == 256)
+    {
+        return scan_for_text_ascii_256(text, maxColumnCount);
+    }
     auto input = text.data();
     auto const end = text.data() + min(text.size(), maxColumnCount);
 #if defined(USE_STD_SIMD)
