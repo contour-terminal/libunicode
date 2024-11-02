@@ -136,7 +136,7 @@ set_source_files_properties(
 if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std")
     target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
 elseif(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    target_compile_definitions(unicode PRIVATE USE_INTRINSICS)
+    target_compile_definitions(unicode PRIVATE LIBUNICDE_USE_INTRINSICS)
 endif()
 
 set(public_headers

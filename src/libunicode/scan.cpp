@@ -23,19 +23,7 @@
 #include <iterator>
 #include <string_view>
 
-// clang-format off
-#if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD) && !defined(__APPLE__) && !defined(__FreeBSD__)
-    #define USE_STD_SIMD
-    #include <experimental/simd>
-    namespace stdx = std::experimental;
-#elif __has_include(<simd>) && defined(LIBUNICODE_USE_STD_SIMD)
-    #define USE_STD_SIMD
-    #include <simd>
-    namespace stdx = std;
-#elif defined(__SSE2__)
-    #include <immintrin.h>
-#endif
-// clang-format on
+#include "scan_simd_impl.hpp"
 
 using std::distance;
 using std::get;
@@ -88,6 +76,7 @@ namespace
 
 size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
+#if defined(__x86_64__) || defined(_M_AMD64)
     static auto simd_size = max_simd_size();
     if (simd_size == 512)
     {
@@ -97,56 +86,8 @@ size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noex
     {
         return scan_for_text_ascii_256(text, maxColumnCount);
     }
-    auto input = text.data();
-    auto const end = text.data() + min(text.size(), maxColumnCount);
-#if defined(USE_STD_SIMD)
-    constexpr int numberOfElements = stdx::simd_abi::max_fixed_size<char>;
-    stdx::fixed_size_simd<char, numberOfElements> simd_text {};
-    while (input < end - numberOfElements)
-    {
-        simd_text.copy_from(input, stdx::element_aligned);
-
-        // check for control
-        // TODO check for complex
-        auto const simd_mask_text = (simd_text < 0x20);
-        if (stdx::popcount(simd_mask_text) > 0)
-        {
-            input += stdx::find_first_set(simd_mask_text);
-            break;
-        }
-        input += numberOfElements;
-    }
-#elif defined(USE_INTRINSICS)
-    intrinsics::m128i const ControlCodeMax = intrinsics::set1_epi8(0x20); // 0..0x1F
-    intrinsics::m128i const Complex = intrinsics::set1_epi8(-128);        // equals to 0x80 (0b1000'0000)
-
-    while (input < end - sizeof(intrinsics::m128i))
-    {
-        intrinsics::m128i batch = intrinsics::load_unaligned((intrinsics::m128i*) input);
-        intrinsics::m128i isControl = intrinsics::compare_less(batch, ControlCodeMax);
-        intrinsics::m128i isComplex = intrinsics::and128(batch, Complex);
-        // intrinsics::m128i isComplex = _mm_cmplt_epi8(batch, Complex);
-        intrinsics::m128i testPack = intrinsics::or128(isControl, isComplex);
-        if (int const check = intrinsics::movemask_epi8(testPack); check != 0)
-        {
-            int advance = countTrailingZeroBits(static_cast<unsigned>(check));
-            input += advance;
-            break;
-        }
-        input += sizeof(intrinsics::m128i);
-    }
 #endif
-
-    while (input != end && is_ascii(*input))
-        ++input;
-
-    // if (static_cast<size_t>(distance(text.data(), input)))
-    //     std::print(
-    //         "countAsciiTextChars: {} bytes: \"{}\"\n",
-    //         static_cast<size_t>(distance(text.data(), input)),
-    //         (string_view(text.data(), static_cast<size_t>(distance(text.data(), input)))));
-
-    return static_cast<size_t>(distance(text.data(), input));
+    return scan_for_text_ascii_simd<128>(text, maxColumnCount);
 }
 
 scan_result detail::scan_for_text_nonascii(scan_state& state,
