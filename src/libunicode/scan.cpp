@@ -37,19 +37,6 @@ namespace unicode
 
 namespace
 {
-    [[maybe_unused]] int countTrailingZeroBits(unsigned int value) noexcept
-    {
-#if defined(_WIN32)
-        // return _tzcnt_u32(value);
-        // Don't do _tzcnt_u32, because that's only available on x86-64, but not on ARM64.
-        unsigned long r = 0;
-        _BitScanForward(&r, value);
-        return r;
-#else
-        return __builtin_ctz(value);
-#endif
-    }
-
     template <typename T>
     constexpr bool ascending(T low, T val, T high) noexcept
     {
@@ -65,12 +52,6 @@ namespace
     constexpr bool is_complex(char ch) noexcept
     {
         return static_cast<uint8_t>(ch) & 0x80;
-    }
-
-    // Tests if given UTF-8 byte is a single US-ASCII text codepoint. This excludes control characters.
-    constexpr bool is_ascii(char ch) noexcept
-    {
-        return !is_control(ch) && !is_complex(ch);
     }
 } // namespace
 

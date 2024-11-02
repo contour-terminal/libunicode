@@ -1,11 +1,8 @@
 #pragma once
 #include <algorithm>
 #include <cassert>
-#include <concepts>
 #include <iterator>
 #include <string_view>
-
-#include "intrinsics.h"
 
 // clang-format off
 #if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD) && !defined(__APPLE__) && !defined(__FreeBSD__)
@@ -16,6 +13,7 @@
     #define USE_STD_SIMD
     #include <simd>
     namespace stdx = std;
+#elif defined(LIBUNICDE_USE_INTRINSICS)
     #include "intrinsics.h"
 #endif
 // clang-format on
@@ -33,9 +31,9 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
     while (input < end - simd_size)
     {
         simd_text.copy_from(input, stdx::element_aligned);
-        auto const is_control_mask = simd_text < 0x20;
-        auto const is_complex_mask = (simd_text & 0x80) == 0x80;
-        auto const ctrl_or_complex_mask = is_control_mask || is_complex_mask;
+        auto is_control_mask = simd_text < 0x20;
+        auto is_complex_mask = (simd_text & 0x80) == 0x80;
+        auto ctrl_or_complex_mask = is_control_mask || is_complex_mask;
         if (stdx::any_of(ctrl_or_complex_mask))
         {
             input += stdx::find_first_set(ctrl_or_complex_mask);
@@ -44,8 +42,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         input += simd_size;
     }
 #elif defined(LIBUNICDE_USE_INTRINSICS)
-
-    [[maybe_unused]] constexpr auto countTrailingZeroBits = []<typename T>(T value) noexcept {
+    constexpr auto trailing_zero_count = []<typename T>(T value) noexcept {
         // clang-format off
         if constexpr (std::same_as<T, uint32_t>)
         {
@@ -87,7 +84,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         auto ctrl_or_complex_mask = intrin::or_mask(is_control_mask, is_complex_mask);
         if (ctrl_or_complex_mask)
         {
-            int advance = countTrailingZeroBits(intrin::to_underlying(ctrl_or_complex_mask));
+            int advance = trailing_zero_count(intrin::to_underlying(ctrl_or_complex_mask));
             input += advance;
             break;
         }
