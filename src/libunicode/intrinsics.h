@@ -15,8 +15,7 @@
 
 #include <cstdint>
 #if defined(__x86_64__) || defined(_M_AMD64)
-    #include <emmintrin.h> // AVX, AVX2, FMP
-    #include <immintrin.h> // SSE2
+    #include <immintrin.h>
 #endif
 
 #if defined(__aarch64__) || defined(_M_ARM64)
@@ -74,38 +73,7 @@ struct platform_intrinsics<__m128i>
 using intrinsics = platform_intrinsics<__m128i>;
 
 template <size_t SimdBitWidth, typename = void>
-struct intrin
-{
-    using vec_t = void*;
-
-    using mask_t = int;
-
-    static inline vec_t setzero() noexcept;
-
-    static inline vec_t set1_epi8(signed char w) noexcept;
-
-    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept;
-
-    static inline vec_t and_vec(vec_t a, vec_t b) noexcept;
-
-    static inline vec_t or_vec(vec_t a, vec_t b) noexcept;
-
-    static inline vec_t load(const char* p) noexcept;
-
-    static inline bool equal(vec_t a, vec_t b) noexcept;
-
-    static inline mask_t less(vec_t a, vec_t b) noexcept;
-
-    static inline mask_t greater(vec_t a, vec_t b) noexcept;
-
-    static inline mask_t and_mask(mask_t a, mask_t b) noexcept;
-
-    static inline mask_t or_mask(mask_t a, mask_t b) noexcept;
-
-    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept;
-
-    static inline auto to_underlying(mask_t a) noexcept;
-};
+struct intrin;
 
 template <typename T>
 struct intrin<128, T>

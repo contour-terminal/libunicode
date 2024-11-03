@@ -12,8 +12,8 @@
  * limitations under the License.
  */
 #include <libunicode/grapheme_segmenter.h>
-#include <libunicode/intrinsics.h>
 #include <libunicode/scan.h>
+#include <libunicode/scan_simd_impl.h>
 #include <libunicode/simd_detector.h>
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
@@ -22,8 +22,6 @@
 #include <cassert>
 #include <iterator>
 #include <string_view>
-
-#include "scan_simd_impl.hpp"
 
 using std::distance;
 using std::get;

@@ -254,7 +254,7 @@ if(LIBUNICODE_TESTING)
     if(NOT Catch2_FOUND)
         # supress conversion warnings for Catch2
         # https://github.com/catchorg/Catch2/issues/2583
-        # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt #L18-L22
+        # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt#L18-L22
         set_target_properties(Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
         set_target_properties(Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
         get_target_property(CATCH2_INCLUDE_DIRS Catch2 INTERFACE_INCLUDE_DIRECTORIES)

@@ -1,4 +1,5 @@
-#include "scan_simd_impl.hpp"
+#include <libunicode/scan.h>
+#include <libunicode/scan_simd_impl.h>
 
 namespace unicode::detail
 {
