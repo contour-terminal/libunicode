@@ -28,6 +28,9 @@ namespace unicode
 template <typename>
 struct platform_intrinsics;
 
+template <size_t SimdBitWidth, typename = void>
+struct intrin;
+
 #if defined(__GNUC__) && defined(__x86_64__)
     // For some reason, GCC associates attributes with __m128i that are not obvious (alignment),
     // and then complains about it when used below.
@@ -72,9 +75,6 @@ struct platform_intrinsics<__m128i>
 
 using intrinsics = platform_intrinsics<__m128i>;
 
-template <size_t SimdBitWidth, typename = void>
-struct intrin;
-
 template <typename T>
 struct intrin<128, T>
 {
@@ -106,7 +106,7 @@ struct intrin<128, T>
 
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
 
-    static inline uint32_t to_underlying(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
 };
 
 template <typename T>
@@ -142,7 +142,7 @@ struct intrin<256, T>
 
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
 
-    static inline uint32_t to_underlying(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
 };
 
 template <typename T>
@@ -176,7 +176,7 @@ struct intrin<512, T>
 
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return _kxor_mask64(a, b); }
 
-    static inline uint64_t to_underlying(mask_t a) noexcept { return static_cast<uint64_t>(a); }
+    static inline uint64_t to_unsigned(mask_t a) noexcept { return static_cast<uint64_t>(a); }
 };
 
 #endif
@@ -327,6 +327,71 @@ struct platform_intrinsics<int64x2_t>
 };
 
 using intrinsics = platform_intrinsics<int64x2_t>;
+
+template <typename T>
+struct intrin<128, T>
+{
+    // The following inline functions (in its initial version) were borrowed from:
+    // https://github.com/f1ed/emp/blob/master/emp-tool/utils/block.h
+
+    using vec_t = int64x2_t;
+
+    using mask_t = int;
+
+    static inline vec_t setzero() noexcept { return vreinterpretq_s64_s32(vdupq_n_s32(0)); }
+
+    static inline vec_t set1_epi8(signed char w) { return vreinterpretq_s64_s8(vdupq_n_s8(w)); }
+
+    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept
+    {
+        return vreinterpretq_s64_s32(veorq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
+    }
+
+    static inline vec_t and_vec(vec_t a, vec_t b) noexcept
+    {
+        return vreinterpretq_s64_s32(vandq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
+    }
+
+    static inline vec_t or_vec(vec_t a, vec_t b)
+    {
+        return vreinterpretq_s64_s32(vorrq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
+    }
+
+    static inline vec_t load(const char* p) noexcept
+    {
+        return vreinterpretq_s64_s32(vld1q_s32(reinterpret_cast<const int32_t*>(p)));
+    }
+
+    static inline bool equal(vec_t a, vec_t b) noexcept
+    {
+        return movemask_epi8(vreinterpretq_s64_u32(vceqq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)))) == 0xFFFF;
+    }
+
+    static inline vec_t less(vec_t a, vec_t b) noexcept
+    {
+        return vreinterpretq_s64_u8(vcltq_s8(vreinterpretq_s8_s64(a), vreinterpretq_s8_s64(b)));
+    }
+
+    static inline vec_t greater(vec_t a, vec_t b) noexcept { return less(b, a); }
+
+    static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return a & b; }
+
+    static inline mask_t or_mask(mask_t a, mask_t b) noexcept { return a | b; }
+
+    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
+
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+
+    static inline mask_t movemask_epi8(vec_t a)
+    {
+        uint8x16_t input = vreinterpretq_u8_s64(a);
+        uint16x8_t high_bits = vreinterpretq_u16_u8(vshrq_n_u8(input, 7));
+        uint32x4_t paired16 = vreinterpretq_u32_u16(vsraq_n_u16(high_bits, high_bits, 7));
+        uint64x2_t paired32 = vreinterpretq_u64_u32(vsraq_n_u32(paired16, paired16, 14));
+        uint8x16_t paired64 = vreinterpretq_u8_u64(vsraq_n_u64(paired32, paired32, 28));
+        return vgetq_lane_u8(paired64, 0) | ((int) vgetq_lane_u8(paired64, 8) << 8);
+    }
+};
 #endif
 // }}}
 
