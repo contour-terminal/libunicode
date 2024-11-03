@@ -109,7 +109,12 @@ TEST_CASE("scan.ascii.empty")
 
 TEST_CASE("scan.ascii.32")
 {
-    auto const text = "0123456789ABCDEF0123456789ABCDEF"sv;
+    auto const text = "0123456789ABCDEF0123456789ABCDEF"
+                      "0123456789ABCDEF0123456789ABCDEF"
+                      "0123456789ABCDEF0123456789ABCDEF"
+                      "0123456789ABCDEF0123456789ABCDEF"sv;
+    CHECK(scan_for_text_ascii(text, 128) == 128);
+    CHECK(scan_for_text_ascii(text, 64) == 64);
     CHECK(scan_for_text_ascii(text, 32) == 32);
     CHECK(scan_for_text_ascii(text, 16) == 16);
     CHECK(scan_for_text_ascii(text, 8) == 8);
@@ -123,12 +128,22 @@ TEST_CASE("scan.ascii.mixed_with_controls")
     CHECK(scan_for_text_ascii("12345678\033", 80) == 8);
     CHECK(scan_for_text_ascii("0123456789ABCDEF\033", 80) == 16);
     CHECK(scan_for_text_ascii("0123456789ABCDEF1\033", 80) == 17);
+    constexpr auto text = "0123456789ABCDEF0\033123456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"sv;
+    CHECK(scan_for_text_ascii(text, 80) == 17);
 }
 
 TEST_CASE("scan.ascii.until_complex")
 {
     CHECK(scan_for_text_ascii("1234\x80", 80) == 4);
     CHECK(scan_for_text_ascii("0123456789{\xE2\x94\x80}ABCDEF", 80) == 11);
+    constexpr auto text = "0123456789{\xE2\x94\x80}ABCDEF0323456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"
+                          "0123456789ABCDEF0123456789ABCDEF"sv;
+    CHECK(scan_for_text_ascii(text, 80) == 11);
 }
 
 TEST_CASE("scan.complex.grapheme_cluster.1")

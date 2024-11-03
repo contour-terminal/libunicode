@@ -93,7 +93,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
 #endif
 
     constexpr auto is_ascii = [](char ch) noexcept {
-        auto is_control = static_cast<uint8_t>(ch) > 0x20;
+        auto is_control = static_cast<uint8_t>(ch) < 0x20;
         auto is_complex = static_cast<uint8_t>(ch) & 0x80;
         return !is_control && !is_complex;
     };
