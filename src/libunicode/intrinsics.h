@@ -91,9 +91,9 @@ struct intrinsics<256, T>
 
     static inline bool equal(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpeq_epi32(a, b)) == 0xFFFF; }
 
-    static inline auto less(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(b, a)); }
+    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(b, a)); }
 
-    static inline auto greater(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(a, b)); }
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(a, b)); }
 
     static inline auto movemask_epi8(vec_t a) noexcept { return _mm256_movemask_epi8(a); }
 
@@ -186,12 +186,12 @@ struct intrinsics<128, T>
         return movemask_epi8(vreinterpretq_s64_u32(vceqq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)))) == 0xFFFF;
     }
 
-    static inline vec_t less(vec_t a, vec_t b) noexcept
+    static inline mask_t less(vec_t a, vec_t b) noexcept
     {
-        return vreinterpretq_s64_u8(vcltq_s8(vreinterpretq_s8_s64(a), vreinterpretq_s8_s64(b)));
+        return movemask_epi8(vreinterpretq_s64_u8(vcltq_s8(vreinterpretq_s8_s64(a), vreinterpretq_s8_s64(b))));
     }
 
-    static inline vec_t greater(vec_t a, vec_t b) noexcept { return less(b, a); }
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return less(b, a); }
 
     static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return a & b; }
 
