@@ -145,8 +145,8 @@ struct intrinsics<512, T>
 
 #if defined(__aarch64__) || defined(_M_ARM64) // {{{
 
-    template <typename T>
-struct intrinsics<128, T>
+template <auto size>
+struct intrinsics<size, void>
 {
     // The following inline functions (in its initial version) were borrowed from:
     // https://github.com/f1ed/emp/blob/master/emp-tool/utils/block.h

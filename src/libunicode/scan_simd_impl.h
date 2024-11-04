@@ -68,7 +68,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         }
         else
         {
-            static_assert(false);
+            return __builtin_ctzl(value);
         }
         // clang-format on
     };
@@ -80,11 +80,11 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
     {
         auto batch = intrinsics::load(input);
         auto is_control_mask = intrinsics::less(batch, vec_control);
-        auto is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
-        auto ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
-        if (ctrl_or_complex_mask)
+        auto is_complex_mask = intrinsics::and_vec(batch, vec_complex);
+        auto ctrl_or_complex_mask = intrinsics::or_vec(is_control_mask, is_complex_mask);
+        if (int const check = intrinsics::movemask_epi8(ctrl_or_complex_mask))
         {
-            int advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
+            int advance = trailing_zero_count(static_cast<unsigned>(check));
             input += advance;
             break;
         }
