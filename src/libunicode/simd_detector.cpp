@@ -36,7 +36,7 @@
             __asm__ __volatile__("xgetbv" : "=a"(eax), "=d"(edx) : "c"(index));
             return ((uint64_t) edx << 32) | eax;
         }
-        #define XCR_XFEATURE_ENABLED_MASK 0
+        #define _XCR_XFEATURE_ENABLED_MASK 0
     // clang-format on
     #else
         #error "No cpuid intrinsic defined for compiler."
@@ -54,7 +54,7 @@ auto detect_os_avx() -> bool
 
     if (osUsesXSAVE_XRSTORE && cpuAVXSuport)
     {
-        uint64_t xcrFeatureMask = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+        uint64_t xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
         avxSupported = (xcrFeatureMask & 0x6) == 0x6;
     }
 
@@ -65,7 +65,7 @@ auto detect_os_avx512() -> bool
 {
     if (!detect_os_avx())
         return false;
-    uint64_t xcrFeatureMask = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+    uint64_t xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
     return (xcrFeatureMask & 0xe6) == 0xe6;
 }
 
