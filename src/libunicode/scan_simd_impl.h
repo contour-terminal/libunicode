@@ -56,7 +56,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
                 return __builtin_ctz(value);
             #endif
         }
-        else if constexpr (std::same_as<std::remove_cvref_t<T>, uint64_t>)
+        else
         {
             #if defined(_WIN32)
                 unsigned long r = 0;
@@ -65,10 +65,6 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
             #else
                 return __builtin_ctzl(value);
             #endif
-        }
-        else
-        {
-            static_assert(false);
         }
         // clang-format on
     };
