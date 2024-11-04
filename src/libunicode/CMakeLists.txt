@@ -99,7 +99,7 @@ target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 
 
 if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
         set(LIBUNICODE_SIMD_SOURCES
             simd_detector.cpp
             scan256.cpp
