@@ -144,7 +144,7 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
 if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std")
     target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
 elseif(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    target_compile_definitions(unicode PRIVATE LIBUNICDE_USE_INTRINSICS)
+    target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_INTRINSICS)
 endif()
 
 set(public_headers
@@ -262,7 +262,7 @@ if(LIBUNICODE_TESTING)
     if(NOT Catch2_FOUND)
         # supress conversion warnings for Catch2
         # https://github.com/catchorg/Catch2/issues/2583
-        # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt#L18-L22
+        # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt #L18-L22
         set_target_properties(Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
         set_target_properties(Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
         get_target_property(CATCH2_INCLUDE_DIRS Catch2 INTERFACE_INCLUDE_DIRECTORIES)

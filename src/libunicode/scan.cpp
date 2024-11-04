@@ -55,7 +55,7 @@ namespace
 
 size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
-#if (defined(LIBUNICODE_USE_STD_SIMD) || defined(LIBUNICODE_USE_INTRINSICS)) && defined(__x86_64__) || defined(_M_AMD64)
+#if (defined(LIBUNICODE_USE_STD_SIMD) || defined(LIBUNICODE_USE_INTRINSICS)) && (defined(__x86_64__) || defined(_M_AMD64))
     static auto simd_size = max_simd_size();
     if (simd_size == 512)
     {

@@ -13,7 +13,7 @@
     #define USE_STD_SIMD
     #include <simd>
     namespace stdx = std;
-#elif defined(LIBUNICDE_USE_INTRINSICS)
+#elif defined(LIBUNICODE_USE_INTRINSICS)
     #include "intrinsics.h"
 #endif
 // clang-format on
@@ -41,30 +41,30 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         }
         input += simd_size;
     }
-#elif defined(LIBUNICDE_USE_INTRINSICS)
+#elif defined(LIBUNICODE_USE_INTRINSICS)
     constexpr auto trailing_zero_count = []<typename T>(T value) noexcept {
         // clang-format off
-        if constexpr (std::same_as<T, uint32_t>)
+        if constexpr (std::same_as<std::remove_cvref_t<T>, uint32_t>)
         {
-        #if defined(_WIN32)
-            // return _tzcnt_u32(value);
-            // Don't do _tzcnt_u32, because that's only available on x86-64, but not on ARM64.
-            unsigned long r = 0;
-            _BitScanForward(&r, value);
-            return r;
-        #else
-            return __builtin_ctz(value);
-        #endif
+            #if defined(_WIN32)
+                // return _tzcnt_u32(value);
+                // Don't do _tzcnt_u32, because that's only available on x86-64, but not on ARM64.
+                unsigned long r = 0;
+                _BitScanForward(&r, value);
+                return r;
+            #else
+                return __builtin_ctz(value);
+            #endif
         }
-        else if constexpr (std::same_as<T, uint64_t>)
+        else if constexpr (std::same_as<std::remove_cvref_t<T>, uint64_t>)
         {
-        #if defined(_WIN32)
-            unsigned long r = 0;
-            _BitScanForward64(&r, value);
-            return r;
-        #else
-            return __builtin_ctzl(value);
-        #endif
+            #if defined(_WIN32)
+                unsigned long r = 0;
+                _BitScanForward64(&r, value);
+                return r;
+            #else
+                return __builtin_ctzl(value);
+            #endif
         }
         else
         {
@@ -82,7 +82,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         auto is_control_mask = intrinsics::less(batch, vec_control);
         auto is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
         auto ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
-        if (ctrl_or_complex_mask)
+        if (is_control_mask)
         {
             int advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
             input += advance;

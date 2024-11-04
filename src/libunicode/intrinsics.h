@@ -127,9 +127,9 @@ struct intrinsics<512, T>
 
     static inline bool equal(vec_t a, vec_t b) noexcept { return _mm512_cmpeq_epi8_mask(a, b) == 0xFFFFFFFF; }
 
-    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm512_cmpgt_epi8_mask(a, b); }
+    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm512_cmplt_epi8_mask(a, b); }
 
-    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm512_cmplt_epi8_mask(a, b); }
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm512_cmpgt_epi8_mask(a, b); }
 
     static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return _kand_mask64(a, b); }
 
