@@ -72,19 +72,19 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         }
         // clang-format on
     };
-    using intrin = intrin<SimdBitWidth>;
-    auto const vec_control = intrin::set1_epi8(0x20); // 0..0x1F
-    auto const vec_complex = intrin::set1_epi8(-128); // equals to 0x80 (0b1000'0000)
+    using intrinsics = intrinsics<SimdBitWidth>;
+    auto const vec_control = intrinsics::set1_epi8(0x20); // 0..0x1F
+    auto const vec_complex = intrinsics::set1_epi8(-128); // equals to 0x80 (0b1000'0000)
 
     while (input < end - simd_size)
     {
-        auto batch = intrin::load(input);
-        auto is_control_mask = intrin::less(batch, vec_control);
-        auto is_complex_mask = intrin::equal(intrin::and_vec(batch, vec_complex), vec_complex);
-        auto ctrl_or_complex_mask = intrin::or_mask(is_control_mask, is_complex_mask);
+        auto batch = intrinsics::load(input);
+        auto is_control_mask = intrinsics::less(batch, vec_control);
+        auto is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
+        auto ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
         if (ctrl_or_complex_mask)
         {
-            int advance = trailing_zero_count(intrin::to_unsigned(ctrl_or_complex_mask));
+            int advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
             input += advance;
             break;
         }
