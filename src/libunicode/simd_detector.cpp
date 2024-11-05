@@ -9,6 +9,11 @@
 //
 // auto max_simd_size() -> size_t;
 
+void cpuid(int32_t out[4], int32_t eax, int32_t ecx);
+uint64_t xgetbv(unsigned int index);
+auto detect_os_avx() -> bool;
+auto detect_os_avx512() -> bool;
+
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
     #if _WIN32
     // clang-format off
