@@ -79,7 +79,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
         auto const is_control_mask = intrinsics::less(batch, vec_control);
         auto const is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
         auto const ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
-        if (is_control_mask)
+        if (ctrl_or_complex_mask)
         {
             int const advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
             input += advance;
