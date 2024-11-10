@@ -11,12 +11,13 @@
 // auto max_simd_size() -> size_t;
 
 void cpuid(int32_t out[4], int32_t eax, int32_t ecx);
+#if _WIN32
+__int64 xgetbv(unsigned int x);
+#elif defined(__GNUC__) || defined(__clang__)
 uint64_t xgetbv(unsigned int index);
-enum class Simd_Size
-{
-    sse2,
-    avx,
-};
+#else
+#endif
+
 auto detect_os_avx() -> bool;
 auto detect_os_avx512() -> bool;
 
@@ -65,7 +66,7 @@ auto detect_os_avx() -> bool
 
     if (osUsesXSAVE_XRSTORE && cpuAVXSuport)
     {
-        uint64_t const xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
+        auto const xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
         avxSupported = (xcrFeatureMask & 0x6) == 0x6;
     }
 
@@ -114,7 +115,7 @@ auto unicode::detail::max_simd_size() -> size_t
     if (nIds >= 0x00000007)
     {
         cpuid(info, 0x00000007, 0);
-        bool const HW_AVX2 = (info[1] & ((int) 1 << 5)) != 0;
+        bool const HW_AVX2 = (info[1] & ((int) 1 << 5));
         if (!HW_AVX2)
             return 128;
 
