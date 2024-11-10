@@ -12,8 +12,9 @@
  * limitations under the License.
  */
 #include <libunicode/grapheme_segmenter.h>
-#include <libunicode/intrinsics.h>
 #include <libunicode/scan.h>
+#include <libunicode/scan_simd_impl.h>
+#include <libunicode/simd_detector.h>
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
@@ -21,20 +22,6 @@
 #include <cassert>
 #include <iterator>
 #include <string_view>
-
-// clang-format off
-#if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD) && !defined(__APPLE__) && !defined(__FreeBSD__)
-    #define USE_STD_SIMD
-    #include <experimental/simd>
-    namespace stdx = std::experimental;
-#elif __has_include(<simd>) && defined(LIBUNICODE_USE_STD_SIMD)
-    #define USE_STD_SIMD
-    #include <simd>
-    namespace stdx = std;
-#elif defined(__SSE2__)
-    #include <immintrin.h>
-#endif
-// clang-format on
 
 using std::distance;
 using std::get;
@@ -48,19 +35,6 @@ namespace unicode
 
 namespace
 {
-    [[maybe_unused]] int countTrailingZeroBits(unsigned int value) noexcept
-    {
-#if defined(_WIN32)
-        // return _tzcnt_u32(value);
-        // Don't do _tzcnt_u32, because that's only available on x86-64, but not on ARM64.
-        unsigned long r = 0;
-        _BitScanForward(&r, value);
-        return r;
-#else
-        return __builtin_ctz(value);
-#endif
-    }
-
     template <typename T>
     constexpr bool ascending(T low, T val, T high) noexcept
     {
@@ -77,66 +51,22 @@ namespace
     {
         return static_cast<uint8_t>(ch) & 0x80;
     }
-
-    // Tests if given UTF-8 byte is a single US-ASCII text codepoint. This excludes control characters.
-    constexpr bool is_ascii(char ch) noexcept
-    {
-        return !is_control(ch) && !is_complex(ch);
-    }
 } // namespace
 
 size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
-    auto input = text.data();
-    auto const end = text.data() + min(text.size(), maxColumnCount);
-#if defined(USE_STD_SIMD)
-    constexpr int numberOfElements = stdx::simd_abi::max_fixed_size<char>;
-    stdx::fixed_size_simd<char, numberOfElements> simd_text {};
-    while (input < end - numberOfElements)
+#if (defined(LIBUNICODE_USE_STD_SIMD) || defined(LIBUNICODE_USE_INTRINSICS)) && (defined(__x86_64__) || defined(_M_AMD64))
+    static auto simd_size = max_simd_size();
+    if (simd_size == 512)
     {
-        simd_text.copy_from(input, stdx::element_aligned);
-
-        // check for control
-        // TODO check for complex
-        auto const simd_mask_text = (simd_text < 0x20);
-        if (stdx::popcount(simd_mask_text) > 0)
-        {
-            input += stdx::find_first_set(simd_mask_text);
-            break;
-        }
-        input += numberOfElements;
+        return scan_for_text_ascii_512(text, maxColumnCount);
     }
-#elif defined(USE_INTRINSICS)
-    intrinsics::m128i const ControlCodeMax = intrinsics::set1_epi8(0x20); // 0..0x1F
-    intrinsics::m128i const Complex = intrinsics::set1_epi8(-128);        // equals to 0x80 (0b1000'0000)
-
-    while (input < end - sizeof(intrinsics::m128i))
+    else if (simd_size == 256)
     {
-        intrinsics::m128i batch = intrinsics::load_unaligned((intrinsics::m128i*) input);
-        intrinsics::m128i isControl = intrinsics::compare_less(batch, ControlCodeMax);
-        intrinsics::m128i isComplex = intrinsics::and128(batch, Complex);
-        // intrinsics::m128i isComplex = _mm_cmplt_epi8(batch, Complex);
-        intrinsics::m128i testPack = intrinsics::or128(isControl, isComplex);
-        if (int const check = intrinsics::movemask_epi8(testPack); check != 0)
-        {
-            int advance = countTrailingZeroBits(static_cast<unsigned>(check));
-            input += advance;
-            break;
-        }
-        input += sizeof(intrinsics::m128i);
+        return scan_for_text_ascii_256(text, maxColumnCount);
     }
 #endif
-
-    while (input != end && is_ascii(*input))
-        ++input;
-
-    // if (static_cast<size_t>(distance(text.data(), input)))
-    //     std::print(
-    //         "countAsciiTextChars: {} bytes: \"{}\"\n",
-    //         static_cast<size_t>(distance(text.data(), input)),
-    //         (string_view(text.data(), static_cast<size_t>(distance(text.data(), input)))));
-
-    return static_cast<size_t>(distance(text.data(), input));
+    return scan_for_text_ascii_simd<128>(text, maxColumnCount);
 }
 
 scan_result detail::scan_for_text_nonascii(scan_state& state,

@@ -79,6 +79,11 @@ class null_receiver final: public grapheme_cluster_receiver
 namespace detail
 {
     size_t scan_for_text_ascii(std::string_view text, size_t maxColumnCount) noexcept;
+
+    template <size_t SimdBitWidth>
+    size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) noexcept;
+    size_t scan_for_text_ascii_256(std::string_view text, size_t maxColumnCount) noexcept;
+    size_t scan_for_text_ascii_512(std::string_view text, size_t maxColumnCount) noexcept;
     scan_result scan_for_text_nonascii(scan_state& state,
                                        std::string_view text,
                                        size_t maxColumnCount,

@@ -13,9 +13,9 @@
  */
 #pragma once
 
+#include <cstdint>
 #if defined(__x86_64__) || defined(_M_AMD64)
-    #include <emmintrin.h> // AVX, AVX2, FMP
-    #include <immintrin.h> // SSE2
+    #include <immintrin.h>
 #endif
 
 #if defined(__aarch64__) || defined(_M_ARM64)
@@ -25,8 +25,8 @@
 namespace unicode
 {
 
-template <typename>
-struct platform_intrinsics;
+template <size_t SimdBitWidth, typename = void>
+struct intrinsics;
 
 #if defined(__GNUC__) && defined(__x86_64__)
     // For some reason, GCC associates attributes with __m128i that are not obvious (alignment),
@@ -36,112 +36,172 @@ struct platform_intrinsics;
 
 #if defined(__x86_64__) || defined(_M_AMD64) // {{{
 
-template <>
-struct platform_intrinsics<__m128i>
+template <typename T>
+struct intrinsics<128, T>
 {
-    using m128i = __m128i;
+    using vec_t = __m128i;
 
-    static inline m128i setzero() noexcept { return _mm_setzero_si128(); }
+    using mask_t = int;
 
-    static inline m128i set1_epi8(signed char w) { return _mm_set1_epi8(w); }
+    static inline vec_t setzero() noexcept { return _mm_setzero_si128(); }
 
-    static inline m128i load32(uint32_t a, uint32_t b, uint32_t c, uint32_t d) noexcept
-    {
-        return _mm_set_epi32(static_cast<int>(a), static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
-    }
+    static inline vec_t set1_epi8(signed char w) { return _mm_set1_epi8(w); }
 
-    static inline m128i xor128(m128i a, m128i b) noexcept { return _mm_xor_si128(a, b); }
+    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept { return _mm_xor_si128(a, b); }
 
-    static inline m128i and128(m128i a, m128i b) noexcept { return _mm_and_si128(a, b); }
+    static inline vec_t and_vec(vec_t a, vec_t b) noexcept { return _mm_and_si128(a, b); }
 
-    // Computes the bitwise OR of the 128-bit value in a and the 128-bit value in b.
-    static inline m128i or128(m128i a, m128i b) { return _mm_or_si128(a, b); }
+    static inline vec_t or_vec(vec_t a, vec_t b) { return _mm_or_si128(a, b); }
 
-    static inline m128i load_unaligned(m128i const* p) noexcept { return _mm_loadu_si128(static_cast<m128i const*>(p)); }
+    static inline vec_t load(const char* p) noexcept { return _mm_loadu_si128(reinterpret_cast<const vec_t*>(p)); }
 
-    static inline int32_t to_i32(m128i a) { return _mm_cvtsi128_si32(a); }
+    static inline bool equal(vec_t a, vec_t b) noexcept { return _mm_movemask_epi8(_mm_cmpeq_epi32(a, b)) == 0xFFFF; }
 
-    static inline bool compare(m128i a, m128i b) noexcept { return _mm_movemask_epi8(_mm_cmpeq_epi32(a, b)) == 0xFFFF; }
+    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm_movemask_epi8(_mm_cmplt_epi8(a, b)); }
 
-    static inline m128i compare_less(m128i a, m128i b) noexcept { return _mm_cmplt_epi8(a, b); }
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm_movemask_epi8(_mm_cmpgt_epi8(a, b)); }
 
-    static inline int movemask_epi8(m128i a) { return _mm_movemask_epi8(a); }
+    static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return a & b; }
 
-    static inline m128i cvtsi64_si128(int64_t a) { return _mm_cvtsi64_si128(a); }
+    static inline mask_t or_mask(mask_t a, mask_t b) noexcept { return a | b; }
+
+    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
+
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
 };
 
-using intrinsics = platform_intrinsics<__m128i>;
+template <typename T>
+struct intrinsics<256, T>
+{
+    using vec_t = __m256i;
+
+    using mask_t = int;
+
+    static inline vec_t setzero() noexcept { return _mm256_setzero_si256(); }
+
+    static inline vec_t set1_epi8(signed char w) { return _mm256_set1_epi8(w); }
+
+    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept { return _mm256_xor_si256(a, b); }
+
+    static inline vec_t and_vec(vec_t a, vec_t b) noexcept { return _mm256_and_si256(a, b); }
+
+    static inline vec_t or_vec(vec_t a, vec_t b) { return _mm256_or_si256(a, b); }
+
+    static inline vec_t load(const char* p) noexcept { return _mm256_loadu_si256(reinterpret_cast<const vec_t*>(p)); }
+
+    static inline bool equal(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpeq_epi32(a, b)) == 0xFFFF; }
+
+    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(b, a)); }
+
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm256_movemask_epi8(_mm256_cmpgt_epi8(a, b)); }
+
+    static inline auto movemask_epi8(vec_t a) noexcept { return _mm256_movemask_epi8(a); }
+
+    static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return a & b; }
+
+    static inline mask_t or_mask(mask_t a, mask_t b) noexcept { return a | b; }
+
+    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
+
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+};
+
+template <typename T>
+struct intrinsics<512, T>
+{
+    using vec_t = __m512i;
+
+    using mask_t = __mmask64;
+
+    static inline vec_t setzero() noexcept { return _mm512_setzero_si512(); }
+
+    static inline vec_t set1_epi8(signed char w) { return _mm512_set1_epi8(w); }
+
+    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept { return _mm512_xor_si512(a, b); }
+
+    static inline vec_t and_vec(vec_t a, vec_t b) noexcept { return _mm512_and_si512(a, b); }
+
+    static inline vec_t or_vec(vec_t a, vec_t b) { return _mm512_or_si512(a, b); }
+
+    static inline vec_t load(const char* p) noexcept { return _mm512_loadu_si512(reinterpret_cast<const vec_t*>(p)); }
+
+    static inline bool equal(vec_t a, vec_t b) noexcept { return _mm512_cmpeq_epi8_mask(a, b) == 0xFFFFFFFF; }
+
+    static inline mask_t less(vec_t a, vec_t b) noexcept { return _mm512_cmplt_epi8_mask(a, b); }
+
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return _mm512_cmpgt_epi8_mask(a, b); }
+
+    static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return _kand_mask64(a, b); }
+
+    static inline mask_t or_mask(mask_t a, mask_t b) noexcept { return _kor_mask64(a, b); }
+
+    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return _kxor_mask64(a, b); }
+
+    static inline uint64_t to_unsigned(mask_t a) noexcept { return static_cast<uint64_t>(a); }
+};
 
 #endif
 // }}}
 
 #if defined(__aarch64__) || defined(_M_ARM64) // {{{
-template <>
-struct platform_intrinsics<int64x2_t>
+
+template <typename T>
+struct intrinsics<128, T>
 {
     // The following inline functions (in its initial version) were borrowed from:
     // https://github.com/f1ed/emp/blob/master/emp-tool/utils/block.h
 
-    using m128i = int64x2_t;
+    using vec_t = int64x2_t;
 
-    static inline m128i setzero() noexcept { return vreinterpretq_s64_s32(vdupq_n_s32(0)); }
+    using mask_t = int;
 
-    static inline m128i set1_epi8(signed char w) { return vreinterpretq_s64_s8(vdupq_n_s8(w)); }
+    static inline vec_t setzero() noexcept { return vreinterpretq_s64_s32(vdupq_n_s32(0)); }
 
-    static inline m128i load32(uint32_t a, uint32_t b, uint32_t c, uint32_t d) noexcept
-    {
-        alignas(16) int32_t data[4] = {
-            static_cast<int>(a),
-            static_cast<int>(b),
-            static_cast<int>(c),
-            static_cast<int>(d),
-        };
-        return vreinterpretq_s64_s32(vld1q_s32(data));
-    }
+    static inline vec_t set1_epi8(signed char w) { return vreinterpretq_s64_s8(vdupq_n_s8(w)); }
 
-    static inline m128i xor128(m128i a, m128i b) noexcept
+    static inline vec_t xor_vec(vec_t a, vec_t b) noexcept
     {
         // Computes the bitwise XOR of the 128-bit value in a and the 128-bit value in
         // b.  https://msdn.microsoft.com/en-us/library/fzt08www(v=vs.100).aspx
         return vreinterpretq_s64_s32(veorq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
     }
 
-    static inline m128i and128(m128i a, m128i b) noexcept
+    static inline vec_t and_vec(vec_t a, vec_t b) noexcept
     {
         return vreinterpretq_s64_s32(vandq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
     }
 
-    // Computes the bitwise OR of the 128-bit value in a and the 128-bit value in b.
-    static inline m128i or128(m128i a, m128i b)
+    static inline vec_t or_vec(vec_t a, vec_t b)
     {
         return vreinterpretq_s64_s32(vorrq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)));
     }
 
-    // Loads 128-bit value. :
-    // https://msdn.microsoft.com/zh-cn/library/f4k12ae8(v=vs.90).aspx
-    static inline m128i load_unaligned(m128i const* p) noexcept { return vreinterpretq_s64_s32(vld1q_s32((int32_t const*) p)); }
+    static inline vec_t load(const char* p) noexcept
+    {
+        return vreinterpretq_s64_s32(vld1q_s32(reinterpret_cast<const int32_t*>(p)));
+    }
 
-    // Copy the lower 32-bit integer in a to dst.
-    //
-    //   dst[31:0] := a[31:0]
-    //
-    // https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsi128_si32
-    static inline int32_t to_i32(m128i a) { return vgetq_lane_s32(vreinterpretq_s32_s64(a), 0); }
-
-    static inline bool compare(m128i a, m128i b) noexcept
+    static inline bool equal(vec_t a, vec_t b) noexcept
     {
         return movemask_epi8(vreinterpretq_s64_u32(vceqq_s32(vreinterpretq_s32_s64(a), vreinterpretq_s32_s64(b)))) == 0xFFFF;
     }
 
-    static inline m128i compare_less(m128i a, m128i b) noexcept
+    static inline mask_t less(vec_t a, vec_t b) noexcept
     {
-        // Compares the 16 signed 8-bit integers in a and the 16 signed 8-bit integers
-        // in b for lesser than.
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/9s46csht(v=vs.90).aspx
-        return vreinterpretq_s64_u8(vcltq_s8(vreinterpretq_s8_s64(a), vreinterpretq_s8_s64(b)));
+        return movemask_epi8(vreinterpretq_s64_u8(vcltq_s8(vreinterpretq_s8_s64(a), vreinterpretq_s8_s64(b))));
     }
 
-    static inline int movemask_epi8(m128i a)
+    static inline mask_t greater(vec_t a, vec_t b) noexcept { return less(b, a); }
+
+    static inline mask_t and_mask(mask_t a, mask_t b) noexcept { return a & b; }
+
+    static inline mask_t or_mask(mask_t a, mask_t b) noexcept { return a | b; }
+
+    static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
+
+    static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+
+    static inline mask_t movemask_epi8(vec_t a)
     {
         // Use increasingly wide shifts+adds to collect the sign bits
         // together.
@@ -218,8 +278,6 @@ struct platform_intrinsics<int64x2_t>
         return vgetq_lane_u8(paired64, 0) | ((int) vgetq_lane_u8(paired64, 8) << 8);
     }
 };
-
-using intrinsics = platform_intrinsics<int64x2_t>;
 #endif
 // }}}
 
