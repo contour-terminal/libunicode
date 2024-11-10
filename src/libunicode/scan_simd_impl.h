@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 #pragma once
 #include <algorithm>
 #include <cstdint>
@@ -31,9 +32,9 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
     while (input < end - simd_size)
     {
         simd_text.copy_from(input, stdx::element_aligned);
-        auto is_control_mask = simd_text < 0x20;
-        auto is_complex_mask = (simd_text & 0x80) == 0x80;
-        auto ctrl_or_complex_mask = is_control_mask || is_complex_mask;
+        auto const is_control_mask = simd_text < 0x20;
+        auto const is_complex_mask = (simd_text & 0x80) == 0x80;
+        auto const ctrl_or_complex_mask = is_control_mask || is_complex_mask;
         if (stdx::any_of(ctrl_or_complex_mask))
         {
             input += stdx::find_first_set(ctrl_or_complex_mask);
@@ -74,13 +75,13 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
 
     while (input < end - simd_size)
     {
-        auto batch = intrinsics::load(input);
-        auto is_control_mask = intrinsics::less(batch, vec_control);
-        auto is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
-        auto ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
+        auto const batch = intrinsics::load(input);
+        auto const is_control_mask = intrinsics::less(batch, vec_control);
+        auto const is_complex_mask = intrinsics::equal(intrinsics::and_vec(batch, vec_complex), vec_complex);
+        auto const ctrl_or_complex_mask = intrinsics::or_mask(is_control_mask, is_complex_mask);
         if (is_control_mask)
         {
-            int advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
+            int const advance = trailing_zero_count(intrinsics::to_unsigned(ctrl_or_complex_mask));
             input += advance;
             break;
         }
@@ -89,8 +90,8 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
 #endif
 
     constexpr auto is_ascii = [](char ch) noexcept {
-        auto is_control = static_cast<uint8_t>(ch) < 0x20;
-        auto is_complex = static_cast<uint8_t>(ch) & 0x80;
+        auto const is_control = static_cast<uint8_t>(ch) < 0x20;
+        auto const is_complex = static_cast<uint8_t>(ch) & 0x80;
         return !is_control && !is_complex;
     };
     while (input != end && is_ascii(*input))

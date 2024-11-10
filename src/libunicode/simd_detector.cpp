@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 #include "simd_detector.h"
 
 #include <cstdint>
@@ -11,6 +12,11 @@
 
 void cpuid(int32_t out[4], int32_t eax, int32_t ecx);
 uint64_t xgetbv(unsigned int index);
+enum class Simd_Size
+{
+    sse2,
+    avx,
+};
 auto detect_os_avx() -> bool;
 auto detect_os_avx512() -> bool;
 
@@ -54,12 +60,12 @@ auto detect_os_avx() -> bool
     int32_t cpuInfo[4];
     cpuid(cpuInfo, 1, 0);
 
-    bool osUsesXSAVE_XRSTORE = (cpuInfo[2] & (1 << 27)) != 0;
-    bool cpuAVXSuport = (cpuInfo[2] & (1 << 28)) != 0;
+    bool const osUsesXSAVE_XRSTORE = (cpuInfo[2] & (1 << 27));
+    bool const cpuAVXSuport = (cpuInfo[2] & (1 << 28)) != 0;
 
     if (osUsesXSAVE_XRSTORE && cpuAVXSuport)
     {
-        uint64_t xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
+        uint64_t const xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
         avxSupported = (xcrFeatureMask & 0x6) == 0x6;
     }
 
@@ -70,7 +76,7 @@ auto detect_os_avx512() -> bool
 {
     if (!detect_os_avx())
         return false;
-    uint64_t xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
+    uint64_t const xcrFeatureMask = xgetbv(_XCR_XFEATURE_ENABLED_MASK);
     return (xcrFeatureMask & 0xe6) == 0xe6;
 }
 
@@ -81,7 +87,7 @@ auto unicode::detail::max_simd_size() -> size_t
 
     int32_t info[4];
     cpuid(info, 0, 0);
-    int nIds = info[0];
+    int const nIds = info[0];
 
     // cpuid(info, 0x80000000, 0);
     // uint32_t nExIds = info[0];
@@ -108,7 +114,7 @@ auto unicode::detail::max_simd_size() -> size_t
     if (nIds >= 0x00000007)
     {
         cpuid(info, 0x00000007, 0);
-        bool HW_AVX2 = (info[1] & ((int) 1 << 5)) != 0;
+        bool const HW_AVX2 = (info[1] & ((int) 1 << 5)) != 0;
         if (!HW_AVX2)
             return 128;
 
@@ -121,13 +127,13 @@ auto unicode::detail::max_simd_size() -> size_t
         // bool HW_PREFETCHWT1 = (info[2] & ((int) 1 << 0)) != 0;
         // bool HW_RDPID = (info[2] & ((int) 1 << 22)) != 0;
 
-        bool HW_AVX512_F = (info[1] & ((int) 1 << 16)) != 0;
+        bool const HW_AVX512_F = (info[1] & ((int) 1 << 16));
         // bool HW_AVX512_CD = (info[1] & ((int) 1 << 28)) != 0;
         // bool HW_AVX512_PF = (info[1] & ((int) 1 << 26)) != 0;
         // bool HW_AVX512_ER = (info[1] & ((int) 1 << 27)) != 0;
 
         // bool HW_AVX512_VL = (info[1] & ((int) 1 << 31)) != 0;
-        bool HW_AVX512_BW = (info[1] & ((int) 1 << 30)) != 0;
+        bool const HW_AVX512_BW = (info[1] & ((int) 1 << 30));
         // bool HW_AVX512_DQ = (info[1] & ((int) 1 << 17)) != 0;
 
         // bool HW_AVX512_IFMA = (info[1] & ((int) 1 << 21)) != 0;
@@ -143,9 +149,9 @@ auto unicode::detail::max_simd_size() -> size_t
         // bool HW_GFNI = (info[2] & ((int) 1 << 8)) != 0;
         // bool HW_VAES = (info[2] & ((int) 1 << 9)) != 0;
         // bool HW_AVX512_VPCLMUL = (info[2] & ((int) 1 << 10)) != 0;
-        bool HW_AVX512_BITALG = (info[2] & ((int) 1 << 12)) != 0;
+        bool const HW_AVX512_BITALG = (info[2] & ((int) 1 << 12));
 
-        bool use512 = detect_os_avx512() && HW_AVX512_F && HW_AVX512_BW && HW_AVX512_BITALG;
+        bool const use512 = detect_os_avx512() && HW_AVX512_F && HW_AVX512_BW && HW_AVX512_BITALG;
         if (!use512)
             return 256;
         else

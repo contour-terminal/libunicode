@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 #include <libunicode/scan.h>
 #include <libunicode/scan_simd_impl.h>
 
