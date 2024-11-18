@@ -48,8 +48,17 @@ option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
 option(LIBUNICODE_TABLEGEN_FASTBUILD "libunicode: Use fast table generation (takes more memory in final tables) [default: OFF]" OFF)
 
+string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" SYSTEM_PROCESSOR_LOWER)
+
 if(NOT LIBUNICODE_SIMD_IMPLEMENTATION)
-    set(LIBUNICODE_SIMD_IMPLEMENTATION "intrinsics" CACHE STRING "libunicode: SIMD implementation to use" FORCE)
+    if((SYSTEM_PROCESSOR_LOWER STREQUAL "x86_64")
+    OR (SYSTEM_PROCESSOR_LOWER STREQUAL "aarch64")
+    OR (SYSTEM_PROCESSOR_LOWER STREQUAL "amd64")
+    OR (SYSTEM_PROCESSOR_LOWER STREQUAL "arm64"))
+        set(LIBUNICODE_SIMD_IMPLEMENTATION "intrinsics" CACHE STRING "libunicode: SIMD implementation to use" FORCE)
+    else()
+        set(LIBUNICODE_SIMD_IMPLEMENTATION "std" CACHE STRING "libunicode: SIMD implementation to use" FORCE)
+    endif()
     set_property(CACHE LIBUNICODE_SIMD_IMPLEMENTATION PROPERTY STRINGS "std" "intrinsics" "none")
 endif()
 
