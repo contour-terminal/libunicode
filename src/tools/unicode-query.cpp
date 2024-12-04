@@ -155,6 +155,7 @@ void showCodepointProperties(char32_t codepoint)
     cout << "East Asian Width            : " << properties.east_asian_width << '\n';
     cout << "Character width             : " << unsigned(properties.char_width) << '\n';
     cout << "Emoji Segmentation Category : " << properties.emoji_segmentation_category << '\n';
+    cout << "Emoji Presentation          : " << (properties.emoji_presentation() ? "emoji" : "text") << '\n';
     cout << "Grapheme Cluster Break      : " << properties.grapheme_cluster_break << '\n';
     cout << "\n";
     // clang-format on
