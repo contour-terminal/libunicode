@@ -93,7 +93,7 @@ jobs:
         id: runvcpkg
         with:
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgGitCommitId: 80403036a665cb8fcc1a1b3e17593d20b03b2489
+          vcpkgGitCommitId: a20d95d3c76906363896754eb1cc93db2a694f16
       - name: "List cmake presets"
         run: cmake --list-presets
       - name: "Generate build files"
