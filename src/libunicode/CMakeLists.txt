@@ -1,5 +1,7 @@
 include(GNUInstallDirs)
 
+option(LIBUNICODE_TRACE "Enable trace logging" OFF)
+
 function(ExtractZipArchive ZIP_FILE OUTPUT_DIR)
     if(CMAKE_VERSION VERSION_LESS 3.18)
         # Use the older method for versions prior to CMake 3.18
@@ -84,6 +86,9 @@ add_custom_command(
 
 add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
 add_library(unicode::loader ALIAS unicode_loader)
+if(DEFINED MSVC)
+    target_compile_options(unicode_loader PUBLIC /EHsc) # We currently `throw` in the loader, so we need this.
+endif()
 if(LIBUNICODE_TABLEGEN_FASTBUILD)
     target_compile_definitions(unicode_loader PRIVATE LIBUNICODE_TABLEGEN_FASTBUILD)
 endif()
@@ -98,36 +103,37 @@ target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 # =========================================================================================================
 
 
-if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
-        set(LIBUNICODE_SIMD_SOURCES
-            simd_detector.cpp
-            scan256.cpp
-            scan512.cpp
-            )
-        set_source_files_properties(
-            scan256.cpp
-            PROPERTIES
-            COMPILE_FLAGS
-            -mavx2
-            )
-        set_source_files_properties(
-            scan512.cpp
-            PROPERTIES
-            COMPILE_FLAGS
-            -mavx512f
-            COMPILE_FLAGS
-            -mavx512bw
-            )
-    endif()
-endif()
+# Temporarily disabled until revived
+#
+# if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
+#     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
+#         set(LIBUNICODE_SIMD_SOURCES
+#             simd_detector.cpp
+#             scan256.cpp
+#             scan512.cpp
+#         )
+#         set_source_files_properties(
+#             scan256.cpp
+#             PROPERTIES
+#             COMPILE_FLAGS
+#             -mavx2
+#         )
+#         set_source_files_properties(
+#             scan512.cpp
+#             PROPERTIES
+#             COMPILE_FLAGS
+#             -mavx512f
+#             COMPILE_FLAGS
+#             -mavx512bw
+#         )
+#     endif()
+# endif()
 
 add_library(unicode ${LIBUNICODE_LIB_MODE}
     capi.cpp
     codepoint_properties.cpp
     emoji_segmenter.cpp
     grapheme_segmenter.cpp
-    scan.cpp
     script_segmenter.cpp
     utf8.cpp
     width.cpp
@@ -140,9 +146,9 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
 )
 
 if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std")
-    target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_STD_SIMD)
+    target_compile_definitions(unicode PUBLIC LIBUNICODE_USE_STD_SIMD)
 elseif(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    target_compile_definitions(unicode PRIVATE LIBUNICODE_USE_INTRINSICS)
+    target_compile_definitions(unicode PUBLIC LIBUNICODE_USE_INTRINSICS)
 endif()
 
 set(public_headers
@@ -150,11 +156,11 @@ set(public_headers
     codepoint_properties.h
     convert.h
     emoji_segmenter.h
+    grapheme_line_segmenter.h
     grapheme_segmenter.h
     intrinsics.h
     multistage_table_view.h
     run_segmenter.h
-    scan.h
     script_segmenter.h
     support.h
     utf8.h
@@ -175,6 +181,10 @@ set_target_properties(unicode PROPERTIES
     SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
 )
 
+if(LIBUNICODE_TRACE)
+    target_compile_definitions(unicode PUBLIC LIBUNICODE_TRACE)
+endif()
+
 add_library(unicode::unicode ALIAS unicode)
 add_library(unicode::core ALIAS unicode)
 target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/src>
@@ -186,7 +196,6 @@ add_executable(unicode_tablegen tablegen.cpp)
 set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
 target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
 target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
-
 
 # {{{ installation
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
@@ -246,24 +255,26 @@ if(LIBUNICODE_TESTING)
         capi_test.cpp
         convert_test.cpp
         emoji_segmenter_test.cpp
+        grapheme_line_segmenter_test.cpp
         grapheme_segmenter_test.cpp
         run_segmenter_test.cpp
-        scan_test.cpp
         script_segmenter_test.cpp
         test_main.cpp
-        unicode_test.cpp
         utf8_grapheme_segmenter_test.cpp
         utf8_test.cpp
         width_test.cpp
         word_segmenter_test.cpp
     )
 
+    if(DEFINED MSVC)
+        target_compile_options(unicode_test PRIVATE /utf-8)
+    endif()
+
     if(NOT Catch2_FOUND)
         # supress conversion warnings for Catch2
         # https://github.com/catchorg/Catch2/issues/2583
         # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt#L18-L22
         set_target_properties(Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
-        set_target_properties(Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
         get_target_property(CATCH2_INCLUDE_DIRS Catch2 INTERFACE_INCLUDE_DIRECTORIES)
         target_include_directories(Catch2 SYSTEM INTERFACE ${CATCH2_INCLUDE_DIRS})
     endif()
@@ -272,8 +283,6 @@ if(LIBUNICODE_TESTING)
     add_test(unicode_test unicode_test)
 endif()
 # }}}
-
-
 
 # {{{ unicode_test
 if(LIBUNICODE_BENCHMARK)
