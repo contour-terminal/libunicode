@@ -189,7 +189,8 @@ int main(int argc, char const* argv[])
 {
     // clang-format off
     int i = 1;
-    auto const ucdDataDirectory = consumeParamterOrDefault(i, argc, argv, "_ucd/ucd-17.0.0");
+    static const std::string ucdDataDirectoryDefault = "_ucd/ucd-"s + LIBUNICODE_UCD_VERSION;
+    auto const ucdDataDirectory = consumeParamterOrDefault(i, argc, argv, ucdDataDirectoryDefault.c_str());
     auto const cxxHeaderFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.h");
     auto const cxxImplementationFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_properties_data.cpp");
     auto const cxxNamesFileName = consumeParamterOrDefault(i, argc, argv, "codepoint_names_data.cpp");

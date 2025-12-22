@@ -184,6 +184,7 @@ target_link_libraries(unicode PUBLIC unicode::ucd)
 
 add_executable(unicode_tablegen tablegen.cpp)
 set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
+target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
 target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
 
 
