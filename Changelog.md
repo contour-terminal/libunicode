@@ -1,6 +1,8 @@
 ## 0.5.0 (unreleased)
 
 - Show emoji presentation in Unicode properties query tool.
+- Adds case mapping API (`case_mapping.h`).
+- Adds Unicode normalization API (`normalization.h`).
 
 ## 0.4.0 (2023-11-27)
 
