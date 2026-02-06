@@ -15,7 +15,9 @@
 """
 
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from sys import argv
+from typing import Dict, List, Set
 import os
 import re
 from codecs import open as codecs_open
@@ -1162,9 +1164,527 @@ namespace unicode
             # }}}
 # }}}
 
+# ============================================================================
+# Case Mapping and Normalization Data Generation
+# ============================================================================
+
+# UCD file names for case mapping and normalization
+CASE_FOLDING_FNAME = 'CaseFolding.txt'
+SPECIAL_CASING_FNAME = 'SpecialCasing.txt'
+DERIVED_NORMALIZATION_PROPS_FNAME = 'DerivedNormalizationProps.txt'
+COMPOSITION_EXCLUSIONS_FNAME = 'CompositionExclusions.txt'
+UNICODE_DATA_FNAME = 'UnicodeData.txt'
+
+
+def parse_codepoint(s: str) -> int:
+    """Parse a hex codepoint string."""
+    return int(s.strip(), 16)
+
+
+def parse_codepoints(s: str) -> List[int]:
+    """Parse a space-separated list of hex codepoints."""
+    if not s.strip():
+        return []
+    return [int(cp, 16) for cp in s.split()]
+
+
+class SimpleCaseMapping:
+    """Simple 1:1 case mapping."""
+    def __init__(self, source: int, target: int):
+        self.source = source
+        self.target = target
+
+
+class FullCaseMapping:
+    """Full case mapping (may be 1:many)."""
+    def __init__(self, source: int, targets: List[int]):
+        self.source = source
+        self.targets = targets
+
+
+class Decomposition:
+    """Unicode decomposition mapping."""
+    def __init__(self, source: int, targets: List[int], decomp_type: str):
+        self.source = source
+        self.targets = targets
+        self.type = decomp_type  # 'canonical' or compatibility type
+
+
+class CaseNormalizationParser:
+    """Parser for Unicode Character Database files for case mapping and normalization."""
+
+    def __init__(self, ucd_dir: str):
+        self.ucd_dir = ucd_dir
+
+        # Simple case mappings from UnicodeData.txt (fields 12, 13, 14)
+        self.simple_uppercase: Dict[int, int] = {}
+        self.simple_lowercase: Dict[int, int] = {}
+        self.simple_titlecase: Dict[int, int] = {}
+
+        # Full case mappings from SpecialCasing.txt
+        self.full_uppercase: Dict[int, List[int]] = {}
+        self.full_lowercase: Dict[int, List[int]] = {}
+        self.full_titlecase: Dict[int, List[int]] = {}
+
+        # Case folding from CaseFolding.txt
+        self.simple_casefold: Dict[int, int] = {}  # C + S
+        self.full_casefold: Dict[int, List[int]] = {}  # C + F
+
+        # Decompositions from UnicodeData.txt (field 5)
+        self.decompositions: Dict[int, Decomposition] = {}
+
+        # Canonical Combining Class from UnicodeData.txt (field 3)
+        self.ccc: Dict[int, int] = {}
+
+        # Composition exclusions
+        self.composition_exclusions: Set[int] = set()
+
+        # Quick check properties
+        self.nfc_qc_no: Set[int] = set()
+        self.nfc_qc_maybe: Set[int] = set()
+        self.nfkc_qc_no: Set[int] = set()
+        self.nfkc_qc_maybe: Set[int] = set()
+        self.nfd_qc_no: Set[int] = set()
+        self.nfkd_qc_no: Set[int] = set()
+
+    def parse_all(self):
+        """Parse all relevant UCD files."""
+        self._parse_unicode_data()
+        self._parse_case_folding()
+        self._parse_special_casing()
+        self._parse_composition_exclusions()
+        self._parse_derived_normalization_props()
+
+    def _parse_unicode_data(self):
+        """Parse UnicodeData.txt for simple case mappings, CCC, and decompositions."""
+        filepath = os.path.join(self.ucd_dir, UNICODE_DATA_FNAME)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+
+                fields = line.split(';')
+                if len(fields) < 15:
+                    continue
+
+                codepoint = parse_codepoint(fields[0])
+
+                # Field 3: Canonical Combining Class
+                ccc = int(fields[3]) if fields[3] else 0
+                if ccc != 0:
+                    self.ccc[codepoint] = ccc
+
+                # Field 5: Decomposition mapping
+                decomp_field = fields[5].strip()
+                if decomp_field:
+                    self._parse_decomposition(codepoint, decomp_field)
+
+                # Field 12: Simple Uppercase Mapping
+                if fields[12].strip():
+                    self.simple_uppercase[codepoint] = parse_codepoint(fields[12])
+
+                # Field 13: Simple Lowercase Mapping
+                if fields[13].strip():
+                    self.simple_lowercase[codepoint] = parse_codepoint(fields[13])
+
+                # Field 14: Simple Titlecase Mapping
+                if fields[14].strip():
+                    self.simple_titlecase[codepoint] = parse_codepoint(fields[14])
+
+    def _parse_decomposition(self, codepoint: int, field: str):
+        """Parse a decomposition field from UnicodeData.txt."""
+        # Format: [<type>] <codepoints>
+        # e.g., "<font> 0041" or "0041 0308"
+        field = field.strip()
+        if not field:
+            return
+
+        decomp_type = 'canonical'
+        if field.startswith('<'):
+            end = field.index('>')
+            decomp_type = field[1:end]
+            field = field[end+1:].strip()
+
+        if field:
+            targets = parse_codepoints(field)
+            self.decompositions[codepoint] = Decomposition(codepoint, targets, decomp_type)
+
+    def _parse_case_folding(self):
+        """Parse CaseFolding.txt."""
+        filepath = os.path.join(self.ucd_dir, CASE_FOLDING_FNAME)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+
+                # Format: <code>; <status>; <mapping>; # <name>
+                parts = line.split(';')
+                if len(parts) < 3:
+                    continue
+
+                codepoint = parse_codepoint(parts[0])
+                status = parts[1].strip()
+                mapping = parse_codepoints(parts[2])
+
+                if status == 'C':
+                    # Common - used for both simple and full
+                    if len(mapping) == 1:
+                        self.simple_casefold[codepoint] = mapping[0]
+                    self.full_casefold[codepoint] = mapping
+                elif status == 'S':
+                    # Simple - only for simple folding
+                    if len(mapping) == 1:
+                        self.simple_casefold[codepoint] = mapping[0]
+                elif status == 'F':
+                    # Full - only for full folding
+                    self.full_casefold[codepoint] = mapping
+                # 'T' (Turkic) is ignored for default case folding
+
+    def _parse_special_casing(self):
+        """Parse SpecialCasing.txt for full case mappings."""
+        filepath = os.path.join(self.ucd_dir, SPECIAL_CASING_FNAME)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+
+                # Format: <code>; <lower>; <title>; <upper>; (<condition_list>;)? # <comment>
+                parts = line.split(';')
+                if len(parts) < 4:
+                    continue
+
+                codepoint = parse_codepoint(parts[0])
+                lower = parse_codepoints(parts[1])
+                title = parse_codepoints(parts[2])
+                upper = parse_codepoints(parts[3])
+
+                # Check for conditions (skip conditional mappings for now)
+                # Conditional mappings have more than 4 semicolon-separated fields before the comment
+                comment_idx = line.find('#')
+                if comment_idx != -1:
+                    before_comment = line[:comment_idx]
+                    field_count = before_comment.count(';')
+                    if field_count > 4:
+                        # This is a conditional mapping, skip it
+                        continue
+
+                # Only store non-trivial mappings (length > 1 or different from simple)
+                if len(lower) > 1 or (len(lower) == 1 and lower[0] != self.simple_lowercase.get(codepoint, codepoint)):
+                    self.full_lowercase[codepoint] = lower
+                if len(title) > 1 or (len(title) == 1 and title[0] != self.simple_titlecase.get(codepoint, codepoint)):
+                    self.full_titlecase[codepoint] = title
+                if len(upper) > 1 or (len(upper) == 1 and upper[0] != self.simple_uppercase.get(codepoint, codepoint)):
+                    self.full_uppercase[codepoint] = upper
+
+    def _parse_composition_exclusions(self):
+        """Parse CompositionExclusions.txt."""
+        filepath = os.path.join(self.ucd_dir, COMPOSITION_EXCLUSIONS_FNAME)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+
+                # Format: <codepoint> # <comment>
+                parts = line.split('#')
+                cp_part = parts[0].strip()
+                if not cp_part:
+                    continue
+
+                if '..' in cp_part:
+                    start, end = cp_part.split('..')
+                    for cp in range(parse_codepoint(start), parse_codepoint(end) + 1):
+                        self.composition_exclusions.add(cp)
+                else:
+                    self.composition_exclusions.add(parse_codepoint(cp_part))
+
+    def _parse_derived_normalization_props(self):
+        """Parse DerivedNormalizationProps.txt for quick check properties."""
+        filepath = os.path.join(self.ucd_dir, DERIVED_NORMALIZATION_PROPS_FNAME)
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+
+                # Format: <codepoint(s)> ; <property> ; <value>? # <comment>
+                parts = line.split(';')
+                if len(parts) < 2:
+                    continue
+
+                cp_part = parts[0].strip()
+                prop = parts[1].strip()
+                value = parts[2].strip() if len(parts) > 2 else ''
+
+                # Parse codepoint range
+                codepoints = []
+                if '..' in cp_part:
+                    start, end = cp_part.split('..')
+                    codepoints = range(parse_codepoint(start), parse_codepoint(end) + 1)
+                else:
+                    codepoints = [parse_codepoint(cp_part)]
+
+                for cp in codepoints:
+                    if prop == 'NFC_QC':
+                        if value == 'N':
+                            self.nfc_qc_no.add(cp)
+                        elif value == 'M':
+                            self.nfc_qc_maybe.add(cp)
+                    elif prop == 'NFKC_QC':
+                        if value == 'N':
+                            self.nfkc_qc_no.add(cp)
+                        elif value == 'M':
+                            self.nfkc_qc_maybe.add(cp)
+                    elif prop == 'NFD_QC':
+                        if value == 'N':
+                            self.nfd_qc_no.add(cp)
+                    elif prop == 'NFKD_QC':
+                        if value == 'N':
+                            self.nfkd_qc_no.add(cp)
+                    elif prop == 'Full_Composition_Exclusion':
+                        self.composition_exclusions.add(cp)
+
+
+def _generate_simple_case_table(mappings: Dict[int, int], name: str) -> str:
+    """Generate a sorted array of simple case mappings."""
+    sorted_items = sorted(mappings.items())
+
+    lines = []
+    lines.append(f"// Simple {name} mappings: source -> target")
+    lines.append(f"// Total entries: {len(sorted_items)}")
+    lines.append(f"inline constexpr std::array<std::pair<char32_t, char32_t>, {len(sorted_items)}> simple_{name}_table {{{{")
+
+    for i, (src, tgt) in enumerate(sorted_items):
+        comma = ',' if i < len(sorted_items) - 1 else ''
+        lines.append(f"    {{ 0x{src:04X}, 0x{tgt:04X} }}{comma} // {chr(src) if 0x20 <= src < 0x7F else ''}")
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_full_case_table(mappings: Dict[int, List[int]], name: str) -> str:
+    """Generate a sorted array of full case mappings."""
+    sorted_items = sorted(mappings.items())
+
+    lines = []
+    lines.append(f"// Full {name} mappings: source -> [target1, target2, target3]")
+    lines.append(f"// Total entries: {len(sorted_items)}")
+    lines.append(f"struct full_{name}_entry {{")
+    lines.append(f"    char32_t source;")
+    lines.append(f"    char32_t targets[3];")
+    lines.append(f"    uint8_t length;")
+    lines.append(f"}};")
+    lines.append(f"")
+    lines.append(f"inline constexpr std::array<full_{name}_entry, {len(sorted_items)}> full_{name}_table {{{{")
+
+    for i, (src, targets) in enumerate(sorted_items):
+        comma = ',' if i < len(sorted_items) - 1 else ''
+        padded = targets + [0] * (3 - len(targets))
+        targets_str = ', '.join(f'0x{t:04X}' for t in padded)
+        lines.append(f"    {{ 0x{src:04X}, {{ {targets_str} }}, {len(targets)} }}{comma}")
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_ccc_table(ccc_map: Dict[int, int]) -> str:
+    """Generate canonical combining class lookup data."""
+    sorted_items = sorted(ccc_map.items())
+
+    lines = []
+    lines.append(f"// Canonical Combining Class entries for non-zero CCC values")
+    lines.append(f"// Total entries: {len(sorted_items)}")
+    lines.append(f"inline constexpr std::array<std::pair<char32_t, uint8_t>, {len(sorted_items)}> ccc_table {{{{")
+
+    for i, (cp, ccc) in enumerate(sorted_items):
+        comma = ',' if i < len(sorted_items) - 1 else ''
+        lines.append(f"    {{ 0x{cp:04X}, {ccc} }}{comma}")
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_decomposition_table(decomps: Dict[int, Decomposition]) -> str:
+    """Generate decomposition mapping table."""
+    # Filter to canonical decompositions only for this table
+    canonical = {k: v for k, v in decomps.items() if v.type == 'canonical'}
+    sorted_items = sorted(canonical.items())
+
+    # Find max decomposition length
+    max_len = max((len(d.targets) for d in canonical.values()), default=0)
+    max_len = max(max_len, 4)  # Minimum 4 for alignment
+
+    lines = []
+    lines.append(f"// Canonical decomposition mappings")
+    lines.append(f"// Total entries: {len(sorted_items)}, max length: {max_len}")
+    lines.append(f"struct canonical_decomposition_entry {{")
+    lines.append(f"    char32_t source;")
+    lines.append(f"    char32_t targets[{max_len}];")
+    lines.append(f"    uint8_t length;")
+    lines.append(f"}};")
+    lines.append(f"")
+    lines.append(f"inline constexpr std::array<canonical_decomposition_entry, {len(sorted_items)}> canonical_decomposition_table {{{{")
+
+    for i, (cp, decomp) in enumerate(sorted_items):
+        comma = ',' if i < len(sorted_items) - 1 else ''
+        padded = decomp.targets + [0] * (max_len - len(decomp.targets))
+        targets_str = ', '.join(f'0x{t:04X}' for t in padded)
+        lines.append(f"    {{ 0x{cp:04X}, {{ {targets_str} }}, {len(decomp.targets)} }}{comma}")
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_composition_table(decomps: Dict[int, Decomposition], exclusions: Set[int]) -> str:
+    """Generate composition pairs table (reverse of canonical decomposition)."""
+    # Only include canonical decompositions of length 2 that are not excluded
+    compositions = []
+    for cp, decomp in decomps.items():
+        if decomp.type == 'canonical' and len(decomp.targets) == 2:
+            if cp not in exclusions:
+                compositions.append((decomp.targets[0], decomp.targets[1], cp))
+
+    # Sort by first, then second codepoint
+    compositions.sort()
+
+    lines = []
+    lines.append(f"// Canonical composition pairs (first + second -> composed)")
+    lines.append(f"// Total entries: {len(compositions)}")
+    lines.append(f"struct composition_pair {{")
+    lines.append(f"    char32_t first;")
+    lines.append(f"    char32_t second;")
+    lines.append(f"    char32_t composed;")
+    lines.append(f"}};")
+    lines.append(f"")
+    lines.append(f"inline constexpr std::array<composition_pair, {len(compositions)}> composition_table {{{{")
+
+    for i, (first, second, composed) in enumerate(compositions):
+        comma = ',' if i < len(compositions) - 1 else ''
+        lines.append(f"    {{ 0x{first:04X}, 0x{second:04X}, 0x{composed:04X} }}{comma}")
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_quick_check_table(codepoints: Set[int], name: str) -> str:
+    """Generate a sorted array of codepoints for quick check."""
+    sorted_cps = sorted(codepoints)
+
+    lines = []
+    lines.append(f"// {name} codepoints")
+    lines.append(f"// Total entries: {len(sorted_cps)}")
+    lines.append(f"inline constexpr std::array<char32_t, {len(sorted_cps)}> {name}_table {{{{")
+
+    for i in range(0, len(sorted_cps), 8):
+        chunk = sorted_cps[i:i+8]
+        line = '    ' + ', '.join(f'0x{cp:04X}' for cp in chunk)
+        if i + 8 < len(sorted_cps):
+            line += ','
+        lines.append(line)
+
+    lines.append("}};")
+    return '\n'.join(lines)
+
+
+def _generate_case_normalization_header(parser: CaseNormalizationParser) -> str:
+    """Generate the complete case_normalization_data.h header file."""
+    lines = []
+
+    # Header
+    lines.append(globals()['__doc__'])
+    lines.append("""#pragma once
+
+#include <array>
+#include <cstdint>
+#include <utility>
+
+namespace unicode::detail
+{
+
+// clang-format off
+""")
+
+    # Simple case mappings
+    lines.append(_generate_simple_case_table(parser.simple_uppercase, "uppercase"))
+    lines.append("")
+    lines.append(_generate_simple_case_table(parser.simple_lowercase, "lowercase"))
+    lines.append("")
+    lines.append(_generate_simple_case_table(parser.simple_titlecase, "titlecase"))
+    lines.append("")
+    lines.append(_generate_simple_case_table(parser.simple_casefold, "casefold"))
+    lines.append("")
+
+    # Full case mappings
+    lines.append(_generate_full_case_table(parser.full_uppercase, "uppercase"))
+    lines.append("")
+    lines.append(_generate_full_case_table(parser.full_lowercase, "lowercase"))
+    lines.append("")
+    lines.append(_generate_full_case_table(parser.full_titlecase, "titlecase"))
+    lines.append("")
+    lines.append(_generate_full_case_table(parser.full_casefold, "casefold"))
+    lines.append("")
+
+    # CCC table
+    lines.append(_generate_ccc_table(parser.ccc))
+    lines.append("")
+
+    # Decomposition tables
+    lines.append(_generate_decomposition_table(parser.decompositions))
+    lines.append("")
+
+    # Composition table
+    lines.append(_generate_composition_table(parser.decompositions, parser.composition_exclusions))
+    lines.append("")
+
+    # Quick check tables
+    lines.append(_generate_quick_check_table(parser.nfc_qc_no, "nfc_qc_no"))
+    lines.append("")
+    lines.append(_generate_quick_check_table(parser.nfc_qc_maybe, "nfc_qc_maybe"))
+    lines.append("")
+    lines.append(_generate_quick_check_table(parser.nfkc_qc_no, "nfkc_qc_no"))
+    lines.append("")
+    lines.append(_generate_quick_check_table(parser.nfkc_qc_maybe, "nfkc_qc_maybe"))
+    lines.append("")
+    lines.append(_generate_quick_check_table(parser.nfd_qc_no, "nfd_qc_no"))
+    lines.append("")
+    lines.append(_generate_quick_check_table(parser.nfkd_qc_no, "nfkd_qc_no"))
+    lines.append("")
+
+    # Composition exclusions
+    lines.append(_generate_quick_check_table(parser.composition_exclusions, "composition_exclusions"))
+    lines.append("")
+
+    # Footer
+    lines.append("// clang-format on")
+    lines.append("")
+    lines.append("} // namespace unicode::detail")
+    lines.append("")  # Ensure trailing newline
+
+    return '\n'.join(lines)
+
+
+def generate_case_normalization_tables(ucd_dir: str, output_file: str):
+    """Generate case mapping and normalization data tables."""
+    parser = CaseNormalizationParser(ucd_dir)
+    parser.parse_all()
+
+    header = _generate_case_normalization_header(parser)
+
+    with open(output_file, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(header)
+
+
 def needs_run():
     try:
-        for filename in ['ucd.cpp', 'ucd.h', 'ucd_enums.h', 'ucd_ostream.h']:
+        for filename in ['ucd.cpp', 'ucd.h', 'ucd_enums.h', 'ucd_ostream.h', 'case_normalization_data.h']:
             st = os.stat(HEADER_ROOT + '/' + filename)
             if st.st_mtime < SCRIPT_MTIME:
                 return True
@@ -1179,6 +1699,10 @@ def main():
         ucdgen = UCDGenerator(UCD_DIR, header_file, impl_file)
         ucdgen.generate()
         ucdgen.close()
+
+        # Generate case mapping and normalization data
+        case_norm_file = HEADER_ROOT + '/case_normalization_data.h'
+        generate_case_normalization_tables(UCD_DIR, case_norm_file)
     else:
         print("Output files up-to-date.")
 
