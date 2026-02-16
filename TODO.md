@@ -3,17 +3,16 @@
 
 - [ ] rewrite test functions from `bool foo(x) ...` to `bool is_foo(x) ...`
 - [ ] all about emoji flag sequences
-- [ ] `bool is_mirrorred(char32_t) noexcept` (such as parenthesis, curly braces, brackets, ...)
-  - also ability to get the mirrorring codepoint
+- [x] `bool is_mirrored(char32_t) noexcept` (such as parenthesis, curly braces, brackets, ...)
+  - also ability to get the mirroring codepoint
 - [ ] map codepoint to block (enum) - see Blocks.txt
 - [ ] map coepoint to plane (enum)
 - [ ] map block to codepoint range
 - [ ] map plane to codepoint range
 - [ ] provide C API binding for basic functionality
-- [ ] `script_segmenter`: add support for commonPreferredScript tracking wrt brackets () [] {}.
+- [ ] `script_segmenter`: add support for commonPreferredScript tracking with regards to brackets () [] {}.
 - [ ] `script_segmenter`: test "foo(λ);" -> {Latin, Greek, Latin}
 - [ ] `orientation_segmenter` (and integrate it into `run_segmenter` as well as its tests)
-- [ ] mktables: `fmtlib` integration into `ucd_fmt.h` (without actually depending on fmtlib itself)
 - [ ] mktables: `to_string` builder
 - [ ] mktables: `to_type` builder
 - [ ] mktables: pylint into CI

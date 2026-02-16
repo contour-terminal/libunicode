@@ -159,23 +159,23 @@ TEST_CASE("normalization.is_normalized", "[normalization]")
     CHECK(is_nfd(U"e\u0301"));
 }
 
-TEST_CASE("normalization.canonically_equivalent", "[normalization]")
+TEST_CASE("normalization.is_canonically_equivalent", "[normalization]")
 {
     // é composed vs decomposed
-    CHECK(canonically_equivalent(U"\u00E9", U"e\u0301"));
+    CHECK(is_canonically_equivalent(U"\u00E9", U"e\u0301"));
 
     // Same string
-    CHECK(canonically_equivalent(U"hello", U"hello"));
+    CHECK(is_canonically_equivalent(U"hello", U"hello"));
 
     // Different strings
-    CHECK_FALSE(canonically_equivalent(U"hello", U"world"));
+    CHECK_FALSE(is_canonically_equivalent(U"hello", U"world"));
 }
 
-TEST_CASE("normalization.canonically_equivalent_utf8", "[normalization]")
+TEST_CASE("normalization.is_canonically_equivalent_utf8", "[normalization]")
 {
     // UTF-8 versions
-    CHECK(canonically_equivalent("hello"sv, "hello"sv));
-    CHECK_FALSE(canonically_equivalent("hello"sv, "world"sv));
+    CHECK(is_canonically_equivalent("hello"sv, "hello"sv));
+    CHECK_FALSE(is_canonically_equivalent("hello"sv, "world"sv));
 }
 
 TEST_CASE("normalization.canonical_ordering", "[normalization]")

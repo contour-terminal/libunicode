@@ -198,16 +198,16 @@ enum class Quick_Check_Result : uint8_t
 // ============================================================================
 
 /// Returns true if two strings are canonically equivalent (same NFC or NFD form).
-[[nodiscard]] bool canonically_equivalent(std::u32string_view a, std::u32string_view b);
+[[nodiscard]] bool is_canonically_equivalent(std::u32string_view a, std::u32string_view b);
 
 /// Returns true if two UTF-8 strings are canonically equivalent.
-[[nodiscard]] bool canonically_equivalent(std::string_view a, std::string_view b);
+[[nodiscard]] bool is_canonically_equivalent(std::string_view a, std::string_view b);
 
 /// Returns true if two strings are compatibility equivalent (same NFKC or NFKD form).
-[[nodiscard]] bool compatibility_equivalent(std::u32string_view a, std::u32string_view b);
+[[nodiscard]] bool is_compatibility_equivalent(std::u32string_view a, std::u32string_view b);
 
 /// Returns true if two UTF-8 strings are compatibility equivalent.
-[[nodiscard]] bool compatibility_equivalent(std::string_view a, std::string_view b);
+[[nodiscard]] bool is_compatibility_equivalent(std::string_view a, std::string_view b);
 
 // ============================================================================
 // Hangul algorithmic decomposition/composition

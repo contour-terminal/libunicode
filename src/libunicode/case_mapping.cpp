@@ -253,8 +253,8 @@ std::u32string to_titlecase(std::u32string_view text)
         {
             result.push_back(cp);
             // Check if this is a word boundary
-            if (cp == ' ' || cp == '\t' || cp == '\n' || cp == '\r' || general_category::dash_punctuation(cp)
-                || general_category::open_punctuation(cp) || general_category::close_punctuation(cp))
+            if (cp == ' ' || cp == '\t' || cp == '\n' || cp == '\r' || general_category::is_dash_punctuation(cp)
+                || general_category::is_open_punctuation(cp) || general_category::is_close_punctuation(cp))
             {
                 at_word_start = true;
             }

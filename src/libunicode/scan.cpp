@@ -118,7 +118,7 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
             auto const nextCodepoint = get<Success>(result).value;
             auto const nextWidth = max(currentClusterWidth, static_cast<size_t>(width(nextCodepoint)));
             state.lastCodepointHint = nextCodepoint;
-            if (grapheme_segmenter::breakable(prevCodepoint, nextCodepoint))
+            if (grapheme_segmenter::is_breakable(prevCodepoint, nextCodepoint))
             {
                 // Flush out current grapheme cluster's East Asian Width.
                 count += currentClusterWidth;
