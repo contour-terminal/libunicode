@@ -65,36 +65,40 @@ target_include_directories(unicode_ucd PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_
 
 # =========================================================================================================
 
-add_custom_command(
-    OUTPUT
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
-    COMMAND unicode_tablegen
-        "${LIBUNICODE_UCD_DIR}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
-        "unicode::precompiled"
-    DEPENDS unicode_tablegen unicode::ucd
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Generating UCD codepoint properties tables from ${LIBUNICODE_UCD_DIR}"
-    VERBATIM
-    USES_TERMINAL
-)
+# Emscripten builds use pre-generated tablegen output files checked into the repo.
+# Running tablegen as WASM exceeds memory limits for the full Unicode database.
+if(NOT EMSCRIPTEN)
+    add_custom_command(
+        OUTPUT
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+        COMMAND unicode_tablegen
+            "${LIBUNICODE_UCD_DIR}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+            "unicode::precompiled"
+        DEPENDS unicode_tablegen unicode::ucd
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Generating UCD codepoint properties tables from ${LIBUNICODE_UCD_DIR}"
+        VERBATIM
+        USES_TERMINAL
+    )
 
-add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
-add_library(unicode::loader ALIAS unicode_loader)
-if(LIBUNICODE_TABLEGEN_FASTBUILD)
-    target_compile_definitions(unicode_loader PRIVATE LIBUNICODE_TABLEGEN_FASTBUILD)
+    add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
+    add_library(unicode::loader ALIAS unicode_loader)
+    if(LIBUNICODE_TABLEGEN_FASTBUILD)
+        target_compile_definitions(unicode_loader PRIVATE LIBUNICODE_TABLEGEN_FASTBUILD)
+    endif()
+    set_target_properties(unicode_loader PROPERTIES
+        VERSION "${PROJECT_VERSION}"
+        SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    )
+    target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+                                                     $<INSTALL_INTERFACE:include>)
+    target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 endif()
-set_target_properties(unicode_loader PROPERTIES
-    VERSION "${PROJECT_VERSION}"
-    SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-)
-target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-                                                 $<INSTALL_INTERFACE:include>)
-target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 
 # =========================================================================================================
 
@@ -190,17 +194,11 @@ target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${${PROJECT_NAME}_SO
 )
 target_link_libraries(unicode PUBLIC unicode::ucd)
 
-add_executable(unicode_tablegen tablegen.cpp)
-set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
-target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
-target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
-if(EMSCRIPTEN)
-    target_link_options(unicode_tablegen PRIVATE
-        -sALLOW_MEMORY_GROWTH=1
-        -sINITIAL_MEMORY=268435456
-        -sMAXIMUM_MEMORY=1073741824
-        -sSTACK_SIZE=8388608
-    )
+if(NOT EMSCRIPTEN)
+    add_executable(unicode_tablegen tablegen.cpp)
+    set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
+    target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
+    target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
 endif()
 
 
@@ -210,7 +208,11 @@ set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether
 
 # Create and install package configuration and version files.
 # Install library and headers.
-install(TARGETS unicode_ucd unicode_loader unicode
+set(_LIBUNICODE_INSTALL_TARGETS unicode_ucd unicode)
+if(NOT EMSCRIPTEN)
+    list(APPEND _LIBUNICODE_INSTALL_TARGETS unicode_loader)
+endif()
+install(TARGETS ${_LIBUNICODE_INSTALL_TARGETS}
         EXPORT libunicode-targets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
