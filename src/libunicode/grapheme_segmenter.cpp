@@ -99,7 +99,7 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
         return false;
 
     // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.
-    if (A == Grapheme_Cluster_Break::ZWJ && Pb.extended_pictographic())
+    if (A == Grapheme_Cluster_Break::ZWJ && Pb.is_extended_pictographic())
         return false;
 
     // GB12/GB13: Do not break within emoji flag sequences.

@@ -42,13 +42,13 @@ struct LIBUNICODE_PACKED codepoint_properties
     static uint8_t constexpr FlagExtendedPictographic = 0x20; // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagCoreGraphemeExtend = 0x40;   // NOLINT(readability-identifier-naming)
 
-    constexpr bool emoji() const noexcept { return flags & FlagEmoji; }
-    constexpr bool emoji_presentation() const noexcept { return flags & FlagEmojiPresentation; }
-    constexpr bool emoji_component() const noexcept { return flags & FlagEmojiComponent; }
-    constexpr bool emoji_modifier() const noexcept { return flags & FlagEmojiModifier; }
-    constexpr bool emoji_modifier_base() const noexcept { return flags & FlagEmojiModifierBase; }
-    constexpr bool extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
-    constexpr bool core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
+    constexpr bool is_emoji() const noexcept { return flags & FlagEmoji; }
+    constexpr bool is_emoji_presentation() const noexcept { return flags & FlagEmojiPresentation; }
+    constexpr bool is_emoji_component() const noexcept { return flags & FlagEmojiComponent; }
+    constexpr bool is_emoji_modifier() const noexcept { return flags & FlagEmojiModifier; }
+    constexpr bool is_emoji_modifier_base() const noexcept { return flags & FlagEmojiModifierBase; }
+    constexpr bool is_extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
+    constexpr bool is_core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
 
     using tables_view = support::multistage_table_view<codepoint_properties,
                                                        uint32_t,     // source type

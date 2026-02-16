@@ -88,7 +88,7 @@ class grapheme_segmenter
     ///
     /// @retval true both codepoints to not belong to the same grapheme cluster
     /// @retval false both codepoints belong to the same grapheme cluster
-    static bool breakable(char32_t a, char32_t b) noexcept
+    static bool is_breakable(char32_t a, char32_t b) noexcept
     {
         auto state = grapheme_segmenter_state {};
         state.previousCodepoint = a;
@@ -98,7 +98,7 @@ class grapheme_segmenter
         return grapheme_process_breakable(b, state);
     }
 
-    static bool nonbreakable(char32_t a, char32_t b) noexcept { return !breakable(a, b); }
+    static bool is_nonbreakable(char32_t a, char32_t b) noexcept { return !is_breakable(a, b); }
 
   private:
     char32_t const* left_;

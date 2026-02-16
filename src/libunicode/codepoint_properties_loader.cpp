@@ -367,7 +367,7 @@ namespace
             default: break;
         }
 
-        if (properties.emoji_presentation())
+        if (properties.is_emoji_presentation())
             // UAX #11 §5 Recommendations:
             //     [UTS51] emoji presentation sequences behave as though they were East Asian Wide,
             //     regardless of their assigned East_Asian_Width property value.
@@ -410,19 +410,19 @@ namespace
         if (codepoint == 0xE007F)
             return EmojiSegmentationCategory::TagTerm;
 
-        if (props.emoji_modifier_base())
+        if (props.is_emoji_modifier_base())
             return EmojiSegmentationCategory::EmojiModifierBase;
-        if (props.emoji_modifier())
+        if (props.is_emoji_modifier())
             return EmojiSegmentationCategory::EmojiModifier;
         if (props.grapheme_cluster_break == Grapheme_Cluster_Break::Regional_Indicator)
             return EmojiSegmentationCategory::RegionalIndicator;
         if (('0' <= codepoint && codepoint <= '9') || codepoint == '#' || codepoint == '*')
             return EmojiSegmentationCategory::KeyCapBase;
-        if (props.emoji_presentation())
+        if (props.is_emoji_presentation())
             return EmojiSegmentationCategory::EmojiEmojiPresentation;
-        if (props.emoji() && !props.emoji_presentation())
+        if (props.is_emoji() && !props.is_emoji_presentation())
             return EmojiSegmentationCategory::EmojiTextPresentation;
-        if (props.emoji())
+        if (props.is_emoji())
             return EmojiSegmentationCategory::Emoji;
 
         return EmojiSegmentationCategory::Invalid;

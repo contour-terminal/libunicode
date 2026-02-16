@@ -82,7 +82,7 @@ int u8_gc_width(u8_char_t const* codepoints, size_t count, int allowMod)
 
 int u32_grapheme_unbreakable(u32_char_t a, u32_char_t b)
 {
-    return unicode::grapheme_segmenter::nonbreakable(a, b);
+    return unicode::grapheme_segmenter::is_nonbreakable(a, b);
 }
 
 struct u8u32_stream_state

@@ -59,7 +59,7 @@ namespace
 {
 bool isEmoji(char32_t ch)
 {
-    return unicode::emoji(ch) && !unicode::emoji_component(ch);
+    return unicode::is_emoji(ch) && !unicode::is_emoji_component(ch);
 }
 
 template <typename T>
@@ -145,7 +145,7 @@ void codepoints(istream& in) // {{{
         {
             char32_t const wc = get<unicode::Success>(convertResult).value;
             int const width = unicode::width(wc);
-            bool breakable = !last_wc || unicode::grapheme_segmenter::breakable(last_wc, wc);
+            bool breakable = !last_wc || unicode::grapheme_segmenter::is_breakable(last_wc, wc);
             last_wc = wc;
             // TODO: breakable buggy lol what?
             if (width >= 0)

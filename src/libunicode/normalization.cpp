@@ -443,22 +443,22 @@ bool is_normalized(std::string_view text, Normalization_Form form)
 // Canonical equivalence
 // ============================================================================
 
-bool canonically_equivalent(std::u32string_view a, std::u32string_view b)
+bool is_canonically_equivalent(std::u32string_view a, std::u32string_view b)
 {
     return to_nfd(a) == to_nfd(b);
 }
 
-bool canonically_equivalent(std::string_view a, std::string_view b)
+bool is_canonically_equivalent(std::string_view a, std::string_view b)
 {
     return to_nfd(a) == to_nfd(b);
 }
 
-bool compatibility_equivalent(std::u32string_view a, std::u32string_view b)
+bool is_compatibility_equivalent(std::u32string_view a, std::u32string_view b)
 {
     return to_nfkd(a) == to_nfkd(b);
 }
 
-bool compatibility_equivalent(std::string_view a, std::string_view b)
+bool is_compatibility_equivalent(std::string_view a, std::string_view b)
 {
     return to_nfkd(a) == to_nfkd(b);
 }

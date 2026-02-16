@@ -921,13 +921,13 @@ namespace unicode
 
             # write out test function
             for name in sorted(props.keys()):
-                self.impl.write('bool {}(char32_t codepoint) noexcept {{\n'.format(name.lower()))
+                self.impl.write('bool is_{}(char32_t codepoint) noexcept {{\n'.format(name.lower()))
                 self.impl.write("    return contains(tables::{0:}, codepoint);\n".format(name))
                 self.impl.write("}\n\n")
 
             # write enums / signature
             for name in sorted(props.keys()):
-                self.header.write('bool {}(char32_t codepoint) noexcept;\n'.format(name.lower()))
+                self.header.write('bool is_{}(char32_t codepoint) noexcept;\n'.format(name.lower()))
             self.header.write('\n')
         # }}}
 
@@ -1145,7 +1145,7 @@ namespace unicode
         self.header.write("    {} get(char32_t value) noexcept;\n\n".format(type_name))
         for name in sorted(cats.keys()):
             self.header.write(
-                    '    inline bool {}(char32_t codepoint) noexcept\n'
+                    '    inline bool is_{}(char32_t codepoint) noexcept\n'
                     '    {{\n'
                     '        return contains(General_Category::{}, codepoint);\n'
                     '    }}\n\n'.

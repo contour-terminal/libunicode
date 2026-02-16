@@ -144,7 +144,7 @@ inline void utf8_grapheme_segmenter::iterator::consumeGraphemeCluster() noexcept
     while (_nextCodepointStart != _end && nonbreakable)
     {
         _cluster.push_back(consumeCodepoint());
-        nonbreakable = unicode::grapheme_segmenter::nonbreakable(_cluster.back(), _nextCodepoint);
+        nonbreakable = unicode::grapheme_segmenter::is_nonbreakable(_cluster.back(), _nextCodepoint);
     }
 }
 
