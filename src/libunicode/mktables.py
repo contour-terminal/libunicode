@@ -342,6 +342,10 @@ class UCDGenerator: # {{{
         self.process_east_asian_width()
         self.process_emoji_props()
 
+        self.load_bidi_mirrored()
+        self.load_bidi_mirroring_glyph()
+        self.write_bidi_mirroring()
+
         self.file_footer()
 
     def close(self):
@@ -368,6 +372,7 @@ namespace unicode
 #include <libunicode/ucd.h>
 #include <libunicode/ucd_private.h>
 
+#include <algorithm>
 #include <array>
 
 namespace unicode
@@ -924,6 +929,99 @@ namespace unicode
             for name in sorted(props.keys()):
                 self.header.write('bool {}(char32_t codepoint) noexcept;\n'.format(name.lower()))
             self.header.write('\n')
+        # }}}
+
+    def load_bidi_mirrored(self): # {{{
+        """Parse UnicodeData.txt field 9 to collect all codepoints with Bidi_Mirrored=Y."""
+        filepath = os.path.join(self.ucd_dir, 'UnicodeData.txt')
+        mirrored_cps = []
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                fields = line.split(';')
+                if len(fields) < 10:
+                    continue
+                if fields[9].strip() == 'Y':
+                    mirrored_cps.append(int(fields[0], 16))
+        mirrored_cps.sort()
+
+        # Compress into intervals
+        intervals = []
+        for cp in mirrored_cps:
+            if intervals and intervals[-1][1] + 1 == cp:
+                intervals[-1] = (intervals[-1][0], cp)
+            else:
+                intervals.append((cp, cp))
+        self.bidi_mirrored_intervals = intervals
+        # }}}
+
+    def load_bidi_mirroring_glyph(self): # {{{
+        """Parse BidiMirroring.txt to collect (source, target) pairs."""
+        filepath = os.path.join(self.ucd_dir, 'BidiMirroring.txt')
+        pairs = []
+        lineRE = re.compile(r'^([0-9A-F]+)\s*;\s*([0-9A-F]+)\s*#\s*(.*)$')
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                m = lineRE.match(line)
+                if m:
+                    source = int(m.group(1), 16)
+                    target = int(m.group(2), 16)
+                    pairs.append((source, target))
+        pairs.sort()
+        self.bidi_mirroring_glyph_pairs = pairs
+        # }}}
+
+    def write_bidi_mirroring(self): # {{{
+        """Generate bidi mirroring tables and functions into ucd.h and ucd.cpp."""
+        intervals = self.bidi_mirrored_intervals
+        pairs = self.bidi_mirroring_glyph_pairs
+
+        # --- Write tables to ucd.cpp ---
+        self.impl.write("namespace tables {\n")
+
+        # Bidi_Mirrored interval table
+        self.impl.write("auto static const Bidi_Mirrored = std::array<Interval, {}>{{ // {}\n".format(
+            len(intervals), FOLD_OPEN))
+        for (start, end) in intervals:
+            self.impl.write("    Interval{{ 0x{:>04X}, 0x{:>04X} }},\n".format(start, end))
+        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+
+        # Bidi_Mirroring_Glyph pair table
+        self.impl.write("auto static const Bidi_Mirroring_Glyph = std::array<std::pair<char32_t, char32_t>, {}>{{ // {}\n".format(
+            len(pairs), FOLD_OPEN))
+        for (source, target) in pairs:
+            self.impl.write("    std::pair<char32_t, char32_t>{{ 0x{:>04X}, 0x{:>04X} }},\n".format(source, target))
+        self.impl.write("}}; // {}\n".format(FOLD_CLOSE))
+
+        self.impl.write("} // end namespace tables\n\n")
+
+        # --- Write function implementations to ucd.cpp ---
+        self.impl.write("bool is_mirrored(char32_t codepoint) noexcept {\n")
+        self.impl.write("    return contains(tables::Bidi_Mirrored, codepoint);\n")
+        self.impl.write("}\n\n")
+
+        self.impl.write("char32_t bidi_mirroring_glyph(char32_t codepoint) noexcept {\n")
+        self.impl.write("    auto const it = std::lower_bound(\n")
+        self.impl.write("        tables::Bidi_Mirroring_Glyph.begin(),\n")
+        self.impl.write("        tables::Bidi_Mirroring_Glyph.end(),\n")
+        self.impl.write("        codepoint,\n")
+        self.impl.write("        [](auto const& pair, char32_t cp) { return pair.first < cp; });\n")
+        self.impl.write("    if (it != tables::Bidi_Mirroring_Glyph.end() && it->first == codepoint)\n")
+        self.impl.write("        return it->second;\n")
+        self.impl.write("    return codepoint;\n")
+        self.impl.write("}\n\n")
+
+        # --- Write function declarations to ucd.h ---
+        self.header.write("/// Returns true if the codepoint has the Bidi_Mirrored property.\n")
+        self.header.write("[[nodiscard]] bool is_mirrored(char32_t codepoint) noexcept;\n\n")
+        self.header.write("/// Returns the Bidi_Mirroring_Glyph for a codepoint.\n")
+        self.header.write("/// If no mirroring glyph exists, returns the input codepoint unchanged.\n")
+        self.header.write("[[nodiscard]] char32_t bidi_mirroring_glyph(char32_t codepoint) noexcept;\n\n")
         # }}}
 
     def write_blocks(self): # {{{

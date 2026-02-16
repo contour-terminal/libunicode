@@ -251,6 +251,7 @@ endif()
 # {{{ unicode_test
 if(LIBUNICODE_TESTING)
     add_executable(unicode_test
+        bidi_mirroring_test.cpp
         capi_test.cpp
         case_mapping_test.cpp
         convert_test.cpp
