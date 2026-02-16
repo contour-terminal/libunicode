@@ -32,8 +32,8 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
     while (input < end - simd_size)
     {
         simd_text.copy_from(input, stdx::element_aligned);
-        auto const is_control_mask = simd_text < 0x20;
-        auto const is_complex_mask = (simd_text & 0x80) == 0x80;
+        auto const is_control_mask = simd_text < static_cast<char>(0x20);
+        auto const is_complex_mask = (simd_text & static_cast<char>(0x80)) == static_cast<char>(0x80);
         auto const ctrl_or_complex_mask = is_control_mask || is_complex_mask;
         if (stdx::any_of(ctrl_or_complex_mask))
         {

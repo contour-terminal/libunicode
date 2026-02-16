@@ -194,6 +194,14 @@ add_executable(unicode_tablegen tablegen.cpp)
 set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
 target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
 target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
+if(EMSCRIPTEN)
+    target_link_options(unicode_tablegen PRIVATE
+        -sALLOW_MEMORY_GROWTH=1
+        -sINITIAL_MEMORY=268435456
+        -sMAXIMUM_MEMORY=1073741824
+        -sSTACK_SIZE=8388608
+    )
+endif()
 
 
 # {{{ installation
