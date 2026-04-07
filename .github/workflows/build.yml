@@ -49,11 +49,17 @@ jobs:
           cmake -S . -B build -G Ninja \
             -D CMAKE_BUILD_TYPE="RelWithDebInfo" \
             -D LIBUNICODE_BENCHMARK=ON \
-            -D LIBUNICODE_TESTING=ON
+            -D LIBUNICODE_TESTING=ON \
+            -D LIBUNICODE_BUILD_STATIC=ON
       - name: "build"
         run: cmake --build build/ -- -j3
       - name: "test"
         run: ./build/src/libunicode/unicode_test
+      - name: "Upload unicode-query"
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicode-query-linux-x86_64
+          path: build/src/tools/unicode-query
 
   # {{{ macOS
   osx:
@@ -76,11 +82,16 @@ jobs:
           #brew update
           ./scripts/install-deps.sh
       - name: "Generate build files"
-        run: cmake --preset clang-release
+        run: cmake --preset clang-release -DLIBUNICODE_BUILD_STATIC=ON
       - name: "Build"
         run: cmake --build --preset clang-release
       - name: "Test"
         run: ctest --preset clang-release
+      - name: "Upload unicode-query"
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicode-query-macos-arm64
+          path: build/clang-release/src/tools/unicode-query
   # }}}
 
   windows:
@@ -106,6 +117,11 @@ jobs:
         run: cmake --build --preset cl-release
       - name: "test"
         run: ctest --preset cl-release
+      - name: "Upload unicode-query"
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicode-query-windows-x86_64
+          path: build/cl-release/src/tools/unicode-query.exe
 
   Fedora:
     name: Fedora
