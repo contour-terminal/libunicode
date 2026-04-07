@@ -57,7 +57,7 @@ function Fetch-And-Add
         Write-Host "Already there ${Folder}"
     }
 
-    Add-Content $CMakeListsFile "add_subdirectory(${Folder} EXCLUDE_FROM_ALL)"
+    Add-Content $CMakeListsFile "add_subdirectory(${Folder} EXCLUDE_FROM_ALL SYSTEM)"
 }
 
 function Run

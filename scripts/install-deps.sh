@@ -59,7 +59,7 @@ fetch_and_unpack()
         echo "Already extracted $DISTFILE. Skipping."
     fi
 
-    echo "add_subdirectory($NAME EXCLUDE_FROM_ALL)" >> $SYSDEPS_CMAKE_FILE
+    echo "add_subdirectory($NAME EXCLUDE_FROM_ALL SYSTEM)" >> $SYSDEPS_CMAKE_FILE
 }
 
 fetch_and_unpack_Catch2()

@@ -5,9 +5,179 @@
         "minor": 27,
         "patch": 0
     },
-    "include": [
-        "cmake/presets/os-linux.json",
-        "cmake/presets/os-macos.json",
-        "cmake/presets/os-windows.json"
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "LIBUNICODE_BENCHMARK": "ON",
+                "LIBUNICODE_TESTING": "ON",
+                "PEDANTIC_COMPILER": "ON",
+                "PEDANTIC_COMPILER_WERROR": "ON"
+            }
+        },
+        {
+            "name": "unix-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "anyOf",
+                "conditions": [
+                    { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+                    { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" }
+                ]
+            }
+        },
+        {
+            "name": "clang-debug",
+            "inherits": "unix-base",
+            "displayName": "Clang Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LIBUNICODE_TABLEGEN_FASTBUILD": "ON"
+            }
+        },
+        {
+            "name": "clang-release",
+            "inherits": "unix-base",
+            "displayName": "Clang Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "clang-release-native",
+            "inherits": "clang-release",
+            "displayName": "Clang Release (native arch)",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-march=native"
+            }
+        },
+        {
+            "name": "clang-coverage",
+            "inherits": "unix-base",
+            "displayName": "Clang Coverage",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LIBUNICODE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "gcc-debug",
+            "inherits": "unix-base",
+            "displayName": "GCC Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "LIBUNICODE_TABLEGEN_FASTBUILD": "ON"
+            }
+        },
+        {
+            "name": "gcc-release",
+            "inherits": "unix-base",
+            "displayName": "GCC Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "gcc-release-native",
+            "inherits": "gcc-release",
+            "displayName": "GCC Release (native arch)",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-march=native"
+            }
+        },
+        {
+            "name": "windows-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            }
+        },
+        {
+            "name": "cl-debug",
+            "inherits": "windows-base",
+            "displayName": "MSVC Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "cl-release",
+            "inherits": "windows-base",
+            "displayName": "MSVC Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "clangcl-debug",
+            "inherits": "windows-base",
+            "displayName": "Clang-CL Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl"
+            }
+        },
+        {
+            "name": "clangcl-release",
+            "inherits": "windows-base",
+            "displayName": "Clang-CL Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl"
+            }
+        }
+    ],
+    "buildPresets": [
+        { "name": "clang-debug", "configurePreset": "clang-debug" },
+        { "name": "clang-release", "configurePreset": "clang-release" },
+        { "name": "clang-release-native", "configurePreset": "clang-release-native" },
+        { "name": "clang-coverage", "configurePreset": "clang-coverage" },
+        { "name": "gcc-debug", "configurePreset": "gcc-debug" },
+        { "name": "gcc-release", "configurePreset": "gcc-release" },
+        { "name": "gcc-release-native", "configurePreset": "gcc-release-native" },
+        { "name": "cl-debug", "configurePreset": "cl-debug" },
+        { "name": "cl-release", "configurePreset": "cl-release" },
+        { "name": "clangcl-debug", "configurePreset": "clangcl-debug" },
+        { "name": "clangcl-release", "configurePreset": "clangcl-release" }
+    ],
+    "testPresets": [
+        { "name": "clang-debug", "configurePreset": "clang-debug", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clang-release", "configurePreset": "clang-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clang-release-native", "configurePreset": "clang-release-native", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clang-coverage", "configurePreset": "clang-coverage", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "gcc-debug", "configurePreset": "gcc-debug", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "gcc-release", "configurePreset": "gcc-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "gcc-release-native", "configurePreset": "gcc-release-native", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "cl-debug", "configurePreset": "cl-debug", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "cl-release", "configurePreset": "cl-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clangcl-debug", "configurePreset": "clangcl-debug", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clangcl-release", "configurePreset": "clangcl-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } }
     ]
 }

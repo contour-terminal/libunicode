@@ -12,7 +12,7 @@
 
 void cpuid(int32_t out[4], int32_t eax, int32_t ecx);
 #if _WIN32
-__int64 xgetbv(unsigned int x);
+uint64_t xgetbv(unsigned int x);
 #elif defined(__GNUC__) || defined(__clang__)
 uint64_t xgetbv(unsigned int index);
 #else
@@ -30,9 +30,9 @@ auto detect_os_avx512() -> bool;
         {
             __cpuidex(out, eax, ecx);
         }
-        __int64 xgetbv(unsigned int x)
+        uint64_t xgetbv(unsigned int x)
         {
-            return _xgetbv(x);
+            return static_cast<uint64_t>(_xgetbv(x));
         }
     // clang-format on
     #elif defined(__GNUC__) || defined(__clang__)

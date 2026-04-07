@@ -29,7 +29,11 @@ if(${PEDANTIC_COMPILER})
         message(STATUS "Enabling pedantic compiler options: yes")
         # TODO: check https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#compilers
         try_add_compile_options(-Qunused-arguments)
-        try_add_compile_options(-Wall)
+        if(NOT MSVC)
+            # In clang-cl, -Wall is interpreted as MSVC /Wall (= -Weverything).
+            # CMakeLists.txt already provides /W4 for clang-cl.
+            try_add_compile_options(-Wall)
+        endif()
         try_add_compile_options(-Wconversion)
         try_add_compile_options(-Wduplicate-enum)
         try_add_compile_options(-Wduplicated-cond)

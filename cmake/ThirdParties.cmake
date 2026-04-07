@@ -1,3 +1,15 @@
+# Suppress all compiler warnings for a third-party target.
+# Used for embedded (non-system) dependencies to avoid noise from
+# code we don't maintain.
+function(suppress_thirdparty_warnings TARGET_NAME)
+    if(MSVC)
+        target_compile_options(${TARGET_NAME} PRIVATE /W0)
+    else()
+        target_compile_options(${TARGET_NAME} PRIVATE -w)
+    endif()
+    set_target_properties(${TARGET_NAME} PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+endfunction()
+
 # This directory structure is being created by `scripts/install-deps.sh`
 # and is used to inject all the dependencies the operating system's
 # package manager did not provide (not found or too old version).
