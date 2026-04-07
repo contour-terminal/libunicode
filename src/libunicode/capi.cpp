@@ -18,6 +18,7 @@
 #include <libunicode/width.h>
 
 #include <iterator>
+#include <string_view>
 
 int u32_gc_count(u32_char_t const* codepoints, size_t size)
 {
@@ -42,42 +43,28 @@ int u8_gc_count(u8_char_t const* codepoints, size_t size)
 
 int u32_gc_width(u32_char_t const* codepoints, size_t size, int mode)
 {
-    int totalWidth = 0;
-    auto segmenter = unicode::grapheme_segmenter((char32_t const*) codepoints, (char32_t const*) codepoints + size);
+    auto const text = std::u32string_view(reinterpret_cast<char32_t const*>(codepoints), size);
+    auto totalWidth = 0;
+    auto segmenter = unicode::grapheme_segmenter(text);
+    auto processCluster = [&](std::u32string_view cluster) {
+        if (mode == GC_WIDTH_MODE_NON_MODIFIABLE)
+            totalWidth += static_cast<int>(unicode::width(cluster.front()));
+        else
+            totalWidth += static_cast<int>(unicode::grapheme_cluster_width(cluster));
+    };
+    processCluster(*segmenter);
     while (segmenter.codepointsAvailable())
     {
-        auto const cluster = *segmenter;
-        int thisWidth = static_cast<int>(unicode::width(cluster.front()));
-        if (mode != GC_WIDTH_MODE_NON_MODIFIABLE)
-        {
-            for (size_t i = 1; i < size; ++i)
-            {
-                auto const codepoint = codepoints[i];
-                auto const width = [&]() {
-                    switch (codepoint)
-                    {
-                        case 0xFE0E: return 1;
-                        case 0xFE0F: return 2;
-                        default: return static_cast<int>(unicode::width(codepoint));
-                    }
-                }();
-                if (width && width != thisWidth)
-                    thisWidth = width;
-            }
-        }
-        totalWidth += thisWidth;
         ++segmenter;
+        processCluster(*segmenter);
     }
     return totalWidth;
 }
 
-int u8_gc_width(u8_char_t const* codepoints, size_t count, int allowMod)
+int u8_gc_width(u8_char_t const* codepoints, size_t count, int mode)
 {
-    (void) codepoints;
-    (void) count;
-    (void) allowMod;
-
-    return -1; // TODO
+    auto const u32 = unicode::convert_to<char32_t>(std::string_view(codepoints, count));
+    return u32_gc_width(reinterpret_cast<u32_char_t const*>(u32.data()), u32.size(), mode);
 }
 
 int u32_grapheme_unbreakable(u32_char_t a, u32_char_t b)
