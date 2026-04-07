@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 
+#include "enum_utils.h"
 #include "ucd_parser.h"
 
 namespace tablegen
@@ -235,19 +236,6 @@ namespace
         return result;
     }
 
-    auto buildAgeName(std::map<std::string, std::string> const& ageAliases) -> std::vector<std::string>
-    {
-        std::vector<std::string> result;
-        result.push_back("Unassigned");
-        std::vector<std::string> values;
-        for (auto const& [k, v]: ageAliases)
-            values.push_back(v);
-        std::sort(values.begin(), values.end());
-        for (auto const& v: values)
-            result.push_back(v);
-        return result;
-    }
-
     /// Reverse lookup: index -> name for a PVA-based enum.
     std::string reverseLookup(std::map<std::string, uint8_t> const& index,
                               uint8_t value,
@@ -349,13 +337,13 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     auto const scriptIndex = buildScriptIndex(parser.scripts());
     auto const gcIndex = buildGeneralCategoryIndex(parser.generalCategories());
     auto const eawIndex = buildPvaBasedIndex(findPva("East_Asian_Width"));
-    auto const ageIndex = buildPvaBasedIndex(findPva("Age"));
+    auto const ageIndex = buildAgeIndex(findPva("Age"));
     auto const gcbIndex = buildPvaBasedIndex(findPva("Grapheme_Cluster_Break"), "Undefined");
 
     // Name vectors for output
     auto const scriptNames = buildScriptNames(parser.scripts());
     auto const gcNames = buildGeneralCategoryNames(parser.generalCategories());
-    auto const ageNames = buildAgeName(findPva("Age"));
+    auto const ageNames = buildAgeEnumMembers(findPva("Age"));
 
     // Find GCB Regional_Indicator index
     uint8_t gcbRegionalIndicator = 0;

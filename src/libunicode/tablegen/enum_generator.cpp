@@ -107,7 +107,19 @@ namespace
             enums.push_back(std::move(def));
         }
 
-        // 2. Property value alias enums (sorted by property name)
+        // 2. Age enum (version-number sorted, not alphabetical)
+        {
+            auto const& pva = parser.propertyValueAliases();
+            if (auto it = pva.find("Age"); it != pva.end() && !it->second.empty())
+            {
+                EnumDef def;
+                def.name = "Age";
+                def.members = buildAgeEnumMembers(it->second);
+                enums.push_back(std::move(def));
+            }
+        }
+
+        // 3. Property value alias enums (sorted by property name)
         {
             auto const& pva = parser.propertyValueAliases();
             for (auto const& [propName, values]: pva)
@@ -126,7 +138,7 @@ namespace
                 }
 
                 // Skip properties generated elsewhere
-                if (propName == "Script" || propName == "General_Category" || propName == "EastAsianWidth")
+                if (propName == "Script" || propName == "General_Category" || propName == "EastAsianWidth" || propName == "Age")
                     continue;
 
                 EnumDef def;
@@ -148,7 +160,7 @@ namespace
             }
         }
 
-        // 3. Core_Property enum
+        // 4. Core_Property enum
         {
             EnumDef def;
             def.name = "Core_Property";
@@ -158,7 +170,7 @@ namespace
             enums.push_back(std::move(def));
         }
 
-        // 4. General_Category enum
+        // 5. General_Category enum
         {
             EnumDef def;
             def.name = "General_Category";
@@ -171,7 +183,7 @@ namespace
             enums.push_back(std::move(def));
         }
 
-        // 5. Script enum
+        // 6. Script enum
         {
             EnumDef def;
             def.name = "Script";
@@ -189,7 +201,7 @@ namespace
             enums.push_back(std::move(def));
         }
 
-        // 6. Block enum (sort raw titles, sanitize in output)
+        // 7. Block enum (sort raw titles, sanitize in output)
         {
             EnumDef def;
             def.name = "Block";
@@ -202,7 +214,7 @@ namespace
             enums.push_back(std::move(def));
         }
 
-        // 7. EastAsianWidth enum
+        // 8. EastAsianWidth enum
         {
             EnumDef def;
             def.name = "EastAsianWidth";
