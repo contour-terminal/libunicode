@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            artifact_name: unicode-query-linux-x86_64
+            binary_path: build/src/tools/unicode-query
+            cmake_extra: ""
+          - os: macos-14
+            artifact_name: unicode-query-macos-arm64
+            binary_path: build/src/tools/unicode-query
+            cmake_extra: ""
+          - os: macos-13
+            artifact_name: unicode-query-macos-x86_64
+            binary_path: build/src/tools/unicode-query
+            cmake_extra: ""
+          - os: windows-latest
+            artifact_name: unicode-query-windows-x86_64
+            binary_path: build/src/tools/unicode-query.exe
+            cmake_extra: "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded"
+
+    name: "Build ${{ matrix.artifact_name }}"
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Setup MSVC"
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: "Install Ninja (Linux)"
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+
+      - name: "Install Ninja (macOS)"
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      - name: "Configure"
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DLIBUNICODE_TOOLS=ON
+          -DLIBUNICODE_TESTING=OFF
+          -DLIBUNICODE_BENCHMARK=OFF
+          -DLIBUNICODE_EXAMPLES=OFF
+          -DLIBUNICODE_BUILD_STATIC=ON
+          -DPEDANTIC_COMPILER=OFF
+          ${{ matrix.cmake_extra }}
+
+      - name: "Build"
+        run: cmake --build build --target unicode-query
+
+      - name: "Strip binary"
+        if: runner.os != 'Windows'
+        run: strip ${{ matrix.binary_path }}
+
+      - name: "Verify binary"
+        run: ${{ matrix.binary_path }} help
+
+      - name: "Prepare artifact"
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            cp ${{ matrix.binary_path }} ${{ matrix.artifact_name }}.exe
+          else
+            cp ${{ matrix.binary_path }} ${{ matrix.artifact_name }}
+          fi
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_name }}*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Download all artifacts"
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: "Prepare release assets"
+        run: |
+          mkdir -p release
+          for dir in artifacts/*/; do
+            cp "$dir"* release/
+          done
+
+      - name: "Generate checksums"
+        working-directory: release
+        run: sha256sum * > SHA256SUMS
+
+      - name: "Upload release assets"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload --clobber "${{ github.event.release.tag_name }}" release/*
