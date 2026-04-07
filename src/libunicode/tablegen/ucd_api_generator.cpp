@@ -112,7 +112,9 @@ void generateUcdApiFiles(UcdParser const& parser, std::string const& outputDir)
 
 #include <libunicode/ucd_enums.h>
 
+#include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 namespace unicode
@@ -127,6 +129,7 @@ namespace unicode
 
 #include <algorithm>
 #include <array>
+#include <string_view>
 
 namespace unicode
 {
@@ -562,6 +565,53 @@ namespace unicode
         header << "/// Returns the Bidi_Mirroring_Glyph for a codepoint.\n";
         header << "/// If no mirroring glyph exists, returns the input codepoint unchanged.\n";
         header << "[[nodiscard]] char32_t bidi_mirroring_glyph(char32_t codepoint) noexcept;\n\n";
+    }
+
+    // ---- Age (make_age: version string -> Age enum) ----
+    {
+        auto const& pva = parser.propertyValueAliases();
+        auto const it = pva.find("Age");
+        if (it != pva.end())
+        {
+            auto const& ageAliases = it->second;
+
+            // Collect abbreviation -> full name pairs, excluding "NA" (Unassigned)
+            struct AgeEntry
+            {
+                std::string abbrev;
+                std::string enumName;
+            };
+            std::vector<AgeEntry> entries;
+            for (auto const& [abbrev, full]: ageAliases)
+            {
+                if (full == "Unassigned")
+                    continue;
+                entries.push_back({ abbrev, full });
+            }
+            std::sort(entries.begin(), entries.end(), [](auto const& a, auto const& b) { return a.abbrev < b.abbrev; });
+
+            // Header declaration
+            header << "/// Parses a Unicode version string (e.g., \"1.1\", \"17.0\") to an Age enum value.\n";
+            header << "/// @param value The version string from DerivedAge.txt.\n";
+            header << "/// @return The corresponding Age enum value, or std::nullopt if not recognized.\n";
+            header << "[[nodiscard]] std::optional<Age> make_age(std::string_view value) noexcept;\n\n";
+
+            // Implementation
+            impl << "std::optional<Age> make_age(std::string_view value) noexcept {\n";
+            impl << "    using namespace std::string_view_literals;\n";
+            impl << "    // clang-format off\n";
+            impl << std::format("    static constexpr auto mappings = std::array<std::pair<std::string_view, Age>, {}>{{\n",
+                                entries.size());
+            for (auto const& entry: entries)
+                impl << std::format("        std::pair{{ \"{}\"sv, Age::{} }},\n", entry.abbrev, entry.enumName);
+            impl << "    };\n";
+            impl << "    // clang-format on\n";
+            impl << "    for (auto const& [key, val] : mappings)\n";
+            impl << "        if (key == value)\n";
+            impl << "            return val;\n";
+            impl << "    return std::nullopt;\n";
+            impl << "}\n\n";
+        }
     }
 
     // ---- File footers ----

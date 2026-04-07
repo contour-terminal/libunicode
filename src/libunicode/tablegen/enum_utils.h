@@ -114,4 +114,48 @@ inline auto buildEastAsianWidthMembers() -> std::vector<std::string>
     return { "Ambiguous", "FullWidth", "HalfWidth", "Neutral", "Narrow", "Wide", "Unspecified" };
 }
 
+/// Parse a version enum name like "V1_1" or "V10_0" into (major, minor).
+inline auto parseVersionNumber(std::string const& name) -> std::pair<int, int>
+{
+    // Expected format: "V{major}_{minor}"
+    auto const underscore = name.find('_');
+    auto const major = std::stoi(name.substr(1, underscore - 1));
+    auto const minor = std::stoi(name.substr(underscore + 1));
+    return { major, minor };
+}
+
+/// Build Age enum members sorted by version number: Unassigned, V1_1, V2_0, V2_1, ..., V17_0.
+/// This ensures Age::V1_1 < Age::V2_0 < ... < Age::V10_0 < ... < Age::V17_0.
+inline auto buildAgeEnumMembers(std::map<std::string, std::string> const& aliases) -> std::vector<std::string>
+{
+    std::vector<std::string> result;
+    result.push_back("Unassigned");
+
+    std::vector<std::pair<std::pair<int, int>, std::string>> versioned;
+    for (auto const& [abbrev, full]: aliases)
+    {
+        if (full == "Unassigned")
+            continue;
+        versioned.emplace_back(parseVersionNumber(full), full);
+    }
+
+    std::sort(versioned.begin(), versioned.end());
+    for (auto const& [ver, name]: versioned)
+        result.push_back(name);
+
+    return result;
+}
+
+/// Build Age name->index map with version-number ordering.
+/// Also adds abbreviation mappings from the PVA aliases.
+inline auto buildAgeIndex(std::map<std::string, std::string> const& aliases) -> std::map<std::string, uint8_t>
+{
+    auto const members = buildAgeEnumMembers(aliases);
+    auto result = buildEnumIndexMap(members);
+    for (auto const& [abbrev, full]: aliases)
+        if (result.count(full))
+            result[abbrev] = result[full];
+    return result;
+}
+
 } // namespace tablegen
