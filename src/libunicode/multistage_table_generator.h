@@ -19,12 +19,14 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <cstring>
 #include <iomanip>
 #include <iterator>
 #include <limits>
 #include <optional>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 namespace support
@@ -53,7 +55,7 @@ template <typename T,
           typename SourceType,
           typename Stage1ElementType,
           typename Stage2ElementType,
-          typename Stage3Finder,
+          typename ValueHasher,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 class multistage_table_generator
@@ -62,7 +64,15 @@ class multistage_table_generator
     T const* _input;
     size_t _inputSize;
     multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& _output;
-    Stage3Finder _stage3Finder;
+    ValueHasher _valueHasher;
+
+    multistage_table_generator(T const* input,
+                               size_t inputSize,
+                               multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output,
+                               ValueHasher hasher):
+        _input(input), _inputSize(inputSize), _output(output), _valueHasher(std::move(hasher))
+    {
+    }
 
     void generate()
     {
@@ -112,64 +122,77 @@ class multistage_table_generator
         return static_cast<Stage1ElementType>(stage2Index);
     }
 
-    std::optional<size_t> find_same_block(size_t blockStart) const noexcept
+    /// FNV-1a hash over a block of elements.
+    size_t hashBlock(size_t blockStart) const noexcept
+    {
+        size_t hash = 14695981039346656037ULL;
+        auto const* bytes = reinterpret_cast<char const*>(&_input[blockStart]);
+        auto const byteCount = BlockSize * sizeof(T);
+        for (size_t i = 0; i < byteCount; ++i)
+        {
+            hash ^= static_cast<size_t>(static_cast<unsigned char>(bytes[i]));
+            hash *= 1099511628211ULL;
+        }
+        return hash;
+    }
+
+    std::optional<size_t> find_same_block(size_t blockStart)
     {
         assert(blockStart % BlockSize == 0);
         assert(blockStart + BlockSize <= _inputSize);
 
-        for (size_t otherBlockStart = 0; otherBlockStart < blockStart; otherBlockStart += BlockSize)
-            if (is_same_block(otherBlockStart, blockStart))
-                return { otherBlockStart / BlockSize };
-
+        auto const h = hashBlock(blockStart);
+        if (auto it = _blockHashMap.find(h); it != _blockHashMap.end())
+        {
+            for (auto otherStart: it->second)
+                if (is_same_block(otherStart, blockStart))
+                    return { otherStart / BlockSize };
+        }
+        _blockHashMap[h].push_back(blockStart);
         return std::nullopt;
     }
 
-    /// Tests if two given blocks are equivalent.
-    /// @p a and @p b are both absolute offsets to the start of each block.
     bool is_same_block(size_t a, size_t b) const noexcept
     {
-        assert(a % BlockSize == 0);
-        assert(b % BlockSize == 0);
-        assert(a + BlockSize <= _inputSize);
-        assert(b + BlockSize <= _inputSize);
-
-        for (size_t i = 0; i < BlockSize; ++i)
-            if (_input[a + i] != _input[b + i])
-                return false;
-
-        return true;
+        return std::memcmp(&_input[a], &_input[b], BlockSize * sizeof(T)) == 0;
     }
 
     Stage2ElementType get_or_create_stage3_index(SourceType stage1Index)
     {
-        auto& properties = _output.stage3;
-        auto const propertyIterator = _stage3Finder(properties.begin(), properties.end(), _input[stage1Index]);
-        if (propertyIterator != properties.end())
-            return static_cast<Stage2ElementType>(distance(properties.begin(), propertyIterator));
+        auto const& value = _input[stage1Index];
+        if (auto it = _stage3Map.find(value); it != _stage3Map.end())
+            return it->second;
 
-        auto const stage3Index = properties.size();
-        properties.emplace_back(_input[stage1Index]);
+        auto const stage3Index = static_cast<Stage2ElementType>(_output.stage3.size());
+        _output.stage3.emplace_back(value);
         assert(stage3Index < std::numeric_limits<Stage2ElementType>::max());
-        return static_cast<Stage2ElementType>(stage3Index);
+        _stage3Map[value] = stage3Index;
+        return stage3Index;
     }
+
+    std::unordered_map<size_t, std::vector<size_t>> _blockHashMap;
+    std::unordered_map<T, Stage2ElementType, ValueHasher> _stage3Map;
 };
 
 template <typename T,
           typename SourceType,
           typename Stage1ElementType,
           typename Stage2ElementType,
-          typename Stage3Finder,
+          typename ValueHasher,
           SourceType BlockSize,
           SourceType MaxValue = std::numeric_limits<SourceType>::max()>
 void generate(T const* input,
               size_t inputSize,
               multistage_table<T, SourceType, Stage1ElementType, Stage2ElementType, BlockSize, MaxValue>& output,
-              Stage3Finder&& stage3Finder)
+              ValueHasher&& hasher)
 {
-    auto builder =
-        multistage_table_generator<T, SourceType, Stage1ElementType, Stage2ElementType, Stage3Finder, BlockSize, MaxValue> {
-            input, inputSize, output, std::forward<Stage3Finder>(stage3Finder)
-        };
+    auto builder = multistage_table_generator<T,
+                                              SourceType,
+                                              Stage1ElementType,
+                                              Stage2ElementType,
+                                              std::remove_reference_t<ValueHasher>,
+                                              BlockSize,
+                                              MaxValue>(input, inputSize, output, std::forward<ValueHasher>(hasher));
     builder.generate();
 }
 

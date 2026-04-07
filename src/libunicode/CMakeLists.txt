@@ -10,10 +10,36 @@ function(ExtractZipArchive ZIP_FILE OUTPUT_DIR)
     endif()
 endfunction()
 
+# Check whether all auto-generated source files already exist.
+# When they do, skip UCD download and the code-generation pipeline.
+set(_LIBUNICODE_GENERATED_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_fmt.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/case_normalization_data.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+)
+
+set(LIBUNICODE_HAS_PREGENERATED_FILES TRUE)
+foreach(_gen_file IN LISTS _LIBUNICODE_GENERATED_FILES)
+    if(NOT EXISTS "${_gen_file}")
+        set(LIBUNICODE_HAS_PREGENERATED_FILES FALSE)
+        break()
+    endif()
+endforeach()
+
 # Automatically fetch Unicode database if not present.
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-generated
-    if(NOT IS_DIRECTORY ${LIBUNICODE_UCD_DIR})
-        if(NOT EXISTS ${LIBUNICODE_UCD_ZIP_FILE})
+# Skip download entirely when all generated files already exist on disk,
+# since neither mktables.py nor unicode_tablegen will need to run.
+if(LIBUNICODE_HAS_PREGENERATED_FILES)
+    message(STATUS "[libunicode] All generated source files found; skipping UCD download and code generation.")
+else()
+    if(NOT IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
+        if(NOT EXISTS "${LIBUNICODE_UCD_ZIP_FILE}")
             file(DOWNLOAD ${LIBUNICODE_UCD_ZIP_DOWNLOAD_URL} ${LIBUNICODE_UCD_ZIP_FILE} SHOW_PROGRESS STATUS LIBUNICODE_UCD_ZIP_DOWNLOAD_STATUS EXPECTED_MD5 ${LIBUNICODE_UCD_MD5})
         endif()
         ExtractZipArchive("${LIBUNICODE_UCD_ZIP_FILE}" "${LIBUNICODE_UCD_DIR}")
@@ -21,24 +47,6 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp) # if c++ files not auto-gene
 endif()
 
 # =========================================================================================================
-if(IS_DIRECTORY "${LIBUNICODE_UCD_DIR}")
-    find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    add_custom_command(
-        OUTPUT
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_fmt.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/case_normalization_data.h"
-        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/mktables.py" "${LIBUNICODE_UCD_DIR}"
-        DEPENDS mktables.py
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-        COMMENT "Generating UCD API and tables from ${LIBUNICODE_UCD_DIR}"
-        VERBATIM
-        USES_TERMINAL
-    )
-endif()
 
 set(LIBUNICODE_LIB_MODE)
 if(LIBUNICODE_BUILD_STATIC)
@@ -65,39 +73,40 @@ target_include_directories(unicode_ucd PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_
 
 # =========================================================================================================
 
-# Emscripten builds use pre-generated tablegen output files checked into the repo.
-# Running tablegen as WASM exceeds memory limits for the full Unicode database.
-if(NOT EMSCRIPTEN)
+# The code-generation pipeline (tablegen, loader) is needed only when:
+# 1. Not building for Emscripten (which can't run tablegen), AND
+# 2. Pre-generated files are not already present on disk.
+set(LIBUNICODE_NEEDS_TABLEGEN FALSE)
+if(NOT EMSCRIPTEN AND NOT LIBUNICODE_HAS_PREGENERATED_FILES)
+    set(LIBUNICODE_NEEDS_TABLEGEN TRUE)
+endif()
+
+if(LIBUNICODE_NEEDS_TABLEGEN)
+    # Unified C++ tablegen: self-contained, no library dependencies.
+    # Generates all 9 UCD source files in a single invocation.
+    add_executable(unicode_tablegen
+        tablegen/tablegen_main.cpp
+        tablegen/ucd_parser.cpp
+        tablegen/enum_generator.cpp
+        tablegen/ucd_api_generator.cpp
+        tablegen/case_norm_generator.cpp
+        tablegen/multistage_generator.cpp
+    )
+    set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
+    target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
+    target_include_directories(unicode_tablegen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
     add_custom_command(
-        OUTPUT
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+        OUTPUT ${_LIBUNICODE_GENERATED_FILES}
         COMMAND unicode_tablegen
             "${LIBUNICODE_UCD_DIR}"
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
-            "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}"
             "unicode::precompiled"
-        DEPENDS unicode_tablegen unicode::ucd
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMENT "Generating UCD codepoint properties tables from ${LIBUNICODE_UCD_DIR}"
+        DEPENDS unicode_tablegen
+        COMMENT "Generating all UCD tables from ${LIBUNICODE_UCD_DIR}"
         VERBATIM
         USES_TERMINAL
     )
-
-    add_library(unicode_loader ${LIBUNICODE_LIB_MODE} codepoint_properties_loader.h codepoint_properties_loader.cpp)
-    add_library(unicode::loader ALIAS unicode_loader)
-    if(LIBUNICODE_TABLEGEN_FASTBUILD)
-        target_compile_definitions(unicode_loader PRIVATE LIBUNICODE_TABLEGEN_FASTBUILD)
-    endif()
-    set_target_properties(unicode_loader PROPERTIES
-        VERSION "${PROJECT_VERSION}"
-        SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    )
-    target_include_directories(unicode_loader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-                                                     $<INSTALL_INTERFACE:include>)
-    target_link_libraries(unicode_loader PUBLIC  unicode::ucd)
 endif()
 
 # =========================================================================================================
@@ -120,9 +129,7 @@ if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATI
             scan512.cpp
             PROPERTIES
             COMPILE_FLAGS
-            -mavx512f
-            COMPILE_FLAGS
-            -mavx512bw
+            "-mavx512f -mavx512bw"
             )
     endif()
 endif()
@@ -194,13 +201,22 @@ target_include_directories(unicode PUBLIC $<BUILD_INTERFACE:${${PROJECT_NAME}_SO
 )
 target_link_libraries(unicode PUBLIC unicode::ucd)
 
-if(NOT EMSCRIPTEN)
-    add_executable(unicode_tablegen tablegen.cpp)
-    set_target_properties(unicode_tablegen PROPERTIES CMAKE_BUILD_TYPE Release)
-    target_compile_definitions(unicode_tablegen PRIVATE LIBUNICODE_UCD_VERSION="${LIBUNICODE_UCD_VERSION}")
-    target_link_libraries(unicode_tablegen PRIVATE unicode::loader)
-endif()
 
+# {{{ clean-generated target
+add_custom_target(clean-generated
+    COMMAND ${CMAKE_COMMAND} -E rm -f
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_enums.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_fmt.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ucd_ostream.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/case_normalization_data.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_data.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/codepoint_properties_names.cpp"
+    COMMENT "Removing all auto-generated UCD source files. Reconfigure to regenerate."
+)
+# }}}
 
 # {{{ installation
 set(LIBUNICODE_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/libunicode" CACHE PATH "Installation directory for cmake files, a relative path that will be joined with ${CMAKE_INSTALL_PREFIX} or an absolute path.")
@@ -209,9 +225,6 @@ set(LIBUNICODE_INSTALL_CMAKE_FILES ${MASTER_PROJECT} CACHE BOOL "Decides whether
 # Create and install package configuration and version files.
 # Install library and headers.
 set(_LIBUNICODE_INSTALL_TARGETS unicode_ucd unicode)
-if(NOT EMSCRIPTEN)
-    list(APPEND _LIBUNICODE_INSTALL_TARGETS unicode_loader)
-endif()
 install(TARGETS ${_LIBUNICODE_INSTALL_TARGETS}
         EXPORT libunicode-targets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -280,11 +293,10 @@ if(LIBUNICODE_TESTING)
     )
 
     if(NOT Catch2_FOUND)
-        # supress conversion warnings for Catch2
+        # Suppress all warnings for embedded third-party Catch2.
         # https://github.com/catchorg/Catch2/issues/2583
-        # https://github.com/SFML/SFML/blob/e45628e2ebc5843baa3739781276fa85a54d4653/test/CMakeLists.txt#L18-L22
-        set_target_properties(Catch2 PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
-        set_target_properties(Catch2WithMain PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+        suppress_thirdparty_warnings(Catch2)
+        suppress_thirdparty_warnings(Catch2WithMain)
         get_target_property(CATCH2_INCLUDE_DIRS Catch2 INTERFACE_INCLUDE_DIRECTORIES)
         target_include_directories(Catch2 SYSTEM INTERFACE ${CATCH2_INCLUDE_DIRS})
     endif()
@@ -296,12 +308,12 @@ endif()
 
 
 
-# {{{ unicode_test
+# {{{ unicode_benchmark
 if(LIBUNICODE_BENCHMARK)
     if(NOT benchmark_FOUND)
-        # supress warnings for benchmark
+        # Suppress all warnings for embedded third-party benchmark.
+        suppress_thirdparty_warnings(benchmark)
         get_target_property(BENCHMARK_INCLUDE_DIRS benchmark INTERFACE_INCLUDE_DIRECTORIES)
-        set_target_properties(benchmark PROPERTIES COMPILE_OPTIONS "" EXPORT_COMPILE_COMMANDS OFF)
         target_include_directories(benchmark SYSTEM INTERFACE ${BENCHMARK_INCLUDE_DIRS})
     endif()
 
