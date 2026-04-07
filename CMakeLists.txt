@@ -1,8 +1,17 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
+# Prevent CMake from injecting /W3 into default MSVC compile flags.
+# We manage warning levels ourselves in PedanticCompiler.cmake and below.
+cmake_policy(SET CMP0092 NEW)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 project(libunicode VERSION "0.8.0" LANGUAGES CXX)
+
+# Suppress CMake "unused variable" warning for CMAKE_TOOLCHAIN_FILE
+# when using presets that reference vcpkg.
+if(CMAKE_TOOLCHAIN_FILE)
+endif()
 
 set(MASTER_PROJECT OFF)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
@@ -24,15 +33,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
-if(("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
+if(MSVC)
+    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        # clang-cl interprets -Wall as MSVC /Wall (= -Weverything).
+        # /W4 maps to Clang's -Wall -Wextra which is what we actually want.
+        add_compile_options(/W4)
+    else()
+        add_compile_options(/W3)
+    endif()
+    add_definitions(-DNOMINMAX)
+    add_compile_options(/utf-8)
+elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     add_compile_options(-Wall)
     add_compile_options(-Wextra)
     if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Release")
         add_definitions(-D_GLIBCXX_DEBUG)
     endif()
-elseif(DEFINED MSVC)
-    add_definitions(-DNOMINMAX)
-    add_compile_options(/utf-8)
 endif()
 
 include(EnableCcache)

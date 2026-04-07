@@ -76,11 +76,11 @@ jobs:
           #brew update
           ./scripts/install-deps.sh
       - name: "Generate build files"
-        run: cmake --preset macos-release
+        run: cmake --preset clang-release
       - name: "Build"
-        run: cmake --build --preset macos-release
+        run: cmake --build --preset clang-release
       - name: "Test"
-        run: ctest --preset macos-release
+        run: ctest --preset clang-release
   # }}}
 
   windows:
@@ -88,6 +88,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: "Setup MSVC environment"
+        uses: ilammy/msvc-dev-cmd@v1
       - name: "vcpkg: Install dependencies"
         uses: lukka/run-vcpkg@v11.1
         id: runvcpkg
@@ -97,11 +99,13 @@ jobs:
       - name: "List cmake presets"
         run: cmake --list-presets
       - name: "Generate build files"
-        run: cmake --preset windows-cl-release -DCMAKE_TOOLCHAIN_FILE="${{ runner.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake"
+        run: cmake --preset cl-release
+        env:
+          VCPKG_ROOT: ${{ runner.workspace }}/vcpkg
       - name: "Build"
-        run: cmake --build --preset windows-cl-release
+        run: cmake --build --preset cl-release
       - name: "test"
-        run: ctest --preset windows-cl-release
+        run: ctest --preset cl-release
 
   Fedora:
     name: Fedora
@@ -116,9 +120,9 @@ jobs:
           PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
           dnf install -y unicode-ucd
       - name: configure
-        run: cmake --preset linux-gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+        run: cmake --preset gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
       - name: build
-        run: cmake --build --preset linux-gcc-debug -j$(nproc)
+        run: cmake --build --preset gcc-debug -j$(nproc)
       - name: test
         run: |
-          ctest --preset linux-gcc-debug
+          ctest --preset gcc-debug
