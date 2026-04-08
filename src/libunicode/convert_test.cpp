@@ -72,6 +72,120 @@ TEST_CASE("convert.8_to_32", "[convert]")
     CHECK(output == U"[ö€😀");
 }
 
+TEST_CASE("convert.16_to_8", "[convert]")
+{
+    auto constexpr input = u"[ö€😀"sv;
+    auto output = string {};
+    unicode::convert_to<char>(input, back_inserter(output));
+    CHECK(output.size() == 10); // 1 + 2 + 3 + 4
+    CHECK(output == "[ö€😀");
+}
+
+TEST_CASE("convert.16_to_32", "[convert]")
+{
+    auto constexpr input = u"[ö€😀"sv;
+    auto output = u32string {};
+    unicode::convert_to<char32_t>(input, back_inserter(output));
+    CHECK(output.size() == 4);
+    CHECK(output == U"[ö€😀");
+}
+
+TEST_CASE("convert.32_to_8", "[convert]")
+{
+    auto constexpr input = U"[ö€😀"sv;
+    auto output = string {};
+    unicode::convert_to<char>(input, back_inserter(output));
+    CHECK(output.size() == 10); // 1 + 2 + 3 + 4
+    CHECK(output == "[ö€😀");
+}
+
+TEST_CASE("convert.32_to_16", "[convert]")
+{
+    auto constexpr input = U"[ö€😀"sv;
+    auto output = u16string {};
+    unicode::convert_to<char16_t>(input, back_inserter(output));
+    CHECK(output.size() == 5); // 1 + 1 + 1 + 2 (surrogate pair)
+    CHECK(output == u"[ö€😀");
+}
+
+TEST_CASE("convert.surrogate_pair_boundaries", "[convert]")
+{
+    // U+10000: minimum supplementary codepoint (first surrogate pair)
+    {
+        auto const cp = U"\U00010000"sv;
+        auto u16 = u16string {};
+        unicode::convert_to<char16_t>(cp, back_inserter(u16));
+        REQUIRE(u16.size() == 2);
+        CHECK(u16[0] == char16_t(0xD800));
+        CHECK(u16[1] == char16_t(0xDC00));
+
+        // Round-trip back to UTF-32
+        auto u32 = u32string {};
+        unicode::convert_to<char32_t>(u16string_view(u16), back_inserter(u32));
+        REQUIRE(u32.size() == 1);
+        CHECK(u32[0] == U'\U00010000');
+    }
+
+    // U+10FFFF: maximum valid Unicode codepoint
+    {
+        auto const cp = U"\U0010FFFF"sv;
+        auto u16 = u16string {};
+        unicode::convert_to<char16_t>(cp, back_inserter(u16));
+        REQUIRE(u16.size() == 2);
+        CHECK(u16[0] == char16_t(0xDBFF));
+        CHECK(u16[1] == char16_t(0xDFFF));
+
+        // Round-trip back to UTF-32
+        auto u32 = u32string {};
+        unicode::convert_to<char32_t>(u16string_view(u16), back_inserter(u32));
+        REQUIRE(u32.size() == 1);
+        CHECK(u32[0] == U'\U0010FFFF');
+    }
+
+    // U+1F600: 😀 emoji (typical supplementary plane character)
+    {
+        auto const cp = U"\U0001F600"sv;
+        auto u16 = u16string {};
+        unicode::convert_to<char16_t>(cp, back_inserter(u16));
+        REQUIRE(u16.size() == 2);
+        CHECK(u16[0] == char16_t(0xD83D));
+        CHECK(u16[1] == char16_t(0xDE00));
+
+        auto u32 = u32string {};
+        unicode::convert_to<char32_t>(u16string_view(u16), back_inserter(u32));
+        REQUIRE(u32.size() == 1);
+        CHECK(u32[0] == U'\U0001F600');
+    }
+}
+
+TEST_CASE("convert.utf16_invalid_surrogates", "[convert]")
+{
+    // Lone high surrogate (0xD800) without a following low surrogate
+    {
+        auto const input = u16string { char16_t(0xD800), char16_t(0x0041) }; // high surrogate + 'A'
+        auto output = u32string {};
+        unicode::convert_to<char32_t>(u16string_view(input), back_inserter(output));
+        // The decoder should reject the invalid pair and skip to 'A'
+        CHECK(output.empty()); // decoder returns nullopt for bad pair, then 'A' is consumed as ch1
+    }
+
+    // Lone low surrogate (0xDC00) at start
+    {
+        auto const input = u16string { char16_t(0xDC00) };
+        auto output = u32string {};
+        unicode::convert_to<char32_t>(u16string_view(input), back_inserter(output));
+        CHECK(output.empty()); // standalone low surrogate is invalid
+    }
+
+    // Surrogate range codepoint fed to UTF-16 encoder should be silently dropped
+    {
+        auto const input = U"\xD800"sv; // surrogate codepoint
+        auto output = u16string {};
+        unicode::convert_to<char16_t>(input, back_inserter(output));
+        CHECK(output.empty()); // encoder rejects codepoints in surrogate range
+    }
+}
+
 TEST_CASE("convert.utf8.incremental_decode", "[utf8]")
 {
     auto constexpr values = string_view {
