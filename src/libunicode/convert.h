@@ -316,6 +316,16 @@ namespace detail // {{{
             *t++ = c;
         return t;
     }
+
+    // SIMD-accelerated UTF-8 conversion dispatchers (defined in convert.cpp)
+    size_t convert_utf8_to_utf32(char const* input, size_t inputSize, char32_t* output) noexcept;
+    size_t convert_utf8_to_utf16(char const* input, size_t inputSize, char16_t* output) noexcept;
+
+    // Arch-specific SIMD instantiations (defined in convert256.cpp / convert512.cpp)
+    size_t convert_utf8_to_utf32_256(char const* input, size_t inputSize, char32_t* output) noexcept;
+    size_t convert_utf8_to_utf32_512(char const* input, size_t inputSize, char32_t* output) noexcept;
+    size_t convert_utf8_to_utf16_256(char const* input, size_t inputSize, char16_t* output) noexcept;
+    size_t convert_utf8_to_utf16_512(char const* input, size_t inputSize, char16_t* output) noexcept;
 } // namespace detail
 
 /// @p _input with element type @p S to the appropricate type of @p _output.
@@ -344,9 +354,34 @@ OutputIterator convert_to(std::basic_string_view<S> input, OutputIterator output
 template <typename T, typename S>
 std::basic_string<T> convert_to(std::basic_string_view<S> in)
 {
-    std::basic_string<T> out;
-    convert_to<T>(in, std::back_inserter(out));
-    return out;
+    // SIMD fast path for UTF-8 -> UTF-32
+    if constexpr (std::is_same_v<S, char> && std::is_same_v<T, char32_t>)
+    {
+        if (in.empty())
+            return {};
+        std::basic_string<T> out;
+        out.resize(in.size()); // worst case: every byte is ASCII -> 1 char32_t each
+        auto const written = detail::convert_utf8_to_utf32(in.data(), in.size(), out.data());
+        out.resize(written);
+        return out;
+    }
+    // SIMD fast path for UTF-8 -> UTF-16
+    else if constexpr (std::is_same_v<S, char> && std::is_same_v<T, char16_t>)
+    {
+        if (in.empty())
+            return {};
+        std::basic_string<T> out;
+        out.resize(in.size()); // worst case: every byte is ASCII -> 1 char16_t each
+        auto const written = detail::convert_utf8_to_utf16(in.data(), in.size(), out.data());
+        out.resize(written);
+        return out;
+    }
+    else
+    {
+        std::basic_string<T> out;
+        convert_to<T>(in, std::back_inserter(out));
+        return out;
+    }
 }
 
 template <typename T,

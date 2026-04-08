@@ -63,5 +63,62 @@ BENCHMARK(benchmarkWithOffset<120>);
 BENCHMARK(benchmarkWithOffset<125>);
 BENCHMARK(benchmarkWithOffset<130>);
 
+// --- UTF-8 -> UTF-32 conversion benchmarks ---
+
+template <size_t L>
+static void BM_convert_utf8_to_utf32_ascii(benchmark::State& benchmarkState)
+{
+    auto const input = std::string(L, 'A');
+    auto const sv = std::string_view(input);
+    for (auto _: benchmarkState)
+    {
+        benchmark::DoNotOptimize(unicode::convert_to<char32_t>(sv));
+    }
+}
+
+template <size_t L>
+static void BM_convert_utf8_to_utf32_mixed(benchmark::State& benchmarkState)
+{
+    // Build input: 16 ASCII chars then a 4-byte emoji, repeating
+    std::string input;
+    while (input.size() < L)
+        input += std::string(16, 'x') + "\xF0\x9F\x98\x80";
+    input.resize(L);
+    auto const sv = std::string_view(input);
+    for (auto _: benchmarkState)
+    {
+        benchmark::DoNotOptimize(unicode::convert_to<char32_t>(sv));
+    }
+}
+
+template <size_t L>
+static void BM_convert_utf8_to_utf16_ascii(benchmark::State& benchmarkState)
+{
+    auto const input = std::string(L, 'B');
+    auto const sv = std::string_view(input);
+    for (auto _: benchmarkState)
+    {
+        benchmark::DoNotOptimize(unicode::convert_to<char16_t>(sv));
+    }
+}
+
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<16>);
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<64>);
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<256>);
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<1024>);
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<65536>);
+BENCHMARK(BM_convert_utf8_to_utf32_ascii<1048576>);
+
+BENCHMARK(BM_convert_utf8_to_utf32_mixed<256>);
+BENCHMARK(BM_convert_utf8_to_utf32_mixed<1024>);
+BENCHMARK(BM_convert_utf8_to_utf32_mixed<65536>);
+
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<16>);
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<64>);
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<256>);
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<1024>);
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<65536>);
+BENCHMARK(BM_convert_utf8_to_utf16_ascii<1048576>);
+
 // Run the benchmark
 BENCHMARK_MAIN();
