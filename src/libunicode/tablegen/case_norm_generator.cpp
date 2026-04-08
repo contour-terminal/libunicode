@@ -192,6 +192,75 @@ namespace
         out << "}};\n";
     }
 
+    /// Maps decomposition type string from UnicodeData.txt to Decomposition_Type enum ordinal.
+    [[nodiscard]] uint8_t decompositionTypeOrdinal(std::string const& type) noexcept
+    {
+        // clang-format off
+        if (type == "circle")   return 1;
+        if (type == "compat")   return 2;
+        if (type == "final")    return 3;
+        if (type == "font")     return 4;
+        if (type == "fraction") return 5;
+        if (type == "initial")  return 6;
+        if (type == "isolated") return 7;
+        if (type == "medial")   return 8;
+        if (type == "narrow")   return 9;
+        if (type == "noBreak")  return 10;
+        if (type == "small")    return 12;
+        if (type == "square")   return 13;
+        if (type == "sub")      return 14;
+        if (type == "super")    return 15;
+        if (type == "vertical") return 16;
+        if (type == "wide")     return 17;
+        // clang-format on
+        return 2; // Default to Compat
+    }
+
+    void writeCompatibilityDecompositionTable(std::ofstream& out, std::map<char32_t, Decomposition> const& decomps)
+    {
+        // Filter to compatibility only (type != "canonical")
+        std::vector<std::pair<char32_t, Decomposition const*>> compat;
+        for (auto const& [cp, d]: decomps)
+            if (d.type != "canonical")
+                compat.emplace_back(cp, &d);
+        std::sort(compat.begin(), compat.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
+
+        // Find max length
+        size_t maxLen = 4;
+        for (auto const& [cp, d]: compat)
+            maxLen = std::max(maxLen, d->targets.size());
+
+        out << "// Compatibility decomposition mappings\n";
+        out << std::format("// Total entries: {}, max length: {}\n", compat.size(), maxLen);
+        out << "struct compatibility_decomposition_entry {\n";
+        out << "    char32_t source;\n";
+        out << std::format("    char32_t targets[{}];\n", maxLen);
+        out << "    uint8_t length;\n";
+        out << "    uint8_t decomp_type; // maps to Decomposition_Type enum ordinal\n";
+        out << "};\n\n";
+        out << std::format(
+            "inline constexpr std::array<compatibility_decomposition_entry, {}> compatibility_decomposition_table {{{{\n",
+            compat.size());
+
+        for (size_t i = 0; i < compat.size(); ++i)
+        {
+            auto const& [cp, d] = compat[i];
+            auto comma = (i < compat.size() - 1) ? "," : "";
+            auto padded = d->targets;
+            while (padded.size() < maxLen)
+                padded.push_back(char32_t(0));
+            out << std::format("    {{ 0x{:04X}, {{ ", static_cast<unsigned>(cp));
+            for (size_t j = 0; j < padded.size(); ++j)
+            {
+                if (j > 0)
+                    out << ", ";
+                out << std::format("0x{:04X}", static_cast<unsigned>(padded[j]));
+            }
+            out << std::format(" }}, {}, {} }}{}\n", d->targets.size(), decompositionTypeOrdinal(d->type), comma);
+        }
+        out << "}};\n";
+    }
+
     void writeQuickCheckTable(std::ofstream& out, std::set<char32_t> const& codepoints, std::string const& name)
     {
         auto sorted = std::vector<char32_t>(codepoints.begin(), codepoints.end());
@@ -262,8 +331,12 @@ namespace unicode::detail
     writeCccTable(out, parser.ccc());
     out << "\n";
 
-    // Decomposition
+    // Canonical decomposition
     writeDecompositionTable(out, parser.decompositions());
+    out << "\n";
+
+    // Compatibility decomposition
+    writeCompatibilityDecompositionTable(out, parser.decompositions());
     out << "\n";
 
     // Composition
