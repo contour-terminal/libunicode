@@ -148,20 +148,23 @@ inline ConvertResult from_utf8(char const* bytes, size_t* size)
     return from_utf8((uint8_t const*) (bytes), size);
 }
 
+namespace detail
+{
+    // Forward declaration of SIMD-accelerated UTF-8 -> UTF-32 dispatcher (defined in convert.cpp).
+    size_t convert_utf8_to_utf32(char const* input, size_t inputSize, char32_t* output) noexcept;
+} // namespace detail
+
+/// Converts a UTF-8 string to UTF-32, using SIMD acceleration when available.
 template <typename T = char32_t>
 inline std::basic_string<T> from_utf8(std::string_view bytes)
 {
     static_assert(sizeof(T) == 4);
+    if (bytes.empty())
+        return {};
     std::basic_string<T> s;
-    size_t offset = 0;
-    while (offset < bytes.size())
-    {
-        size_t i {};
-        ConvertResult const result = from_utf8(bytes.data() + offset, &i);
-        if (std::holds_alternative<Success>(result))
-            s += T(std::get<Success>(result).value);
-        offset += i;
-    }
+    s.resize(bytes.size()); // worst case: 1 codepoint per byte (all ASCII)
+    auto const written = detail::convert_utf8_to_utf32(bytes.data(), bytes.size(), reinterpret_cast<char32_t*>(s.data()));
+    s.resize(written);
     return s;
 }
 

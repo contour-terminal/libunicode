@@ -68,6 +68,27 @@ struct intrinsics<128, T>
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
 
     static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+
+    // --- Conversion primitives (SSE4.1) ---
+
+    /// Tests if all bytes in the vector have the high bit clear (all ASCII).
+    static inline bool all_ascii(vec_t a) noexcept { return _mm_movemask_epi8(a) == 0; }
+
+    /// Zero-extends the lower 4 bytes to 4 x 32-bit integers.
+    static inline vec_t cvtepu8_epi32(vec_t a) noexcept { return _mm_cvtepu8_epi32(a); }
+
+    /// Zero-extends the lower 8 bytes to 8 x 16-bit integers.
+    static inline vec_t cvtepu8_epi16(vec_t a) noexcept { return _mm_cvtepu8_epi16(a); }
+
+    /// Stores 128-bit vector to unaligned memory.
+    static inline void store(void* p, vec_t a) noexcept { _mm_storeu_si128(reinterpret_cast<vec_t*>(p), a); }
+
+    /// Shifts the vector right by N bytes, filling with zeros.
+    template <int N>
+    static inline vec_t shift_right_bytes(vec_t a) noexcept
+    {
+        return _mm_srli_si128(a, N);
+    }
 };
 
 template <typename T>
@@ -104,6 +125,26 @@ struct intrinsics<256, T>
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return a ^ b; }
 
     static inline uint32_t to_unsigned(mask_t a) noexcept { return static_cast<uint32_t>(a); }
+
+    // --- Conversion primitives (AVX2) ---
+
+    /// Tests if all bytes in the vector have the high bit clear (all ASCII).
+    static inline bool all_ascii(vec_t a) noexcept { return _mm256_movemask_epi8(a) == 0; }
+
+    /// Zero-extends 8 bytes from a 128-bit source to 8 x 32-bit integers in a 256-bit vector.
+    static inline vec_t cvtepu8_epi32(__m128i a) noexcept { return _mm256_cvtepu8_epi32(a); }
+
+    /// Zero-extends 16 bytes from a 128-bit source to 16 x 16-bit integers in a 256-bit vector.
+    static inline vec_t cvtepu8_epi16(__m128i a) noexcept { return _mm256_cvtepu8_epi16(a); }
+
+    /// Stores 256-bit vector to unaligned memory.
+    static inline void store(void* p, vec_t a) noexcept { _mm256_storeu_si256(reinterpret_cast<vec_t*>(p), a); }
+
+    /// Extracts the lower 128-bit lane.
+    static inline __m128i extract_lo128(vec_t a) noexcept { return _mm256_castsi256_si128(a); }
+
+    /// Extracts the upper 128-bit lane.
+    static inline __m128i extract_hi128(vec_t a) noexcept { return _mm256_extracti128_si256(a, 1); }
 };
 
 template <typename T>
@@ -138,6 +179,27 @@ struct intrinsics<512, T>
     static inline mask_t xor_mask(mask_t a, mask_t b) noexcept { return _kxor_mask64(a, b); }
 
     static inline uint64_t to_unsigned(mask_t a) noexcept { return static_cast<uint64_t>(a); }
+
+    // --- Conversion primitives (AVX-512) ---
+
+    /// Tests if all bytes in the vector have the high bit clear (all ASCII).
+    static inline bool all_ascii(vec_t a) noexcept { return _mm512_movepi8_mask(a) == 0; }
+
+    /// Zero-extends 16 bytes from a 128-bit source to 16 x 32-bit integers in a 512-bit vector.
+    static inline vec_t cvtepu8_epi32(__m128i a) noexcept { return _mm512_cvtepu8_epi32(a); }
+
+    /// Zero-extends 32 bytes from a 256-bit source to 32 x 16-bit integers in a 512-bit vector.
+    static inline vec_t cvtepu8_epi16(__m256i a) noexcept { return _mm512_cvtepu8_epi16(a); }
+
+    /// Stores 512-bit vector to unaligned memory.
+    static inline void store(void* p, vec_t a) noexcept { _mm512_storeu_si512(p, a); }
+
+    /// Extracts 128-bit lane at index I from a 512-bit vector.
+    template <int I>
+    static inline __m128i extract_i32x4(vec_t a) noexcept
+    {
+        return _mm512_extracti32x4_epi32(a, I);
+    }
 };
 
 #endif
@@ -276,6 +338,43 @@ struct intrinsics<128, T>
         //                      d2
         // Note: Little endian would return the correct value 4b (01001011) instead.
         return vgetq_lane_u8(paired64, 0) | ((int) vgetq_lane_u8(paired64, 8) << 8);
+    }
+
+    // --- Conversion primitives (NEON) ---
+
+    /// Tests if all bytes in the vector have the high bit clear (all ASCII).
+    static inline bool all_ascii(vec_t a) noexcept { return movemask_epi8(a) == 0; }
+
+    /// Stores 128-bit vector to unaligned memory as 32-bit integers.
+    static inline void store(void* p, vec_t a) noexcept { vst1q_s32(reinterpret_cast<int32_t*>(p), vreinterpretq_s32_s64(a)); }
+
+    /// Stores a uint32x4_t to unaligned memory.
+    static inline void store_u32(void* p, uint32x4_t a) noexcept { vst1q_u32(reinterpret_cast<uint32_t*>(p), a); }
+
+    /// Stores a uint16x8_t to unaligned memory.
+    static inline void store_u16(void* p, uint16x8_t a) noexcept { vst1q_u16(reinterpret_cast<uint16_t*>(p), a); }
+
+    /// Extracts the lower 8 bytes from a 128-bit vector as uint8x8_t.
+    static inline uint8x8_t get_low_u8(vec_t a) noexcept { return vget_low_u8(vreinterpretq_u8_s64(a)); }
+
+    /// Extracts the upper 8 bytes from a 128-bit vector as uint8x8_t.
+    static inline uint8x8_t get_high_u8(vec_t a) noexcept { return vget_high_u8(vreinterpretq_u8_s64(a)); }
+
+    /// Zero-extends 8 bytes to 8 x 16-bit integers (NEON widening).
+    static inline uint16x8_t cvtepu8_epi16_neon(uint8x8_t a) noexcept { return vmovl_u8(a); }
+
+    /// Zero-extends 4 bytes to 4 x 32-bit integers (two-stage NEON widening).
+    static inline uint32x4_t cvtepu8_epi32_neon(uint8x8_t a) noexcept
+    {
+        auto const wide16 = vmovl_u8(a);
+        return vmovl_u16(vget_low_u16(wide16));
+    }
+
+    /// Zero-extends the upper 4 of 8 bytes to 4 x 32-bit integers.
+    static inline uint32x4_t cvtepu8_epi32_high_neon(uint8x8_t a) noexcept
+    {
+        auto const wide16 = vmovl_u8(a);
+        return vmovl_u16(vget_high_u16(wide16));
     }
 };
 #endif
