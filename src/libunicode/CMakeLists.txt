@@ -118,18 +118,36 @@ if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATI
             simd_detector.cpp
             scan256.cpp
             scan512.cpp
+            convert256.cpp
+            convert512.cpp
             )
+        # Select appropriate SIMD flags for the compiler
+        if(MSVC AND NOT ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
+            set(_SSE41_FLAGS "")  # MSVC does not need special flags for SSE4.1 intrinsics
+            set(_AVX2_FLAGS "/arch:AVX2")
+            set(_AVX512_FLAGS "/arch:AVX512")
+        else()
+            set(_SSE41_FLAGS "-msse4.1")
+            set(_AVX2_FLAGS "-mavx2")
+            set(_AVX512_FLAGS "-mavx512f -mavx512bw")
+        endif()
         set_source_files_properties(
-            scan256.cpp
+            convert.cpp
             PROPERTIES
             COMPILE_FLAGS
-            -mavx2
+            "${_SSE41_FLAGS}"
             )
         set_source_files_properties(
-            scan512.cpp
+            scan256.cpp convert256.cpp
             PROPERTIES
             COMPILE_FLAGS
-            "-mavx512f -mavx512bw"
+            "${_AVX2_FLAGS}"
+            )
+        set_source_files_properties(
+            scan512.cpp convert512.cpp
+            PROPERTIES
+            COMPILE_FLAGS
+            "${_AVX512_FLAGS}"
             )
     endif()
 endif()
@@ -138,6 +156,7 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     capi.cpp
     case_mapping.cpp
     codepoint_properties.cpp
+    convert.cpp
     emoji_segmenter.cpp
     grapheme_segmenter.cpp
     normalization.cpp
@@ -183,6 +202,7 @@ set(public_headers
 )
 
 set(private_headers
+    convert_simd_impl.h
     multistage_table_generator.h
     scoped_timer.h
 )
