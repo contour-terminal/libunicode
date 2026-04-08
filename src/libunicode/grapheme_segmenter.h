@@ -32,6 +32,12 @@ struct grapheme_segmenter_state
     codepoint_properties previousProperties = codepoint_properties::get(0);
 
     uint8_t ri_counter = 0; // modulo 2
+
+    /// GB9c Indic conjunct break state:
+    /// 0 = no conjunct context
+    /// 1 = saw InCB=Consonant
+    /// 2 = saw Consonant + (Extend|Linker)* + Linker (ready for GB9c)
+    uint8_t incb_state = 0;
 };
 
 void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept;
@@ -42,7 +48,7 @@ void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& sta
 /// @retval false both codepoints belong to the same grapheme cluster
 bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept;
 
-/// Implements http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
+/// Implements https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules
 class grapheme_segmenter
 {
   public:
@@ -88,17 +94,24 @@ class grapheme_segmenter
     ///
     /// @retval true both codepoints to not belong to the same grapheme cluster
     /// @retval false both codepoints belong to the same grapheme cluster
+    ///
+    /// @deprecated Cannot handle GB9c (Indic conjunct) or GB12/GB13 (regional indicator sequences).
+    ///             Use grapheme_process_init/grapheme_process_breakable for correct results.
+    [[deprecated("Cannot handle GB9c/GB12/GB13. Use grapheme_process_init/grapheme_process_breakable.")]]
     static bool is_breakable(char32_t a, char32_t b) noexcept
     {
         auto state = grapheme_segmenter_state {};
-        state.previousCodepoint = a;
-        state.previousProperties = codepoint_properties::get(a);
-        state.ri_counter =
-            (state.previousProperties.grapheme_cluster_break == Grapheme_Cluster_Break::Regional_Indicator) ? 1 : 0;
+        grapheme_process_init(a, state);
         return grapheme_process_breakable(b, state);
     }
 
-    static bool is_nonbreakable(char32_t a, char32_t b) noexcept { return !is_breakable(a, b); }
+    [[deprecated("Cannot handle GB9c/GB12/GB13. Use grapheme_process_init/grapheme_process_breakable.")]]
+    static bool is_nonbreakable(char32_t a, char32_t b) noexcept
+    {
+        auto state = grapheme_segmenter_state {};
+        grapheme_process_init(a, state);
+        return !grapheme_process_breakable(b, state);
+    }
 
   private:
     char32_t const* left_;
