@@ -363,3 +363,224 @@ TEST_CASE("normalization.decomposition_type_compat", "[normalization]")
     CHECK(decomposition_type(U'\u2460') == Decomposition_Type::Circle);
 }
 
+// ============================================================================
+// Streaming normalizer
+// ============================================================================
+
+TEST_CASE("normalization_stream.nfc_basic", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+
+    // Feed decomposed e + combining acute, then a new starter to trigger emission
+    auto result = norm.feed(U'e');
+    CHECK(result.empty()); // still buffering
+
+    result = norm.feed(U'\u0301');
+    CHECK(result.empty()); // still buffering (combining mark)
+
+    result = norm.feed(U'x'); // starter triggers emission of previous segment
+    REQUIRE_FALSE(result.empty());
+    CHECK(result == U"\u00E9"); // e + acute composed to e-acute
+
+    result = norm.flush();
+    CHECK(result == U"x"); // final segment
+}
+
+TEST_CASE("normalization_stream.nfd_basic", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFD);
+
+    auto result = norm.feed(U'\u00E9'); // pre-composed e-acute
+    CHECK(result.empty());              // first codepoint, no boundary yet
+
+    result = norm.flush();
+    CHECK(result == U"e\u0301"); // decomposed
+}
+
+TEST_CASE("normalization_stream.empty_input", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+
+    auto result = norm.flush();
+    CHECK(result.empty());
+}
+
+TEST_CASE("normalization_stream.all_starters", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+    std::u32string output;
+
+    for (char32_t cp: std::u32string_view(U"hello"))
+    {
+        auto segment = norm.feed(cp);
+        output.append(segment);
+    }
+    output.append(norm.flush());
+
+    CHECK(output == U"hello");
+}
+
+TEST_CASE("normalization_stream.all_combining", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFD);
+
+    // All combining marks, no starters — everything buffers until flush
+    (void) norm.feed(U'\u0301'); // CCC 230
+    (void) norm.feed(U'\u0327'); // CCC 202
+
+    auto result = norm.flush();
+    // After normalization, canonical ordering: cedilla (202) before acute (230)
+    REQUIRE(result.size() == 2);
+    CHECK(result[0] == U'\u0327');
+    CHECK(result[1] == U'\u0301');
+}
+
+TEST_CASE("normalization_stream.hangul_composition", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+    std::u32string output;
+
+    // Feed L + V jamos
+    output.append(norm.feed(U'\u1100')); // L jamo
+    output.append(norm.feed(U'\u1161')); // V jamo
+    output.append(norm.flush());
+
+    CHECK(output == U"\uAC00"); // Composed syllable
+}
+
+TEST_CASE("normalization_stream.equivalence_with_batch", "[normalization]")
+{
+    std::u32string input = U"caf\u00E9 na\u00EFve r\u00E9sum\u00E9";
+
+    for (auto form: { Normalization_Form::NFC, Normalization_Form::NFD, Normalization_Form::NFKC, Normalization_Form::NFKD })
+    {
+        auto batchResult = normalize(std::u32string_view(input), form);
+
+        std::u32string streamResult;
+        normalizer norm(form);
+        for (char32_t cp: input)
+        {
+            auto segment = norm.feed(cp);
+            streamResult.append(segment);
+        }
+        streamResult.append(norm.flush());
+
+        CHECK(streamResult == batchResult);
+    }
+}
+
+TEST_CASE("normalization_stream.reset", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+
+    (void) norm.feed(U'e');
+    (void) norm.feed(U'\u0301');
+    norm.reset(); // discard buffered data
+
+    auto result = norm.flush();
+    CHECK(result.empty());
+}
+
+TEST_CASE("normalization_stream.multiple_segments", "[normalization]")
+{
+    normalizer norm(Normalization_Form::NFC);
+    std::u32string output;
+
+    // "café" with decomposed e-acute
+    for (char32_t cp: std::u32string_view(U"cafe\u0301"))
+    {
+        auto segment = norm.feed(cp);
+        output.append(segment);
+    }
+    output.append(norm.flush());
+
+    CHECK(output == U"caf\u00E9");
+}
+
+// ============================================================================
+// UTF-8 streaming normalizer
+// ============================================================================
+
+TEST_CASE("normalization_stream.utf8_basic", "[normalization]")
+{
+    utf8_normalizer norm(Normalization_Form::NFC);
+
+    // Feed "cafe" + combining acute (UTF-8: CC 81) + "!" to trigger final segment
+    std::string output;
+    output += norm.feed("cafe\xCC\x81!");
+    output += norm.flush();
+
+    CHECK(output == "caf\xC3\xA9!"); // "café!"
+}
+
+TEST_CASE("normalization_stream.utf8_byte_by_byte", "[normalization]")
+{
+    utf8_normalizer norm(Normalization_Form::NFC);
+
+    // Feed composed é (UTF-8: C3 A9) byte by byte, then "x"
+    std::string input = "\xC3\xA9x";
+    std::string output;
+    for (char c: input)
+        output += norm.feed(std::string_view(&c, 1));
+    output += norm.flush();
+
+    CHECK(output == "\xC3\xA9x");
+}
+
+TEST_CASE("normalization_stream.utf8_reset", "[normalization]")
+{
+    utf8_normalizer norm(Normalization_Form::NFC);
+
+    (void) norm.feed("hello");
+    norm.reset();
+
+    auto result = norm.flush();
+    CHECK(result.empty());
+}
+
+// ============================================================================
+// Conformance test vectors (representative subset from NormalizationTest.txt)
+// ============================================================================
+
+TEST_CASE("normalization.conformance_subset", "[normalization]")
+{
+    struct TestCase
+    {
+        std::u32string source;
+        std::u32string nfc;
+        std::u32string nfd;
+        std::u32string nfkc;
+        std::u32string nfkd;
+    };
+
+    // clang-format off
+    auto const testVectors = std::vector<TestCase> {
+        // Basic canonical decomposition/composition
+        { U"\u00E9",            U"\u00E9",            U"e\u0301",            U"\u00E9",            U"e\u0301" },
+        { U"e\u0301",           U"\u00E9",            U"e\u0301",            U"\u00E9",            U"e\u0301" },
+        // fi ligature (compatibility only)
+        { U"\uFB01",            U"\uFB01",            U"\uFB01",            U"fi",                U"fi" },
+        // Fullwidth A
+        { U"\uFF21",            U"\uFF21",            U"\uFF21",            U"A",                 U"A" },
+        // Superscript 2
+        { U"\u00B2",            U"\u00B2",            U"\u00B2",            U"2",                 U"2" },
+        // Hangul syllable
+        { U"\uAC00",            U"\uAC00",            U"\u1100\u1161",      U"\uAC00",            U"\u1100\u1161" },
+        { U"\uAC01",            U"\uAC01",            U"\u1100\u1161\u11A8", U"\uAC01",           U"\u1100\u1161\u11A8" },
+        // Hangul jamos -> syllable
+        { U"\u1100\u1161",      U"\uAC00",            U"\u1100\u1161",      U"\uAC00",            U"\u1100\u1161" },
+        { U"\u1100\u1161\u11A8", U"\uAC01",           U"\u1100\u1161\u11A8", U"\uAC01",           U"\u1100\u1161\u11A8" },
+    };
+    // clang-format on
+
+    for (size_t i = 0; i < testVectors.size(); ++i)
+    {
+        auto const& tc = testVectors[i];
+        INFO("Test vector index: " << i);
+
+        CHECK(to_nfc(tc.source) == tc.nfc);
+        CHECK(to_nfd(tc.source) == tc.nfd);
+        CHECK(to_nfkc(tc.source) == tc.nfkc);
+        CHECK(to_nfkd(tc.source) == tc.nfkd);
+    }
+}

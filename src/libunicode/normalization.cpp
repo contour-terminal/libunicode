@@ -533,4 +533,114 @@ char32_t hangul_compose(char32_t l, char32_t v, char32_t t) noexcept
     return hangul::SBase + lvIndex + tIndex;
 }
 
+// ============================================================================
+// Streaming normalizer
+// ============================================================================
+
+normalizer::normalizer(Normalization_Form form) noexcept: _form(form)
+{
+}
+
+bool normalizer::is_boundary(char32_t codepoint) const noexcept
+{
+    // Non-starters are never boundaries
+    if (canonical_combining_class(codepoint) != 0)
+        return false;
+
+    // For decomposition forms, every starter is a safe boundary
+    if (_form == Normalization_Form::NFD || _form == Normalization_Form::NFKD)
+        return true;
+
+    // For composition forms, a starter is safe only if its quick-check value
+    // is Yes (it cannot compose with the preceding segment)
+    if (_form == Normalization_Form::NFC)
+        return nfc_quick_check(codepoint) == NFC_Quick_Check::Yes;
+
+    return nfkc_quick_check(codepoint) == NFKC_Quick_Check::Yes;
+}
+
+std::u32string_view normalizer::emit_pending()
+{
+    if (_pending.empty())
+        return {};
+
+    _output = normalize(std::u32string_view(_pending), _form);
+    _pending.clear();
+    return _output;
+}
+
+std::u32string_view normalizer::feed(char32_t codepoint)
+{
+    if (!_pending.empty() && is_boundary(codepoint))
+    {
+        auto result = emit_pending();
+        _pending.push_back(codepoint);
+        return result;
+    }
+
+    _pending.push_back(codepoint);
+    return {};
+}
+
+std::u32string_view normalizer::flush()
+{
+    return emit_pending();
+}
+
+void normalizer::reset() noexcept
+{
+    _pending.clear();
+    _output.clear();
+}
+
+// ============================================================================
+// UTF-8 streaming normalizer
+// ============================================================================
+
+utf8_normalizer::utf8_normalizer(Normalization_Form form) noexcept: _inner(form)
+{
+}
+
+std::string_view utf8_normalizer::feed(std::string_view utf8Data)
+{
+    _utf8Output.clear();
+
+    for (auto byte: utf8Data)
+    {
+        auto const result = from_utf8(_utf8State, static_cast<uint8_t>(byte));
+
+        char32_t cp {};
+        if (std::holds_alternative<Success>(result))
+            cp = std::get<Success>(result).value;
+        else if (std::holds_alternative<Invalid>(result))
+            cp = char32_t { 0xFFFD }; // Replace invalid sequences with U+FFFD
+        else
+            continue; // Incomplete: continue buffering UTF-8 bytes
+
+        auto segment = _inner.feed(cp);
+        if (!segment.empty())
+            convert_to<char>(segment, std::back_inserter(_utf8Output));
+    }
+
+    return _utf8Output;
+}
+
+std::string_view utf8_normalizer::flush()
+{
+    _utf8Output.clear();
+
+    auto segment = _inner.flush();
+    if (!segment.empty())
+        convert_to<char>(segment, std::back_inserter(_utf8Output));
+
+    return _utf8Output;
+}
+
+void utf8_normalizer::reset() noexcept
+{
+    _inner.reset();
+    _utf8State = {};
+    _utf8Output.clear();
+}
+
 } // namespace unicode
