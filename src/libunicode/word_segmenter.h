@@ -13,91 +13,107 @@
  */
 #pragma once
 
+#include <libunicode/codepoint_properties.h>
+
 #include <string_view>
 
 namespace unicode
 {
 
+/// State for incremental word boundary detection per UAX #29.
+struct word_segmenter_state
+{
+    /// Raw WB property of the immediately previous codepoint (before WB4 filtering).
+    /// Used for WB3 (CR x LF), WB3a, WB3b, WB3c.
+    Word_Break raw_prev_wb = Word_Break::Other;
+
+    /// Effective WB property of the most recent non-transparent codepoint (after WB4 filtering).
+    /// Used for rules WB5-WB16.
+    Word_Break prev_wb = Word_Break::Other;
+
+    /// Effective WB property of the codepoint before prev_wb.
+    /// Needed for WB7, WB7c, WB11.
+    Word_Break prev_prev_wb = Word_Break::Other;
+
+    /// Regional Indicator counter (modulo 2) for WB15/WB16.
+    uint8_t ri_counter = 0;
+
+    /// Whether any transparent (Extend/Format/ZWJ) characters have been seen
+    /// since the last non-transparent codepoint. Needed for WB3d which only
+    /// matches directly adjacent WSegSpace characters.
+    bool saw_transparent = false;
+};
+
+/// Initializes word segmentation state for the first codepoint.
+void word_process_init(char32_t firstCodepoint, word_segmenter_state& state) noexcept;
+
+/// Tests if there is a word boundary before @p nextCodepoint.
+///
+/// @param nextCodepoint The codepoint to test.
+/// @param rest Pointer to codepoints after @p nextCodepoint (for lookahead).
+/// @param restCount Number of codepoints available after @p nextCodepoint.
+/// @param state Mutable segmentation state, updated on each call.
+///
+/// @retval true  There is a word boundary before @p nextCodepoint.
+/// @retval false No word boundary; @p nextCodepoint belongs to the same word segment.
+bool word_process_breakable(char32_t nextCodepoint, char32_t const* rest, size_t restCount, word_segmenter_state& state) noexcept;
+
+/// Implements https://www.unicode.org/reports/tr29/#Word_Boundary_Rules
 class word_segmenter
 {
   public:
-    using char_type = char32_t;
-    using iterator = char_type const*;
-    using view_type = std::basic_string_view<char_type>;
-
-    constexpr word_segmenter(std::basic_string_view<char_type> const& str): word_segmenter(str.data(), str.data() + str.size()) {}
-
-    constexpr word_segmenter(): word_segmenter({}, {}) {}
-
-    constexpr bool empty() const noexcept { return size() == 0; }
-    constexpr std::size_t size() const noexcept { return static_cast<size_t>(_right - _left); }
-    constexpr view_type operator*() const noexcept { return view_type(_left, size()); }
-
-    constexpr word_segmenter& operator++() noexcept
-    {
-        _left = _right;
-        while (_right != _end)
-        {
-            switch (_state)
-            {
-                case State::NoWord:
-                    if (!isDelimiter(*_right))
-                    {
-                        _state = State::Word;
-                        return *this;
-                    }
-                    break;
-                case State::Word:
-                    if (isDelimiter(*_right))
-                    {
-                        _state = State::NoWord;
-                        return *this;
-                    }
-                    break;
-            }
-            ++_right;
-        }
-        return *this;
-    }
-
-    constexpr bool operator==(word_segmenter const& rhs) const noexcept { return _left == rhs._left && _right == rhs._right; }
-
-    constexpr bool operator!=(word_segmenter const& rhs) const noexcept { return !(*this == rhs); }
-
-  private:
-    constexpr word_segmenter(iterator begin, iterator end):
-        _left { begin },
-        _right { begin },
-        _state { begin != end ? (isDelimiter(*_right) ? State::NoWord : State::Word) : State::NoWord },
-        _end { end }
+    word_segmenter(char32_t const* begin, char32_t const* end) noexcept:
+        left_ { begin }, right_ { begin }, end_ { end }, state_ {}
     {
         ++*this;
     }
 
-    constexpr bool isDelimiter(char_type character) const noexcept
+    word_segmenter(std::u32string_view sv) noexcept: word_segmenter(sv.data(), sv.data() + sv.size()) {}
+
+    word_segmenter() noexcept: word_segmenter(static_cast<char32_t const*>(nullptr), static_cast<char32_t const*>(nullptr)) {}
+
+    word_segmenter& operator++() noexcept
     {
-        switch (character)
+        left_ = right_;
+        if (right_ == end_)
+            return *this;
+
+        word_process_init(*right_++, state_);
+
+        while (right_ != end_)
         {
-            case ' ':
-            case '\r':
-            case '\n':
-            case '\t': return true;
-            default: return false;
+            auto const* rest = right_ + 1;
+            auto const restCount = static_cast<size_t>(end_ - rest);
+            if (word_process_breakable(*right_, rest, restCount, state_))
+                break;
+            ++right_;
         }
+
+        return *this;
     }
 
-    // private fields
-    //
-    enum class State
+    constexpr std::u32string_view operator*() const noexcept
     {
-        Word,
-        NoWord
-    };
+        return std::u32string_view(left_, static_cast<size_t>(right_ - left_));
+    }
 
-    iterator _left;
-    iterator _right;
-    State _state;
-    iterator _end;
+    constexpr bool codepointsAvailable() const noexcept { return right_ != end_; }
+
+    explicit constexpr operator bool() const noexcept { return codepointsAvailable(); }
+
+    constexpr bool empty() const noexcept { return size() == 0; }
+    constexpr size_t size() const noexcept { return static_cast<size_t>(right_ - left_); }
+
+    constexpr bool operator==(word_segmenter const& rhs) const noexcept
+    {
+        return (!codepointsAvailable() && !rhs.codepointsAvailable()) || (left_ == rhs.left_ && right_ == rhs.right_);
+    }
+
+  private:
+    char32_t const* left_;
+    char32_t const* right_;
+    char32_t const* end_;
+    word_segmenter_state state_;
 };
 
 } // namespace unicode

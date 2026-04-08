@@ -223,42 +223,42 @@ std::u32string to_titlecase(std::u32string_view text)
     std::u32string result;
     result.reserve(text.size());
 
-    bool at_word_start = true;
-
-    for (char32_t cp: text)
+    auto seg = word_segmenter(text);
+    while (true)
     {
-        // Simple word boundary detection: after space/punctuation
-        bool const is_letter = is_cased(cp);
+        auto const word = *seg;
+        if (word.empty() && !seg.codepointsAvailable())
+            break;
 
-        if (at_word_start && is_letter)
+        auto firstCased = true;
+        for (auto const cp: word)
         {
-            // Titlecase the first letter of a word
-            auto const mapping = full_titlecase(cp);
-            if (mapping.is_identity())
-                result.push_back(cp);
-            else
-                result.append(mapping.view());
-            at_word_start = false;
-        }
-        else if (is_letter)
-        {
-            // Lowercase the rest of the word
-            auto const mapping = full_lowercase(cp);
-            if (mapping.is_identity())
-                result.push_back(cp);
-            else
-                result.append(mapping.view());
-        }
-        else
-        {
-            result.push_back(cp);
-            // Check if this is a word boundary
-            if (cp == ' ' || cp == '\t' || cp == '\n' || cp == '\r' || general_category::is_dash_punctuation(cp)
-                || general_category::is_open_punctuation(cp) || general_category::is_close_punctuation(cp))
+            if (firstCased && is_cased(cp))
             {
-                at_word_start = true;
+                auto const mapping = full_titlecase(cp);
+                if (mapping.is_identity())
+                    result.push_back(cp);
+                else
+                    result.append(mapping.view());
+                firstCased = false;
+            }
+            else if (!firstCased && is_cased(cp))
+            {
+                auto const mapping = full_lowercase(cp);
+                if (mapping.is_identity())
+                    result.push_back(cp);
+                else
+                    result.append(mapping.view());
+            }
+            else
+            {
+                result.push_back(cp);
             }
         }
+
+        if (!seg.codepointsAvailable())
+            break;
+        ++seg;
     }
 
     return result;
@@ -357,9 +357,12 @@ bool is_case_ignorable(char32_t codepoint) noexcept
     // Case_Ignorable includes:
     // - General_Category = Mn, Me, Cf, Lm, Sk
     // - Word_Break = MidLetter, MidNumLet, Single_Quote
-    auto const gc = general_category::get(codepoint);
+    auto const props = codepoint_properties::get(codepoint);
+    auto const gc = props.general_category;
+    auto const wb = props.word_break;
     return gc == General_Category::Nonspacing_Mark || gc == General_Category::Enclosing_Mark || gc == General_Category::Format
-           || gc == General_Category::Modifier_Letter || gc == General_Category::Modifier_Symbol;
+           || gc == General_Category::Modifier_Letter || gc == General_Category::Modifier_Symbol || wb == Word_Break::MidLetter
+           || wb == Word_Break::MidNumLet || wb == Word_Break::Single_Quote;
 }
 
 bool changes_when_uppercased(char32_t codepoint) noexcept

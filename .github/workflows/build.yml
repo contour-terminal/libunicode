@@ -169,9 +169,9 @@ jobs:
           PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
           dnf install -y unicode-ucd
       - name: configure
-        run: cmake --preset gcc-debug -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+        run: cmake --preset gcc-release -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
       - name: build
-        run: cmake --build --preset gcc-debug -j$(nproc)
+        run: cmake --build --preset gcc-release -j$(nproc)
       - name: test
         run: |
-          ctest --preset gcc-debug
+          ctest --preset gcc-release
