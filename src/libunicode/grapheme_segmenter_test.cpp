@@ -16,86 +16,132 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-// Suppress deprecation warnings for tests that exercise the legacy pairwise API.
-// These tests still verify correct behavior for non-GB9c/GB12/GB13 cases.
-#if defined(__GNUC__) || defined(__clang__)
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(_MSC_VER)
-    #pragma warning(disable : 4996)
-#endif
-
 using namespace unicode;
 using namespace std::string_literals;
 using namespace std;
 
-// TODO
-// Implement examples from table 1a) at:
-// http://www.unicode.org/reports/tr29/tr29-27.html#Grapheme_Cluster_Boundary_Rules
-
 TEST_CASE("latin_common", "[grapheme_segmenter]")
 {
-    // auto constexpr text = u32string_view{U"\u0067G\u0308"};
-
-    CHECK(grapheme_segmenter::is_breakable('a', 'b'));
-    CHECK(grapheme_segmenter::is_breakable('b', '!'));
-    CHECK(grapheme_segmenter::is_breakable('!', '.'));
+    // Each ASCII character is its own grapheme cluster
+    auto const text = u32string_view { U"ab!." };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == U"a");
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == U"b");
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == U"!");
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == U".");
+    CHECK_FALSE(gs.codepointsAvailable());
 }
 
 TEST_CASE("combining character sequences", "[grapheme_segmenter]")
 {
-    // auto constexpr text = u32string_view{U"\u0067G\u0308"};
-
-    CHECK(grapheme_segmenter::is_nonbreakable('g', U'\u0308'));
+    // g + combining diaeresis = one cluster
+    auto const text = u32string_view { U"\u0067\u0308" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == text);
+    CHECK_FALSE(gs.codepointsAvailable());
 }
-
-// TEST_CASE("Extended grapheme clusters", "[grapheme_segmenter]")
-// {
-//     // TODO: Hangul Syllables support, can't enable this test yet
-//     CHECK(grapheme_segmenter::is_nonbreakable(U'\u0BA8', U'\u0BBF'));   // Tamil ni
-//     CHECK(grapheme_segmenter::is_nonbreakable(U'\u0E40', 'e'));         // Thai e
-//     CHECK(grapheme_segmenter::is_nonbreakable(U'\u0E01', U'\u0E33'));   // Thai kam
-//     CHECK(grapheme_segmenter::is_nonbreakable(U'\u0937', U'\u093F'));   // Devanagari ssi
-// }
 
 TEST_CASE("emoji.speaking-eye", "[grapheme_segmenter]")
 {
-    /*
-    👁 U+1F441     Eye
-    ️  U+FE0F      VS16
-      U+200D      ZWJ
-    🗨 U+1F5E8     Left Speech Bubble
-     ️ U+FE0F      VS16
-     */
-    auto const zwj = u32string_view { U"\U0001F441\uFE0F\u200D\U0001F5E8\uFE0F" };
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[0], zwj[1]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[1], zwj[2]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[2], zwj[3]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[3], zwj[4]));
+    // 👁️‍🗨️ = Eye + VS16 + ZWJ + Left Speech Bubble + VS16
+    auto const text = u32string_view { U"\U0001F441\uFE0F\u200D\U0001F5E8\uFE0F" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == text);
+    CHECK_FALSE(gs.codepointsAvailable());
 }
 
 TEST_CASE("emoji", "[grapheme_segmenter]")
 {
-    // 👨‍🦰
-    auto const zwj = u32string_view { U"\U0001F468\u200D\U0001F9B0" };
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[0], zwj[1]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[1], zwj[2]));
+    // 👨‍🦰 = Man + ZWJ + Red Hair
+    auto const text1 = u32string_view { U"\U0001F468\u200D\U0001F9B0" };
+    auto gs1 = grapheme_segmenter { text1 };
+    CHECK(*gs1 == text1);
+    CHECK_FALSE(gs1.codepointsAvailable());
 
-    // 👨‍👩‍👧
-    auto const zwj3 = u32string_view { U"\U0001F468\u200D\U0001F469\u200D\U0001F467" };
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj3[0], zwj3[1]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj3[1], zwj3[2]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj3[2], zwj3[3]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj3[3], zwj3[4]));
+    // 👨‍👩‍👧 = Man + ZWJ + Woman + ZWJ + Girl
+    auto const text2 = u32string_view { U"\U0001F468\u200D\U0001F469\u200D\U0001F467" };
+    auto gs2 = grapheme_segmenter { text2 };
+    CHECK(*gs2 == text2);
+    CHECK_FALSE(gs2.codepointsAvailable());
 }
 
 TEST_CASE("emoji: Man Facepalming: Medium-Light Skin Tone", "[grapheme_segmenter]")
 {
+    // 🤦🏼‍♂️ = Facepalm + Skin Tone + ZWJ + Male Sign + VS16
+    auto const text = u32string_view { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == text);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
 
-    auto const zwj = u32string_view { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F" };
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[0], zwj[1]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[1], zwj[2]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[2], zwj[3]));
-    CHECK(grapheme_segmenter::is_nonbreakable(zwj[3], zwj[4]));
+// ---- GB11: Extended Pictographic + ZWJ sequence tests ----
+
+TEST_CASE("grapheme_segmenter.gb11_extpic_zwj_extpic", "[grapheme_segmenter]")
+{
+    // ExtPic + ZWJ + ExtPic = one cluster (GB11 applies)
+    // 🛑 + ZWJ + 🛑
+    auto const text = u32string_view { U"\U0001F6D1\u200D\U0001F6D1" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == text);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb11_extpic_extend_zwj_extpic", "[grapheme_segmenter]")
+{
+    // ExtPic + Extend + ZWJ + ExtPic = one cluster (GB11 with Extend chain)
+    // 🛑 + combining diaeresis + ZWJ + 🛑
+    auto const text = u32string_view { U"\U0001F6D1\u0308\u200D\U0001F6D1" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == text);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb11_no_preceding_extpic", "[grapheme_segmenter]")
+{
+    // ZWJ + ExtPic without preceding ExtPic = two clusters (GB11 does NOT apply)
+    // ZWJ + © (copyright sign, which is ExtPic)
+    auto const text = u32string_view { U"\u200D\u00A9" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\u200D" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\u00A9" });
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb11_non_extpic_zwj_extpic", "[grapheme_segmenter]")
+{
+    // 'a' + ZWJ + ExtPic = two clusters: [a ZWJ] [ExtPic]
+    // GB9 keeps ZWJ with 'a', but GB11 does not fire (no preceding ExtPic)
+    auto const text = u32string_view { U"\u0061\u200D\U0001F6D1" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\u0061\u200D" }); // 'a' + ZWJ
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F6D1" }); // 🛑
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb11_ascii_resets_extpic_chain", "[grapheme_segmenter]")
+{
+    // ExtPic + ASCII + ZWJ + ExtPic = three clusters: [ExtPic] [a ZWJ] [ExtPic]
+    // ASCII breaks the ExtPic chain, so the later ZWJ + ExtPic must not trigger GB11
+    auto const text = u32string_view { U"\U0001F6D1\u0061\u200D\U0001F6D1" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F6D1" }); // 🛑
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\u0061\u200D" }); // 'a' + ZWJ
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F6D1" }); // 🛑
+    CHECK_FALSE(gs.codepointsAvailable());
 }
 
 TEST_CASE("grapheme_segmenter.iterator_1", "[grapheme_segmenter]")
@@ -341,3 +387,9 @@ TEST_CASE("grapheme_segmenter.gb9c_gujarati_with_shadda", "[grapheme_segmenter]"
     CHECK(*gs == conjunct);
     CHECK_FALSE(gs.codepointsAvailable());
 }
+
+// TODO: Add data-driven test from official Unicode GraphemeBreakTest.txt once
+// the multistage table generator correctly preserves all GCB property values.
+// The tablegen correctly populates per-codepoint records, but the multistage
+// table compression loses several GCB values (CR, LF, L, V, T, LV, etc.),
+// causing them to fall back to GCB::Other at runtime.

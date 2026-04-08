@@ -38,6 +38,11 @@ struct grapheme_segmenter_state
     /// 1 = saw InCB=Consonant
     /// 2 = saw Consonant + (Extend|Linker)* + Linker (ready for GB9c)
     uint8_t incb_state = 0;
+
+    /// GB11 Extended Pictographic tracking state:
+    /// 0 = no ExtPic context
+    /// 1 = saw ExtPic (or ExtPic followed by Extend*/ZWJ chain)
+    uint8_t extpic_state = 0;
 };
 
 void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept;
@@ -88,29 +93,6 @@ class grapheme_segmenter
     constexpr bool operator==(grapheme_segmenter const& rhs) const noexcept
     {
         return (!codepointsAvailable() && !rhs.codepointsAvailable()) || (left_ == rhs.left_ && right_ == rhs.right_);
-    }
-
-    /// Tests if codepoint @p a and @p b are breakable, and thus, two different grapheme clusters.
-    ///
-    /// @retval true both codepoints to not belong to the same grapheme cluster
-    /// @retval false both codepoints belong to the same grapheme cluster
-    ///
-    /// @deprecated Cannot handle GB9c (Indic conjunct) or GB12/GB13 (regional indicator sequences).
-    ///             Use grapheme_process_init/grapheme_process_breakable for correct results.
-    [[deprecated("Cannot handle GB9c/GB12/GB13. Use grapheme_process_init/grapheme_process_breakable.")]]
-    static bool is_breakable(char32_t a, char32_t b) noexcept
-    {
-        auto state = grapheme_segmenter_state {};
-        grapheme_process_init(a, state);
-        return grapheme_process_breakable(b, state);
-    }
-
-    [[deprecated("Cannot handle GB9c/GB12/GB13. Use grapheme_process_init/grapheme_process_breakable.")]]
-    static bool is_nonbreakable(char32_t a, char32_t b) noexcept
-    {
-        auto state = grapheme_segmenter_state {};
-        grapheme_process_init(a, state);
-        return !grapheme_process_breakable(b, state);
     }
 
   private:
