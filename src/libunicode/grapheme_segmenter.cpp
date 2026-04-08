@@ -22,8 +22,9 @@ void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& sta
     auto const B = Pb.grapheme_cluster_break;
 
     state.previousCodepoint = nextCodepoint;
-    state.previousProperties = codepoint_properties::get(nextCodepoint);
+    state.previousProperties = Pb;
     state.ri_counter = (B == Grapheme_Cluster_Break::Regional_Indicator) ? 1 : 0;
+    state.incb_state = (Pb.indic_conjunct_break == Indic_Conjunct_Break::Consonant) ? 1 : 0;
 }
 
 bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept
@@ -60,7 +61,25 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // The US-ASCII part is a pure optimization improving performance
     // in standard Latin text.
     if (a < 128 && b < 128)
+    {
+        state.incb_state = 0; // ASCII resets InCB tracking
         return true;
+    }
+
+    // GB9c: Indic conjunct break state machine update.
+    // Capture previous state before updating, as GB9c check needs the pre-transition state.
+    auto const prev_incb_state = state.incb_state;
+    {
+        auto const incb = Pb.indic_conjunct_break;
+        if (incb == Indic_Conjunct_Break::Consonant)
+            state.incb_state = 1;
+        else if (incb == Indic_Conjunct_Break::Linker && prev_incb_state >= 1)
+            state.incb_state = 2;
+        else if (incb == Indic_Conjunct_Break::Extend && prev_incb_state >= 1)
+            ; // keep current state — extends do not change conjunct tracking
+        else
+            state.incb_state = 0;
+    }
 
     // GB4: (part 2)
     if (A == Grapheme_Cluster_Break::Control)
@@ -96,6 +115,12 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
 
     // GB9b: or after Prepend characters.
     if (A == Grapheme_Cluster_Break::Prepend)
+        return false;
+
+    // GB9c: Do not break within Indic conjunct clusters.
+    // Pattern: \p{InCB=Consonant} [\p{InCB=Extend}\p{InCB=Linker}]* \p{InCB=Linker}
+    //          [\p{InCB=Extend}\p{InCB=Linker}]* × \p{InCB=Consonant}
+    if (Pb.indic_conjunct_break == Indic_Conjunct_Break::Consonant && prev_incb_state == 2)
         return false;
 
     // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.

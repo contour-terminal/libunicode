@@ -360,13 +360,23 @@ void UcdParser::loadCoreProperties()
         auto parsed = parseStandardLine(line);
         if (!parsed)
             continue;
-        // Skip multi-value entries (e.g., "InCB; None") — only single-word properties
-        if (parsed->property.find(';') != std::string_view::npos)
+        // Handle multi-value entries (e.g., "InCB; Consonant")
+        auto const semicolonPos = parsed->property.find(';');
+        if (semicolonPos != std::string_view::npos)
+        {
+            auto const propName = std::string(trim(parsed->property.substr(0, semicolonPos)));
+            auto const propValue = std::string(trim(parsed->property.substr(semicolonPos + 1)));
+            if (propName == "InCB")
+                _indicConjunctBreak[propValue].push_back(
+                    { parsed->first, parsed->last, propValue, std::string(parsed->comment) });
             continue;
+        }
         auto prop = std::string(firstWord(parsed->property));
         _coreProperties[prop].push_back({ parsed->first, parsed->last, "", std::string(parsed->comment) });
     }
     for (auto& [key, ranges]: _coreProperties)
+        std::sort(ranges.begin(), ranges.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
+    for (auto& [key, ranges]: _indicConjunctBreak)
         std::sort(ranges.begin(), ranges.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
 }
 

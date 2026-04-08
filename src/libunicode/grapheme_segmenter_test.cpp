@@ -16,6 +16,14 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+// Suppress deprecation warnings for tests that exercise the legacy pairwise API.
+// These tests still verify correct behavior for non-GB9c/GB12/GB13 cases.
+#if defined(__GNUC__) || defined(__clang__)
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+    #pragma warning(disable : 4996)
+#endif
+
 using namespace unicode;
 using namespace std::string_literals;
 using namespace std;
@@ -220,4 +228,116 @@ TEST_CASE("grapheme_segmenter.iterator_3: regional flags invalid 2", "[grapheme_
     ++gs;
     REQUIRE(*gs == U"");
     REQUIRE_FALSE(gs.codepointsAvailable());
+}
+
+// ---- GB9c: Indic conjunct break rule tests ----
+
+TEST_CASE("grapheme_segmenter.gb9c_basic_devanagari", "[grapheme_segmenter]")
+{
+    // KA + VIRAMA + TA should be one cluster
+    auto const conjunct = u32string_view { U"\u0915\u094D\u0924" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_chained_devanagari", "[grapheme_segmenter]")
+{
+    // KA + VIRAMA + TA + VIRAMA + YA should be one cluster
+    auto const conjunct = u32string_view { U"\u0915\u094D\u0924\u094D\u092F" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_with_extend", "[grapheme_segmenter]")
+{
+    // KA + NUKTA + ZWJ + VIRAMA + TA should be one cluster
+    auto const conjunct = u32string_view { U"\u0915\u093C\u200D\u094D\u0924" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_double_virama", "[grapheme_segmenter]")
+{
+    // KA + VIRAMA + VIRAMA + TA should be one cluster
+    auto const conjunct = u32string_view { U"\u0915\u094D\u094D\u0924" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_virama_zwj", "[grapheme_segmenter]")
+{
+    // KA + VIRAMA + ZWJ + TA should be one cluster
+    auto const conjunct = u32string_view { U"\u0915\u094D\u200D\u0924" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_negative_no_consonant_start", "[grapheme_segmenter]")
+{
+    // 'a' + VIRAMA + TA should be two clusters: [a, VIRAMA] and [TA]
+    // ('a' is not InCB=Consonant, so GB9c does not apply)
+    auto const seq = u32string_view { U"\u0061\u094D\u0924" };
+    auto gs = grapheme_segmenter { seq };
+    CHECK(*gs == u32string_view { U"\u0061\u094D" }); // 'a' + VIRAMA (GB9 keeps VIRAMA with 'a')
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\u0924" }); // TA alone
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_negative_consonant_without_linker", "[grapheme_segmenter]")
+{
+    // KA + TA should be two clusters (no virama/linker between them)
+    auto const seq = u32string_view { U"\u0915\u0924" };
+    auto gs = grapheme_segmenter { seq };
+    CHECK(*gs == u32string_view { U"\u0915" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\u0924" });
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_negative_virama_latin", "[grapheme_segmenter]")
+{
+    // KA + VIRAMA + 'a': should be two clusters [KA, VIRAMA] and [a]
+    // ('a' is not InCB=Consonant)
+    auto const seq = u32string_view { U"\u0915\u094D\u0061" };
+    auto gs = grapheme_segmenter { seq };
+    CHECK(*gs == u32string_view { U"\u0915\u094D" }); // KA + VIRAMA
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\u0061" }); // 'a'
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_myanmar", "[grapheme_segmenter]")
+{
+    // MYANMAR LETTER MA + MYANMAR SIGN VIRAMA + MYANMAR LETTER BHA
+    auto const conjunct = u32string_view { U"\u1019\u1039\u1018" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_khmer", "[grapheme_segmenter]")
+{
+    // KHMER LETTER SA + KHMER SIGN COENG + KHMER LETTER TA + KHMER SIGN COENG + KHMER LETTER RO
+    auto const conjunct = u32string_view { U"\u179F\u17D2\u178F\u17D2\u179A" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb9c_gujarati_with_shadda", "[grapheme_segmenter]")
+{
+    // GUJARATI LETTER SA + GUJARATI SIGN SHADDA + GUJARATI SIGN VIRAMA + GUJARATI LETTER SA + GUJARATI SIGN SHADDA
+    auto const conjunct = u32string_view { U"\u0AB8\u0AFB\u0ACD\u0AB8\u0AFB" };
+    auto gs = grapheme_segmenter { conjunct };
+    CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
 }

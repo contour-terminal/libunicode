@@ -129,6 +129,7 @@ void codepoints(istream& in) // {{{
     auto totalOffset = 0;
     auto utf8_state = unicode::utf8_decoder_state {};
     auto last_wc = char32_t {};
+    auto gs_state = unicode::grapheme_segmenter_state {};
 
     for (;;)
     {
@@ -145,9 +146,17 @@ void codepoints(istream& in) // {{{
         {
             char32_t const wc = get<unicode::Success>(convertResult).value;
             int const width = unicode::width(wc);
-            bool breakable = !last_wc || unicode::grapheme_segmenter::is_breakable(last_wc, wc);
+            bool breakable;
+            if (!last_wc)
+            {
+                unicode::grapheme_process_init(wc, gs_state);
+                breakable = true;
+            }
+            else
+            {
+                breakable = unicode::grapheme_process_breakable(wc, gs_state);
+            }
             last_wc = wc;
-            // TODO: breakable buggy lol what?
             if (width >= 0)
             {
                 string const u8 = escape(unicode::to_utf8(wc));

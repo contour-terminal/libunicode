@@ -79,10 +79,11 @@ namespace
         uint8_t general_category = 0;       // Will be set per-codepoint
         int8_t emoji_segmentation_category = ESC_Invalid;
         uint8_t age = 0;
+        uint8_t indic_conjunct_break = 3; // Default: Indic_Conjunct_Break::None
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(CodepointRecord) == 8, "CodepointRecord must be exactly 8 bytes");
+    static_assert(sizeof(CodepointRecord) == 9, "CodepointRecord must be exactly 9 bytes");
 
     inline bool operator==(CodepointRecord const& a, CodepointRecord const& b) noexcept
     {
@@ -339,6 +340,7 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     auto const eawIndex = buildPvaBasedIndex(findPva("East_Asian_Width"));
     auto const ageIndex = buildAgeIndex(findPva("Age"));
     auto const gcbIndex = buildPvaBasedIndex(findPva("Grapheme_Cluster_Break"), "Undefined");
+    auto const incbIndex = buildPvaBasedIndex(findPva("Indic_Conjunct_Break"));
 
     // Name vectors for output
     auto const scriptNames = buildScriptNames(parser.scripts());
@@ -385,12 +387,14 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
         auto eawNarrow = eawIndex.count("Narrow") ? eawIndex.at("Narrow") : uint8_t(0);
         // General_Category::Unassigned is a member name in the GC enum
         auto gcUnassigned = gcIndex.count("Unassigned") ? gcIndex.at("Unassigned") : uint8_t(0);
+        auto incbNone = incbIndex.count("None") ? incbIndex.at("None") : uint8_t(3);
         for (auto& rec: records)
         {
             rec.script = scriptUnknown;
             rec.grapheme_cluster_break = gcbOther;
             rec.east_asian_width = eawNarrow;
             rec.general_category = gcUnassigned;
+            rec.indic_conjunct_break = incbNone;
         }
     }
 
@@ -464,6 +468,17 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
             for (auto cp = r.first; cp <= r.last; ++cp)
                 records[static_cast<size_t>(cp)].grapheme_cluster_break = it->second;
         }
+    }
+
+    // Indic Conjunct Break
+    for (auto const& [propValue, ranges]: parser.indicConjunctBreak())
+    {
+        auto it = incbIndex.find(propValue);
+        if (it == incbIndex.end())
+            continue;
+        for (auto const& r: ranges)
+            for (auto cp = r.first; cp <= r.last; ++cp)
+                records[static_cast<size_t>(cp)].indic_conjunct_break = it->second;
     }
 
     // East Asian Width
@@ -589,7 +604,8 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
              << "General_Category::" << (rec.general_category < gcNames.size() ? gcNames[rec.general_category] : "Unspecified")
              << ", "
              << "EmojiSegmentationCategory::" << escName(rec.emoji_segmentation_category) << ", "
-             << "Age::" << (rec.age < ageNames.size() ? ageNames[rec.age] : "Unassigned") << "},\n";
+             << "Age::" << (rec.age < ageNames.size() ? ageNames[rec.age] : "Unassigned") << ", "
+             << "Indic_Conjunct_Break::" << reverseLookup(incbIndex, rec.indic_conjunct_break, "None") << "},\n";
     }
     impl << "}};\n\n";
 

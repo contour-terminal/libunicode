@@ -13,6 +13,7 @@
  */
 #pragma once
 
+#include <libunicode/grapheme_segmenter.h>
 #include <libunicode/utf8.h>
 
 #include <string_view>
@@ -45,6 +46,7 @@ struct scan_state
 {
     utf8_decoder_state utf8 {};
     char32_t lastCodepointHint {};
+    grapheme_segmenter_state graphemeState {};
 
     /// Pointer to one byte after the last scanned codepoint.
     char const* next {};

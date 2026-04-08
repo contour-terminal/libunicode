@@ -69,7 +69,9 @@ int u8_gc_width(u8_char_t const* codepoints, size_t count, int mode)
 
 int u32_grapheme_unbreakable(u32_char_t a, u32_char_t b)
 {
-    return unicode::grapheme_segmenter::is_nonbreakable(a, b);
+    auto state = unicode::grapheme_segmenter_state {};
+    unicode::grapheme_process_init(static_cast<char32_t>(a), state);
+    return !unicode::grapheme_process_breakable(static_cast<char32_t>(b), state);
 }
 
 struct u8u32_stream_state

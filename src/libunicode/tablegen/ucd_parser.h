@@ -104,6 +104,9 @@ class UcdParser
     /// Core properties grouped by property name.
     [[nodiscard]] auto const& coreProperties() const noexcept { return _coreProperties; }
 
+    /// Indic Conjunct Break (InCB) properties grouped by value (Consonant, Linker, Extend).
+    [[nodiscard]] auto const& indicConjunctBreak() const noexcept { return _indicConjunctBreak; }
+
     /// Script property ranges, sorted by start codepoint.
     [[nodiscard]] auto const& scripts() const noexcept { return _scripts; }
 
@@ -207,6 +210,9 @@ class UcdParser
 
     // Core properties
     std::map<std::string, std::vector<PropertyRange>> _coreProperties;
+
+    // Indic Conjunct Break (InCB) properties
+    std::map<std::string, std::vector<PropertyRange>> _indicConjunctBreak;
 
     // Scripts
     std::vector<PropertyRange> _scripts;
