@@ -194,6 +194,7 @@ void UcdParser::parseAll()
     // Phase 2: UCD API files
     loadGraphemeBreakProps();
     loadEastAsianWidths();
+    loadHangulSyllableType();
     loadEmojiProps();
     loadBidiMirrored();
     loadBidiMirroringGlyph();
@@ -441,6 +442,13 @@ void UcdParser::loadGraphemeBreakProps()
 void UcdParser::loadEastAsianWidths()
 {
     _eastAsianWidths = loadGenericProperties(_ucdDir + "/EastAsianWidth.txt");
+}
+
+// ---- Hangul Syllable Type ----
+
+void UcdParser::loadHangulSyllableType()
+{
+    _hangulSyllableType = loadGenericProperties(_ucdDir + "/HangulSyllableType.txt");
 }
 
 // ---- Emoji Properties ----

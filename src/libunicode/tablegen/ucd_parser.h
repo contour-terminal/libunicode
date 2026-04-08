@@ -122,6 +122,9 @@ class UcdParser
     /// East Asian Width ranges, sorted by start codepoint.
     [[nodiscard]] auto const& eastAsianWidths() const noexcept { return _eastAsianWidths; }
 
+    /// Hangul Syllable Type ranges (L, V, T, LV, LVT), sorted by start codepoint.
+    [[nodiscard]] auto const& hangulSyllableType() const noexcept { return _hangulSyllableType; }
+
     /// Emoji properties grouped by property name.
     [[nodiscard]] auto const& emojiProps() const noexcept { return _emojiProps; }
 
@@ -174,6 +177,7 @@ class UcdParser
     void loadBlocks();
     void loadGraphemeBreakProps();
     void loadEastAsianWidths();
+    void loadHangulSyllableType();
     void loadEmojiProps();
     void loadBidiMirrored();
     void loadBidiMirroringGlyph();
@@ -228,6 +232,9 @@ class UcdParser
 
     // East Asian Width
     std::vector<PropertyRange> _eastAsianWidths;
+
+    // Hangul Syllable Type
+    std::vector<PropertyRange> _hangulSyllableType;
 
     // Emoji
     std::map<std::string, std::vector<PropertyRange>> _emojiProps;
