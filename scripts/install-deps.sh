@@ -37,11 +37,11 @@ fetch_and_unpack()
     FULL_DISTFILE="$SYSDEPS_DIST_DIR/$DISTFILE"
 
     if ! test -f "$FULL_DISTFILE"; then
-        if which curl &>/dev/null; then
+        if command -v curl &>/dev/null; then
             curl -L -o "$FULL_DISTFILE" "$URL"
-        elif which wget &>/dev/null; then
+        elif command -v wget &>/dev/null; then
             wget -O "$FULL_DISTFILE" "$URL"
-        elif which fetch &>/dev/null; then
+        elif command -v fetch &>/dev/null; then
             # FreeBSD
             fetch -o "$FULL_DISTFILE" "$URL"
         else

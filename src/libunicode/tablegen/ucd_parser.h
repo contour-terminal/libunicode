@@ -119,6 +119,9 @@ class UcdParser
     /// Grapheme cluster break properties grouped by property name.
     [[nodiscard]] auto const& graphemeBreakProps() const noexcept { return _graphemeBreakProps; }
 
+    /// Word break properties grouped by property name.
+    [[nodiscard]] auto const& wordBreakProps() const noexcept { return _wordBreakProps; }
+
     /// East Asian Width ranges, sorted by start codepoint.
     [[nodiscard]] auto const& eastAsianWidths() const noexcept { return _eastAsianWidths; }
 
@@ -176,6 +179,7 @@ class UcdParser
     void loadScriptExtensions();
     void loadBlocks();
     void loadGraphemeBreakProps();
+    void loadWordBreakProps();
     void loadEastAsianWidths();
     void loadHangulSyllableType();
     void loadEmojiProps();
@@ -229,6 +233,9 @@ class UcdParser
 
     // Grapheme break props
     std::map<std::string, std::vector<PropertyRange>> _graphemeBreakProps;
+
+    // Word break props
+    std::map<std::string, std::vector<PropertyRange>> _wordBreakProps;
 
     // East Asian Width
     std::vector<PropertyRange> _eastAsianWidths;

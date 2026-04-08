@@ -160,6 +160,7 @@ add_library(unicode ${LIBUNICODE_LIB_MODE}
     emoji_segmenter.cpp
     grapheme_segmenter.cpp
     normalization.cpp
+    word_segmenter.cpp
     scan.cpp
     script_segmenter.cpp
     utf8.cpp
@@ -323,6 +324,7 @@ if(LIBUNICODE_TESTING)
     endif()
 
     target_link_libraries(unicode_test unicode Catch2::Catch2WithMain)
+    target_compile_definitions(unicode_test PRIVATE LIBUNICODE_UCD_DIR="${LIBUNICODE_UCD_DIR}")
     add_test(unicode_test unicode_test)
 endif()
 # }}}

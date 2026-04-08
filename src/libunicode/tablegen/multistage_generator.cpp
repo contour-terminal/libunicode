@@ -80,10 +80,11 @@ namespace
         int8_t emoji_segmentation_category = ESC_Invalid;
         uint8_t age = 0;
         uint8_t indic_conjunct_break = 3; // Default: Indic_Conjunct_Break::None
+        uint8_t word_break = 18;          // Default: Word_Break::Other
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(CodepointRecord) == 9, "CodepointRecord must be exactly 9 bytes");
+    static_assert(sizeof(CodepointRecord) == 10, "CodepointRecord must be exactly 10 bytes");
 
     inline bool operator==(CodepointRecord const& a, CodepointRecord const& b) noexcept
     {
@@ -238,17 +239,18 @@ namespace
     }
 
     /// Reverse lookup: index -> name for a PVA-based enum.
+    /// Prefers the longest matching name to avoid returning abbreviations.
     std::string reverseLookup(std::map<std::string, uint8_t> const& index,
                               uint8_t value,
                               std::string const& defaultName = "Unknown")
     {
+        std::string bestName;
         for (auto const& [name, idx]: index)
         {
-            // Skip abbreviation keys (single letters or 2-letter) — only match full names
-            if (idx == value && name.size() > 2)
-                return name;
+            if (idx == value && name.size() > bestName.size())
+                bestName = name;
         }
-        return defaultName;
+        return bestName.empty() ? defaultName : bestName;
     }
 
     std::string_view escName(int8_t idx)
@@ -341,6 +343,7 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     auto const ageIndex = buildAgeIndex(findPva("Age"));
     auto const gcbIndex = buildPvaBasedIndex(findPva("Grapheme_Cluster_Break"), "Undefined");
     auto const incbIndex = buildPvaBasedIndex(findPva("Indic_Conjunct_Break"));
+    auto const wbIndex = buildPvaBasedIndex(findPva("Word_Break"));
 
     // Name vectors for output
     auto const scriptNames = buildScriptNames(parser.scripts());
@@ -388,6 +391,7 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
         // General_Category::Unassigned is a member name in the GC enum
         auto gcUnassigned = gcIndex.count("Unassigned") ? gcIndex.at("Unassigned") : uint8_t(0);
         auto incbNone = incbIndex.count("None") ? incbIndex.at("None") : uint8_t(3);
+        auto wbOther = wbIndex.count("Other") ? wbIndex.at("Other") : uint8_t(18);
         for (auto& rec: records)
         {
             rec.script = scriptUnknown;
@@ -395,6 +399,7 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
             rec.east_asian_width = eawNarrow;
             rec.general_category = gcUnassigned;
             rec.indic_conjunct_break = incbNone;
+            rec.word_break = wbOther;
         }
     }
 
@@ -479,6 +484,19 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
         for (auto const& r: ranges)
             for (auto cp = r.first; cp <= r.last; ++cp)
                 records[static_cast<size_t>(cp)].indic_conjunct_break = it->second;
+    }
+
+    // Word Break
+    for (auto const& [propName, ranges]: parser.wordBreakProps())
+    {
+        for (auto const& r: ranges)
+        {
+            auto it = wbIndex.find(r.property);
+            if (it == wbIndex.end())
+                continue;
+            for (auto cp = r.first; cp <= r.last; ++cp)
+                records[static_cast<size_t>(cp)].word_break = it->second;
+        }
     }
 
     // East Asian Width
@@ -615,7 +633,8 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
              << ", "
              << "EmojiSegmentationCategory::" << escName(rec.emoji_segmentation_category) << ", "
              << "Age::" << (rec.age < ageNames.size() ? ageNames[rec.age] : "Unassigned") << ", "
-             << "Indic_Conjunct_Break::" << reverseLookup(incbIndex, rec.indic_conjunct_break, "None") << "},\n";
+             << "Indic_Conjunct_Break::" << reverseLookup(incbIndex, rec.indic_conjunct_break, "None") << ", "
+             << "Word_Break::" << reverseLookup(wbIndex, rec.word_break, "Other") << "},\n";
     }
     impl << "}};\n\n";
 

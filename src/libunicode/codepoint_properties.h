@@ -34,6 +34,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     EmojiSegmentationCategory emoji_segmentation_category = EmojiSegmentationCategory::Invalid;
     Age age = Age::Unassigned;
     Indic_Conjunct_Break indic_conjunct_break = Indic_Conjunct_Break::None;
+    Word_Break word_break = Word_Break::Other;
 
     static uint8_t constexpr FlagEmoji = 0x01;                // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagEmojiPresentation = 0x02;    // NOLINT(readability-identifier-naming)

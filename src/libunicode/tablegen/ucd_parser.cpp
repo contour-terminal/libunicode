@@ -193,6 +193,7 @@ void UcdParser::parseAll()
 
     // Phase 2: UCD API files
     loadGraphemeBreakProps();
+    loadWordBreakProps();
     loadEastAsianWidths();
     loadHangulSyllableType();
     loadEmojiProps();
@@ -435,6 +436,13 @@ void UcdParser::loadBlocks()
 void UcdParser::loadGraphemeBreakProps()
 {
     _graphemeBreakProps = loadGroupedProperties(_ucdDir + "/auxiliary/GraphemeBreakProperty.txt", "Property");
+}
+
+// ---- Word Break Properties ----
+
+void UcdParser::loadWordBreakProps()
+{
+    _wordBreakProps = loadGroupedProperties(_ucdDir + "/auxiliary/WordBreakProperty.txt", "Property");
 }
 
 // ---- East Asian Widths ----
