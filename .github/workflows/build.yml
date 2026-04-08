@@ -61,6 +61,39 @@ jobs:
           name: unicode-query-linux-x86_64
           path: build/src/tools/unicode-query
 
+  # {{{ Ubuntu ARM64
+  ubuntu_arm64:
+    name: "Ubuntu ARM64"
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-ubuntu_arm64"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        run: ./scripts/install-deps.sh
+      - name: "cmake"
+        run: |
+          cmake -S . -B build -G Ninja \
+            -D CMAKE_BUILD_TYPE="RelWithDebInfo" \
+            -D LIBUNICODE_BENCHMARK=ON \
+            -D LIBUNICODE_TESTING=ON \
+            -D LIBUNICODE_BUILD_STATIC=ON
+      - name: "build"
+        run: cmake --build build/ -- -j3
+      - name: "test"
+        run: ./build/src/libunicode/unicode_test
+      - name: "Upload unicode-query"
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicode-query-linux-arm64
+          path: build/src/tools/unicode-query
+  # }}}
+
   # {{{ macOS
   osx:
     name: "macOS"
