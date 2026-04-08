@@ -759,7 +759,12 @@ void UcdParser::loadDerivedNormalizationProps()
 
         auto cpPart = trim(parts[0]);
         auto prop = std::string(trim(parts[1]));
-        auto value = parts.size() > 2 ? std::string(trim(parts[2])) : std::string {};
+
+        // Strip inline comments (everything from '#' onward) from the value field
+        auto rawValue = parts.size() > 2 ? trim(parts[2]) : std::string_view {};
+        if (auto hashPos = rawValue.find('#'); hashPos != std::string_view::npos)
+            rawValue = trim(rawValue.substr(0, hashPos));
+        auto value = std::string(rawValue);
 
         // Parse codepoint range
         std::vector<char32_t> codepoints;

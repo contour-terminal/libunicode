@@ -14,6 +14,7 @@
 #pragma once
 
 #include <libunicode/ucd_enums.h>
+#include <libunicode/utf8.h>
 
 #include <cstdint>
 #include <string>
@@ -232,5 +233,89 @@ size_t hangul_decompose(char32_t syllable, char32_t* output) noexcept;
 /// Composes Hangul jamos into a syllable.
 /// Returns the composed syllable, or 0 if composition not possible.
 [[nodiscard]] char32_t hangul_compose(char32_t l, char32_t v, char32_t t = 0) noexcept;
+
+// ============================================================================
+// Streaming normalizer
+// ============================================================================
+
+/// Streaming Unicode normalizer for incremental input processing.
+///
+/// Buffers codepoints until a safe normalization boundary is found (UAX#15 Section 9),
+/// then normalizes the buffered segment. This enables processing arbitrarily large
+/// text without loading it entirely into memory.
+///
+/// The returned string_view from feed()/flush() points into an internal buffer
+/// and is valid until the next call to feed(), flush(), or reset().
+///
+/// @code
+///     normalizer norm(Normalization_Form::NFC);
+///     for (char32_t cp : input)
+///     {
+///         auto segment = norm.feed(cp);
+///         if (!segment.empty())
+///             process(segment);
+///     }
+///     auto final = norm.flush();
+///     if (!final.empty())
+///         process(final);
+/// @endcode
+class normalizer
+{
+  public:
+    /// @param form The normalization form to apply.
+    explicit normalizer(Normalization_Form form) noexcept;
+
+    /// Feeds a single codepoint into the normalizer.
+    /// @param codepoint The codepoint to process.
+    /// @return Normalized output segment, or empty if still buffering.
+    [[nodiscard]] std::u32string_view feed(char32_t codepoint);
+
+    /// Flushes remaining buffered codepoints.
+    /// Must be called when input is complete.
+    /// @return Final normalized output segment, or empty if nothing was buffered.
+    [[nodiscard]] std::u32string_view flush();
+
+    /// Resets to initial state, discarding any buffered data.
+    void reset() noexcept;
+
+  private:
+    [[nodiscard]] bool is_boundary(char32_t codepoint) const noexcept;
+    std::u32string_view emit_pending();
+
+    Normalization_Form _form;
+    std::u32string _pending; ///< Current combining character sequence being buffered
+    std::u32string _output;  ///< Last emitted normalized segment
+};
+
+/// Streaming UTF-8 normalizer.
+///
+/// Wraps a normalizer with incremental UTF-8 decoding, allowing normalization
+/// of UTF-8 byte streams without requiring full decoding upfront.
+///
+/// The returned string_view from feed()/flush() points into an internal buffer
+/// and is valid until the next call to feed(), flush(), or reset().
+class utf8_normalizer
+{
+  public:
+    /// @param form The normalization form to apply.
+    explicit utf8_normalizer(Normalization_Form form) noexcept;
+
+    /// Feeds a chunk of UTF-8 data into the normalizer.
+    /// @param utf8Data UTF-8 encoded input bytes.
+    /// @return Normalized UTF-8 output, or empty if still buffering.
+    [[nodiscard]] std::string_view feed(std::string_view utf8Data);
+
+    /// Flushes remaining buffered data.
+    /// @return Final normalized UTF-8 output.
+    [[nodiscard]] std::string_view flush();
+
+    /// Resets to initial state.
+    void reset() noexcept;
+
+  private:
+    normalizer _inner;
+    utf8_decoder_state _utf8State {};
+    std::string _utf8Output;
+};
 
 } // namespace unicode
