@@ -150,7 +150,8 @@ extern "C"
      * return code true.
      *
      * @warning This two-codepoint API cannot handle rules requiring multi-codepoint
-     *          lookback such as GB9c (Indic conjuncts) and GB12/GB13 (regional indicators).
+     *          lookback such as GB9c (Indic conjuncts), GB11 (emoji ZWJ sequences),
+     *          and GB12/GB13 (regional indicators).
      *          Use the C++ stateful API (grapheme_process_init/grapheme_process_breakable)
      *          for correct results.
      */

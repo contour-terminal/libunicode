@@ -25,6 +25,7 @@ void grapheme_process_init(char32_t nextCodepoint, grapheme_segmenter_state& sta
     state.previousProperties = Pb;
     state.ri_counter = (B == Grapheme_Cluster_Break::Regional_Indicator) ? 1 : 0;
     state.incb_state = (Pb.indic_conjunct_break == Indic_Conjunct_Break::Consonant) ? 1 : 0;
+    state.extpic_state = Pb.is_extended_pictographic() ? 1 : 0;
 }
 
 bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state& state) noexcept
@@ -40,9 +41,6 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     state.previousCodepoint = b;
     state.previousProperties = Pb;
 
-    static constexpr char32_t CR = 0x000D; // NOLINT
-    static constexpr char32_t LF = 0x000A; // NOLINT
-
     {
         // Set state.ri_counter to zero if the next codepoint is not of category Regional_Indicator.
         //
@@ -54,7 +52,7 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     }
 
     // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
-    if (a == CR && b == LF)
+    if (A == Grapheme_Cluster_Break::CR && B == Grapheme_Cluster_Break::LF)
         return false;
 
     // GB4 (a) + GB5 (b) part 1 (C0 characers) + US-ASCII shortcut
@@ -62,7 +60,8 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // in standard Latin text.
     if (a < 128 && b < 128)
     {
-        state.incb_state = 0; // ASCII resets InCB tracking
+        state.incb_state = 0;   // ASCII resets InCB tracking
+        state.extpic_state = 0; // ASCII resets ExtPic tracking
         return true;
     }
 
@@ -81,12 +80,25 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
             state.incb_state = 0;
     }
 
-    // GB4: (part 2)
-    if (A == Grapheme_Cluster_Break::Control)
+    // GB11: Extended Pictographic tracking state machine.
+    // Capture previous state before updating, as GB11 check needs the pre-transition state.
+    auto const prev_extpic_state = state.extpic_state;
+    if (prev_extpic_state != 0 || Pb.is_extended_pictographic())
+    {
+        if (Pb.is_extended_pictographic())
+            state.extpic_state = 1;
+        else if ((B == Grapheme_Cluster_Break::Extend || B == Grapheme_Cluster_Break::ZWJ) && prev_extpic_state == 1)
+            ; // keep state - Extend/ZWJ extend the ExtPic chain for GB11
+        else
+            state.extpic_state = 0;
+    }
+
+    // GB4: Break after (Control | CR | LF)
+    if (A == Grapheme_Cluster_Break::Control || A == Grapheme_Cluster_Break::CR || A == Grapheme_Cluster_Break::LF)
         return true;
 
-    // GB5: (part 2)
-    if (B == Grapheme_Cluster_Break::Control)
+    // GB5: Break before (Control | CR | LF)
+    if (B == Grapheme_Cluster_Break::Control || B == Grapheme_Cluster_Break::CR || B == Grapheme_Cluster_Break::LF)
         return true;
 
     // Do not break Hangul syllable sequences.
@@ -102,7 +114,7 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
         return false;
 
     // GB8:
-    if ((A == Grapheme_Cluster_Break::LV || A == Grapheme_Cluster_Break::T) && B == Grapheme_Cluster_Break::T)
+    if ((A == Grapheme_Cluster_Break::LVT || A == Grapheme_Cluster_Break::T) && B == Grapheme_Cluster_Break::T)
         return false;
 
     // GB9: Do not break before extending characters.
@@ -124,7 +136,8 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
         return false;
 
     // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.
-    if (A == Grapheme_Cluster_Break::ZWJ && Pb.is_extended_pictographic())
+    // Full rule: \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
+    if (A == Grapheme_Cluster_Break::ZWJ && Pb.is_extended_pictographic() && prev_extpic_state == 1)
         return false;
 
     // GB12/GB13: Do not break within emoji flag sequences.
@@ -137,7 +150,7 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     }
 
     // GB999: Otherwise, break everywhere.
-    return true; // GB10
+    return true;
 }
 
 } // namespace unicode
