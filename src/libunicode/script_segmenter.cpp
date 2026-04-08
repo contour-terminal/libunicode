@@ -125,15 +125,16 @@ bool script_segmenter::mergeSets(ScriptSet const& nextSet, ScriptSet& currentSet
 script_segmenter::ScriptSet script_segmenter::getScriptsFor(char32_t codepoint) noexcept
 {
     ScriptSet scriptSet;
-
-    // Collect all script(/-extensions) for @p _codepoint into scriptSet.
-    size_t const sceCount = script_extensions(codepoint, scriptSet.data(), scriptSet.capacity());
-    scriptSet.resize(sceCount);
-
-    // Get the script for @p _codepoint.
     Script const sc = script(codepoint);
 
-    // If the script of @p _codepoint is also in scriptSet,
+    // Collect all script extensions for @p codepoint into scriptSet.
+    if (auto const exts = script_extensions(codepoint))
+        for (auto const s: *exts)
+            scriptSet.push_back(s);
+    else
+        scriptSet.push_back(sc);
+
+    // If the script of @p codepoint is also in scriptSet,
     // then move it to the front of the set,
     // otherwise append it to the back of scriptSet.
     if (auto i = find(scriptSet.begin(), scriptSet.end(), sc); i != scriptSet.end())
