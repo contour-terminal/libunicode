@@ -71,6 +71,7 @@ class utf8_grapheme_segmenter::iterator
     ConvertResult _result = Incomplete {};
     char32_t _nextCodepoint {};
     value_type _cluster {};
+    grapheme_segmenter_state _segmenter_state {};
 };
 
 // {{{ utf8_grapheme_segmenter implementation
@@ -140,12 +141,16 @@ inline void utf8_grapheme_segmenter::iterator::consumeGraphemeCluster() noexcept
     _clusterStart = _nextCodepointStart;
     _cluster.clear();
 
-    bool nonbreakable = true;
-    while (_nextCodepointStart != _end && nonbreakable)
-    {
+    if (_nextCodepointStart == _end)
+        return;
+
+    // Consume first codepoint and initialize segmenter state
+    _cluster.push_back(consumeCodepoint());
+    grapheme_process_init(_cluster.back(), _segmenter_state);
+
+    // Continue consuming while the next codepoint doesn't break the cluster
+    while (_nextCodepointStart != _end && !grapheme_process_breakable(_nextCodepoint, _segmenter_state))
         _cluster.push_back(consumeCodepoint());
-        nonbreakable = unicode::grapheme_segmenter::is_nonbreakable(_cluster.back(), _nextCodepoint);
-    }
 }
 
 inline utf8_grapheme_segmenter::iterator& utf8_grapheme_segmenter::iterator::operator++() noexcept

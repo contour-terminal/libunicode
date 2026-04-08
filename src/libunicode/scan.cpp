@@ -102,6 +102,7 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
                 state.utf8 = {};
             }
             state.lastCodepointHint = 0;
+            state.graphemeState = {};
             resultEnd = input;
             break;
         }
@@ -118,7 +119,16 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
             auto const nextCodepoint = get<Success>(result).value;
             auto const nextWidth = max(currentClusterWidth, static_cast<size_t>(width(nextCodepoint)));
             state.lastCodepointHint = nextCodepoint;
-            if (grapheme_segmenter::is_breakable(prevCodepoint, nextCodepoint))
+
+            bool const breakable = [&] {
+                if (!prevCodepoint)
+                {
+                    grapheme_process_init(nextCodepoint, state.graphemeState);
+                    return true;
+                }
+                return grapheme_process_breakable(nextCodepoint, state.graphemeState);
+            }();
+            if (breakable)
             {
                 // Flush out current grapheme cluster's East Asian Width.
                 count += currentClusterWidth;
@@ -166,6 +176,7 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
             receiver.receiveInvalidGraphemeCluster();
             currentClusterWidth = 0;
             state.lastCodepointHint = 0;
+            state.graphemeState = {};
             state.utf8.expectedLength = 0;
             byteCount = 0;
         }

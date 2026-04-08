@@ -148,6 +148,11 @@ extern "C"
      * that the both codepoints @p a and @p b can be broken up.
      * This implies that codepoints outside the valid Unicode range will also yield
      * return code true.
+     *
+     * @warning This two-codepoint API cannot handle rules requiring multi-codepoint
+     *          lookback such as GB9c (Indic conjuncts) and GB12/GB13 (regional indicators).
+     *          Use the C++ stateful API (grapheme_process_init/grapheme_process_breakable)
+     *          for correct results.
      */
     int u32_grapheme_unbreakable(u32_char_t a, u32_char_t b);
 
