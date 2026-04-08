@@ -39,6 +39,48 @@ TEST_CASE("width.single_codepoint", "[width]")
     CHECK(unicode::width(U'\U0001F480') == 2); // 💀 :skull:
 }
 
+TEST_CASE("width.hangul_jamo", "[width]")
+{
+    // Leading Jamo (Choseong) — EAW=Wide → width 2
+    CHECK(unicode::width(U'\u1100') == 2); // HANGUL CHOSEONG KIYEOK
+    CHECK(unicode::width(U'\u115F') == 2); // HANGUL CHOSEONG FILLER
+    CHECK(unicode::width(U'\uA960') == 2); // HANGUL CHOSEONG TIKEUT-MIEUM (Extended-A)
+    CHECK(unicode::width(U'\uA97C') == 2); // HANGUL CHOSEONG SSANGYEORINHIEUH (Extended-A)
+
+    // Vowel Jamo (Jungseong) — conjoining → width 0
+    CHECK(unicode::width(U'\u1160') == 0); // HANGUL JUNGSEONG FILLER
+    CHECK(unicode::width(U'\u1161') == 0); // HANGUL JUNGSEONG A
+    CHECK(unicode::width(U'\u11A7') == 0); // HANGUL JUNGSEONG O-YAE
+    CHECK(unicode::width(U'\uD7B0') == 0); // HANGUL JUNGSEONG O-YEO (Extended-B)
+    CHECK(unicode::width(U'\uD7C6') == 0); // HANGUL JUNGSEONG ARAEA-E (Extended-B)
+
+    // Trailing Jamo (Jongseong) — conjoining → width 0
+    CHECK(unicode::width(U'\u11A8') == 0); // HANGUL JONGSEONG KIYEOK
+    CHECK(unicode::width(U'\u11FF') == 0); // HANGUL JONGSEONG SSANGNIEUN
+    CHECK(unicode::width(U'\uD7CB') == 0); // HANGUL JONGSEONG NIEUN-RIEUL (Extended-B)
+    CHECK(unicode::width(U'\uD7FB') == 0); // HANGUL JONGSEONG PHIEUPH-THIEUTH (Extended-B)
+
+    // Precomposed syllables — EAW=Wide → width 2
+    CHECK(unicode::width(U'\uAC00') == 2); // HANGUL SYLLABLE GA (first)
+    CHECK(unicode::width(U'\uD7A3') == 2); // HANGUL SYLLABLE HIH (last)
+
+    // Compatibility Jamo — EAW=Wide → width 2
+    CHECK(unicode::width(U'\u3131') == 2); // HANGUL LETTER KIYEOK
+
+    // Halfwidth Jamo — no conjoining → width 1
+    CHECK(unicode::width(U'\uFFA0') == 1); // HALFWIDTH HANGUL FILLER
+    CHECK(unicode::width(U'\uFFBE') == 1); // HALFWIDTH HANGUL LETTER KIYEOK
+}
+
+TEST_CASE("width.hangul_decomposed_syllable", "[width]")
+{
+    // L + V = grapheme cluster of width 2
+    CHECK(unicode::grapheme_cluster_width(U"\u1100\u1161"sv) == 2);
+
+    // L + V + T = grapheme cluster of width 2
+    CHECK(unicode::grapheme_cluster_width(U"\u1100\u1161\u11A8"sv) == 2);
+}
+
 TEST_CASE("grapheme_cluster_width.empty", "[width]")
 {
     CHECK(unicode::grapheme_cluster_width(std::u32string_view {}) == 0);

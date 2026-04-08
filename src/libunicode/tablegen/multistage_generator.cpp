@@ -526,6 +526,16 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
         records[static_cast<size_t>(cp)].char_width =
             computeCharWidth(records[static_cast<size_t>(cp)], zeroWidthGCs, eawWide, eawFullwidth);
 
+    // Conjoining Hangul V/T Jamo must be width 0 so that decomposed syllables
+    // (L + V + T) sum to the same width as their precomposed forms (issue #32).
+    // Only V and T need override; L, LV, LVT already get width 2 from EAW=Wide.
+    for (auto const& r: parser.hangulSyllableType())
+    {
+        if (r.property == "V" || r.property == "T")
+            for (auto cp = r.first; cp <= r.last; ++cp)
+                records[static_cast<size_t>(cp)].char_width = 0;
+    }
+
     // ---- Generate multistage tables ----
     std::cout << "[tablegen]   Generating multistage tables (properties)...\n";
 
