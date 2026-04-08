@@ -176,14 +176,18 @@ using unicode::run_segmenter;
 
 string scriptExtensionsString(char32_t codepoint)
 {
-    array<unicode::Script, 32> scripts {};
-    size_t count = unicode::script_extensions(codepoint, scripts.data(), scripts.size());
+    auto const exts = unicode::script_extensions(codepoint);
+    if (!exts)
+        return std::format("{}", unicode::script(codepoint));
+
     std::stringstream sstr;
-    for (size_t i = 0; i < count; ++i)
+    auto first = true;
+    for (auto const s: *exts)
     {
-        if (i)
+        if (!first)
             sstr << ", ";
-        sstr << std::format("{}", scripts[i]);
+        sstr << std::format("{}", s);
+        first = false;
     }
     return sstr.str();
 }

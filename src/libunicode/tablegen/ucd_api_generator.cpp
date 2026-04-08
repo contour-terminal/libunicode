@@ -113,6 +113,7 @@ void generateUcdApiFiles(UcdParser const& parser, std::string const& outputDir)
 #include <libunicode/ucd_enums.h>
 
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -129,6 +130,7 @@ namespace unicode
 
 #include <algorithm>
 #include <array>
+#include <span>
 #include <string_view>
 
 namespace unicode
@@ -352,17 +354,12 @@ namespace unicode
         impl << std::format("}} // {}\n\n", FOLD_CLOSE);
 
         // Getter
-        header << "size_t script_extensions(char32_t codepoint, Script* result, size_t capacity) noexcept;\n\n";
-        impl << "size_t script_extensions(char32_t codepoint, Script* result, size_t capacity) noexcept {\n";
+        header << "std::optional<std::span<Script const>> script_extensions(char32_t codepoint) noexcept;\n\n";
+        impl << "std::optional<std::span<Script const>> script_extensions(char32_t codepoint) noexcept {\n";
         impl << "    auto const p = search(tables::sce, codepoint);\n";
-        impl << "    if (!p.has_value()) {\n";
-        impl << "        *result = script(codepoint);\n";
-        impl << "        return 1;\n";
-        impl << "    }\n";
-        impl << "    auto const cap = std::min(capacity, p.value().second);\n";
-        impl << "    for (size_t i = 0; i < cap; ++i)\n";
-        impl << "        result[i] = p->first[i];\n";
-        impl << "    return cap;\n";
+        impl << "    if (!p.has_value())\n";
+        impl << "        return std::nullopt;\n";
+        impl << "    return std::span<Script const>{ p->first, p->second };\n";
         impl << "}\n\n";
     }
 
