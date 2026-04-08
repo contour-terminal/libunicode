@@ -186,6 +186,155 @@ TEST_CASE("convert.utf16_invalid_surrogates", "[convert]")
     }
 }
 
+// =====================================================================================
+// SIMD conversion boundary tests
+// =====================================================================================
+
+TEST_CASE("convert.simd.utf8_to_utf32_ascii_boundaries", "[convert][simd]")
+{
+    // Test pure ASCII strings at various lengths to exercise SIMD boundaries
+    // (128-bit: 16 bytes, 256-bit: 32 bytes, 512-bit: 64 bytes)
+    for (auto const len: { 0, 1, 7, 15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 128, 255, 256, 1000 })
+    {
+        auto const input = std::string(static_cast<size_t>(len), 'A');
+        auto const expected = std::u32string(static_cast<size_t>(len), U'A');
+        auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+        CHECK(result.size() == expected.size());
+        CHECK(result == expected);
+    }
+}
+
+TEST_CASE("convert.simd.utf8_to_utf16_ascii_boundaries", "[convert][simd]")
+{
+    for (auto const len: { 0, 1, 7, 15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 128, 255, 256, 1000 })
+    {
+        auto const input = std::string(static_cast<size_t>(len), 'B');
+        auto const expected = std::u16string(static_cast<size_t>(len), u'B');
+        auto const result = unicode::convert_to<char16_t>(std::string_view(input));
+        CHECK(result.size() == expected.size());
+        CHECK(result == expected);
+    }
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_ascii_then_multibyte", "[convert][simd]")
+{
+    // ASCII prefix (exercises SIMD) + multi-byte tail (exercises scalar)
+    SECTION("16 ASCII + 2-byte")
+    {
+        auto const input = std::string(16, 'x') + "\xC3\xB6"; // ö
+        auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+        CHECK(result.size() == 17);
+        CHECK(result.back() == U'\u00F6');
+    }
+    SECTION("32 ASCII + 3-byte")
+    {
+        auto const input = std::string(32, 'y') + "\xE2\x82\xAC"; // €
+        auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+        CHECK(result.size() == 33);
+        CHECK(result.back() == U'\u20AC');
+    }
+    SECTION("64 ASCII + 4-byte emoji")
+    {
+        auto const input = std::string(64, 'z') + "\xF0\x9F\x98\x80"; // 😀
+        auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+        CHECK(result.size() == 65);
+        CHECK(result.back() == U'\U0001F600');
+    }
+}
+
+TEST_CASE("convert.simd.utf8_to_utf16_ascii_then_multibyte", "[convert][simd]")
+{
+    SECTION("32 ASCII + surrogate-pair emoji")
+    {
+        auto const input = std::string(32, 'w') + "\xF0\x9F\x98\x80"; // 😀
+        auto const result = unicode::convert_to<char16_t>(std::string_view(input));
+        CHECK(result.size() == 34); // 32 + 2 (surrogate pair)
+        CHECK(result[32] == char16_t(0xD83D));
+        CHECK(result[33] == char16_t(0xDE00));
+    }
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_non_ascii_only", "[convert][simd]")
+{
+    // No ASCII at all -- SIMD loop should be skipped entirely
+    SECTION("2-byte codepoints")
+    {
+        auto constexpr input = "\xC3\xB6\xC3\xBC\xC3\xA4"sv; // öüä
+        auto const result = unicode::convert_to<char32_t>(input);
+        CHECK(result == U"öüä");
+    }
+    SECTION("3-byte CJK")
+    {
+        auto constexpr input = "\xE4\xB8\xAD\xE6\x96\x87"sv; // 中文
+        auto const result = unicode::convert_to<char32_t>(input);
+        CHECK(result == U"中文");
+    }
+    SECTION("4-byte emoji")
+    {
+        auto constexpr input = "\xF0\x9F\x98\x80\xF0\x9F\x98\x82"sv; // 😀😂
+        auto const result = unicode::convert_to<char32_t>(input);
+        CHECK(result == U"😀😂");
+    }
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_interleaved", "[convert][simd]")
+{
+    // Alternating ASCII and non-ASCII: SIMD enters and exits repeatedly
+    auto const input =
+        std::string(20, 'A') + "\xF0\x9F\x98\x80" + std::string(20, 'B') + "\xF0\x9F\x98\x82" + std::string(20, 'C');
+    auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+    CHECK(result.size() == 62); // 20 + 1 + 20 + 1 + 20
+    CHECK(result[20] == U'\U0001F600');
+    CHECK(result[41] == U'\U0001F602');
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_roundtrip", "[convert][simd]")
+{
+    // Verify roundtrip: UTF-8 -> UTF-32 -> UTF-8
+    auto constexpr input = "Hello \xC3\xB6 World \xE2\x82\xAC \xF0\x9F\x98\x80 end"sv;
+    auto const utf32 = unicode::convert_to<char32_t>(input);
+    auto const roundtrip = unicode::convert_to<char>(std::u32string_view(utf32));
+    CHECK(roundtrip == input);
+}
+
+TEST_CASE("convert.simd.utf8_to_utf16_roundtrip", "[convert][simd]")
+{
+    auto constexpr input = "Hello \xC3\xB6 World \xE2\x82\xAC \xF0\x9F\x98\x80 end"sv;
+    auto const utf16 = unicode::convert_to<char16_t>(input);
+    auto const roundtrip = unicode::convert_to<char>(std::u16string_view(utf16));
+    CHECK(roundtrip == input);
+}
+
+TEST_CASE("convert.simd.from_utf8_consistency", "[convert][simd]")
+{
+    // Verify from_utf8() and convert_to<char32_t>() produce identical results
+    auto constexpr input = "ABCDEFGHIJKLMNOP\xC3\xB6\xE2\x82\xAC\xF0\x9F\x98\x80 tail"sv;
+    auto const via_convert = unicode::convert_to<char32_t>(input);
+    auto const via_from_utf8 = unicode::from_utf8(input);
+    CHECK(via_convert == via_from_utf8);
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_full_ascii_range", "[convert][simd]")
+{
+    // All printable ASCII characters (0x20..0x7E)
+    std::string input;
+    std::u32string expected;
+    for (auto ch = 0x20; ch <= 0x7E; ++ch)
+    {
+        input += static_cast<char>(ch);
+        expected += static_cast<char32_t>(ch);
+    }
+    auto const result = unicode::convert_to<char32_t>(std::string_view(input));
+    CHECK(result == expected);
+}
+
+TEST_CASE("convert.simd.utf8_to_utf32_string_returning", "[convert][simd]")
+{
+    // Ensure the string-returning overload works correctly (uses SIMD path)
+    auto const result = unicode::convert_to<char32_t>("Hello, World!"sv);
+    CHECK(result == U"Hello, World!");
+}
+
 TEST_CASE("convert.utf8.incremental_decode", "[utf8]")
 {
     auto constexpr values = string_view {
