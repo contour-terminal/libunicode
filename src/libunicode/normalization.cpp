@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <span>
 
 namespace unicode
 {
@@ -43,14 +44,12 @@ namespace hangul
 
 namespace
 {
-    // Binary search in sorted codepoint array
     template <size_t N>
     [[nodiscard]] bool contains_codepoint(std::array<char32_t, N> const& table, char32_t codepoint) noexcept
     {
         return std::binary_search(table.begin(), table.end(), codepoint);
     }
 
-    // Binary search for CCC lookup
     [[nodiscard]] uint8_t lookup_ccc(char32_t codepoint) noexcept
     {
         auto const& table = detail::ccc_table;
@@ -63,23 +62,30 @@ namespace
         return 0;
     }
 
-    // Look up canonical decomposition
-    [[nodiscard]] std::vector<char32_t> lookup_canonical_decomposition(char32_t codepoint)
+    /// Binary search a decomposition table, returning a span into the static table data.
+    /// Returns an empty span if the codepoint has no decomposition in this table.
+    template <typename Table>
+    [[nodiscard]] std::span<char32_t const> find_decomposition(Table const& table, char32_t codepoint) noexcept
     {
-        auto const& table = detail::canonical_decomposition_table;
         auto const it = std::lower_bound(
             table.begin(), table.end(), codepoint, [](auto const& entry, char32_t cp) { return entry.source < cp; });
 
         if (it != table.end() && it->source == codepoint)
-        {
-            std::vector<char32_t> result;
-            result.reserve(it->length);
-            for (uint8_t i = 0; i < it->length; ++i)
-                result.push_back(it->targets[i]);
-            return result;
-        }
+            return { it->targets, it->length };
 
         return {};
+    }
+
+    [[nodiscard]] Decomposition_Type lookup_compatibility_decomp_type(char32_t codepoint) noexcept
+    {
+        auto const& table = detail::compatibility_decomposition_table;
+        auto const it = std::lower_bound(
+            table.begin(), table.end(), codepoint, [](auto const& entry, char32_t cp) { return entry.source < cp; });
+
+        if (it != table.end() && it->source == codepoint)
+            return static_cast<Decomposition_Type>(it->decomp_type);
+
+        return Decomposition_Type::None;
     }
 
     // Try to compose two codepoints
@@ -125,29 +131,27 @@ namespace
         return 0; // No composition found
     }
 
-    // Recursively decompose a codepoint
     void decompose_recursive(char32_t cp, std::u32string& output, bool compatibility)
     {
-        // Handle Hangul syllables algorithmically
         if (is_hangul_syllable(cp))
         {
             char32_t jamos[3];
             auto const count = hangul_decompose(cp, jamos);
-            for (size_t i = 0; i < count; ++i)
-                output.push_back(jamos[i]);
+            output.append(jamos, jamos + count);
             return;
         }
 
-        // Look up decomposition
-        auto decomp = lookup_canonical_decomposition(cp);
+        auto decomp = find_decomposition(detail::canonical_decomposition_table, cp);
+
+        if (decomp.empty() && compatibility)
+            decomp = find_decomposition(detail::compatibility_decomposition_table, cp);
+
         if (decomp.empty())
         {
-            // TODO: For NFKC/NFKD, also check compatibility decompositions
             output.push_back(cp);
             return;
         }
 
-        // Recursively decompose each component
         for (char32_t c: decomp)
             decompose_recursive(c, output, compatibility);
     }
@@ -252,37 +256,38 @@ uint8_t canonical_combining_class(char32_t codepoint) noexcept
 
 std::vector<char32_t> canonical_decomposition(char32_t codepoint)
 {
-    // Handle Hangul syllables algorithmically
     if (is_hangul_syllable(codepoint))
     {
-        std::vector<char32_t> result;
-        result.resize(3);
+        std::vector<char32_t> result(3);
         auto const count = hangul_decompose(codepoint, result.data());
         result.resize(count);
         return result;
     }
 
-    return lookup_canonical_decomposition(codepoint);
+    auto span = find_decomposition(detail::canonical_decomposition_table, codepoint);
+    return { span.begin(), span.end() };
 }
 
 std::vector<char32_t> compatibility_decomposition(char32_t codepoint)
 {
-    // For now, return canonical decomposition
-    // TODO: Implement full compatibility decomposition lookup
-    return canonical_decomposition(codepoint);
+    auto result = canonical_decomposition(codepoint);
+    if (result.empty())
+    {
+        auto span = find_decomposition(detail::compatibility_decomposition_table, codepoint);
+        result.assign(span.begin(), span.end());
+    }
+    return result;
 }
 
 Decomposition_Type decomposition_type(char32_t codepoint) noexcept
 {
-    // Check if there's any decomposition
     if (is_hangul_syllable(codepoint))
         return Decomposition_Type::Canonical;
 
-    auto decomp = lookup_canonical_decomposition(codepoint);
-    if (!decomp.empty())
+    if (!find_decomposition(detail::canonical_decomposition_table, codepoint).empty())
         return Decomposition_Type::Canonical;
 
-    return Decomposition_Type::None;
+    return lookup_compatibility_decomp_type(codepoint);
 }
 
 bool is_composition_exclusion(char32_t codepoint) noexcept

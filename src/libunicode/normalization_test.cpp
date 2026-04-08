@@ -217,3 +217,149 @@ TEST_CASE("normalization.decomposition_type", "[normalization]")
     // Hangul syllables have canonical decomposition
     CHECK(decomposition_type(U'\uAC00') == Decomposition_Type::Canonical);
 }
+
+// ============================================================================
+// NFKC/NFKD tests (compatibility decomposition)
+// ============================================================================
+
+TEST_CASE("normalization.to_nfkd", "[normalization]")
+{
+    // fi ligature (U+FB01) decomposes under NFKD to "fi"
+    auto result = to_nfkd(U"\uFB01");
+    CHECK(result == U"fi");
+
+    // Superscript 2 (U+00B2) decomposes to "2"
+    result = to_nfkd(U"\u00B2");
+    CHECK(result == U"2");
+
+    // Fullwidth A (U+FF21) decomposes to "A"
+    result = to_nfkd(U"\uFF21");
+    CHECK(result == U"A");
+
+    // Canonical decomposition still works in NFKD
+    result = to_nfkd(U"\u00E9");
+    CHECK(result == U"e\u0301");
+
+    // ASCII is unchanged
+    result = to_nfkd(U"hello");
+    CHECK(result == U"hello");
+}
+
+TEST_CASE("normalization.to_nfkc", "[normalization]")
+{
+    // fi ligature becomes "fi"
+    auto result = to_nfkc(U"\uFB01");
+    CHECK(result == U"fi");
+
+    // Superscript 2 becomes "2"
+    result = to_nfkc(U"\u00B2");
+    CHECK(result == U"2");
+
+    // Fullwidth A becomes "A"
+    result = to_nfkc(U"\uFF21");
+    CHECK(result == U"A");
+
+    // Composed character stays composed
+    result = to_nfkc(U"\u00E9");
+    CHECK(result == U"\u00E9");
+
+    // Decomposed character gets recomposed
+    result = to_nfkc(U"e\u0301");
+    CHECK(result == U"\u00E9");
+
+    // ASCII is unchanged
+    result = to_nfkc(U"hello");
+    CHECK(result == U"hello");
+}
+
+TEST_CASE("normalization.nfkd_does_not_equal_nfd", "[normalization]")
+{
+    // fi ligature: NFD leaves it unchanged, NFKD decomposes it
+    CHECK(to_nfd(U"\uFB01") == U"\uFB01");
+    CHECK(to_nfkd(U"\uFB01") == U"fi");
+}
+
+TEST_CASE("normalization.compatibility_equivalence", "[normalization]")
+{
+    CHECK(is_compatibility_equivalent(U"\uFB01", U"fi"));
+    CHECK(is_compatibility_equivalent(U"\u00B2", U"2"));
+    CHECK(is_compatibility_equivalent(U"\uFF21", U"A"));
+}
+
+// ============================================================================
+// Quick check tests (with populated tables)
+// ============================================================================
+
+TEST_CASE("normalization.quick_check_nfd", "[normalization]")
+{
+    // Composed e-acute: NFD_QC=No (has canonical decomposition)
+    CHECK(nfd_quick_check(U'\u00E9') == false);
+
+    // ASCII: NFD_QC=Yes
+    CHECK(nfd_quick_check('A') == true);
+
+    // Already-decomposed combining mark: NFD_QC=Yes
+    CHECK(nfd_quick_check(U'\u0301') == true);
+}
+
+TEST_CASE("normalization.quick_check_nfc", "[normalization]")
+{
+    // Combining acute accent: NFC_QC=Maybe (it can compose with a preceding starter)
+    CHECK(nfc_quick_check(U'\u0301') == NFC_Quick_Check::Maybe);
+
+    // ASCII: NFC_QC=Yes
+    CHECK(nfc_quick_check('A') == NFC_Quick_Check::Yes);
+}
+
+TEST_CASE("normalization.quick_check_nfkd", "[normalization]")
+{
+    // fi ligature: NFKD_QC=No (has compatibility decomposition)
+    CHECK(nfkd_quick_check(U'\uFB01') == false);
+
+    // Composed e-acute: NFKD_QC=No (has canonical decomposition)
+    CHECK(nfkd_quick_check(U'\u00E9') == false);
+
+    // ASCII: NFKD_QC=Yes
+    CHECK(nfkd_quick_check('A') == true);
+}
+
+TEST_CASE("normalization.quick_check_nfkc", "[normalization]")
+{
+    // fi ligature: NFKC_QC=No
+    CHECK(nfkc_quick_check(U'\uFB01') == NFKC_Quick_Check::No);
+
+    // ASCII: NFKC_QC=Yes
+    CHECK(nfkc_quick_check('A') == NFKC_Quick_Check::Yes);
+}
+
+TEST_CASE("normalization.quick_check_string", "[normalization]")
+{
+    // fi ligature: NFC=Yes (no canonical decomposition), NFKC=No
+    CHECK(quick_check(U"\uFB01", Normalization_Form::NFC) == Quick_Check_Result::Yes);
+    CHECK(quick_check(U"\uFB01", Normalization_Form::NFKC) == Quick_Check_Result::No);
+    CHECK(quick_check(U"\uFB01", Normalization_Form::NFD) == Quick_Check_Result::Yes);
+    CHECK(quick_check(U"\uFB01", Normalization_Form::NFKD) == Quick_Check_Result::No);
+}
+
+// ============================================================================
+// Decomposition type for compatibility types
+// ============================================================================
+
+TEST_CASE("normalization.decomposition_type_compat", "[normalization]")
+{
+    // fi ligature has compat decomposition
+    CHECK(decomposition_type(U'\uFB01') == Decomposition_Type::Compat);
+
+    // Superscript 2 has super decomposition
+    CHECK(decomposition_type(U'\u00B2') == Decomposition_Type::Super);
+
+    // Fullwidth A has wide decomposition
+    CHECK(decomposition_type(U'\uFF21') == Decomposition_Type::Wide);
+
+    // Halfwidth katakana wo (U+FF66) has narrow decomposition
+    CHECK(decomposition_type(U'\uFF66') == Decomposition_Type::Narrow);
+
+    // Circled digit 1 (U+2460) has circle decomposition
+    CHECK(decomposition_type(U'\u2460') == Decomposition_Type::Circle);
+}
+
