@@ -16,7 +16,9 @@
  */
 
 // clang-format off
+#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
 
 #line 20 "emoji_presentation_scanner.c"
 static const char _emoji_presentation_actions[] = {
