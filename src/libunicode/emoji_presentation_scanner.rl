@@ -14,7 +14,9 @@
  */
 
 // clang-format off
+#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
 
 %%{
   machine emoji_presentation;
