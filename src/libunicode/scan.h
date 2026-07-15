@@ -98,7 +98,9 @@ namespace detail
 ///
 /// - given the input sequence, the right most invalid or complete UTF-8 sequence is processed,
 /// - maxColumnCount is reached and the next grapheme cluster would exceed the given limit,
-/// - a control character is about to be processed.
+/// - a control character is about to be processed. Both the C0 (0x00..0x1F) and the C1
+///   (0x80..0x9F) control ranges count; a C1 byte only stops the scan at a UTF-8 character
+///   boundary, so a continuation byte that happens to fall in 0x80..0x9F stays part of its codepoint.
 ///
 /// When this function returns, it is guaranteed to not contain an incomplete UTF-8 sequence
 /// at the end of the output sequence.
@@ -110,6 +112,11 @@ namespace detail
 ///         either valid or invalid UTF-8 codepoints,
 ///         but not incomplete codepoints at the end.
 scan_result scan_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept;
+
+/// Feature macro: scan_text() stops at a C1 control byte (0x80..0x9F) sitting at a UTF-8 character
+/// boundary, rather than rendering it as U+FFFD. Downstream terminal parsers key off this to know
+/// whether they must guard against a mid-run 8-bit C1 control being swallowed as text.
+#define LIBUNICODE_SCAN_TEXT_STOPS_AT_C1_CONTROLS 1
 
 scan_result scan_text(scan_state& state,
                       std::string_view text,
