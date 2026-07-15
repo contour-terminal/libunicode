@@ -333,6 +333,35 @@ TEST_CASE("scan.complex.VS16")
     CHECK(state.next == s.data());
 }
 
+TEST_CASE("scan.c1_control.stops_mid_run")
+{
+    // A raw C1 control byte (0x80..0x9F) sitting at a character boundary is a control, not text, so
+    // scan_text stops at it and hands it back to the caller -- even when text follows. Regression:
+    // with trailing bytes present the C1 byte used to be consumed as U+FFFD (a terminal parser would
+    // then lose a mid-run 8-bit SPA/EPA, i.e. 0x96/0x97).
+    auto state = unicode::scan_state {};
+    auto const text = "ab\x96"
+                      "cd"sv; // 'a', 'b', C1 SPA (0x96), then more text
+    auto const result = unicode::scan_text(state, text, 80);
+    CHECK(result.count == 2);
+    CHECK(result.end == text.data() + 2);
+    CHECK(state.next == text.data() + 2);
+    CHECK(static_cast<uint8_t>(*state.next) == 0x96);
+}
+
+TEST_CASE("scan.c1_control.continuation_byte_stays_text")
+{
+    // A byte in 0x80..0x9F that is a UTF-8 *continuation* byte must remain part of its codepoint, not
+    // be mistaken for a C1 control: U+2018 encodes as 0xE2 0x80 0x98, both trailing bytes falling in
+    // the C1 range. The scan consumes the whole codepoint and stops at the following C0 control.
+    auto state = unicode::scan_state {};
+    auto const text = u8(U"\u2018"sv) + "\n"s; // LEFT SINGLE QUOTATION MARK, then LF
+    auto const result = unicode::scan_text(state, text, 80);
+    CHECK(result.count == 1);
+    CHECK(state.next == text.data() + 3);
+    CHECK(*state.next == '\n');
+}
+
 #if 0
 namespace
 {

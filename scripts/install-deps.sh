@@ -158,13 +158,22 @@ install_deps_fedora()
     version=`cat /etc/fedora-release | awk '{print $3}'`
 
     local packages="
-        catch-devel
         cmake
         gcc-c++
         google-benchmark-devel
+        libpfm-devel
         ninja-build
         pkgconf
     "
+
+    # Build Catch2 from source instead of using the catch-devel system package.
+    # The non-Release build types enable -D_GLIBCXX_DEBUG (see top-level
+    # CMakeLists.txt), which changes the libstdc++ ABI. The system catch-devel
+    # package is compiled without it, so linking it against our test code
+    # corrupts Catch2's static test registry and unicode_test exits without
+    # running a single test. An embedded Catch2 is compiled with the same flags
+    # and keeps the ABI consistent (Ubuntu 24.04 does the same).
+    fetch_and_unpack_Catch2
 
     [ x$PREPARE_ONLY_EMBEDS = xON ] && return
 
