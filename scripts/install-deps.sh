@@ -162,6 +162,7 @@ install_deps_fedora()
         cmake
         gcc-c++
         google-benchmark-devel
+        libpfm-devel
         ninja-build
         pkgconf
     "
