@@ -110,8 +110,13 @@ TEST_CASE("grapheme_cluster_width.VS16_emoji_presentation", "[width]")
 
 TEST_CASE("grapheme_cluster_width.VS15_text_presentation", "[width]")
 {
-    // Grinning face + VS15 → text presentation
-    CHECK(unicode::grapheme_cluster_width(U"\U0001F600\uFE0E"sv) == 1);
+    // VS15 narrows only a base an emoji variation sequence is actually defined for. U+231A WATCH is
+    // one, so its text presentation is a single column.
+    CHECK(unicode::grapheme_cluster_width(U"\u231A\uFE0E"sv) == 1);
+
+    // U+1F600 GRINNING FACE has NO variation sequence -- there is no text presentation of it to
+    // request -- so a trailing VS15 changes nothing. wcwidth 0.8.2 measures this as two columns.
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F600\uFE0E"sv) == 2);
 }
 
 TEST_CASE("grapheme_cluster_width.ZWJ_sequence", "[width]")
@@ -140,10 +145,10 @@ TEST_CASE("grapheme_cluster_width.ZWJ_does_not_widen", "[width]")
     // ZWJ likewise does not widen a non-emoji ligature request: Arabic lam + ZWJ + alef.
     CHECK(unicode::grapheme_cluster_width(U"ل‍ا"sv) == 1);
 
-    // NOTE: a Devanagari conjunct (ka + virama + ZWJ + ssa) is deliberately NOT asserted here. It is
-    // two columns in wcwidth -- not because of the ZWJ, but because a consonant following a virama
-    // promotes its cluster. That rule is not implemented yet, so pinning either answer here would
-    // encode a belief rather than the oracle.
+    // A Devanagari conjunct written with a ZWJ (ka + virama + ZWJ + ssa) is two columns, but the ZWJ
+    // is not what widens it: the consonant following the virama is. See
+    // grapheme_cluster_width.indic_spacing_mark_and_conjunct, which pins that rule directly.
+    CHECK(unicode::grapheme_cluster_width(U"क्‍ष"sv) == 2);
 }
 
 TEST_CASE("grapheme_cluster_width.indic_spacing_mark_and_conjunct", "[width]")
@@ -161,12 +166,140 @@ TEST_CASE("grapheme_cluster_width.indic_spacing_mark_and_conjunct", "[width]")
     CHECK(unicode::grapheme_cluster_width(U"क्नि"sv) == 2);          // ...+ i matra
     CHECK(unicode::grapheme_cluster_width(U"क्‍ष"sv) == 2); // ka + virama + ZWJ + ssa
 
-    // The virama set must be ALL viramas, not Indic_Conjunct_Break=Linker, which covers six scripts.
-    // Each of these is a conjunct whose virama is outside that set.
+    // Conjuncts across the Brahmic scripts, including the Invisible_Stacker ones.
     CHECK(unicode::grapheme_cluster_width(U"ព្រ"sv) == 2);  // Khmer, U+17D2
     CHECK(unicode::grapheme_cluster_width(U"ᬦ᭄ᬤ"sv) == 2); // Javanese, U+A9C0
     CHECK(unicode::grapheme_cluster_width(U"မ္မ"sv) == 2);  // Myanmar, U+1039
     CHECK(unicode::grapheme_cluster_width(U"മ്മ"sv) == 2);  // Malayalam, U+0D4D
+
+    // The virama set is ALL viramas rather than Indic_Conjunct_Break=Linker. Linker is not
+    // script-limited -- it already covers Khmer, Myanmar, Javanese, Chakma and Tai Tham above -- but
+    // it is smaller: 20 codepoints against 41. These four conjuncts are exactly what the larger set
+    // buys, and each would collapse to one column if the implementation keyed off Linker.
+    CHECK(unicode::grapheme_cluster_width(U"ਕ੍ਨ"sv) == 2); // Gurmukhi, U+0A4D
+    CHECK(unicode::grapheme_cluster_width(U"க்ந"sv) == 2); // Tamil, U+0BCD
+    CHECK(unicode::grapheme_cluster_width(U"ಕ್ನ"sv) == 2); // Kannada, U+0CCD
+    CHECK(unicode::grapheme_cluster_width(U"ක්න"sv) == 2); // Sinhala, U+0DCA
+}
+
+TEST_CASE("grapheme_cluster_width.variation_selector_needs_a_variation_base", "[width]")
+{
+    // A variation selector is a presentation request, not a width modifier: it applies only where an
+    // emoji variation sequence is defined. Every expectation here was read off wcwidth 0.8.2.
+
+    // VS16 widens U+2714 HEAVY CHECK MARK, for which a variation sequence exists...
+    CHECK(unicode::grapheme_cluster_width(U"✔️"sv) == 2);
+    // ...but not U+2713 CHECK MARK, for which none does, and not ordinary text.
+    CHECK(unicode::grapheme_cluster_width(U"✓️"sv) == 1);
+    CHECK(unicode::grapheme_cluster_width(U"x️"sv) == 1); // 'x'
+    CHECK(unicode::grapheme_cluster_width(U"•️"sv) == 1); // bullet
+    CHECK(unicode::grapheme_cluster_width(U"—️"sv) == 1); // em dash
+
+    // VS15 must not narrow a wide character that is not an emoji at all.
+    CHECK(unicode::grapheme_cluster_width(U"漢︎"sv) == 2); // CJK ideograph
+    CHECK(unicode::grapheme_cluster_width(U"ᄀ︎"sv) == 2); // HANGUL CHOSEONG KIYEOK
+
+    // Nor may it undo the widening that a spacing mark or a conjunct performed.
+    CHECK(unicode::grapheme_cluster_width(U"का︎"sv) == 2); // ka + AA matra + VS15
+    CHECK(unicode::grapheme_cluster_width(U"क्न︎"sv) == 2); // ka + virama + na + VS15
+}
+
+TEST_CASE("grapheme_cluster_width.variation_selector_after_zwj", "[width]")
+{
+    // A ZWJ consumes the codepoint behind it but leaves the base it swallowed still open to a
+    // variation selector. wcwidth resolves VS16 purely by looking the base up in its narrow-to-wide
+    // table, so the selector still widens even though the ZWJ zeroed the recorded width.
+    // Regression: gating VS16 on that zeroed width made the selector's position change the answer,
+    // so U+2764 U+200D U+1F525 U+FE0F measured 1 while the RGI spelling measured 2.
+    CHECK(unicode::grapheme_cluster_width(U"❤‍\U0001F525️"sv) == 2); // heart ZWJ fire VS16
+    CHECK(unicode::grapheme_cluster_width(U"❤️‍\U0001F525"sv) == 2); // ...RGI spelling
+    CHECK(unicode::grapheme_cluster_width(U"✔‍\U0001F525️"sv) == 2); // U+2714 is a base
+
+    // ...but only where a variation sequence is actually defined: U+2713 has none.
+    CHECK(unicode::grapheme_cluster_width(U"✓‍\U0001F525️"sv) == 1);
+
+    // VS15 is deliberately NOT symmetric with VS16 here. wcwidth's VS15 branch additionally requires
+    // the *recorded* width to be 2, and the ZWJ zeroed it, so the watch is not narrowed.
+    CHECK(unicode::grapheme_cluster_width(U"⌚‍\U0001F525︎"sv) == 2); // watch ZWJ fire VS15
+}
+
+TEST_CASE("grapheme_cluster_width.repeated_vs15_underflows_like_wcwidth", "[width]")
+{
+    // wcwidth's VS15 branch settles its correction against the running total and -- unlike its VS16
+    // branch -- does NOT mark the base as consumed, so a repeated VS15 decrements a second time.
+    // wcswidth("⌚︎︎") is 0 and a third selector takes it to -1.
+    //
+    // This asymmetry looks like an oversight and has been "fixed" once already. It is not: this
+    // library is a port of wcwidth 0.8, degenerate input included. Only the clamp at zero is ours,
+    // because the return type is unsigned.
+    CHECK(unicode::grapheme_cluster_width(U"⌚︎"sv) == 1);
+    CHECK(unicode::grapheme_cluster_width(U"⌚︎︎"sv) == 0);
+    CHECK(unicode::grapheme_cluster_width(U"⌚︎︎︎"sv) == 0);
+
+    // VS16, by contrast, does mark the base consumed, so repeating it is idempotent.
+    CHECK(unicode::grapheme_cluster_width(U"©️"sv) == 2);
+    CHECK(unicode::grapheme_cluster_width(U"©️️"sv) == 2);
+}
+
+TEST_CASE("grapheme_cluster_width.regional_indicator_run_is_contiguous", "[width]")
+{
+    // A flag is a PAIR of regional indicators, and wcwidth decides whether an RI is the second of a
+    // pair by counting the RIs *immediately* before it. Anything else -- a variation selector, a ZWJ
+    // -- ends the run, so the RI that follows opens a new pair and is measured in full.
+    //
+    // Regression: the pair counter was only cleared on the path that measures a codepoint, and the
+    // ZWJ/VS15/VS16 branches return before reaching it. An RI after a selector was then mistaken for
+    // the second half of a pair and contributed nothing.
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1EA️\U0001F1EA"sv) == 4);
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1EA︎\U0001F1EA"sv) == 4);
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1EA️\U0001F1EA️\U0001F1EA"sv) == 6);
+
+    // An unbroken run still pairs up the way a flag must.
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1E9\U0001F1EA"sv) == 2);
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1E9\U0001F1EA\U0001F1E9"sv) == 4);
+
+    // A ZWJ ends the run too, but it also swallows the RI behind it, so that one is never measured.
+    // The run length still counts it: wcwidth scans the raw input backwards, not what it processed.
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1EA‍\U0001F1EA"sv) == 2);
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F1EA‍\U0001F1EA\U0001F1EA"sv) == 2);
+}
+
+TEST_CASE("grapheme_cluster_width.skin_tone_modifier_is_absorbed", "[width]")
+{
+    // A skin tone modifier is drawn into the emoji before it, so it takes no column of its own. That
+    // holds even when the base is not Emoji_Modifier_Base: such sequences are ill-formed but real,
+    // and a terminal that counts the modifier separately corrupts the rest of the line.
+    CHECK(unicode::grapheme_cluster_width(U"❤\U0001F3FB"sv) == 1); // heart + light skin tone
+    CHECK(unicode::grapheme_cluster_width(U"©\U0001F3FB"sv) == 1); // copyright + light skin tone
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F3F3\U0001F3FB‍\U0001F525"sv) == 1);
+
+    // The well-formed case keeps working.
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F926\U0001F3FC"sv) == 2);
+}
+
+TEST_CASE("width.format_characters", "[width]")
+{
+    // General_Category=Cf is zero-width as a rule, but the ones that are Grapheme_Cluster_Break=
+    // Prepend do render, and wcwidth measures them as one column.
+    CHECK(unicode::width(U'؀') == 1);         // ARABIC NUMBER SIGN
+    CHECK(unicode::width(U'۝') == 1);         // ARABIC END OF AYAH
+    CHECK(unicode::width(U'܏') == 1);         // SYRIAC ABBREVIATION MARK
+    CHECK(unicode::width(U'\U000110BD') == 1); // KAITHI NUMBER SIGN
+
+    // SOFT HYPHEN is Cf but not Prepend; a terminal has no line breaking to hide it with and draws
+    // it as a hyphen, so it is carved out explicitly. wcwidth agrees.
+    CHECK(unicode::width(U'­') == 1);
+    CHECK(unicode::grapheme_cluster_width(U"a­b"sv) == 3);
+
+    // The invisible Cf codepoints stay zero-width. These four in particular are NOT
+    // Default_Ignorable, so a rule keyed off that property wrongly gives them a column.
+    CHECK(unicode::width(U'￹') == 0);        // INTERLINEAR ANNOTATION ANCHOR
+    CHECK(unicode::width(U'￺') == 0);        // INTERLINEAR ANNOTATION SEPARATOR
+    CHECK(unicode::width(U'￻') == 0);        // INTERLINEAR ANNOTATION TERMINATOR
+    CHECK(unicode::width(U'\U00013430') == 0); // EGYPTIAN HIEROGLYPH VERTICAL JOINER
+
+    CHECK(unicode::width(U'‍') == 0); // ZWJ
+    CHECK(unicode::width(U'​') == 0); // ZERO WIDTH SPACE
 }
 
 TEST_CASE("grapheme_cluster_width.two_spacing_codepoints_accumulate", "[width]")
