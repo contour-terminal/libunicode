@@ -132,6 +132,10 @@ class UcdParser
     /// Emoji properties grouped by property name.
     [[nodiscard]] auto const& emojiProps() const noexcept { return _emojiProps; }
 
+    /// Base codepoints that have an emoji variation sequence, i.e. that VS15 or VS16 can re-present.
+    /// Sorted and duplicate-free.
+    [[nodiscard]] auto const& emojiVariationBases() const noexcept { return _emojiVariationBases; }
+
     /// Bidi mirrored intervals (compressed).
     [[nodiscard]] auto const& bidiMirroredIntervals() const noexcept { return _bidiMirroredIntervals; }
 
@@ -185,6 +189,7 @@ class UcdParser
     void loadEastAsianWidths();
     void loadHangulSyllableType();
     void loadEmojiProps();
+    void loadEmojiVariationSequences();
     void loadBidiMirrored();
     void loadBidiMirroringGlyph();
 
@@ -248,6 +253,7 @@ class UcdParser
 
     // Emoji
     std::map<std::string, std::vector<PropertyRange>> _emojiProps;
+    std::vector<char32_t> _emojiVariationBases;
 
     // Bidi mirroring
     std::vector<std::pair<char32_t, char32_t>> _bidiMirroredIntervals;

@@ -124,6 +124,15 @@ namespace
             result.isRange = false;
         }
 
+        // Every caller turns these into `for (cp = first; cp <= last; ++cp) table[cp] = ...` over
+        // containers sized for the Unicode range. A malformed, truncated or hand-patched UCD file
+        // whose endpoints fall outside that range would write past the end of those containers and
+        // corrupt neighbouring table data -- silently, since the corrupted table still compiles.
+        // Reject such a line here rather than trusting every loop to bound-check itself.
+        constexpr auto lastCodepoint = char32_t { 0x10FFFF };
+        if (result.first > lastCodepoint || result.last > lastCodepoint || result.last < result.first)
+            return std::nullopt;
+
         return result;
     }
 
@@ -198,6 +207,7 @@ void UcdParser::parseAll()
     loadEastAsianWidths();
     loadHangulSyllableType();
     loadEmojiProps();
+    loadEmojiVariationSequences();
     loadBidiMirrored();
     loadBidiMirroringGlyph();
 
@@ -481,6 +491,41 @@ void UcdParser::loadEmojiProps()
     }
     for (auto& [key, ranges]: _emojiProps)
         std::sort(ranges.begin(), ranges.end(), [](auto const& a, auto const& b) { return a.first < b.first; });
+}
+
+// ---- Emoji Variation Sequences ----
+
+/// Collects the base codepoints of the emoji variation sequences, i.e. those a following VS15 or
+/// VS16 is defined to re-present. Lines look like:
+///
+///     231A FE0E  ; text style;  # (1.1) WATCH
+///     231A FE0F  ; emoji style; # (1.1) WATCH
+///
+/// Only the base is of interest here; which of the two selectors applies to a given base follows
+/// from the base's own width, so both spellings collapse to the same entry.
+void UcdParser::loadEmojiVariationSequences()
+{
+    auto f = openFile(_ucdDir + "/emoji/emoji-variation-sequences.txt");
+    std::string line;
+    while (std::getline(f, line))
+    {
+        if (auto const hash = line.find('#'); hash != std::string::npos)
+            line.erase(hash);
+        auto const semicolon = line.find(';');
+        if (semicolon == std::string::npos)
+            continue;
+
+        auto sequence = std::istringstream(line.substr(0, semicolon));
+        auto baseText = std::string {};
+        if (!(sequence >> baseText))
+            continue;
+
+        auto const base = static_cast<char32_t>(std::stoul(baseText, nullptr, 16));
+        _emojiVariationBases.push_back(base);
+    }
+
+    std::sort(_emojiVariationBases.begin(), _emojiVariationBases.end());
+    _emojiVariationBases.erase(std::unique(_emojiVariationBases.begin(), _emojiVariationBases.end()), _emojiVariationBases.end());
 }
 
 // ---- Bidi Mirrored ----

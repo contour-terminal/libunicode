@@ -32,6 +32,44 @@ foreach(_gen_file IN LISTS _LIBUNICODE_GENERATED_FILES)
     endif()
 endforeach()
 
+# The generated files are build outputs that happen to land in the source tree, so "they exist"
+# alone is not evidence that they are current. If any tablegen source is newer than the oldest
+# generated file, an earlier build produced them from different rules and reusing them would compile
+# the library against a table that silently disagrees with its own generator -- a stale table cannot
+# fail the build, it only makes the tests wrong. Treat that as "not pregenerated" and regenerate.
+if(LIBUNICODE_HAS_PREGENERATED_FILES)
+    file(GLOB _LIBUNICODE_TABLEGEN_SOURCES
+        "${CMAKE_CURRENT_SOURCE_DIR}/tablegen/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tablegen/*.h"
+    )
+    foreach(_tablegen_source IN LISTS _LIBUNICODE_TABLEGEN_SOURCES)
+        foreach(_gen_file IN LISTS _LIBUNICODE_GENERATED_FILES)
+            # IS_NEWER_THAN is also true when the two timestamps are EQUAL, which is the normal case
+            # for a source tarball whose files were all unpacked at once. Asking in both directions
+            # makes this a strict comparison, so shipping the generated files alongside the generator
+            # does not force a needless UCD download on whoever builds from that tarball.
+            if("${_tablegen_source}" IS_NEWER_THAN "${_gen_file}"
+               AND NOT "${_gen_file}" IS_NEWER_THAN "${_tablegen_source}")
+                message(STATUS "[libunicode] ${_tablegen_source} is newer than generated sources; regenerating.")
+                set(LIBUNICODE_HAS_PREGENERATED_FILES FALSE)
+                break()
+            endif()
+        endforeach()
+        if(NOT LIBUNICODE_HAS_PREGENERATED_FILES)
+            break()
+        endif()
+    endforeach()
+endif()
+
+# Emscripten cannot run the generator it would need, so a stale table there is undetectable at build
+# time and ships as a wasm library whose widths disagree with the native one. Say so loudly.
+if(EMSCRIPTEN AND NOT LIBUNICODE_HAS_PREGENERATED_FILES)
+    message(WARNING
+        "[libunicode] Generated sources are out of date with respect to tablegen/, but tablegen "
+        "cannot run under Emscripten. Build natively once to refresh them, otherwise this wasm "
+        "build will use a table that does not match its generator.")
+endif()
+
 # Automatically fetch Unicode database if not present.
 # Skip download entirely when all generated files already exist on disk,
 # since neither mktables.py nor unicode_tablegen will need to run.

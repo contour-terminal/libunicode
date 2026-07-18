@@ -49,6 +49,9 @@ namespace
     constexpr uint8_t FlagCoreGraphemeExtend = 0x40;
     constexpr uint8_t FlagVirama = 0x80;
 
+    // `flags` is exhausted; further single-bit properties live in `flags2`.
+    constexpr uint8_t Flag2EmojiVariationBase = 0x01;
+
     // EmojiSegmentationCategory integer values, must match the enum
     constexpr int8_t ESC_Invalid = -1;
     constexpr int8_t ESC_Emoji = 0;
@@ -74,6 +77,7 @@ namespace
     {
         uint8_t char_width = 0;
         uint8_t flags = 0;
+        uint8_t flags2 = 0;
         uint8_t script = 0;                 // Will be set per-codepoint
         uint8_t grapheme_cluster_break = 0; // Will be set per-codepoint
         uint8_t east_asian_width = 0;       // Will be set per-codepoint
@@ -85,7 +89,7 @@ namespace
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(CodepointRecord) == 10, "CodepointRecord must be exactly 10 bytes");
+    static_assert(sizeof(CodepointRecord) == 11, "CodepointRecord must be exactly 11 bytes");
 
     inline bool operator==(CodepointRecord const& a, CodepointRecord const& b) noexcept
     {
@@ -427,16 +431,27 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
 
     // IndicSyllabicCategory (Virama flag)
     //
-    // The FULL virama set, deliberately, rather than Indic_Conjunct_Break=Linker: that covers only
-    // six scripts and would leave Khmer, Myanmar, Javanese, Chakma and Tai Tham conjuncts unmarked.
+    // The FULL virama set, deliberately, rather than Indic_Conjunct_Break=Linker. Linker is not
+    // restricted to a handful of scripts -- in UCD 17.0 it already covers Khmer, Myanmar, Javanese,
+    // Chakma and Tai Tham -- but it is a smaller set: 20 codepoints against 41. The 21 it leaves out
+    // are viramas that do not form InCB conjuncts, among them Gurmukhi U+0A4D, Tamil U+0BCD,
+    // Kannada U+0CCD, Sinhala U+0DCA and the Brahmi-family stackers. They still stack a consonant
+    // onto the previous one, so they still widen the cluster.
     //
     // Invisible_Stacker is included because it IS a virama for measuring purposes -- Khmer U+17D2,
     // Myanmar U+1039, Chakma U+11133 and Tai Tham U+1A60 stack a consonant onto the previous one
     // exactly as a Virama does, and are only categorised apart because they are never rendered.
+    //
+    // Together this reproduces wcwidth's _ISC_VIRAMA_SET exactly (41 codepoints).
     for (auto const& r: parser.indicSyllabicCategory())
         if (r.property == "Virama" || r.property == "Invisible_Stacker")
-            for (auto cp = r.first; cp <= r.last; ++cp)
+            for (auto cp = r.first; cp <= r.last && cp < CODEPOINT_COUNT; ++cp)
                 records[static_cast<size_t>(cp)].flags |= FlagVirama;
+
+    // Emoji variation sequence bases: the codepoints a following VS15/VS16 is defined to re-present.
+    for (auto const cp: parser.emojiVariationBases())
+        if (cp < CODEPOINT_COUNT)
+            records[static_cast<size_t>(cp)].flags2 |= Flag2EmojiVariationBase;
 
     // DerivedAge
     for (auto const& r: parser.ageRanges())
@@ -562,34 +577,33 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     //
     // General_Category=Cf is zero-width as a rule, and for the invisible ones -- ZWJ, ZWNJ, the
     // bidi marks, BOM -- that is right. But a handful of Cf codepoints do draw something: the Arabic
-    // prepended concatenation marks (U+0600..U+0605, U+06DD, U+0890, U+0891, U+08E2), SOFT HYPHEN,
-    // U+070F, and the Kaithi number signs. Default_Ignorable_Code_Point is exactly the property that
-    // separates the two groups, and Python wcwidth measures the rendered ones as one column.
+    // prepended concatenation marks (U+0600..U+0605, U+06DD, U+0890, U+0891, U+08E2), U+070F, and
+    // the Kaithi number signs (U+110BD, U+110CD). What they have in common is Grapheme_Cluster_Break
+    // =Prepend: they attach to and are drawn before the cluster that follows.
+    //
+    // Default_Ignorable_Code_Point looks like it separates the same two groups but is 19 codepoints
+    // too generous: the interlinear annotation marks U+FFF9..U+FFFB and the Egyptian hieroglyph
+    // format controls U+13430..U+1343F are Cf, are not Default_Ignorable, and still render nothing.
+    // Python wcwidth measures those as zero. Cf AND Prepend reproduces wcwidth's set exactly.
     {
-        auto defaultIgnorable = std::vector<bool>(CODEPOINT_COUNT, false);
-        if (auto const it = parser.coreProperties().find("Default_Ignorable_Code_Point"); it != parser.coreProperties().end())
-        {
-            for (auto const& r: it->second)
-                for (auto cp = r.first; cp <= r.last; ++cp)
-                    defaultIgnorable[static_cast<size_t>(cp)] = true;
-        }
+        auto prepend = std::vector<bool>(CODEPOINT_COUNT, false);
+        for (auto const& [_, ranges]: parser.graphemeBreakProps())
+            for (auto const& r: ranges)
+                if (r.property == "Prepend")
+                    for (auto cp = r.first; cp <= r.last && cp < CODEPOINT_COUNT; ++cp)
+                        prepend[static_cast<size_t>(cp)] = true;
 
-        auto gcFormat = uint8_t { 0 };
-        auto haveFormat = false;
         if (auto const it = gcIndex.find("Format"); it != gcIndex.end())
         {
-            gcFormat = it->second;
-            haveFormat = true;
+            auto const gcFormat = it->second;
+            for (char32_t cp = 0; cp < CODEPOINT_COUNT; ++cp)
+                if (records[static_cast<size_t>(cp)].general_category == gcFormat && prepend[static_cast<size_t>(cp)])
+                    records[static_cast<size_t>(cp)].char_width = 1;
         }
 
-        if (haveFormat)
-            for (char32_t cp = 0; cp < CODEPOINT_COUNT; ++cp)
-                if (records[static_cast<size_t>(cp)].general_category == gcFormat && !defaultIgnorable[static_cast<size_t>(cp)])
-                    records[static_cast<size_t>(cp)].char_width = 1;
-
-        // U+00AD SOFT HYPHEN is Default_Ignorable, so the rule above misses it, yet a terminal has
-        // no line breaking to hide it with and draws it as a hyphen. Windows Terminal carves it out
-        // for the same reason and cites wcswidth in doing so.
+        // U+00AD SOFT HYPHEN is Cf but not Prepend, so the rule above misses it, yet a terminal has
+        // no line breaking to hide it with and draws it as a hyphen. wcwidth measures it as one
+        // column for the same reason; Windows Terminal carves it out likewise.
         records[0x00AD].char_width = 1;
     }
 
@@ -675,6 +689,7 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     for (auto const& rec: propsTable.stage3)
     {
         impl << "    {" << static_cast<unsigned>(rec.char_width) << ", " << (!rec.flags ? "0" : binstr(rec.flags)) << ", "
+             << (!rec.flags2 ? "0" : binstr(rec.flags2)) << ", "
              << "Script::" << (rec.script < scriptNames.size() ? scriptNames[rec.script] : "Unknown") << ", "
              << "Grapheme_Cluster_Break::" << reverseLookup(gcbIndex, rec.grapheme_cluster_break, "Other") << ", "
              << "East_Asian_Width::" << reverseLookup(eawIndex, rec.east_asian_width, "Narrow") << ", "
