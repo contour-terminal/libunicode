@@ -188,6 +188,7 @@ void UcdParser::parseAll()
     loadGeneralCategory();
     loadCoreProperties();
     loadScripts();
+    loadIndicSyllabicCategory();
     loadScriptExtensions();
     loadBlocks();
 
@@ -387,6 +388,11 @@ void UcdParser::loadCoreProperties()
 void UcdParser::loadScripts()
 {
     _scripts = loadGenericProperties(_ucdDir + "/Scripts.txt");
+}
+
+void UcdParser::loadIndicSyllabicCategory()
+{
+    _indicSyllabicCategory = loadGenericProperties(_ucdDir + "/IndicSyllabicCategory.txt");
 }
 
 // ---- Script Extensions ----

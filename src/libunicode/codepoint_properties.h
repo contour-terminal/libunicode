@@ -43,6 +43,7 @@ struct LIBUNICODE_PACKED codepoint_properties
     static uint8_t constexpr FlagEmojiModifierBase = 0x10;    // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagExtendedPictographic = 0x20; // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagCoreGraphemeExtend = 0x40;   // NOLINT(readability-identifier-naming)
+    static uint8_t constexpr FlagVirama = 0x80;               // NOLINT(readability-identifier-naming)
 
     constexpr bool is_emoji() const noexcept { return flags & FlagEmoji; }
     constexpr bool is_emoji_presentation() const noexcept { return flags & FlagEmojiPresentation; }
@@ -51,6 +52,13 @@ struct LIBUNICODE_PACKED codepoint_properties
     constexpr bool is_emoji_modifier_base() const noexcept { return flags & FlagEmojiModifierBase; }
     constexpr bool is_extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
     constexpr bool is_core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
+
+    /// Indic_Syllabic_Category=Virama: a codepoint that suppresses the inherent vowel of the
+    /// consonant it follows, joining it to the next into a conjunct.
+    ///
+    /// Deliberately the FULL virama set rather than Indic_Conjunct_Break=Linker, which is restricted
+    /// to six scripts and would exclude Khmer, Myanmar, Javanese, Chakma and Tai Tham.
+    constexpr bool is_virama() const noexcept { return flags & FlagVirama; }
 
     using tables_view = support::multistage_table_view<codepoint_properties,
                                                        uint32_t,     // source type
