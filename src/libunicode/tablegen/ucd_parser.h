@@ -106,6 +106,7 @@ class UcdParser
 
     /// Indic Conjunct Break (InCB) properties grouped by value (Consonant, Linker, Extend).
     [[nodiscard]] auto const& indicConjunctBreak() const noexcept { return _indicConjunctBreak; }
+    [[nodiscard]] auto const& indicSyllabicCategory() const noexcept { return _indicSyllabicCategory; }
 
     /// Script property ranges, sorted by start codepoint.
     [[nodiscard]] auto const& scripts() const noexcept { return _scripts; }
@@ -176,6 +177,7 @@ class UcdParser
     void loadGeneralCategory();
     void loadCoreProperties();
     void loadScripts();
+    void loadIndicSyllabicCategory();
     void loadScriptExtensions();
     void loadBlocks();
     void loadGraphemeBreakProps();
@@ -221,6 +223,7 @@ class UcdParser
 
     // Indic Conjunct Break (InCB) properties
     std::map<std::string, std::vector<PropertyRange>> _indicConjunctBreak;
+    std::vector<PropertyRange> _indicSyllabicCategory;
 
     // Scripts
     std::vector<PropertyRange> _scripts;

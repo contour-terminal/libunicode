@@ -15,6 +15,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>
+#include <cstdint>
 #include <string_view>
 
 using namespace std::string_view_literals;
@@ -119,6 +121,90 @@ TEST_CASE("grapheme_cluster_width.ZWJ_sequence", "[width]")
 
     // Family: man + ZWJ + woman + ZWJ + girl
     CHECK(unicode::grapheme_cluster_width(U"\U0001F468\u200D\U0001F469\u200D\U0001F467"sv) == 2);
+}
+
+TEST_CASE("grapheme_cluster_width.ZWJ_does_not_widen", "[width]")
+{
+    // A ZWJ sequence is measured by its FIRST segment, not by its widest member. Python wcwidth's
+    // wcswidth() consumes the ZWJ together with the codepoint that follows it, so the trailing
+    // pictograph contributes nothing. Measured against wcwidth 0.8.2, these are one column.
+    CHECK(unicode::width(U'❤') == 1);
+
+    // ❤‍🔥 heart on fire and ❤‍🩹 mending heart, both written WITHOUT VS16.
+    CHECK(unicode::grapheme_cluster_width(U"❤‍\U0001F525"sv) == 1);
+    CHECK(unicode::grapheme_cluster_width(U"❤‍\U0001FA79"sv) == 1);
+
+    // The RGI forms carry VS16, which is what actually makes them two columns.
+    CHECK(unicode::grapheme_cluster_width(U"❤️‍\U0001F525"sv) == 2);
+
+    // ZWJ likewise does not widen a non-emoji ligature request: Arabic lam + ZWJ + alef.
+    CHECK(unicode::grapheme_cluster_width(U"ل‍ا"sv) == 1);
+
+    // NOTE: a Devanagari conjunct (ka + virama + ZWJ + ssa) is deliberately NOT asserted here. It is
+    // two columns in wcwidth -- not because of the ZWJ, but because a consonant following a virama
+    // promotes its cluster. That rule is not implemented yet, so pinning either answer here would
+    // encode a belief rather than the oracle.
+}
+
+TEST_CASE("grapheme_cluster_width.indic_spacing_mark_and_conjunct", "[width]")
+{
+    // A Devanagari cluster is one column only while nothing beside the base takes room of its own.
+    CHECK(unicode::grapheme_cluster_width(U"क"sv) == 1); // ka
+    CHECK(unicode::grapheme_cluster_width(U"कं"sv) == 1); // ka + anusvara (non-spacing)
+    CHECK(unicode::grapheme_cluster_width(U"क्"sv) == 1); // ka + dangling virama
+
+    // A spacing mark sits beside its base rather than over it.
+    CHECK(unicode::grapheme_cluster_width(U"का"sv) == 2); // ka + AA matra (Mc)
+
+    // A virama joins two consonants into a conjunct, which is wider than one cell.
+    CHECK(unicode::grapheme_cluster_width(U"क्न"sv) == 2);           // ka + virama + na
+    CHECK(unicode::grapheme_cluster_width(U"क्नि"sv) == 2);          // ...+ i matra
+    CHECK(unicode::grapheme_cluster_width(U"क्‍ष"sv) == 2); // ka + virama + ZWJ + ssa
+
+    // The virama set must be ALL viramas, not Indic_Conjunct_Break=Linker, which covers six scripts.
+    // Each of these is a conjunct whose virama is outside that set.
+    CHECK(unicode::grapheme_cluster_width(U"ព្រ"sv) == 2);  // Khmer, U+17D2
+    CHECK(unicode::grapheme_cluster_width(U"ᬦ᭄ᬤ"sv) == 2); // Javanese, U+A9C0
+    CHECK(unicode::grapheme_cluster_width(U"မ္မ"sv) == 2);  // Myanmar, U+1039
+    CHECK(unicode::grapheme_cluster_width(U"മ്മ"sv) == 2);  // Malayalam, U+0D4D
+}
+
+TEST_CASE("grapheme_cluster_width.two_spacing_codepoints_accumulate", "[width]")
+{
+    // There is no clamp at 2: a cluster holding two codepoints that each take room accumulates.
+    // Lao ko + sign AM are both spacing, and wcwidth measures the pair as two columns.
+    CHECK(unicode::grapheme_cluster_width(U"ກຳ"sv) == 2);
+}
+
+TEST_CASE("grapheme_cluster_width.batch_matches_wcwidth_corpus", "[width]")
+{
+    // Every expectation below was read off Python wcwidth 0.8.2's wcswidth(), not reasoned about.
+    // Reasoning about how a cluster "looks" produced two wrong rules before this table existed.
+    struct Case
+    {
+        std::u32string_view cluster;
+        unsigned expected;
+        std::string_view what;
+    };
+    auto const cases = std::array {
+        Case { U"A"sv, 1, "plain ASCII" },
+        Case { U"\U0001F600"sv, 2, "grinning face" },
+        Case { U"\u261D\uFE0F"sv, 2, "index pointing up + VS16" },
+        Case { U"\u231A\uFE0E"sv, 1, "watch + VS15" },
+        Case { U"\u2764\u200D\U0001F525"sv, 1, "heart on fire, no VS16 -- the ZWJ eats the fire" },
+        Case { U"\U0001F468\u200D\U0001F469\u200D\U0001F467"sv, 2, "family" },
+        Case { U"\U0001F926\U0001F3FC\u200D\u2642\uFE0F"sv, 2, "man facepalming, skin tone" },
+        Case { U"g\u0308"sv, 1, "g + combining diaeresis" },
+        Case { U"2\uFE0F\u20E3"sv, 2, "keycap 2" },
+        Case { U"\U0001F1E9\U0001F1EA"sv, 2, "flag" },
+        Case { U"\u1100\u1161\u11A8"sv, 2, "decomposed Hangul syllable" },
+    };
+
+    for (auto const& testCase: cases)
+    {
+        INFO(testCase.what);
+        CHECK(unicode::grapheme_cluster_width(testCase.cluster) == testCase.expected);
+    }
 }
 
 TEST_CASE("grapheme_cluster_width.emoji_modifier", "[width]")

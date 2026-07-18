@@ -47,6 +47,7 @@ namespace
     constexpr uint8_t FlagEmojiModifierBase = 0x10;
     constexpr uint8_t FlagExtendedPictographic = 0x20;
     constexpr uint8_t FlagCoreGraphemeExtend = 0x40;
+    constexpr uint8_t FlagVirama = 0x80;
 
     // EmojiSegmentationCategory integer values, must match the enum
     constexpr int8_t ESC_Invalid = -1;
@@ -424,6 +425,19 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
         }
     }
 
+    // IndicSyllabicCategory (Virama flag)
+    //
+    // The FULL virama set, deliberately, rather than Indic_Conjunct_Break=Linker: that covers only
+    // six scripts and would leave Khmer, Myanmar, Javanese, Chakma and Tai Tham conjuncts unmarked.
+    //
+    // Invisible_Stacker is included because it IS a virama for measuring purposes -- Khmer U+17D2,
+    // Myanmar U+1039, Chakma U+11133 and Tai Tham U+1A60 stack a consonant onto the previous one
+    // exactly as a Virama does, and are only categorised apart because they are never rendered.
+    for (auto const& r: parser.indicSyllabicCategory())
+        if (r.property == "Virama" || r.property == "Invisible_Stacker")
+            for (auto cp = r.first; cp <= r.last; ++cp)
+                records[static_cast<size_t>(cp)].flags |= FlagVirama;
+
     // DerivedAge
     for (auto const& r: parser.ageRanges())
     {
@@ -543,6 +557,41 @@ void generateMultistageFiles(UcdParser const& parser, std::string const& outputD
     for (char32_t cp = 0; cp < CODEPOINT_COUNT; ++cp)
         records[static_cast<size_t>(cp)].char_width =
             computeCharWidth(records[static_cast<size_t>(cp)], zeroWidthGCs, eawWide, eawFullwidth);
+
+    // A format character that is actually RENDERED takes a column.
+    //
+    // General_Category=Cf is zero-width as a rule, and for the invisible ones -- ZWJ, ZWNJ, the
+    // bidi marks, BOM -- that is right. But a handful of Cf codepoints do draw something: the Arabic
+    // prepended concatenation marks (U+0600..U+0605, U+06DD, U+0890, U+0891, U+08E2), SOFT HYPHEN,
+    // U+070F, and the Kaithi number signs. Default_Ignorable_Code_Point is exactly the property that
+    // separates the two groups, and Python wcwidth measures the rendered ones as one column.
+    {
+        auto defaultIgnorable = std::vector<bool>(CODEPOINT_COUNT, false);
+        if (auto const it = parser.coreProperties().find("Default_Ignorable_Code_Point"); it != parser.coreProperties().end())
+        {
+            for (auto const& r: it->second)
+                for (auto cp = r.first; cp <= r.last; ++cp)
+                    defaultIgnorable[static_cast<size_t>(cp)] = true;
+        }
+
+        auto gcFormat = uint8_t { 0 };
+        auto haveFormat = false;
+        if (auto const it = gcIndex.find("Format"); it != gcIndex.end())
+        {
+            gcFormat = it->second;
+            haveFormat = true;
+        }
+
+        if (haveFormat)
+            for (char32_t cp = 0; cp < CODEPOINT_COUNT; ++cp)
+                if (records[static_cast<size_t>(cp)].general_category == gcFormat && !defaultIgnorable[static_cast<size_t>(cp)])
+                    records[static_cast<size_t>(cp)].char_width = 1;
+
+        // U+00AD SOFT HYPHEN is Default_Ignorable, so the rule above misses it, yet a terminal has
+        // no line breaking to hide it with and draws it as a hyphen. Windows Terminal carves it out
+        // for the same reason and cites wcswidth in doing so.
+        records[0x00AD].char_width = 1;
+    }
 
     // Conjoining Hangul V/T Jamo must be width 0 so that decomposed syllables
     // (L + V + T) sum to the same width as their precomposed forms (issue #32).
