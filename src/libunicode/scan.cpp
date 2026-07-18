@@ -89,15 +89,26 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
     char const* end = start + text.size();
     char const* input = start;
     char const* clusterStart = start;
-    char const* lastCodepointStart = start;
 
-    unsigned byteCount = 0; // bytes consume for the current codepoint
+    unsigned byteCount = 0; // bytes consumed for the current codepoint
 
-    // TODO: move currentClusterWidth to scan_state.
-    size_t currentClusterWidth = 0; // current grapheme cluster's East Asian Width
+    // How much of the open cluster's width THIS call has contributed. The cluster may have been
+    // opened by an earlier call, whose columns are already spent and cannot be taken back here, so
+    // this -- not state.reportedClusterWidth -- bounds what a rewind may subtract from count.
+    size_t clusterWidthCountedHere = 0;
 
     char const* resultStart = state.utf8.expectedLength ? start - state.utf8.currentLength : start;
     char const* resultEnd = resultStart;
+
+    // Hands over the cluster spanning [clusterStart, clusterEnd). Called at every cluster boundary
+    // and once more when the scan ends, so the last cluster is not dropped. A cluster put back
+    // because it did not fit leaves the range empty and is correctly not delivered.
+    auto const flushOpenCluster = [&](char const* clusterEnd) noexcept {
+        if (clusterEnd > clusterStart)
+            receiver.receiveGraphemeCluster(string_view(clusterStart, static_cast<size_t>(clusterEnd - clusterStart)),
+                                            state.reportedClusterWidth);
+        clusterStart = clusterEnd;
+    };
 
     while (input != end && count <= maxColumnCount)
     {
@@ -107,6 +118,9 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
         // part of its multi-byte codepoint.
         if (is_control(*input) || !is_complex(*input) || (state.utf8.expectedLength == 0 && is_c1_control(*input)))
         {
+            // A control ends whatever cluster was open, so hand it over before dropping the state.
+            flushOpenCluster(input);
+
             // Incomplete UTF-8 sequence hit. That's invalid as well.
             if (state.utf8.expectedLength)
             {
@@ -116,6 +130,8 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
             }
             state.lastCodepointHint = 0;
             state.graphemeState = {};
+            state.clusterWidth.reset();
+            state.reportedClusterWidth = 0;
             resultEnd = input;
             break;
         }
@@ -130,7 +146,8 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
         {
             auto const prevCodepoint = state.lastCodepointHint;
             auto const nextCodepoint = get<Success>(result).value;
-            auto const nextWidth = max(currentClusterWidth, static_cast<size_t>(width(nextCodepoint)));
+            char const* const codepointStart = input - byteCount;
+            byteCount = 0;
             state.lastCodepointHint = nextCodepoint;
 
             bool const breakable = [&] {
@@ -143,58 +160,82 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
             }();
             if (breakable)
             {
-                // Flush out current grapheme cluster's East Asian Width.
-                count += currentClusterWidth;
+                // The incoming codepoint opens the next cluster, so it is measured on its own rather
+                // than carrying anything over from the cluster just closed.
+                auto nextCluster = grapheme_cluster_width_accumulator {};
+                nextCluster.push(nextCodepoint);
+                auto const nextWidth = static_cast<size_t>(nextCluster.width());
 
                 if (count + nextWidth > maxColumnCount)
                 {
-                    // Currently scanned grapheme cluster won't fit. Break at start.
-                    currentClusterWidth = 0;
-                    input -= byteCount;
+                    // Currently scanned grapheme cluster won't fit. Break at its start.
+                    input = codepointStart;
                     break;
                 }
-                receiver.receiveGraphemeCluster(string_view(clusterStart, byteCount), currentClusterWidth);
 
-                // And start a new grapheme cluster.
-                currentClusterWidth = nextWidth;
-                clusterStart = lastCodepointStart;
-                lastCodepointStart = input - byteCount;
-                byteCount = 0;
+                // The cluster that just ended spans everything up to this codepoint.
+                flushOpenCluster(codepointStart);
+
+                count += nextWidth;
+                clusterWidthCountedHere = nextWidth;
+                state.clusterWidth = nextCluster;
+                state.reportedClusterWidth = nextWidth;
                 resultEnd = input;
             }
             else
             {
-                resultEnd = input;
-                // Increase width on VS16 but do not decrease on VS15.
-                if (nextCodepoint == 0xFE0F) // VS16
+                // The codepoint joins the current cluster, which may widen it (a spacing mark, a
+                // conjunct, VS16) or narrow it (VS15). Only the difference is counted, so a cluster
+                // split across two calls is not measured twice.
+                state.clusterWidth.push(nextCodepoint);
+                auto const updatedWidth = static_cast<size_t>(state.clusterWidth.width());
+
+                if (updatedWidth >= state.reportedClusterWidth)
                 {
-                    currentClusterWidth = 2;
-                    if (count + currentClusterWidth > maxColumnCount)
+                    auto const added = updatedWidth - state.reportedClusterWidth;
+                    if (added != 0 && count + added > maxColumnCount)
                     {
-                        // Rewinding by {byteCount} bytes (overflow due to VS16).
-                        currentClusterWidth = 0;
+                        // The cluster grew past what is left of the line. Put the whole cluster
+                        // back -- a caller cannot render part of one -- and un-count only what this
+                        // call contributed to it.
+                        count -= clusterWidthCountedHere;
                         input = clusterStart;
+                        resultEnd = clusterStart;
+                        state.clusterWidth.reset();
+                        state.reportedClusterWidth = 0;
                         break;
                     }
+                    count += added;
+                    clusterWidthCountedHere += added;
                 }
-
-                // Consumed {byteCount} bytes for grapheme cluster.
-                lastCodepointStart = input - byteCount;
+                else
+                {
+                    auto const removed = min(state.reportedClusterWidth - updatedWidth, clusterWidthCountedHere);
+                    count -= removed;
+                    clusterWidthCountedHere -= removed;
+                }
+                state.reportedClusterWidth = updatedWidth;
+                resultEnd = input;
             }
         }
         else
         {
             assert(holds_alternative<Invalid>(result));
+            flushOpenCluster(input - byteCount);
             count++;
             receiver.receiveInvalidGraphemeCluster();
-            currentClusterWidth = 0;
+            clusterWidthCountedHere = 0;
+            state.clusterWidth.reset();
+            state.reportedClusterWidth = 0;
             state.lastCodepointHint = 0;
             state.graphemeState = {};
             state.utf8.expectedLength = 0;
             byteCount = 0;
         }
     }
-    count += currentClusterWidth;
+
+    // Hand over whatever cluster the scan ended inside of.
+    flushOpenCluster(input);
 
     assert(resultStart <= resultEnd);
 
@@ -252,6 +293,20 @@ scan_result scan_text(scan_state& state,
                 if (!count)
                     return result;
                 receiver.receiveAsciiSequence(text.substr(0, count));
+
+                // A cluster does not have to respect the boundary between the two scanners: the last
+                // character of this run may be the base of one that continues into the non-ASCII
+                // bytes behind it, as `a` does in "a<visarga>". Seed the segmenter and the width
+                // accumulator with it so the scan below joins the two instead of treating the mark
+                // as opening a fresh cluster -- and record the one column already counted for it, so
+                // only what the mark adds is counted a second time.
+                auto const lastAscii = static_cast<char32_t>(static_cast<uint8_t>(text[count - 1]));
+                state.lastCodepointHint = lastAscii;
+                grapheme_process_init(lastAscii, state.graphemeState);
+                state.clusterWidth.reset();
+                state.clusterWidth.push(lastAscii);
+                state.reportedClusterWidth = 1;
+
                 result.count += count;
                 state.next += count;
                 result.end += count;

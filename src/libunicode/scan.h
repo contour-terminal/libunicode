@@ -15,6 +15,7 @@
 
 #include <libunicode/grapheme_segmenter.h>
 #include <libunicode/utf8.h>
+#include <libunicode/width.h>
 
 #include <string_view>
 
@@ -47,6 +48,19 @@ struct scan_state
     utf8_decoder_state utf8 {};
     char32_t lastCodepointHint {};
     grapheme_segmenter_state graphemeState {};
+
+    /// Measures the grapheme cluster currently being scanned.
+    ///
+    /// This belongs to the state rather than to scan_text()'s frame because a cluster may straddle
+    /// two calls, and it has to stay in step with graphemeState above: measuring the second half of
+    /// a cluster with a fresh accumulator loses whatever the first half contributed.
+    grapheme_cluster_width_accumulator clusterWidth {};
+
+    /// Columns already reported for the cluster clusterWidth is measuring.
+    ///
+    /// A cluster that grows contributes only the difference, so the counts returned by a sequence of
+    /// calls stay additive no matter where the chunk boundaries fall.
+    size_t reportedClusterWidth {};
 
     /// Pointer to one byte after the last scanned codepoint.
     char const* next {};
