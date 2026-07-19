@@ -27,6 +27,7 @@ struct LIBUNICODE_PACKED codepoint_properties
 {
     uint8_t char_width = 0;
     uint8_t flags = 0;
+    uint8_t flags2 = 0;
     Script script = Script::Unknown;
     Grapheme_Cluster_Break grapheme_cluster_break = Grapheme_Cluster_Break::Other;
     East_Asian_Width east_asian_width = East_Asian_Width::Narrow;
@@ -45,6 +46,9 @@ struct LIBUNICODE_PACKED codepoint_properties
     static uint8_t constexpr FlagCoreGraphemeExtend = 0x40;   // NOLINT(readability-identifier-naming)
     static uint8_t constexpr FlagVirama = 0x80;               // NOLINT(readability-identifier-naming)
 
+    // `flags` is exhausted; further single-bit properties live in `flags2`.
+    static uint8_t constexpr Flag2EmojiVariationBase = 0x01; // NOLINT(readability-identifier-naming)
+
     constexpr bool is_emoji() const noexcept { return flags & FlagEmoji; }
     constexpr bool is_emoji_presentation() const noexcept { return flags & FlagEmojiPresentation; }
     constexpr bool is_emoji_component() const noexcept { return flags & FlagEmojiComponent; }
@@ -53,11 +57,24 @@ struct LIBUNICODE_PACKED codepoint_properties
     constexpr bool is_extended_pictographic() const noexcept { return flags & FlagExtendedPictographic; }
     constexpr bool is_core_grapheme_extend() const noexcept { return flags & FlagCoreGraphemeExtend; }
 
-    /// Indic_Syllabic_Category=Virama: a codepoint that suppresses the inherent vowel of the
-    /// consonant it follows, joining it to the next into a conjunct.
+    /// Whether an emoji variation sequence is defined for this codepoint, i.e. whether a following
+    /// VS15 or VS16 is defined to re-present it.
     ///
-    /// Deliberately the FULL virama set rather than Indic_Conjunct_Break=Linker, which is restricted
-    /// to six scripts and would exclude Khmer, Myanmar, Javanese, Chakma and Tai Tham.
+    /// Which of the two selectors has an effect follows from this codepoint's own width: a base that
+    /// is one column wide is what VS16 widens, and one that is two columns wide is what VS15
+    /// narrows. Together those two subsets reproduce wcwidth's VS16_NARROW_TO_WIDE and
+    /// VS15_WIDE_TO_NARROW tables exactly.
+    constexpr bool is_emoji_variation_base() const noexcept { return flags2 & Flag2EmojiVariationBase; }
+
+    /// Indic_Syllabic_Category=Virama or =Invisible_Stacker: a codepoint that suppresses the
+    /// inherent vowel of the consonant it follows, joining it to the next into a conjunct.
+    ///
+    /// Deliberately the FULL virama set rather than Indic_Conjunct_Break=Linker. Linker is not
+    /// script-limited the way it is sometimes described -- in UCD 17.0 it already covers Khmer,
+    /// Myanmar, Javanese, Chakma and Tai Tham -- but it is a smaller set: 20 codepoints against 41.
+    /// The 21 it omits are viramas that do not form InCB conjuncts, among them Gurmukhi U+0A4D,
+    /// Tamil U+0BCD, Kannada U+0CCD, Sinhala U+0DCA and the Brahmi-family stackers. They still
+    /// stack a consonant onto the previous one, so they still widen the cluster.
     constexpr bool is_virama() const noexcept { return flags & FlagVirama; }
 
     using tables_view = support::multistage_table_view<codepoint_properties,

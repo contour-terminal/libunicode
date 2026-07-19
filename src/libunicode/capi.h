@@ -95,19 +95,27 @@ extern "C"
     int u8_gc_count(u8_char_t const* codepoints, size_t n);
 
 /**
- * Determines that u32_gc_width()/u8_gc_width() must not respect
- * variation selectors, and thus, will not change the width of a
- * processed grapheme cluster.
+ * Measures every grapheme cluster by its BASE CODEPOINT ALONE.
  *
- * Using this is not recommended unless backwards compatibility with
- * broken clients is of concern.
+ * Nothing after the base is looked at: not variation selectors, and equally not
+ * spacing marks, viramas, emoji modifiers, ZWJ sequences or prepended format
+ * characters. Devanagari "ka + AA matra" is therefore reported as one column
+ * rather than two, and an emoji ZWJ sequence as the width of its first codepoint.
+ *
+ * This is NOT the width a terminal should reserve cells with, and it agrees
+ * neither with unicode::grapheme_cluster_width() nor with wcwidth. Using it is
+ * not recommended unless backwards compatibility with broken clients is of
+ * concern.
  */
 #define GC_WIDTH_MODE_NON_MODIFIABLE 0
 
 /**
- * Mandates that u32_gc_width()/u8_gc_width() must respect
- * variation selectors, thus, allow changing the width of
- * a processed grapheme cluster.
+ * Measures every grapheme cluster as a whole, the way
+ * unicode::grapheme_cluster_width() does, so that later members of the cluster
+ * contribute: variation selectors, spacing marks, viramas, emoji modifiers and
+ * ZWJ sequences are all accounted for.
+ *
+ * This is the mode a renderer wants, and the one scan_text() agrees with.
  */
 #define GC_WIDTH_MODE_MODIFIABLE 1
 
@@ -117,11 +125,11 @@ extern "C"
      *
      * @param codepoints  pointer to first codepoint
      * @param n           number of codepoints
-     * @param mode        determines how to deal with variation selectors that do
-     *                    force changing the width or a grapheme cluster.
+     * @param mode        determines whether a grapheme cluster is measured as a
+     *                    whole or by its base codepoint alone.
      *                    Valid values are:
-     *                    GC_WIDTH_MODE_MODIFIABLE (allow, recommended),
-     *                    GC_WIDTH_MODE_NON_MODIFIABLE (disallowed).
+     *                    GC_WIDTH_MODE_MODIFIABLE (whole cluster, recommended),
+     *                    GC_WIDTH_MODE_NON_MODIFIABLE (base codepoint only, legacy).
      *
      * Use this function to determine how many terminal grid cells a
      * string of codepoints should occupy when being rendered.

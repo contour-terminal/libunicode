@@ -14,11 +14,15 @@
 #include <libunicode/convert.h>
 #include <libunicode/scan.h>
 #include <libunicode/utf8.h>
+#include <libunicode/width.h>
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>
 #include <format>
+#include <string>
 #include <string_view>
+#include <vector>
 
 using std::string_view;
 
@@ -331,6 +335,166 @@ TEST_CASE("scan.complex.VS16")
     auto const result3 = unicode::scan_text(state, s, 1);
     CHECK(result3.count == 0);
     CHECK(state.next == s.data());
+}
+
+TEST_CASE("scan.width_agrees_with_grapheme_cluster_width")
+{
+    // scan_text() and grapheme_cluster_width() are the library's two ways of asking how wide a piece
+    // of text is, and they must never answer differently: a terminal scans with the former to advance
+    // the cursor and measures with the latter when laying out, so any disagreement draws text at a
+    // different width than was reserved for it and corrupts the rest of the line.
+    auto const cases = std::array {
+        U"का"sv,                   // Devanagari ka + AA matra (spacing mark)
+        U"क्न"sv,                   // ka + virama + na (conjunct)
+        U"กำ"sv,                   // Thai ko kai + sara am
+        U"ຠຳ"sv,                   // Lao pho + sign AM
+        U"ក្រ"sv,                   // Khmer conjunct (Invisible_Stacker)
+        U"©️"sv,                    // copyright + VS16 (a defined variation base)
+        U"✓️"sv,                    // check mark + VS16 (NOT a variation base)
+        U"⌚︎"sv,                   // watch + VS15
+        U"漢︎"sv,                   // CJK ideograph + VS15 (must not narrow)
+        U"❤\U0001F3FB"sv,          // heart + skin tone modifier
+        U"❤‍\U0001F525"sv,     // heart ZWJ fire
+        U"\U0001F1E9\U0001F1EA"sv, // regional indicator pair
+        U"中é"sv,                  // wide then narrow: the narrow one must not inherit width 2
+        U"中éé"sv,                 // ...and the error must not compound
+        U"\U0001F600é"sv,          // emoji then narrow
+        U"中α"sv,                  // CJK then Greek alpha
+        U"❤‍A"sv,              // heart ZWJ 'A': GB11 does not join, so this is two clusters
+    };
+
+    for (auto const cluster: cases)
+    {
+        auto const utf8 = u8(cluster);
+        auto state = unicode::scan_state {};
+        auto const scanned = unicode::scan_text(state, utf8, 80);
+        INFO("cluster: " << escape(utf8));
+        // The oracle is the std::string_view overload, which segments. The u32string_view one does
+        // not -- it is documented as taking a *single* cluster -- and several cases above are two,
+        // so measuring them with it would let a ZWJ swallow the codepoint across a cluster boundary
+        // and report on the oracle rather than on scan_text().
+        CHECK(scanned.count == unicode::grapheme_cluster_width(utf8));
+    }
+}
+
+TEST_CASE("scan.cluster_split_across_calls_is_measured_once")
+{
+    // A grapheme cluster that straddles two scan_text() calls must total exactly what the whole
+    // string totals: chunked input is how a terminal reads a PTY, so any drift here mis-advances the
+    // cursor on ordinary text.
+    //
+    // Regression: the width accumulator was a local of scan_for_text_nonascii() while the grapheme
+    // state it tracks lives in scan_state, so the second call started from an empty accumulator and
+    // the selector it carried widened nothing.
+    auto const text = u8(U"©️"sv); // copyright (2 bytes) + VS16 (3 bytes)
+    REQUIRE(text.size() == 5);
+
+    auto state = unicode::scan_state {};
+    auto const first = unicode::scan_text(state, string_view(text.data(), 2), 80);
+    auto const rest = string_view(state.next, static_cast<size_t>(std::distance(state.next, text.data() + text.size())));
+    auto const second = unicode::scan_text(state, rest, 80);
+
+    CHECK(first.count + second.count == unicode::grapheme_cluster_width(text));
+    CHECK(first.count + second.count == 2);
+    CHECK(state.next == text.data() + text.size());
+}
+
+TEST_CASE("scan.growing_cluster_does_not_overrun_the_scan_end")
+{
+    // scan_text() promises result.end <= state.next. The overflow rewind used to reset the input
+    // pointer to a cluster start that lagged one cluster behind while result.end had already
+    // advanced, so the caller was handed an end past what was scanned and re-rendered those bytes.
+    //
+    // The rewind was reachable only through VS16 before this path learned to honour spacing marks
+    // and conjuncts, which is why ordinary Devanagari now reaches it.
+    auto const text = u8(U"中काab"sv); // CJK + ka + AA matra + "ab"
+    auto state = unicode::scan_state {};
+    auto const result = unicode::scan_text(state, text, 3);
+
+    CHECK(result.start <= result.end);
+    CHECK(result.end <= state.next);
+
+    // 中 is two columns and का is two more, so only 中 fits in three.
+    CHECK(result.count == 2);
+    CHECK(result.end == text.data() + 3);
+}
+
+TEST_CASE("scan.ascii_base_carries_into_a_following_spacing_mark")
+{
+    // The ASCII fast path is a separate scanner, but a cluster does not have to respect that
+    // boundary: an ASCII base followed by a non-ASCII spacing mark is one cluster two columns wide.
+    // Regression: the fast path recorded no last codepoint, so the mark looked like the start of a
+    // fresh cluster and the pair measured 1.
+    struct Case
+    {
+        std::u32string_view text;
+        size_t expected;
+        std::string_view what;
+    };
+    auto const cases = std::array {
+        Case { U"aः"sv, 2, "a + Devanagari visarga" },
+        Case { U"aா"sv, 2, "a + Tamil AA matra" },
+        Case { U"abः"sv, 3, "trailing ASCII char is the base" },
+        Case { U"abc"sv, 3, "pure ASCII still counts every column" },
+        Case { U"ab中"sv, 4, "ASCII then a wide char that opens its own cluster" },
+    };
+
+    for (auto const& testCase: cases)
+    {
+        auto const utf8 = u8(testCase.text);
+        auto state = unicode::scan_state {};
+        auto const result = unicode::scan_text(state, utf8, 80);
+        INFO(testCase.what);
+        CHECK(result.count == testCase.expected);
+        CHECK(result.count == unicode::grapheme_cluster_width(utf8));
+    }
+}
+
+namespace
+{
+struct cluster_collector final: public unicode::grapheme_cluster_receiver
+{
+    std::vector<std::string> clusters;
+    std::vector<size_t> widths;
+
+    void receiveAsciiSequence(std::string_view text) noexcept override
+    {
+        for (auto const ch: text)
+        {
+            clusters.emplace_back(1, ch);
+            widths.push_back(1);
+        }
+    }
+    void receiveGraphemeCluster(std::string_view text, size_t columnCount) noexcept override
+    {
+        clusters.emplace_back(text);
+        widths.push_back(columnCount);
+    }
+    void receiveInvalidGraphemeCluster() noexcept override
+    {
+        clusters.emplace_back("<invalid>");
+        widths.push_back(1);
+    }
+};
+} // namespace
+
+TEST_CASE("scan.receiver_gets_whole_clusters")
+{
+    // Regression: the byte count handed to receiveGraphemeCluster() was reset only *after* the call,
+    // so each cluster was delivered with the byte length of the next cluster's first codepoint --
+    // truncated UTF-8 whenever the two differ in length, and the final cluster was dropped entirely.
+    // Clusters of equal byte length hid it, which is all the older tests used.
+    auto const text = u8(U"中é"sv); // CJK (3 bytes) + e-acute (2 bytes)
+    auto collector = cluster_collector {};
+    auto state = unicode::scan_state {};
+    auto const result = unicode::scan_text(state, text, 80, collector);
+
+    CHECK(result.count == 3);
+    REQUIRE(collector.clusters.size() == 2);
+    CHECK(collector.clusters[0] == u8(U"中"sv));
+    CHECK(collector.clusters[1] == u8(U"é"sv));
+    CHECK(collector.widths[0] == 2);
+    CHECK(collector.widths[1] == 1);
 }
 
 TEST_CASE("scan.c1_control.stops_mid_run")

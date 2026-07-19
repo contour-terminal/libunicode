@@ -1,14 +1,47 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
 
 permissions:
   contents: write
 
 jobs:
+  create-release:
+    name: "Create draft release"
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+
+    steps:
+      - name: "Resolve release tag"
+        id: resolve
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+        run: echo "tag=${INPUT_TAG:-$REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: "Create draft release"
+        env:
+          RELEASE_TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 \
+            || gh release create "$RELEASE_TAG" \
+                 --draft \
+                 --generate-notes \
+                 --title "libunicode ${RELEASE_TAG#v}"
+
   build:
+    needs: create-release
     strategy:
       fail-fast: false
       matrix:
@@ -21,7 +54,7 @@ jobs:
             artifact_name: unicode-query-macos-arm64
             binary_path: build/src/tools/unicode-query
             cmake_extra: ""
-          - os: macos-13
+          - os: macos-15-intel
             artifact_name: unicode-query-macos-x86_64
             binary_path: build/src/tools/unicode-query
             cmake_extra: ""
@@ -38,6 +71,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-release.outputs.tag }}
 
       - name: "Setup MSVC"
         if: runner.os == 'Windows'
@@ -88,7 +123,7 @@ jobs:
           path: ${{ matrix.artifact_name }}*
 
   release:
-    needs: build
+    needs: [create-release, build]
     runs-on: ubuntu-latest
     steps:
       - name: "Download all artifacts"
@@ -105,10 +140,11 @@ jobs:
 
       - name: "Generate checksums"
         working-directory: release
-        run: sha256sum * > SHA256SUMS
+        run: sha256sum unicode-query-* > SHA256SUMS
 
       - name: "Upload release assets"
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh release upload --clobber "${{ github.event.release.tag_name }}" release/*
+          RELEASE_TAG: ${{ needs.create-release.outputs.tag }}
+        run: gh release upload --clobber "$RELEASE_TAG" release/*
