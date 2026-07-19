@@ -6,7 +6,7 @@
 #include <string_view>
 
 // clang-format off
-#if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD) && !defined(__APPLE__) && !defined(__FreeBSD__)
+#if __has_include(<experimental/simd>) && defined(LIBUNICODE_USE_STD_SIMD) && !defined(_LIBCPP_VERSION)
     #define USE_STD_SIMD
     #include <experimental/simd>
     namespace stdx = std::experimental;
