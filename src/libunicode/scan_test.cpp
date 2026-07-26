@@ -450,6 +450,76 @@ TEST_CASE("scan.ascii_base_carries_into_a_following_spacing_mark")
     }
 }
 
+TEST_CASE("scan.ascii_base_keeps_a_zero_width_continuation")
+{
+    // The neighbouring case above widens its cluster, which is what used to make it work. A
+    // continuation that adds NO column -- a combining mark, a variation selector on a base with no
+    // variation sequence -- consumed its bytes and reported none of them: the scan advanced
+    // state.next past the mark while result.end stayed at the end of the ASCII run, so a caller
+    // printing [start, end) and resuming at next lost the mark entirely. "e" + U+0301 arrived as a
+    // bare "e".
+    //
+    // Reachable only with an ASCII base: without one the whole cluster stays inside a single
+    // scan_for_text_nonascii() call and never crosses the handoff between the two scanners.
+    struct Case
+    {
+        std::u32string_view text;
+        size_t expected;
+        std::string_view what;
+    };
+    auto const cases = std::array {
+        Case { U"éx"sv, 2, "e + combining acute, then ASCII" },
+        Case { U"é"sv, 1, "e + combining acute at the very end" },
+        Case { U"abćd"sv, 4, "the mark attaches to the last ASCII char of a run" },
+        Case { U"e️"sv, 1, "VS16 on a base with no variation sequence adds nothing" },
+        Case { U"1️"sv, 2, "VS16 on a defined variation base still widens" },
+    };
+
+    for (auto const& testCase: cases)
+    {
+        auto const utf8 = u8(testCase.text);
+        auto state = unicode::scan_state {};
+        auto const result = unicode::scan_text(state, utf8, 80);
+        INFO(testCase.what << ": " << escape(utf8));
+        CHECK(result.count == testCase.expected);
+        // Every byte the scan consumed has to be inside the range it reports.
+        CHECK(result.end == state.next);
+        CHECK(state.next == utf8.data() + utf8.size());
+    }
+}
+
+TEST_CASE("scan.everything_consumed_is_reported")
+{
+    // The general form of the case above, and the property whose absence let it through: unless the
+    // scan stopped inside an incomplete UTF-8 sequence, the bytes it consumed (up to state.next) and
+    // the bytes it hands back ([start, end)) are the same bytes. A caller prints the latter and
+    // resumes at the former, so any gap between them is text that is silently swallowed -- counting
+    // columns alone cannot detect it.
+    auto const cases = std::array {
+        U"éx"sv,                     // zero-width continuation after ASCII
+        U"aः"sv,                     // widening continuation after ASCII
+        U"abc"sv,                    // pure ASCII
+        U"中éé"sv,                   // wide, then two narrow clusters
+        U"a中b"sv,                   // alternating scanners
+        U"éé"sv,                     // two zero-width continuations in a row
+        U"a‍b"sv,                  // ZWJ between ASCII: joins nothing, still consumes bytes
+        U"⌚︎x"sv,                    // VS15 after a non-ASCII base
+        FamilyEmoji,                 // long ZWJ sequence
+        U"a\U0001F1E9\U0001F1EAb"sv, // regional indicator pair between ASCII runs
+    };
+
+    for (auto const& text: cases)
+    {
+        auto const utf8 = u8(text);
+        auto state = unicode::scan_state {};
+        auto const result = unicode::scan_text(state, utf8, 80);
+        INFO(escape(utf8));
+        REQUIRE(state.utf8.expectedLength == 0); // nothing left half-decoded
+        CHECK(result.start <= result.end);
+        CHECK(result.end == state.next);
+    }
+}
+
 namespace
 {
 struct cluster_collector final: public unicode::grapheme_cluster_receiver
