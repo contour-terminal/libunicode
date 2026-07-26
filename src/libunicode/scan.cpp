@@ -316,12 +316,24 @@ scan_result scan_text(scan_state& state,
             }
             case NextState::Complex: {
                 auto const sub = detail::scan_for_text_nonascii(state, text, maxColumnCount - result.count, receiver);
-                if (!sub.count)
-                    return result;
-                nextState = NextState::Trivial;
+
+                // Zero COLUMNS is not zero BYTES. A codepoint that joins the open cluster without
+                // widening it -- a combining mark, a variation selector on a base that has no
+                // variation sequence -- consumes its bytes and adds nothing, and after the ASCII
+                // scan above handed over, it arrives here on its own. Treating `count` as the
+                // measure of progress dropped it: state.next had moved past those bytes while
+                // result.end had not, and a caller that prints [start, end) and resumes at next
+                // never saw them. "e" + U+0301 reached such a caller as a bare "e".
+                //
+                // The trivial arm may use count for this because there it means the same thing:
+                // no ASCII bytes at the front, hence nothing consumed.
+                auto const consumed = static_cast<size_t>(std::distance(sub.start, sub.end));
                 result.count += sub.count;
                 result.end = sub.end;
-                text.remove_prefix(static_cast<size_t>(std::distance(sub.start, sub.end)));
+                if (!consumed)
+                    return result;
+                nextState = NextState::Trivial;
+                text.remove_prefix(consumed);
                 break;
             }
         }
