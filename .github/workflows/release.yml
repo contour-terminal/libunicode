@@ -106,7 +106,13 @@ jobs:
         run: strip ${{ matrix.binary_path }}
 
       - name: "Verify binary"
-        run: ${{ matrix.binary_path }} help
+        env:
+          RELEASE_TAG: ${{ needs.create-release.outputs.tag }}
+        run: |
+          ${{ matrix.binary_path }} help
+          ${{ matrix.binary_path }} --version
+          # tr -d '\r': on Windows the binary writes CRLF line endings.
+          test "$(${{ matrix.binary_path }} --version | head -n1 | tr -d '\r')" = "unicode-query ${RELEASE_TAG#v}"
 
       - name: "Prepare artifact"
         run: |

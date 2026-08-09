@@ -34,6 +34,10 @@
     #include <unistd.h>
 #endif
 
+#if !defined(LIBUNICODE_VERSION) || !defined(LIBUNICODE_UCD_VERSION)
+    #error "LIBUNICODE_VERSION and LIBUNICODE_UCD_VERSION must be defined by the build system."
+#endif
+
 using namespace std;
 
 namespace
@@ -74,8 +78,15 @@ int printUsage(int exitCode)
 {
     cout << "unicode-query [properties] U+XXXX [...]\n"
          << "              gc [-e] [--] \"Text string\"\n"
-         << "              runs [-e] [--] \"Text string\"\n";
+         << "              runs [-e] [--] \"Text string\"\n"
+         << "              --version | -V\n";
     return exitCode;
+}
+
+int printVersion()
+{
+    cout << "unicode-query " LIBUNICODE_VERSION "\n" << "Unicode data: " LIBUNICODE_UCD_VERSION "\n";
+    return EXIT_SUCCESS;
 }
 
 std::string_view seq(std::string_view const& text)
@@ -287,6 +298,9 @@ int main(int argc, char const* argv[])
     int argIndex = 1;
     if (string_view(argv[argIndex]) == "help")
         return printUsage(EXIT_SUCCESS);
+
+    if (auto const arg = string_view(argv[argIndex]); arg == "--version" || arg == "-V")
+        return printVersion();
 
     if (string_view(argv[argIndex]) == "runs")
     {
