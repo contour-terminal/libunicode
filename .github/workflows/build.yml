@@ -61,6 +61,67 @@ jobs:
           name: unicode-query-linux-x86_64
           path: build/src/tools/unicode-query
 
+  # {{{ Sanitizers (ASan/UBSan, TSan)
+  sanitize:
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: ['asan', 'tsan']
+    name: "Sanitize (${{ matrix.sanitizer }})"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-sanitize-${{ matrix.sanitizer }}"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        run: ./scripts/install-deps.sh
+      - name: "Generate build files"
+        run: cmake --preset clang-${{ matrix.sanitizer }}
+      - name: "Build"
+        run: cmake --build --preset clang-${{ matrix.sanitizer }} -- -j3
+      - name: "Test"
+        run: ctest --preset clang-${{ matrix.sanitizer }}
+  # }}}
+
+  # {{{ Code coverage
+  coverage:
+    name: "Code coverage"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-coverage"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        run: |
+          ./scripts/install-deps.sh
+          sudo apt install -y lcov
+      - name: "Generate build files"
+        run: cmake --preset clang-coverage
+      - name: "Build"
+        run: cmake --build --preset clang-coverage -- -j3
+      - name: "Test"
+        run: ctest --preset clang-coverage
+      - name: "Collect coverage"
+        run: |
+          lcov --directory build/clang-coverage --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' '*/_deps/*' '*_test.cpp' --output-file coverage.info
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.info
+          fail_ci_if_error: false
+  # }}}
+
   # {{{ Ubuntu ARM64
   ubuntu_arm64:
     name: "Ubuntu ARM64"
