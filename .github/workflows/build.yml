@@ -122,6 +122,33 @@ jobs:
           fail_ci_if_error: false
   # }}}
 
+  # {{{ Valgrind
+  valgrind:
+    name: "Valgrind"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: "ccache-valgrind"
+          max-size: 256M
+      - name: "Update package database"
+        run: sudo apt -q update
+      - name: "install dependencies"
+        run: |
+          ./scripts/install-deps.sh
+          sudo apt install -y valgrind
+      - name: "Generate build files"
+        run: cmake --preset clang-debug
+      - name: "Build"
+        run: cmake --build --preset clang-debug -- -j3
+      - name: "Test under Valgrind"
+        run: |
+          valgrind --error-exitcode=1 --leak-check=full --track-origins=yes \
+            ./build/clang-debug/src/libunicode/unicode_test
+  # }}}
+
   # {{{ Ubuntu ARM64
   ubuntu_arm64:
     name: "Ubuntu ARM64"

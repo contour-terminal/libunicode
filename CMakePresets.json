@@ -68,7 +68,8 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "LIBUNICODE_COVERAGE": "ON"
+                "LIBUNICODE_COVERAGE": "ON",
+                "LIBUNICODE_BUILD_STATIC": "ON"
             }
         },
         {
