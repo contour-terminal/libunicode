@@ -57,4 +57,48 @@ TEST_CASE("capi.u8u32_stream_convert_and_inverse")
     CHECK(inverseSV == input);
 }
 
+TEST_CASE("capi.u32_gc_width_modifiable")
+{
+    // ☝ (U+261D) alone is width 1; with VS16 (emoji presentation) the whole
+    // cluster becomes width 2. MODIFIABLE mode measures the cluster as a
+    // whole, so it must see the VS16 effect.
+    u32_char_t const text[] = { 0x261D, 0xFE0F };
+    CHECK(u32_gc_width(text, 2, GC_WIDTH_MODE_MODIFIABLE) == 2);
+
+    // "A" + the same cluster: 1 + 2 = 3.
+    u32_char_t const text2[] = { 'A', 0x261D, 0xFE0F };
+    CHECK(u32_gc_width(text2, 3, GC_WIDTH_MODE_MODIFIABLE) == 3);
+}
+
+TEST_CASE("capi.u32_gc_width_non_modifiable")
+{
+    // Same input, but NON_MODIFIABLE mode measures only the base codepoint
+    // (☝ alone is width 1) and ignores the VS16 that follows it -- the
+    // trailing VS16 contributes nothing of its own (it's part of the same
+    // cluster, whose width was already taken from the base), so the total
+    // stays 1, not 2.
+    u32_char_t const text[] = { 0x261D, 0xFE0F };
+    CHECK(u32_gc_width(text, 2, GC_WIDTH_MODE_NON_MODIFIABLE) == 1);
+}
+
+TEST_CASE("capi.u8_gc_width")
+{
+    // UTF-8 encoding of the same ☝ U+FE0F pair: \xE2\x98\x9D\xEF\xB8\x8F
+    auto constexpr input = "\xE2\x98\x9D\xEF\xB8\x8F"sv;
+    CHECK(u8_gc_width((u8_char_t const*) input.data(), input.size(), GC_WIDTH_MODE_MODIFIABLE) == 2);
+    CHECK(u8_gc_width((u8_char_t const*) input.data(), input.size(), GC_WIDTH_MODE_NON_MODIFIABLE) == 1);
+}
+
+TEST_CASE("capi.u32_grapheme_unbreakable")
+{
+    // CR x LF (GB3): unbreakable.
+    CHECK(u32_grapheme_unbreakable(0x000D, 0x000A) == 1);
+
+    // 'a' + combining diaeresis (GB9, Extend): unbreakable.
+    CHECK(u32_grapheme_unbreakable('a', 0x0308) == 1);
+
+    // Two plain ASCII letters: breakable.
+    CHECK(u32_grapheme_unbreakable('a', 'b') == 0);
+}
+
 // TODO more C-API tests
