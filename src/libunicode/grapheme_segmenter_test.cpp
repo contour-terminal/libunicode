@@ -135,6 +135,41 @@ TEST_CASE("grapheme_segmenter.gb11_non_extpic_zwj_extpic", "[grapheme_segmenter]
     CHECK_FALSE(gs.codepointsAvailable());
 }
 
+TEST_CASE("grapheme_segmenter.gb11_extpic_double_zwj_extpic", "[grapheme_segmenter][!shouldfail]")
+{
+    // ExtPic + ZWJ + ZWJ + ExtPic (ported from apple/swift
+    // validation-test/stdlib/StringGraphemeBreaking.swift "GB11", rdar://124539686):
+    // MAN + ZWJ + ZWJ + GIRL.
+    //
+    // GB9 keeps each ZWJ attached to whatever precedes it (Man+ZWJ+ZWJ forms one
+    // cluster via two applications of GB9). But UAX #29's GB11 rule is
+    // \p{Extended_Pictographic} Extend* ZWJ x \p{Extended_Pictographic} -- exactly
+    // one terminal ZWJ, not ZWJ*. A second ZWJ must invalidate the match, so the
+    // trailing GIRL should start a new cluster: two clusters total, not one.
+    //
+    // KNOWN BUG (confirmed empirically against the current implementation): the
+    // extpic_state state machine in grapheme_process_breakable()
+    // (src/libunicode/grapheme_segmenter.cpp) treats ZWJ the same as Extend for
+    // state-retention purposes:
+    //
+    //   else if ((B == Grapheme_Cluster_Break::Extend || B == Grapheme_Cluster_Break::ZWJ)
+    //            && prev_extpic_state == 1)
+    //       ; // keep state - Extend/ZWJ extend the ExtPic chain for GB11
+    //
+    // This lets an arbitrary run of ZWJs keep extpic_state == 1, so GB11 still
+    // fires for the second ZWJ's successor. Actual (buggy) result: one cluster of
+    // all 4 codepoints (MAN ZWJ ZWJ GIRL). Expected per spec: two clusters
+    // [MAN ZWJ ZWJ] [GIRL]. Not fixed here per task scope; tagged
+    // [!shouldfail] so it documents the gap without failing CI.
+    auto const text = u32string_view { U"\U0001F468\u200D\u200D\U0001F467" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\u200D" }); // MAN + ZWJ + ZWJ
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F467" }); // GIRL
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
 TEST_CASE("grapheme_segmenter.gb11_ascii_resets_extpic_chain", "[grapheme_segmenter]")
 {
     // ExtPic + ASCII + ZWJ + ExtPic = three clusters: [ExtPic] [a ZWJ] [ExtPic]
@@ -392,6 +427,95 @@ TEST_CASE("grapheme_segmenter.gb9c_gujarati_with_shadda", "[grapheme_segmenter]"
     auto const conjunct = u32string_view { U"\u0AB8\u0AFB\u0ACD\u0AB8\u0AFB" };
     auto gs = grapheme_segmenter { conjunct };
     CHECK(*gs == conjunct);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+// ---- Ported from apple/swift test/stdlib/Character.swift: "Unicode 9 grapheme breaking" ----
+
+TEST_CASE("grapheme_segmenter.swift_flags_cluster_count", "[grapheme_segmenter]")
+{
+    // US flag + CA flag + DK flag + rainbow pride flag (WHITE FLAG + VS16 + ZWJ + RAINBOW)
+    // ported from apple/swift test/stdlib/Character.swift "Unicode 9 grapheme breaking"
+    // (flags.count == 4).
+    auto const text =
+        u32string_view { U"\U0001F1FA\U0001F1F8\U0001F1E8\U0001F1E6\U0001F1E9\U0001F1F0\U0001F3F3\uFE0F\u200D\U0001F308" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F1FA\U0001F1F8" }); // US
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F1E8\U0001F1E6" }); // CA
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F1E9\U0001F1F0" }); // DK
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F3F3\uFE0F\u200D\U0001F308" }); // rainbow pride flag
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.swift_family_cluster_count", "[grapheme_segmenter]")
+{
+    // Six family emoji ZWJ sequences back-to-back, ported from apple/swift
+    // test/stdlib/Character.swift "Unicode 9 grapheme breaking" (family.count == 6):
+    // FAMILY, MAN+ZWJ+GIRL+ZWJ+GIRL, WOMAN+ZWJ+WOMAN+ZWJ+GIRL+ZWJ+BOY,
+    // MAN+ZWJ+MAN+ZWJ+BOY+ZWJ+BOY, MAN+ZWJ+GIRL, WOMAN+ZWJ+BOY+ZWJ+BOY.
+    auto const text = u32string_view { U"\U0001F46A"
+                                       U"\U0001F468\u200D\U0001F467\u200D\U0001F467"
+                                       U"\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466"
+                                       U"\U0001F468\u200D\U0001F468\u200D\U0001F466\u200D\U0001F466"
+                                       U"\U0001F468\u200D\U0001F467"
+                                       U"\U0001F469\u200D\U0001F466\u200D\U0001F466" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F46A" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F467\u200D\U0001F467" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F468\u200D\U0001F466\u200D\U0001F466" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F467" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F469\u200D\U0001F466\u200D\U0001F466" });
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.swift_skin_tone_cluster_count", "[grapheme_segmenter]")
+{
+    // WAVING HAND with each of the five Fitzpatrick skin tone modifiers, ported
+    // from apple/swift test/stdlib/Character.swift "Unicode 9 grapheme breaking"
+    // (skinTone.count == 6).
+    auto const text = u32string_view { U"\U0001F44B"
+                                       U"\U0001F44B\U0001F3FB"
+                                       U"\U0001F44B\U0001F3FC"
+                                       U"\U0001F44B\U0001F3FD"
+                                       U"\U0001F44B\U0001F3FE"
+                                       U"\U0001F44B\U0001F3FF" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F44B" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FB" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FC" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FD" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FE" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FF" });
     CHECK_FALSE(gs.codepointsAvailable());
 }
 
