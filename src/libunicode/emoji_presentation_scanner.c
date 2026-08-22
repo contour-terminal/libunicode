@@ -16,7 +16,7 @@
  */
 
 // clang-format off
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #endif
 
@@ -148,7 +148,7 @@ _resume:
 	}
 
 	_keys = _emoji_presentation_trans_keys + _emoji_presentation_key_offsets[cs];
-	_trans = (unsigned int)_emoji_presentation_index_offsets[cs];
+	_trans = _emoji_presentation_index_offsets[cs];
 
 	_klen = _emoji_presentation_single_lengths[cs];
 	if ( _klen > 0 ) {
@@ -170,7 +170,7 @@ _resume:
 			}
 		}
 		_keys += _klen;
-		_trans += (unsigned int)_klen;
+		_trans += _klen;
 	}
 
 	_klen = _emoji_presentation_range_lengths[cs];
@@ -192,11 +192,11 @@ _resume:
 				goto _match;
 			}
 		}
-		_trans += (unsigned int)_klen;
+		_trans += _klen;
 	}
 
 _match:
-	_trans = (unsigned int)_emoji_presentation_indicies[_trans];
+	_trans = _emoji_presentation_indicies[_trans];
 _eof_trans:
 	cs = _emoji_presentation_trans_targs[_trans];
 
@@ -280,7 +280,7 @@ _again:
 	if ( p == eof )
 	{
 	if ( _emoji_presentation_eof_trans[cs] > 0 ) {
-		_trans = (unsigned int)_emoji_presentation_eof_trans[cs] - 1;
+		_trans = _emoji_presentation_eof_trans[cs] - 1;
 		goto _eof_trans;
 	}
 	}
