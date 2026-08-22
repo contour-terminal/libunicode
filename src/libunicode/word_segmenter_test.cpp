@@ -399,3 +399,88 @@ TEST_CASE("word_segmenter.single_char", "[word_segmenter]")
     REQUIRE(segments.size() == 1);
     CHECK(segments[0] == U"a");
 }
+
+// =============================================================================
+// Ported from apple/swift validation-test/stdlib/StringWordBreaking.swift
+// =============================================================================
+
+TEST_CASE("word_segmenter.swift_emoji_presentation_selector_before_colon", "[word_segmenter]")
+{
+    // rdar://116652595: a hang-bug regression where rounding word indices could
+    // loop forever for certain scalar pairs that create a constraint on the
+    // *preceding* pair, when the preceding Extend rules did not account for that
+    // constraint. CJK IDEOGRAPH U+65E5 + VARIATION SELECTOR-16 (Extend) should stay
+    // attached to the ideograph, then break before ":".
+    auto const segments = collect_segments(U"\u65E5\uFE0F:X "sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\u65E5\uFE0F");
+    CHECK(segments[1] == U":");
+    CHECK(segments[2] == U"X");
+    CHECK(segments[3] == U" ");
+}
+
+TEST_CASE("word_segmenter.swift_family_emoji_presentation_selector_before_colon", "[word_segmenter]")
+{
+    // rdar://116652595, same hang-bug class: a multi-ZWJ family emoji sequence
+    // followed by VARIATION SELECTOR-16 must stay one segment, then break before
+    // ":". MAN+ZWJ+MAN+ZWJ+GIRL+ZWJ+BOY+VS16.
+    auto const segments = collect_segments(U"\U0001F468\u200D\U0001F468\u200D\U0001F467\u200D\U0001F466\uFE0F:X "sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\U0001F468\u200D\U0001F468\u200D\U0001F467\u200D\U0001F466\uFE0F");
+    CHECK(segments[1] == U":");
+    CHECK(segments[2] == U"X");
+    CHECK(segments[3] == U" ");
+}
+
+TEST_CASE("word_segmenter.swift_no_entry_emoji_presentation_selector_before_colon", "[word_segmenter]")
+{
+    // rdar://116652595, same hang-bug class: NO ENTRY (U+26D4, Extended_Pictographic)
+    // + VARIATION SELECTOR-16 stays one segment, then breaks before ":".
+    auto const segments = collect_segments(U"\u26D4\uFE0F:X "sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\u26D4\uFE0F");
+    CHECK(segments[1] == U":");
+    CHECK(segments[2] == U"X");
+    CHECK(segments[3] == U" ");
+}
+
+TEST_CASE("word_segmenter.swift_no_entry_emoji_presentation_selector_before_middle_dot", "[word_segmenter]")
+{
+    // rdar://116652595, same hang-bug class, MIDDLE DOT (U+00B7, MidLetter) instead
+    // of ":".
+    auto const segments = collect_segments(U"\u26D4\uFE0F\u00B7X "sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\u26D4\uFE0F");
+    CHECK(segments[1] == U"\u00B7");
+    CHECK(segments[2] == U"X");
+    CHECK(segments[3] == U" ");
+}
+
+TEST_CASE("word_segmenter.swift_no_entry_emoji_presentation_selector_before_fullwidth_colon", "[word_segmenter]")
+{
+    // rdar://116652595, same hang-bug class, FULLWIDTH COLON (U+FF1A, MidLetter)
+    // instead of ":".
+    auto const segments = collect_segments(U"\u26D4\uFE0F\uFF1AX "sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\u26D4\uFE0F");
+    CHECK(segments[1] == U"\uFF1A");
+    CHECK(segments[2] == U"X");
+    CHECK(segments[3] == U" ");
+}
+
+TEST_CASE("word_segmenter.swift_word_joiner_around_quoted_domain", "[word_segmenter]")
+{
+    // https://github.com/swiftlang/swift-experimental-string-processing/issues/818,
+    // rdar://154902007. WORD JOINER (U+2060, Format/ZWSP-like, transparent to word
+    // breaking) interacts with LEFT SINGLE QUOTATION MARK (U+2018, MidNumLet) and
+    // a domain name containing periods (MidNumLet). Word joiners on either side of
+    // the opening quote attach to it (not to the preceding sot boundary alone) and
+    // the ones trailing "example.com" attach to the domain, with the closing quote
+    // U+2019 left as a segment on its own.
+    auto const segments = collect_segments(U"\u2060\u2018\u2060\u2060example.com\u2060\u2060\u2019"sv);
+    REQUIRE(segments.size() == 4);
+    CHECK(segments[0] == U"\u2060");
+    CHECK(segments[1] == U"\u2018\u2060\u2060");
+    CHECK(segments[2] == U"example.com\u2060\u2060");
+    CHECK(segments[3] == U"\u2019");
+}

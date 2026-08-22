@@ -15,6 +15,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdint>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 using namespace unicode;
 using namespace std::string_view_literals;
 
@@ -70,6 +76,17 @@ TEST_CASE("normalization.hangul_compose", "[normalization]")
     CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A8') == U'\uAC01');
 }
 
+TEST_CASE("normalization.hangul_compose_tbase_boundary", "[normalization]")
+{
+    // U+11A7 is JAMO_T_BASE, the codepoint immediately preceding the valid
+    // trailing-jamo range -- it is not itself a trailing consonant (that range
+    // starts at U+11A8) and must not compose into an LVT syllable.
+    CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A7') == 0);
+
+    // U+11A8 is the first valid trailing jamo (T index 1).
+    CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A8') != 0);
+}
+
 TEST_CASE("normalization.canonical_decomposition", "[normalization]")
 {
     // é (U+00E9) decomposes to e + combining acute accent
@@ -87,6 +104,17 @@ TEST_CASE("normalization.canonical_decomposition", "[normalization]")
     // ASCII has no decomposition
     decomp = canonical_decomposition('A');
     CHECK(decomp.empty());
+}
+
+TEST_CASE("normalization.tibetan_recursive_compatibility_decomposition", "[normalization]")
+{
+    // U+0F77 TIBETAN VOWEL SIGN VOCALIC RR has a *compatibility* decomposition
+    // to U+0FB2 U+0F81 (per UnicodeData.txt), and U+0F81 itself further
+    // canonically decomposes to U+0F71 U+0F80. NFKD must recurse through both
+    // levels, giving a final 3-codepoint result -- exercising the same
+    // two-level recursive decomposition ICU's tstnorm.cpp TestTibetan checks.
+    auto const result = to_nfkd(std::u32string_view { U"ཷ" });
+    CHECK(result == std::u32string { U"ྲཱྀ" });
 }
 
 TEST_CASE("normalization.to_nfd", "[normalization]")
@@ -199,11 +227,17 @@ TEST_CASE("normalization.canonical_ordering", "[normalization]")
 
 TEST_CASE("normalization.is_composition_exclusion", "[normalization]")
 {
-    // Some characters are excluded from composition
-    // Hebrew point hataf segol
-    CHECK(is_composition_exclusion(U'\u0344') == false); // Not excluded
-    // Check a known exclusion (singleton decomposition)
-    // These are typically characters that decompose to themselves plus something else
+    // U+0344 COMBINING GREEK DIALYTIKA TONOS is a Full_Composition_Exclusion
+    // (DerivedNormalizationProps.txt: "0343..0344 ; Full_Composition_Exclusion"),
+    // even though it isn't listed in the smaller "primary" CompositionExclusions.txt.
+    CHECK(is_composition_exclusion(U'\u0344'));
+
+    // A character with no decomposition at all is trivially not an exclusion.
+    CHECK_FALSE(is_composition_exclusion('A'));
+
+    // U+00C0 (LATIN CAPITAL LETTER A WITH GRAVE) has a canonical decomposition
+    // and is NOT excluded -- it's a normal composable character.
+    CHECK_FALSE(is_composition_exclusion(U'\u00c0'));
 }
 
 TEST_CASE("normalization.decomposition_type", "[normalization]")
@@ -582,5 +616,220 @@ TEST_CASE("normalization.conformance_subset", "[normalization]")
         CHECK(to_nfd(tc.source) == tc.nfd);
         CHECK(to_nfkc(tc.source) == tc.nfkc);
         CHECK(to_nfkd(tc.source) == tc.nfkd);
+    }
+}
+
+// ============================================================================
+// Official Unicode Conformance Tests (live parse of NormalizationTest.txt)
+// ============================================================================
+
+namespace
+{
+
+/// Parse a whitespace-separated list of hex codepoints, e.g. "1E0A 0323", into a u32string.
+std::u32string parse_hex_codepoints(std::string_view field)
+{
+    std::u32string result;
+    size_t i = 0;
+    while (i < field.size())
+    {
+        while (i < field.size() && field[i] == ' ')
+            ++i;
+        auto start = i;
+        while (i < field.size() && field[i] != ' ')
+            ++i;
+        if (i > start)
+        {
+            unsigned long value = 0;
+            for (auto j = start; j < i; ++j)
+            {
+                auto c = field[j];
+                value <<= 4;
+                if (c >= '0' && c <= '9')
+                    value |= static_cast<unsigned long>(c - '0');
+                else if (c >= 'A' && c <= 'F')
+                    value |= static_cast<unsigned long>(c - 'A' + 10);
+                else if (c >= 'a' && c <= 'f')
+                    value |= static_cast<unsigned long>(c - 'a' + 10);
+            }
+            result.push_back(static_cast<char32_t>(value));
+        }
+    }
+    return result;
+}
+
+struct NormalizationTestCase
+{
+    std::u32string c1, c2, c3, c4, c5;
+    std::string comment;
+    int line_number = 0;
+};
+
+/// Parse NormalizationTest.txt into test cases.
+/// Format: c1;c2;c3;c4;c5; # comment
+/// @Part headers and blank/comment lines are skipped; every data line uses the
+/// same 5-column conformance invariants regardless of which Part it came from.
+std::vector<NormalizationTestCase> parse_normalization_test_file(std::string const& path)
+{
+    std::vector<NormalizationTestCase> cases;
+    std::ifstream file(path);
+    if (!file.is_open())
+        return cases;
+
+    std::string line;
+    auto lineNo = 0;
+    while (std::getline(file, line))
+    {
+        ++lineNo;
+        if (line.empty() || line[0] == '#' || line[0] == '@')
+            continue;
+
+        NormalizationTestCase tc;
+        tc.line_number = lineNo;
+
+        auto commentPos = line.find('#');
+        auto dataStr = (commentPos != std::string::npos) ? line.substr(0, commentPos) : line;
+        if (commentPos != std::string::npos)
+            tc.comment = line.substr(commentPos);
+
+        std::vector<std::string> fields;
+        size_t start = 0;
+        for (size_t i = 0; i <= dataStr.size(); ++i)
+        {
+            if (i == dataStr.size() || dataStr[i] == ';')
+            {
+                fields.push_back(dataStr.substr(start, i - start));
+                start = i + 1;
+            }
+        }
+
+        if (fields.size() < 5)
+            continue;
+
+        tc.c1 = parse_hex_codepoints(fields[0]);
+        tc.c2 = parse_hex_codepoints(fields[1]);
+        tc.c3 = parse_hex_codepoints(fields[2]);
+        tc.c4 = parse_hex_codepoints(fields[3]);
+        tc.c5 = parse_hex_codepoints(fields[4]);
+
+        if (!tc.c1.empty())
+            cases.push_back(std::move(tc));
+    }
+    return cases;
+}
+
+} // namespace
+
+// ============================================================================
+// Cases ported from icu4x components/normalizer/tests/tests.rs
+// (test_nfd_basic / test_nfkd_basic / test_nfc_basic / test_nfkc_basic,
+// test_accented_digraph, test_ddd).
+// ============================================================================
+
+TEST_CASE("normalization.icu4x_singleton_decompositions", "[normalization]")
+{
+    // Ohm sign (U+2126) is a singleton canonical decomposition to Omega (U+03A9).
+    CHECK(to_nfd(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfkd(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfc(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfkc(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+
+    // Angstrom sign (U+212B) has a single-step ("singleton") canonical
+    // decomposition to A-with-ring (U+00C5) per UnicodeData.txt. This is the
+    // one-step mapping exercised by icu4x's CanonicalDecomposition::decompose
+    // (Decomposed::Singleton) and matches libunicode's canonical_decomposition().
+    // Note this is NOT what to_nfd() returns for U+212B: NFD is fully
+    // recursive, and U+00C5 itself further decomposes to U+0041 U+030A, so
+    // to_nfd(U+212B) correctly yields "A" + combining ring above, not U+00C5.
+    CHECK(canonical_decomposition(U'\U0000212B') == std::vector<char32_t> { U'\U000000C5' });
+    CHECK(to_nfd(std::u32string_view { U"\U0000212B" }) == std::u32string { U"\U00000041\U0000030A" });
+
+    // Half-width katakana HE (U+FF8D) + half-width voiced sound mark (U+FF9E):
+    // unchanged under NFD/NFC, but NFKD maps it to full-width kana HE
+    // (U+30D8) followed by a combining sound mark (U+3099), and NFKC composes
+    // that pair into the fully composed full-width kana BE (U+30D9).
+    CHECK(to_nfd(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U0000FF8D\U0000FF9E" });
+    CHECK(to_nfc(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U0000FF8D\U0000FF9E" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U000030D8\U00003099" });
+    CHECK(to_nfkc(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U000030D9" });
+
+    // "fi" ligature (U+FB01): unchanged under NFD/NFC, expands to "fi" under NFKD/NFKC.
+    CHECK(to_nfd(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U0000FB01" });
+    CHECK(to_nfc(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U0000FB01" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U00000066\U00000069" });
+    CHECK(to_nfkc(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U00000066\U00000069" });
+
+    // Arabic ligature U+FDFA ("Sallallahou Alayhi Wasallam"): unchanged under
+    // NFD/NFC, expands to its 18-codepoint compatibility sequence under NFKD/NFKC.
+    CHECK(to_nfd(std::u32string_view { U"\U0000FDFA" }) == std::u32string { U"\U0000FDFA" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FDFA" })
+          == std::u32string { U"\U00000635\U00000644\U00000649\U00000020\U00000627\U00000644\U00000644\U00000647"
+                              U"\U00000020\U00000639\U00000644\U0000064A\U00000647\U00000020\U00000648\U00000633"
+                              U"\U00000644\U00000645" });
+
+    // Iota subscript (U+0345) never decomposes under any of the four forms
+    // (it is only remapped by UTS46, which libunicode does not implement).
+    CHECK(to_nfd(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfc(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfkd(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfkc(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+}
+
+TEST_CASE("normalization.icu4x_accented_digraph", "[normalization]")
+{
+    // U+01C4 (LATIN CAPITAL LETTER DZ WITH CARON) + combining dot-below
+    // (U+0323), under NFKD, decomposes to "DZ" followed by the two combining
+    // marks in canonical order (dot-below U+0323, CCC=220, before caron
+    // U+030C, CCC=230).
+    CHECK(to_nfkd(std::u32string_view { U"\U000001C4\U00000323" })
+          == std::u32string { U"\U00000044\U0000005A\U00000323\U0000030C" });
+
+    // Feeding the marks in the opposite order yields the same canonically-ordered result.
+    CHECK(to_nfkd(std::u32string_view { U"\U00000044\U0000005A\U0000030C\U00000323" })
+          == std::u32string { U"\U00000044\U0000005A\U00000323\U0000030C" });
+}
+
+TEST_CASE("normalization.icu4x_sinhala_ddd", "[normalization]")
+{
+    // Sinhala U+0DDD (SINHALA VOWEL SIGN KOMBUVA HAA GAYANUKITTA) followed by
+    // U+0334 (combining tilde overlay) expands under NFD into a 4-codepoint
+    // sequence: the multi-codepoint canonical decomposition of U+0DDD
+    // (U+0DD9 U+0DCF) interleaved with the combining mark, canonically
+    // reordered with the trailing U+0DCA.
+    CHECK(to_nfd(std::u32string_view { U"\U00000DDD\U00000334" })
+          == std::u32string { U"\U00000DD9\U00000DCF\U00000334\U00000DCA" });
+}
+
+TEST_CASE("normalization.unicode_conformance", "[normalization]")
+{
+    auto const path = std::string(LIBUNICODE_UCD_DIR) + "/NormalizationTest.txt";
+    auto const testCases = parse_normalization_test_file(path);
+
+    if (testCases.empty())
+    {
+        WARN("Skipping conformance tests: NormalizationTest.txt not found at " << path);
+        return;
+    }
+    INFO("Loaded " << testCases.size() << " test cases from NormalizationTest.txt");
+
+    for (auto const& tc: testCases)
+    {
+        // NFC: c2 == NFC(c1) == NFC(c2) == NFC(c3)
+        if (to_nfc(tc.c1) != tc.c2 || to_nfc(tc.c2) != tc.c2 || to_nfc(tc.c3) != tc.c2)
+            FAIL("NFC mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFD: c3 == NFD(c1) == NFD(c2) == NFD(c3)
+        if (to_nfd(tc.c1) != tc.c3 || to_nfd(tc.c2) != tc.c3 || to_nfd(tc.c3) != tc.c3)
+            FAIL("NFD mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFKC: c4 == NFKC(c1) == NFKC(c2) == NFKC(c3) == NFKC(c4) == NFKC(c5)
+        if (to_nfkc(tc.c1) != tc.c4 || to_nfkc(tc.c2) != tc.c4 || to_nfkc(tc.c3) != tc.c4 || to_nfkc(tc.c4) != tc.c4
+            || to_nfkc(tc.c5) != tc.c4)
+            FAIL("NFKC mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFKD: c5 == NFKD(c1) == NFKD(c2) == NFKD(c3) == NFKD(c4) == NFKD(c5)
+        if (to_nfkd(tc.c1) != tc.c5 || to_nfkd(tc.c2) != tc.c5 || to_nfkd(tc.c3) != tc.c5 || to_nfkd(tc.c4) != tc.c5
+            || to_nfkd(tc.c5) != tc.c5)
+            FAIL("NFKD mismatch at line " << tc.line_number << ": " << tc.comment);
     }
 }

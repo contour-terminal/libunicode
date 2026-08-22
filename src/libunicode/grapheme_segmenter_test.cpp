@@ -16,6 +16,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdint>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
+
 using namespace unicode;
 using namespace std::string_literals;
 using namespace std;
@@ -125,6 +132,41 @@ TEST_CASE("grapheme_segmenter.gb11_non_extpic_zwj_extpic", "[grapheme_segmenter]
     CHECK(gs.codepointsAvailable());
     ++gs;
     CHECK(*gs == u32string_view { U"\U0001F6D1" }); // 🛑
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.gb11_extpic_double_zwj_extpic", "[grapheme_segmenter][!shouldfail]")
+{
+    // ExtPic + ZWJ + ZWJ + ExtPic (ported from apple/swift
+    // validation-test/stdlib/StringGraphemeBreaking.swift "GB11", rdar://124539686):
+    // MAN + ZWJ + ZWJ + GIRL.
+    //
+    // GB9 keeps each ZWJ attached to whatever precedes it (Man+ZWJ+ZWJ forms one
+    // cluster via two applications of GB9). But UAX #29's GB11 rule is
+    // \p{Extended_Pictographic} Extend* ZWJ x \p{Extended_Pictographic} -- exactly
+    // one terminal ZWJ, not ZWJ*. A second ZWJ must invalidate the match, so the
+    // trailing GIRL should start a new cluster: two clusters total, not one.
+    //
+    // KNOWN BUG (confirmed empirically against the current implementation): the
+    // extpic_state state machine in grapheme_process_breakable()
+    // (src/libunicode/grapheme_segmenter.cpp) treats ZWJ the same as Extend for
+    // state-retention purposes:
+    //
+    //   else if ((B == Grapheme_Cluster_Break::Extend || B == Grapheme_Cluster_Break::ZWJ)
+    //            && prev_extpic_state == 1)
+    //       ; // keep state - Extend/ZWJ extend the ExtPic chain for GB11
+    //
+    // This lets an arbitrary run of ZWJs keep extpic_state == 1, so GB11 still
+    // fires for the second ZWJ's successor. Actual (buggy) result: one cluster of
+    // all 4 codepoints (MAN ZWJ ZWJ GIRL). Expected per spec: two clusters
+    // [MAN ZWJ ZWJ] [GIRL]. Not fixed here per task scope; tagged
+    // [!shouldfail] so it documents the gap without failing CI.
+    auto const text = u32string_view { U"\U0001F468\u200D\u200D\U0001F467" };
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\u200D" }); // MAN + ZWJ + ZWJ
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F467" }); // GIRL
     CHECK_FALSE(gs.codepointsAvailable());
 }
 
@@ -388,8 +430,266 @@ TEST_CASE("grapheme_segmenter.gb9c_gujarati_with_shadda", "[grapheme_segmenter]"
     CHECK_FALSE(gs.codepointsAvailable());
 }
 
-// TODO: Add data-driven test from official Unicode GraphemeBreakTest.txt once
-// the multistage table generator correctly preserves all GCB property values.
-// The tablegen correctly populates per-codepoint records, but the multistage
-// table compression loses several GCB values (CR, LF, L, V, T, LV, etc.),
-// causing them to fall back to GCB::Other at runtime.
+// ---- Ported from apple/swift test/stdlib/Character.swift: "Unicode 9 grapheme breaking" ----
+
+TEST_CASE("grapheme_segmenter.swift_flags_cluster_count", "[grapheme_segmenter]")
+{
+    // US flag + CA flag + DK flag + rainbow pride flag (WHITE FLAG + VS16 + ZWJ + RAINBOW)
+    // ported from apple/swift test/stdlib/Character.swift "Unicode 9 grapheme breaking"
+    // (flags.count == 4).
+    auto const text =
+        u32string_view { U"\U0001F1FA\U0001F1F8\U0001F1E8\U0001F1E6\U0001F1E9\U0001F1F0\U0001F3F3\uFE0F\u200D\U0001F308" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F1FA\U0001F1F8" }); // US
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F1E8\U0001F1E6" }); // CA
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F1E9\U0001F1F0" }); // DK
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F3F3\uFE0F\u200D\U0001F308" }); // rainbow pride flag
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.swift_family_cluster_count", "[grapheme_segmenter]")
+{
+    // Six family emoji ZWJ sequences back-to-back, ported from apple/swift
+    // test/stdlib/Character.swift "Unicode 9 grapheme breaking" (family.count == 6):
+    // FAMILY, MAN+ZWJ+GIRL+ZWJ+GIRL, WOMAN+ZWJ+WOMAN+ZWJ+GIRL+ZWJ+BOY,
+    // MAN+ZWJ+MAN+ZWJ+BOY+ZWJ+BOY, MAN+ZWJ+GIRL, WOMAN+ZWJ+BOY+ZWJ+BOY.
+    auto const text = u32string_view { U"\U0001F46A"
+                                       U"\U0001F468\u200D\U0001F467\u200D\U0001F467"
+                                       U"\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466"
+                                       U"\U0001F468\u200D\U0001F468\u200D\U0001F466\u200D\U0001F466"
+                                       U"\U0001F468\u200D\U0001F467"
+                                       U"\U0001F469\u200D\U0001F466\u200D\U0001F466" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F46A" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F467\u200D\U0001F467" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F468\u200D\U0001F466\u200D\U0001F466" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F468\u200D\U0001F467" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F469\u200D\U0001F466\u200D\U0001F466" });
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+TEST_CASE("grapheme_segmenter.swift_skin_tone_cluster_count", "[grapheme_segmenter]")
+{
+    // WAVING HAND with each of the five Fitzpatrick skin tone modifiers, ported
+    // from apple/swift test/stdlib/Character.swift "Unicode 9 grapheme breaking"
+    // (skinTone.count == 6).
+    auto const text = u32string_view { U"\U0001F44B"
+                                       U"\U0001F44B\U0001F3FB"
+                                       U"\U0001F44B\U0001F3FC"
+                                       U"\U0001F44B\U0001F3FD"
+                                       U"\U0001F44B\U0001F3FE"
+                                       U"\U0001F44B\U0001F3FF" };
+
+    auto gs = grapheme_segmenter { text };
+    CHECK(*gs == u32string_view { U"\U0001F44B" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FB" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FC" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FD" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FE" });
+    CHECK(gs.codepointsAvailable());
+    ++gs;
+    CHECK(*gs == u32string_view { U"\U0001F44B\U0001F3FF" });
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
+// =============================================================================
+// Official Unicode Conformance Tests
+// =============================================================================
+
+namespace
+{
+
+/// Collects break positions (offsets from start) for a codepoint sequence.
+/// Returns a sorted list of offsets where grapheme cluster boundaries occur.
+/// Includes position 0 (sot) and position N (eot).
+std::vector<size_t> collect_break_positions(std::u32string_view text)
+{
+    std::vector<size_t> breaks;
+    breaks.push_back(0); // sot
+
+    if (text.empty())
+        return breaks;
+
+    auto gs = grapheme_segmenter(text);
+    size_t offset = 0;
+    while (true)
+    {
+        auto const cluster = *gs;
+        offset += cluster.size();
+        breaks.push_back(offset);
+        if (!gs.codepointsAvailable())
+            break;
+        ++gs;
+    }
+    return breaks;
+}
+
+/// Parse a hex string like "000D" to a char32_t.
+char32_t parse_hex(std::string_view sv)
+{
+    unsigned long val = 0;
+    for (auto c: sv)
+    {
+        val <<= 4;
+        if (c >= '0' && c <= '9')
+            val |= static_cast<unsigned long>(c - '0');
+        else if (c >= 'A' && c <= 'F')
+            val |= static_cast<unsigned long>(c - 'A' + 10);
+        else if (c >= 'a' && c <= 'f')
+            val |= static_cast<unsigned long>(c - 'a' + 10);
+    }
+    return static_cast<char32_t>(val);
+}
+
+struct GraphemeBreakTestCase
+{
+    std::u32string codepoints;
+    std::vector<size_t> expected_breaks; // offsets where breaks occur
+    std::string comment;
+    int line_number = 0;
+};
+
+/// Parse GraphemeBreakTest.txt into test cases.
+/// Format: ÷ 000D × 000A ÷ (# comment)
+/// ÷ = break, × = no break
+std::vector<GraphemeBreakTestCase> parse_grapheme_break_test_file(std::string const& path)
+{
+    std::vector<GraphemeBreakTestCase> cases;
+    std::ifstream file(path);
+    if (!file.is_open())
+        return cases;
+
+    std::string line;
+    auto lineNo = 0;
+    while (std::getline(file, line))
+    {
+        ++lineNo;
+        if (line.empty() || line[0] == '#')
+            continue;
+
+        // The line starts with ÷ or × characters (UTF-8 encoded)
+        // ÷ = U+00F7 (UTF-8: C3 B7), × = U+00D7 (UTF-8: C3 97)
+
+        GraphemeBreakTestCase tc;
+        tc.line_number = lineNo;
+
+        // Extract comment part
+        auto commentPos = line.find('#');
+        auto dataStr = (commentPos != std::string::npos) ? line.substr(0, commentPos) : line;
+        if (commentPos != std::string::npos)
+            tc.comment = line.substr(commentPos);
+
+        // Parse the data portion: sequence of (÷|×) XXXX pairs
+        size_t cpIndex = 0;
+        auto i = size_t { 0 };
+        while (i < dataStr.size())
+        {
+            // Skip whitespace
+            while (i < dataStr.size() && (dataStr[i] == ' ' || dataStr[i] == '\t'))
+                ++i;
+            if (i >= dataStr.size())
+                break;
+
+            // Check for ÷ (C3 B7) or × (C3 97)
+            if (i + 1 < dataStr.size() && static_cast<unsigned char>(dataStr[i]) == 0xC3)
+            {
+                auto const secondByte = static_cast<unsigned char>(dataStr[i + 1]);
+                if (secondByte == 0xB7) // ÷ = break
+                {
+                    tc.expected_breaks.push_back(cpIndex);
+                    i += 2;
+                    continue;
+                }
+                if (secondByte == 0x97) // × = no break
+                {
+                    i += 2;
+                    continue;
+                }
+            }
+
+            // Must be a hex codepoint
+            auto start = i;
+            while (i < dataStr.size() && dataStr[i] != ' ' && dataStr[i] != '\t'
+                   && static_cast<unsigned char>(dataStr[i]) != 0xC3)
+                ++i;
+
+            if (i > start)
+            {
+                auto hexStr = dataStr.substr(start, i - start);
+                tc.codepoints.push_back(parse_hex(hexStr));
+                ++cpIndex;
+            }
+        }
+
+        if (!tc.codepoints.empty())
+            cases.push_back(std::move(tc));
+    }
+    return cases;
+}
+
+} // namespace
+
+TEST_CASE("grapheme_segmenter.unicode_conformance", "[grapheme_segmenter]")
+{
+    auto const path = std::string(LIBUNICODE_UCD_DIR) + "/auxiliary/GraphemeBreakTest.txt";
+    auto const testCases = parse_grapheme_break_test_file(path);
+
+    if (testCases.empty())
+    {
+        WARN("Skipping conformance tests: GraphemeBreakTest.txt not found at " << path);
+        return;
+    }
+    INFO("Loaded " << testCases.size() << " test cases from GraphemeBreakTest.txt");
+
+    for (auto const& tc: testCases)
+    {
+        auto const actual = collect_break_positions(tc.codepoints);
+        if (actual != tc.expected_breaks)
+        {
+            std::ostringstream msg;
+            msg << "FAIL line " << tc.line_number << ": ";
+
+            msg << "codepoints: ";
+            for (auto cp: tc.codepoints)
+                msg << std::hex << "U+" << static_cast<uint32_t>(cp) << " ";
+
+            msg << " expected breaks: ";
+            for (auto b: tc.expected_breaks)
+                msg << std::dec << b << " ";
+
+            msg << " actual breaks: ";
+            for (auto b: actual)
+                msg << std::dec << b << " ";
+
+            msg << tc.comment;
+            FAIL(msg.str());
+        }
+    }
+}

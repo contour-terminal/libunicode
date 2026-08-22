@@ -181,7 +181,15 @@ namespace
         }
     }
 
-    // Compose a decomposed string
+    // Compose a decomposed (and canonically-ordered) string.
+    //
+    // Every input character is appended to `result` immediately, in its
+    // decomposed-and-reordered position -- composition never delays writing a
+    // character, it only merges a later combining mark back into an
+    // already-written starter (`result[starterIndex]`). This keeps relative
+    // ordering correct by construction: a combining mark that fails to compose
+    // can never end up ahead of the starter it followed, because the starter
+    // was placed in `result` before that mark was even considered.
     std::u32string compose(std::u32string const& decomposed)
     {
         if (decomposed.empty())
@@ -190,56 +198,44 @@ namespace
         std::u32string result;
         result.reserve(decomposed.size());
 
-        size_t i = 0;
-
-        // Find first starter
-        while (i < decomposed.size() && canonical_combining_class(decomposed[i]) != 0)
-        {
-            result.push_back(decomposed[i]);
-            ++i;
-        }
-
-        if (i >= decomposed.size())
-            return result;
-
-        char32_t starter = decomposed[i++];
+        size_t starterIndex = std::u32string::npos;
         uint8_t last_ccc = 0;
 
-        while (i < decomposed.size())
+        for (char32_t cp: decomposed)
         {
-            char32_t cp = decomposed[i];
-            uint8_t ccc = canonical_combining_class(cp);
+            uint8_t const ccc = canonical_combining_class(cp);
 
-            // Check if we can compose with the starter
             char32_t composed = 0;
-            if (last_ccc < ccc || last_ccc == 0)
-            {
-                composed = try_compose(starter, cp);
-            }
+            if (starterIndex != std::u32string::npos && (last_ccc < ccc || last_ccc == 0))
+                composed = try_compose(result[starterIndex], cp);
 
             if (composed != 0 && !is_composition_exclusion(composed))
             {
-                // Composition succeeded
-                starter = composed;
+                // Composition succeeded: update the starter in place, do not
+                // advance last_ccc -- the (now composed) starter may still
+                // absorb a later mark with a higher CCC.
+                result[starterIndex] = composed;
+                continue;
             }
-            else if (ccc == 0)
+
+            result.push_back(cp);
+
+            if (ccc == 0)
             {
-                // New starter
-                result.push_back(starter);
-                starter = cp;
+                // New starter.
+                starterIndex = result.size() - 1;
                 last_ccc = 0;
             }
             else
             {
-                // Can't compose, keep the character
-                result.push_back(cp);
+                // Blocked from the current starter; a later mark may still
+                // compose with it (per UAX #15 blocking is CCC-relative, not
+                // absolute), so the starter stays put -- only our "highest
+                // CCC seen since the starter" watermark advances.
                 last_ccc = ccc;
             }
-
-            ++i;
         }
 
-        result.push_back(starter);
         return result;
     }
 

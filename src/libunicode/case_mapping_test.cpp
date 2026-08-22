@@ -185,3 +185,34 @@ TEST_CASE("case_mapping.changes_when_lowercased", "[case_mapping]")
     CHECK_FALSE(changes_when_lowercased('a'));
     CHECK_FALSE(changes_when_lowercased('0'));
 }
+
+// ============================================================================
+// Cases ported from icu4x components/casemap/tests/conversions.rs
+// (test_simple_mappings / test_full_mappings, attributed there to ICU4C's
+// StringCaseTest::TestCaseConversion). Locale-free subset only.
+// ============================================================================
+
+TEST_CASE("case_mapping.icu4x_digraph_titlecase_roundtrip", "[case_mapping]")
+{
+    // LJ digraph: uppercase LJ (U+01C7), titlecase Lj (U+01C8), lowercase lj (U+01C9).
+    // String-level uppercase/lowercase round-trip across all three case variants
+    // must each collapse to the corresponding single case variant repeated 3x.
+    CHECK(to_uppercase(std::u32string_view { U"\U000001C7\U000001C8\U000001C9" })
+          == std::u32string { U"\U000001C7\U000001C7\U000001C7" });
+    CHECK(to_lowercase(std::u32string_view { U"\U000001C7\U000001C8\U000001C9" })
+          == std::u32string { U"\U000001C9\U000001C9\U000001C9" });
+}
+
+TEST_CASE("case_mapping.icu4x_deseret_pair", "[case_mapping]")
+{
+    // Deseret supplementary-plane case pair: lowercase U+1043C <-> uppercase U+10414
+    CHECK(simple_uppercase(U'\U0001043C') == U'\U00010414');
+    CHECK(simple_lowercase(U'\U0001043C') == U'\U0001043C');
+    CHECK(simple_titlecase(U'\U0001043C') == U'\U00010414');
+    CHECK(simple_casefold(U'\U0001043C') == U'\U0001043C');
+
+    CHECK(simple_uppercase(U'\U00010414') == U'\U00010414');
+    CHECK(simple_lowercase(U'\U00010414') == U'\U0001043C');
+    CHECK(simple_titlecase(U'\U00010414') == U'\U00010414');
+    CHECK(simple_casefold(U'\U00010414') == U'\U0001043C');
+}
