@@ -76,6 +76,17 @@ TEST_CASE("normalization.hangul_compose", "[normalization]")
     CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A8') == U'\uAC01');
 }
 
+TEST_CASE("normalization.hangul_compose_tbase_boundary", "[normalization]")
+{
+    // U+11A7 is JAMO_T_BASE, the codepoint immediately preceding the valid
+    // trailing-jamo range -- it is not itself a trailing consonant (that range
+    // starts at U+11A8) and must not compose into an LVT syllable.
+    CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A7') == 0);
+
+    // U+11A8 is the first valid trailing jamo (T index 1).
+    CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A8') != 0);
+}
+
 TEST_CASE("normalization.canonical_decomposition", "[normalization]")
 {
     // é (U+00E9) decomposes to e + combining acute accent
@@ -93,6 +104,17 @@ TEST_CASE("normalization.canonical_decomposition", "[normalization]")
     // ASCII has no decomposition
     decomp = canonical_decomposition('A');
     CHECK(decomp.empty());
+}
+
+TEST_CASE("normalization.tibetan_recursive_compatibility_decomposition", "[normalization]")
+{
+    // U+0F77 TIBETAN VOWEL SIGN VOCALIC RR has a *compatibility* decomposition
+    // to U+0FB2 U+0F81 (per UnicodeData.txt), and U+0F81 itself further
+    // canonically decomposes to U+0F71 U+0F80. NFKD must recurse through both
+    // levels, giving a final 3-codepoint result -- exercising the same
+    // two-level recursive decomposition ICU's tstnorm.cpp TestTibetan checks.
+    auto const result = to_nfkd(std::u32string_view { U"ཷ" });
+    CHECK(result == std::u32string { U"ྲཱྀ" });
 }
 
 TEST_CASE("normalization.to_nfd", "[normalization]")
@@ -205,11 +227,17 @@ TEST_CASE("normalization.canonical_ordering", "[normalization]")
 
 TEST_CASE("normalization.is_composition_exclusion", "[normalization]")
 {
-    // Some characters are excluded from composition
-    // Hebrew point hataf segol
-    CHECK(is_composition_exclusion(U'\u0344') == false); // Not excluded
-    // Check a known exclusion (singleton decomposition)
-    // These are typically characters that decompose to themselves plus something else
+    // U+0344 COMBINING GREEK DIALYTIKA TONOS is a Full_Composition_Exclusion
+    // (DerivedNormalizationProps.txt: "0343..0344 ; Full_Composition_Exclusion"),
+    // even though it isn't listed in the smaller "primary" CompositionExclusions.txt.
+    CHECK(is_composition_exclusion(U'\u0344'));
+
+    // A character with no decomposition at all is trivially not an exclusion.
+    CHECK_FALSE(is_composition_exclusion('A'));
+
+    // U+00C0 (LATIN CAPITAL LETTER A WITH GRAVE) has a canonical decomposition
+    // and is NOT excluded -- it's a normal composable character.
+    CHECK_FALSE(is_composition_exclusion(U'\u00c0'));
 }
 
 TEST_CASE("normalization.decomposition_type", "[normalization]")

@@ -835,9 +835,20 @@ void UcdParser::loadDerivedNormalizationProps()
             continue;
 
         auto cpPart = trim(parts[0]);
-        auto prop = std::string(trim(parts[1]));
 
-        // Strip inline comments (everything from '#' onward) from the value field
+        // Strip inline comments (everything from '#' onward). Boolean-valued
+        // properties (Full_Composition_Exclusion, Expands_On_NF*C/D,
+        // Changes_When_NFKC_Casefolded) have no value field at all -- their
+        // trailing "# <comment>" is glued directly onto the property-name
+        // field itself (e.g. "Full_Composition_Exclusion # Mn [2] ..."), not
+        // separated by a ';' the way NFC_QC/NFKC_QC's value column is. Without
+        // stripping it here too, `prop` never equals the bare property name
+        // and this property is silently never recognized below.
+        auto rawProp = trim(parts[1]);
+        if (auto hashPos = rawProp.find('#'); hashPos != std::string_view::npos)
+            rawProp = trim(rawProp.substr(0, hashPos));
+        auto prop = std::string(rawProp);
+
         auto rawValue = parts.size() > 2 ? trim(parts[2]) : std::string_view {};
         if (auto hashPos = rawValue.find('#'); hashPos != std::string_view::npos)
             rawValue = trim(rawValue.substr(0, hashPos));
