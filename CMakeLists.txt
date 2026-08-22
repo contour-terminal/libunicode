@@ -63,6 +63,7 @@ option(LIBUNICODE_BENCHMARK "libunicode: Enables building of benchmark for libun
 option(LIBUNICODE_TOOLS "libunicode: Builds CLI tools [default: ${MASTER_PROJECT}]" ${MASTER_PROJECT})
 option(LIBUNICODE_BUILD_STATIC "libunicode: provide static library instead of dynamic [default: ${LIBUNICODE_BUILD_STATIC_DEFAULT}]" ${LIBUNICODE_BUILD_STATIC_DEFAULT})
 option(LIBUNICODE_TABLEGEN_FASTBUILD "libunicode: Use fast table generation (takes more memory in final tables) [default: OFF]" OFF)
+option(LIBUNICODE_SANITIZE "libunicode: Builds with sanitizer enabled [default: OFF]" "OFF")
 
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" SYSTEM_PROCESSOR_LOWER)
 
@@ -105,6 +106,35 @@ if(LIBUNICODE_COVERAGE AND NOT MSVC)
     message("-- [code coverage] Enabled.")
 else()
     message("-- [code coverage] Disabled.")
+endif()
+
+# ----------------------------------------------------------------------------
+# sanitizers
+
+if(NOT WIN32 AND NOT LIBUNICODE_SANITIZE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(LIBUNICODE_SANITIZE "OFF" CACHE STRING "Choose the sanitizer mode." FORCE)
+    set_property(CACHE LIBUNICODE_SANITIZE PROPERTY STRINGS OFF address thread)
+endif()
+
+if(NOT(LIBUNICODE_SANITIZE STREQUAL "OFF"))
+    # Map the selected sanitizer mode to its -fsanitize set. "address" also enables
+    # UndefinedBehaviorSanitizer (ASan+UBSan compose; ASan+TSan do not). Keep the flags in one
+    # variable so both the compile and the link step receive them -- a sanitizer runtime must be
+    # linked in, not only compiled against.
+    if(LIBUNICODE_SANITIZE STREQUAL "address")
+        set(LIBUNICODE_SANITIZE_FLAGS "-fsanitize=address,undefined -fsanitize-address-use-after-scope")
+    elseif(LIBUNICODE_SANITIZE STREQUAL "thread")
+        set(LIBUNICODE_SANITIZE_FLAGS "-fsanitize=thread")
+    else()
+        set(LIBUNICODE_SANITIZE_FLAGS "-fsanitize=${LIBUNICODE_SANITIZE}")
+    endif()
+    message(STATUS "Enabling ${LIBUNICODE_SANITIZE} sanitizer (flags: ${LIBUNICODE_SANITIZE_FLAGS}).")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer ${LIBUNICODE_SANITIZE_FLAGS}")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer ${LIBUNICODE_SANITIZE_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LIBUNICODE_SANITIZE_FLAGS}")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LIBUNICODE_SANITIZE_FLAGS}")
+else()
+    message(STATUS "No sanitizer enabled.")
 endif()
 
 # ----------------------------------------------------------------------------
