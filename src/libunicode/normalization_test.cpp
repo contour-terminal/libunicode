@@ -15,6 +15,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdint>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 using namespace unicode;
 using namespace std::string_view_literals;
 
@@ -582,5 +588,140 @@ TEST_CASE("normalization.conformance_subset", "[normalization]")
         CHECK(to_nfd(tc.source) == tc.nfd);
         CHECK(to_nfkc(tc.source) == tc.nfkc);
         CHECK(to_nfkd(tc.source) == tc.nfkd);
+    }
+}
+
+// ============================================================================
+// Official Unicode Conformance Tests (live parse of NormalizationTest.txt)
+// ============================================================================
+
+namespace
+{
+
+/// Parse a whitespace-separated list of hex codepoints, e.g. "1E0A 0323", into a u32string.
+std::u32string parse_hex_codepoints(std::string_view field)
+{
+    std::u32string result;
+    size_t i = 0;
+    while (i < field.size())
+    {
+        while (i < field.size() && field[i] == ' ')
+            ++i;
+        auto start = i;
+        while (i < field.size() && field[i] != ' ')
+            ++i;
+        if (i > start)
+        {
+            unsigned long value = 0;
+            for (auto j = start; j < i; ++j)
+            {
+                auto c = field[j];
+                value <<= 4;
+                if (c >= '0' && c <= '9')
+                    value |= static_cast<unsigned long>(c - '0');
+                else if (c >= 'A' && c <= 'F')
+                    value |= static_cast<unsigned long>(c - 'A' + 10);
+                else if (c >= 'a' && c <= 'f')
+                    value |= static_cast<unsigned long>(c - 'a' + 10);
+            }
+            result.push_back(static_cast<char32_t>(value));
+        }
+    }
+    return result;
+}
+
+struct NormalizationTestCase
+{
+    std::u32string c1, c2, c3, c4, c5;
+    std::string comment;
+    int line_number = 0;
+};
+
+/// Parse NormalizationTest.txt into test cases.
+/// Format: c1;c2;c3;c4;c5; # comment
+/// @Part headers and blank/comment lines are skipped; every data line uses the
+/// same 5-column conformance invariants regardless of which Part it came from.
+std::vector<NormalizationTestCase> parse_normalization_test_file(std::string const& path)
+{
+    std::vector<NormalizationTestCase> cases;
+    std::ifstream file(path);
+    if (!file.is_open())
+        return cases;
+
+    std::string line;
+    auto lineNo = 0;
+    while (std::getline(file, line))
+    {
+        ++lineNo;
+        if (line.empty() || line[0] == '#' || line[0] == '@')
+            continue;
+
+        NormalizationTestCase tc;
+        tc.line_number = lineNo;
+
+        auto commentPos = line.find('#');
+        auto dataStr = (commentPos != std::string::npos) ? line.substr(0, commentPos) : line;
+        if (commentPos != std::string::npos)
+            tc.comment = line.substr(commentPos);
+
+        std::vector<std::string> fields;
+        size_t start = 0;
+        for (size_t i = 0; i <= dataStr.size(); ++i)
+        {
+            if (i == dataStr.size() || dataStr[i] == ';')
+            {
+                fields.push_back(dataStr.substr(start, i - start));
+                start = i + 1;
+            }
+        }
+
+        if (fields.size() < 5)
+            continue;
+
+        tc.c1 = parse_hex_codepoints(fields[0]);
+        tc.c2 = parse_hex_codepoints(fields[1]);
+        tc.c3 = parse_hex_codepoints(fields[2]);
+        tc.c4 = parse_hex_codepoints(fields[3]);
+        tc.c5 = parse_hex_codepoints(fields[4]);
+
+        if (!tc.c1.empty())
+            cases.push_back(std::move(tc));
+    }
+    return cases;
+}
+
+} // namespace
+
+TEST_CASE("normalization.unicode_conformance", "[normalization]")
+{
+    auto const path = std::string(LIBUNICODE_UCD_DIR) + "/NormalizationTest.txt";
+    auto const testCases = parse_normalization_test_file(path);
+
+    if (testCases.empty())
+    {
+        WARN("Skipping conformance tests: NormalizationTest.txt not found at " << path);
+        return;
+    }
+    INFO("Loaded " << testCases.size() << " test cases from NormalizationTest.txt");
+
+    for (auto const& tc: testCases)
+    {
+        // NFC: c2 == NFC(c1) == NFC(c2) == NFC(c3)
+        if (to_nfc(tc.c1) != tc.c2 || to_nfc(tc.c2) != tc.c2 || to_nfc(tc.c3) != tc.c2)
+            FAIL("NFC mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFD: c3 == NFD(c1) == NFD(c2) == NFD(c3)
+        if (to_nfd(tc.c1) != tc.c3 || to_nfd(tc.c2) != tc.c3 || to_nfd(tc.c3) != tc.c3)
+            FAIL("NFD mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFKC: c4 == NFKC(c1) == NFKC(c2) == NFKC(c3) == NFKC(c4) == NFKC(c5)
+        if (to_nfkc(tc.c1) != tc.c4 || to_nfkc(tc.c2) != tc.c4 || to_nfkc(tc.c3) != tc.c4 || to_nfkc(tc.c4) != tc.c4
+            || to_nfkc(tc.c5) != tc.c4)
+            FAIL("NFKC mismatch at line " << tc.line_number << ": " << tc.comment);
+
+        // NFKD: c5 == NFKD(c1) == NFKD(c2) == NFKD(c3) == NFKD(c4) == NFKD(c5)
+        if (to_nfkd(tc.c1) != tc.c5 || to_nfkd(tc.c2) != tc.c5 || to_nfkd(tc.c3) != tc.c5 || to_nfkd(tc.c4) != tc.c5
+            || to_nfkd(tc.c5) != tc.c5)
+            FAIL("NFKD mismatch at line " << tc.line_number << ": " << tc.comment);
     }
 }
