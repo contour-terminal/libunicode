@@ -149,19 +149,11 @@ endif()
 
 # =========================================================================================================
 
+include(TargetArch)
 
 if(LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "std" OR LIBUNICODE_SIMD_IMPLEMENTATION STREQUAL "intrinsics")
-    # Normalize the processor name: it is "x86_64" on Linux, "AMD64" or "x64"
-    # on Windows, and "amd64" on FreeBSD/other BSDs. A case-sensitive match
-    # missed the BSD spelling, so the SSE4.1/AVX flags below were never applied
-    # while the x86 intrinsics in intrinsics.h (gated on __x86_64__) were still
-    # compiled, breaking the FreeBSD build with always_inline SSE4.1 errors.
-    if(CMAKE_VERSION VERSION_LESS 4.1)
-        string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" _LIBUNICODE_PROCESSOR_LOWER)
-    else()
-        string(TOLOWER "${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" _LIBUNICODE_PROCESSOR_LOWER)
-    endif()
-    if(_LIBUNICODE_PROCESSOR_LOWER STREQUAL "x86_64" OR _LIBUNICODE_PROCESSOR_LOWER STREQUAL "amd64" OR _LIBUNICODE_PROCESSOR_LOWER STREQUAL "x64")
+    NormzaliedTargetArch(_LIBUNICODE_TARGET_ARCH)
+    if(_LIBUNICODE_TARGET_ARCH STREQUAL "x86_64")
         set(LIBUNICODE_SIMD_SOURCES
             simd_detector.cpp
             scan256.cpp
