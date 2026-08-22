@@ -763,10 +763,9 @@ TEST_CASE("normalization.icu4x_singleton_decompositions", "[normalization]")
     // NFD/NFC, expands to its 18-codepoint compatibility sequence under NFKD/NFKC.
     CHECK(to_nfd(std::u32string_view { U"\U0000FDFA" }) == std::u32string { U"\U0000FDFA" });
     CHECK(to_nfkd(std::u32string_view { U"\U0000FDFA" })
-          == std::u32string {
-              U"\U00000635\U00000644\U00000649\U00000020\U00000627\U00000644\U00000644\U00000647"
-              U"\U00000020\U00000639\U00000644\U0000064A\U00000647\U00000020\U00000648\U00000633"
-              U"\U00000644\U00000645" });
+          == std::u32string { U"\U00000635\U00000644\U00000649\U00000020\U00000627\U00000644\U00000644\U00000647"
+                              U"\U00000020\U00000639\U00000644\U0000064A\U00000647\U00000020\U00000648\U00000633"
+                              U"\U00000644\U00000645" });
 
     // Iota subscript (U+0345) never decomposes under any of the four forms
     // (it is only remapped by UTS46, which libunicode does not implement).
