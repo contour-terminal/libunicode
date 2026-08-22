@@ -16,6 +16,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdint>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
+
 using namespace unicode;
 using namespace std::string_literals;
 using namespace std;
@@ -388,8 +395,177 @@ TEST_CASE("grapheme_segmenter.gb9c_gujarati_with_shadda", "[grapheme_segmenter]"
     CHECK_FALSE(gs.codepointsAvailable());
 }
 
-// TODO: Add data-driven test from official Unicode GraphemeBreakTest.txt once
-// the multistage table generator correctly preserves all GCB property values.
-// The tablegen correctly populates per-codepoint records, but the multistage
-// table compression loses several GCB values (CR, LF, L, V, T, LV, etc.),
-// causing them to fall back to GCB::Other at runtime.
+// =============================================================================
+// Official Unicode Conformance Tests
+// =============================================================================
+
+namespace
+{
+
+/// Collects break positions (offsets from start) for a codepoint sequence.
+/// Returns a sorted list of offsets where grapheme cluster boundaries occur.
+/// Includes position 0 (sot) and position N (eot).
+std::vector<size_t> collect_break_positions(std::u32string_view text)
+{
+    std::vector<size_t> breaks;
+    breaks.push_back(0); // sot
+
+    if (text.empty())
+        return breaks;
+
+    auto gs = grapheme_segmenter(text);
+    size_t offset = 0;
+    while (true)
+    {
+        auto const cluster = *gs;
+        offset += cluster.size();
+        breaks.push_back(offset);
+        if (!gs.codepointsAvailable())
+            break;
+        ++gs;
+    }
+    return breaks;
+}
+
+/// Parse a hex string like "000D" to a char32_t.
+char32_t parse_hex(std::string_view sv)
+{
+    unsigned long val = 0;
+    for (auto c: sv)
+    {
+        val <<= 4;
+        if (c >= '0' && c <= '9')
+            val |= static_cast<unsigned long>(c - '0');
+        else if (c >= 'A' && c <= 'F')
+            val |= static_cast<unsigned long>(c - 'A' + 10);
+        else if (c >= 'a' && c <= 'f')
+            val |= static_cast<unsigned long>(c - 'a' + 10);
+    }
+    return static_cast<char32_t>(val);
+}
+
+struct GraphemeBreakTestCase
+{
+    std::u32string codepoints;
+    std::vector<size_t> expected_breaks; // offsets where breaks occur
+    std::string comment;
+    int line_number = 0;
+};
+
+/// Parse GraphemeBreakTest.txt into test cases.
+/// Format: ÷ 000D × 000A ÷ (# comment)
+/// ÷ = break, × = no break
+std::vector<GraphemeBreakTestCase> parse_grapheme_break_test_file(std::string const& path)
+{
+    std::vector<GraphemeBreakTestCase> cases;
+    std::ifstream file(path);
+    if (!file.is_open())
+        return cases;
+
+    std::string line;
+    auto lineNo = 0;
+    while (std::getline(file, line))
+    {
+        ++lineNo;
+        if (line.empty() || line[0] == '#')
+            continue;
+
+        // The line starts with ÷ or × characters (UTF-8 encoded)
+        // ÷ = U+00F7 (UTF-8: C3 B7), × = U+00D7 (UTF-8: C3 97)
+
+        GraphemeBreakTestCase tc;
+        tc.line_number = lineNo;
+
+        // Extract comment part
+        auto commentPos = line.find('#');
+        auto dataStr = (commentPos != std::string::npos) ? line.substr(0, commentPos) : line;
+        if (commentPos != std::string::npos)
+            tc.comment = line.substr(commentPos);
+
+        // Parse the data portion: sequence of (÷|×) XXXX pairs
+        size_t cpIndex = 0;
+        auto i = size_t { 0 };
+        while (i < dataStr.size())
+        {
+            // Skip whitespace
+            while (i < dataStr.size() && (dataStr[i] == ' ' || dataStr[i] == '\t'))
+                ++i;
+            if (i >= dataStr.size())
+                break;
+
+            // Check for ÷ (C3 B7) or × (C3 97)
+            if (i + 1 < dataStr.size() && static_cast<unsigned char>(dataStr[i]) == 0xC3)
+            {
+                auto const secondByte = static_cast<unsigned char>(dataStr[i + 1]);
+                if (secondByte == 0xB7) // ÷ = break
+                {
+                    tc.expected_breaks.push_back(cpIndex);
+                    i += 2;
+                    continue;
+                }
+                if (secondByte == 0x97) // × = no break
+                {
+                    i += 2;
+                    continue;
+                }
+            }
+
+            // Must be a hex codepoint
+            auto start = i;
+            while (i < dataStr.size() && dataStr[i] != ' ' && dataStr[i] != '\t'
+                   && static_cast<unsigned char>(dataStr[i]) != 0xC3)
+                ++i;
+
+            if (i > start)
+            {
+                auto hexStr = dataStr.substr(start, i - start);
+                tc.codepoints.push_back(parse_hex(hexStr));
+                ++cpIndex;
+            }
+        }
+
+        if (!tc.codepoints.empty())
+            cases.push_back(std::move(tc));
+    }
+    return cases;
+}
+
+} // namespace
+
+TEST_CASE("grapheme_segmenter.unicode_conformance", "[grapheme_segmenter]")
+{
+    auto const path = std::string(LIBUNICODE_UCD_DIR) + "/auxiliary/GraphemeBreakTest.txt";
+    auto const testCases = parse_grapheme_break_test_file(path);
+
+    if (testCases.empty())
+    {
+        WARN("Skipping conformance tests: GraphemeBreakTest.txt not found at " << path);
+        return;
+    }
+    INFO("Loaded " << testCases.size() << " test cases from GraphemeBreakTest.txt");
+
+    for (auto const& tc: testCases)
+    {
+        auto const actual = collect_break_positions(tc.codepoints);
+        if (actual != tc.expected_breaks)
+        {
+            std::ostringstream msg;
+            msg << "FAIL line " << tc.line_number << ": ";
+
+            msg << "codepoints: ";
+            for (auto cp: tc.codepoints)
+                msg << std::hex << "U+" << static_cast<uint32_t>(cp) << " ";
+
+            msg << " expected breaks: ";
+            for (auto b: tc.expected_breaks)
+                msg << std::dec << b << " ";
+
+            msg << " actual breaks: ";
+            for (auto b: actual)
+                msg << std::dec << b << " ";
+
+            msg << tc.comment;
+            FAIL(msg.str());
+        }
+    }
+}
