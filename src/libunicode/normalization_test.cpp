@@ -720,6 +720,87 @@ std::vector<NormalizationTestCase> parse_normalization_test_file(std::string con
 
 } // namespace
 
+// ============================================================================
+// Cases ported from icu4x components/normalizer/tests/tests.rs
+// (test_nfd_basic / test_nfkd_basic / test_nfc_basic / test_nfkc_basic,
+// test_accented_digraph, test_ddd).
+// ============================================================================
+
+TEST_CASE("normalization.icu4x_singleton_decompositions", "[normalization]")
+{
+    // Ohm sign (U+2126) is a singleton canonical decomposition to Omega (U+03A9).
+    CHECK(to_nfd(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfkd(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfc(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+    CHECK(to_nfkc(std::u32string_view { U"\U00002126" }) == std::u32string { U"\U000003A9" });
+
+    // Angstrom sign (U+212B) has a single-step ("singleton") canonical
+    // decomposition to A-with-ring (U+00C5) per UnicodeData.txt. This is the
+    // one-step mapping exercised by icu4x's CanonicalDecomposition::decompose
+    // (Decomposed::Singleton) and matches libunicode's canonical_decomposition().
+    // Note this is NOT what to_nfd() returns for U+212B: NFD is fully
+    // recursive, and U+00C5 itself further decomposes to U+0041 U+030A, so
+    // to_nfd(U+212B) correctly yields "A" + combining ring above, not U+00C5.
+    CHECK(canonical_decomposition(U'\U0000212B') == std::vector<char32_t> { U'\U000000C5' });
+    CHECK(to_nfd(std::u32string_view { U"\U0000212B" }) == std::u32string { U"\U00000041\U0000030A" });
+
+    // Half-width katakana HE (U+FF8D) + half-width voiced sound mark (U+FF9E):
+    // unchanged under NFD/NFC, but NFKD maps it to full-width kana HE
+    // (U+30D8) followed by a combining sound mark (U+3099), and NFKC composes
+    // that pair into the fully composed full-width kana BE (U+30D9).
+    CHECK(to_nfd(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U0000FF8D\U0000FF9E" });
+    CHECK(to_nfc(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U0000FF8D\U0000FF9E" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U000030D8\U00003099" });
+    CHECK(to_nfkc(std::u32string_view { U"\U0000FF8D\U0000FF9E" }) == std::u32string { U"\U000030D9" });
+
+    // "fi" ligature (U+FB01): unchanged under NFD/NFC, expands to "fi" under NFKD/NFKC.
+    CHECK(to_nfd(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U0000FB01" });
+    CHECK(to_nfc(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U0000FB01" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U00000066\U00000069" });
+    CHECK(to_nfkc(std::u32string_view { U"\U0000FB01" }) == std::u32string { U"\U00000066\U00000069" });
+
+    // Arabic ligature U+FDFA ("Sallallahou Alayhi Wasallam"): unchanged under
+    // NFD/NFC, expands to its 18-codepoint compatibility sequence under NFKD/NFKC.
+    CHECK(to_nfd(std::u32string_view { U"\U0000FDFA" }) == std::u32string { U"\U0000FDFA" });
+    CHECK(to_nfkd(std::u32string_view { U"\U0000FDFA" })
+          == std::u32string {
+              U"\U00000635\U00000644\U00000649\U00000020\U00000627\U00000644\U00000644\U00000647"
+              U"\U00000020\U00000639\U00000644\U0000064A\U00000647\U00000020\U00000648\U00000633"
+              U"\U00000644\U00000645" });
+
+    // Iota subscript (U+0345) never decomposes under any of the four forms
+    // (it is only remapped by UTS46, which libunicode does not implement).
+    CHECK(to_nfd(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfc(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfkd(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+    CHECK(to_nfkc(std::u32string_view { U"\U00000345" }) == std::u32string { U"\U00000345" });
+}
+
+TEST_CASE("normalization.icu4x_accented_digraph", "[normalization]")
+{
+    // U+01C4 (LATIN CAPITAL LETTER DZ WITH CARON) + combining dot-below
+    // (U+0323), under NFKD, decomposes to "DZ" followed by the two combining
+    // marks in canonical order (dot-below U+0323, CCC=220, before caron
+    // U+030C, CCC=230).
+    CHECK(to_nfkd(std::u32string_view { U"\U000001C4\U00000323" })
+          == std::u32string { U"\U00000044\U0000005A\U00000323\U0000030C" });
+
+    // Feeding the marks in the opposite order yields the same canonically-ordered result.
+    CHECK(to_nfkd(std::u32string_view { U"\U00000044\U0000005A\U0000030C\U00000323" })
+          == std::u32string { U"\U00000044\U0000005A\U00000323\U0000030C" });
+}
+
+TEST_CASE("normalization.icu4x_sinhala_ddd", "[normalization]")
+{
+    // Sinhala U+0DDD (SINHALA VOWEL SIGN KOMBUVA HAA GAYANUKITTA) followed by
+    // U+0334 (combining tilde overlay) expands under NFD into a 4-codepoint
+    // sequence: the multi-codepoint canonical decomposition of U+0DDD
+    // (U+0DD9 U+0DCF) interleaved with the combining mark, canonically
+    // reordered with the trailing U+0DCA.
+    CHECK(to_nfd(std::u32string_view { U"\U00000DDD\U00000334" })
+          == std::u32string { U"\U00000DD9\U00000DCF\U00000334\U00000DCA" });
+}
+
 TEST_CASE("normalization.unicode_conformance", "[normalization]")
 {
     auto const path = std::string(LIBUNICODE_UCD_DIR) + "/NormalizationTest.txt";
