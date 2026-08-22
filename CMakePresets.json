@@ -68,7 +68,30 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "LIBUNICODE_COVERAGE": "ON"
+                "LIBUNICODE_COVERAGE": "ON",
+                "LIBUNICODE_BUILD_STATIC": "ON"
+            }
+        },
+        {
+            "name": "clang-asan",
+            "inherits": "unix-base",
+            "displayName": "Clang Debug + ASan/UBSan",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LIBUNICODE_SANITIZE": "address"
+            }
+        },
+        {
+            "name": "clang-tsan",
+            "inherits": "unix-base",
+            "displayName": "Clang Debug + TSan",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LIBUNICODE_SANITIZE": "thread"
             }
         },
         {
@@ -159,6 +182,8 @@
         { "name": "clang-release", "configurePreset": "clang-release" },
         { "name": "clang-release-native", "configurePreset": "clang-release-native" },
         { "name": "clang-coverage", "configurePreset": "clang-coverage" },
+        { "name": "clang-asan", "configurePreset": "clang-asan" },
+        { "name": "clang-tsan", "configurePreset": "clang-tsan" },
         { "name": "gcc-debug", "configurePreset": "gcc-debug" },
         { "name": "gcc-release", "configurePreset": "gcc-release" },
         { "name": "gcc-release-native", "configurePreset": "gcc-release-native" },
@@ -172,6 +197,8 @@
         { "name": "clang-release", "configurePreset": "clang-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
         { "name": "clang-release-native", "configurePreset": "clang-release-native", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
         { "name": "clang-coverage", "configurePreset": "clang-coverage", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clang-asan", "configurePreset": "clang-asan", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
+        { "name": "clang-tsan", "configurePreset": "clang-tsan", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
         { "name": "gcc-debug", "configurePreset": "gcc-debug", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
         { "name": "gcc-release", "configurePreset": "gcc-release", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
         { "name": "gcc-release-native", "configurePreset": "gcc-release-native", "output": { "outputOnFailure": true }, "execution": { "noTestsAction": "error", "stopOnFailure": true } },
