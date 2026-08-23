@@ -16,7 +16,7 @@
  */
 
 // clang-format off
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #endif
 
