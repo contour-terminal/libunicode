@@ -23,6 +23,7 @@
 #include <format>
 #include <functional>
 #include <ranges>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -718,111 +719,334 @@ TEST_CASE("scan.c1_control.continuation_byte_stays_text")
     CHECK(*state.next == '\n');
 }
 
-#if 0
+// {{{ ill-formed UTF-8
+//
+// scan_text() ends the run before an ill-formed UTF-8 subsequence, exactly as it ends it before a control,
+// and leaves state.next at the subsequence's first byte: the caller decodes it under its own replacement
+// policy, and every column counted is a column of the returned text. A character that the end of the input
+// cuts off is not ill-formed; it stays pending in state.utf8 for the next call to complete.
+//
+// Regression: an ill-formed byte was counted as a column, with no check against the limit, and left
+// outside the returned run unless valid text followed it. A trailing one was therefore consumed and lost,
+// a mid-run one was handed back raw inside the run, and the count could exceed the caller's limit.
+
 namespace
 {
 
-// NOLINTNEXTLINE(readability-identifier-naming)
-struct ColumnCount
+/// One row of the Unicode Standard's Table 3-7, "Well-Formed UTF-8 Byte Sequences".
+struct well_formed_utf8_sequence
 {
-    size_t value;
+    uint8_t leadFirst;
+    uint8_t leadLast;
+    size_t length;
+    // The range of the second byte. It is narrower than 0x80..0xBF after E0, ED, F0 and F4, which excludes
+    // overlong forms, surrogates and codepoints past U+10FFFF.
+    uint8_t secondFirst;
+    uint8_t secondLast;
 };
 
-constexpr ColumnCount operator""_columns(unsigned long long value) noexcept
-{
-    return ColumnCount { static_cast<size_t>(value) };
-}
+auto constexpr WellFormedUtf8Sequences = std::array {
+    well_formed_utf8_sequence { 0x00, 0x7F, 1, 0x00, 0x00 }, // U+0000..U+007F
+    well_formed_utf8_sequence { 0xC2, 0xDF, 2, 0x80, 0xBF }, // U+0080..U+07FF
+    well_formed_utf8_sequence { 0xE0, 0xE0, 3, 0xA0, 0xBF }, // U+0800..U+0FFF
+    well_formed_utf8_sequence { 0xE1, 0xEC, 3, 0x80, 0xBF }, // U+1000..U+CFFF
+    well_formed_utf8_sequence { 0xED, 0xED, 3, 0x80, 0x9F }, // U+D000..U+D7FF
+    well_formed_utf8_sequence { 0xEE, 0xEF, 3, 0x80, 0xBF }, // U+E000..U+FFFF
+    well_formed_utf8_sequence { 0xF0, 0xF0, 4, 0x90, 0xBF }, // U+10000..U+3FFFF
+    well_formed_utf8_sequence { 0xF1, 0xF3, 4, 0x80, 0xBF }, // U+40000..U+FFFFF
+    well_formed_utf8_sequence { 0xF4, 0xF4, 4, 0x80, 0x8F }, // U+100000..U+10FFFF
+};
 
-std::vector<uint8_t> operator""_bvec(char const* value, size_t n)
+/// Tests whether @p text is well-formed UTF-8 by Table 3-7 -- independently of the decoder under test,
+/// which is more lenient: it accepts overlong forms, for one.
+bool is_well_formed_utf8(std::string_view text)
 {
-    std::vector<uint8_t> v;
-    v.reserve(n);
-    while (*value)
-        v.push_back(static_cast<uint8_t>(*value++));
-    return v;
-}
-
-template <typename T>
-std::string hex(T const& text)
-{
-    std::string encodedText;
-    for (auto const ch: text)
+    auto const isContinuation = [](char ch) {
+        return (static_cast<uint8_t>(ch) & 0b1100'0000) == 0b1000'0000;
+    };
+    while (!text.empty())
     {
-        if (!encodedText.empty())
-            encodedText += ' ';
-        char buf[3];
-        snprintf(buf, sizeof(buf), "%02X", static_cast<unsigned>(ch));
-        encodedText.append(buf, 2);
+        auto const lead = static_cast<uint8_t>(text.front());
+        auto const sequence = std::ranges::find_if(
+            WellFormedUtf8Sequences, [lead](auto const& row) { return row.leadFirst <= lead && lead <= row.leadLast; });
+        if (sequence == WellFormedUtf8Sequences.end() || text.size() < sequence->length)
+            return false;
+        if (sequence->length > 1)
+        {
+            auto const second = static_cast<uint8_t>(text[1]);
+            if (second < sequence->secondFirst || sequence->secondLast < second)
+                return false;
+            if (!std::ranges::all_of(text.substr(2, sequence->length - 2), isContinuation))
+                return false;
+        }
+        text.remove_prefix(sequence->length);
     }
-    return encodedText;
+    return true;
 }
 
-// Single scan from clean start to stopByte.
-void testScanText(int lineNo,
-                  ColumnCount expectedColumnCount,
-                  std::vector<uint8_t> const& expectation,
-                  uint8_t stopByte,
-                  std::vector<std::u32string_view> const& analyzedGraphemeClusters)
+/// The ill-formed subsequences the sweeps below insert into valid text. Text always follows them, so
+/// none is a character merely cut off by the end of the input.
+auto constexpr IllFormedSubsequences = std::array {
+    "\x80"sv,     // a continuation byte with no lead byte before it (at a character boundary, also a C1 control)
+    "\xBF"sv,     // a continuation byte with no lead byte before it
+    "\xC0"sv,     // a lead byte, cut off by whatever follows it in the sweeps
+    "\xFF"sv,     // a byte that UTF-8 never uses
+    "\xE2\x94"sv, // two bytes of a three-byte character, cut off by whatever follows them in the sweeps
+};
+
+/// Column limits the sweeps scan with: tighter than the text before the ill-formed bytes, and looser.
+auto constexpr ColumnLimits = std::array<size_t, 6> { 1, 2, 3, 7, 80, 100'000 };
+
+/// The characters the sweeps build their text from, each one a whole grapheme cluster.
+auto constexpr AsciiUnits = std::array { "a"sv };
+
+auto constexpr MixedUnits = std::array {
+    "a"sv,
+    "\xE4\xB8\xAD"sv,         // U+4E2D, two columns
+    "\xC3\xA9"sv,             // U+00E9
+    "e\xCC\x81"sv,            // e + U+0301: a cluster across the handoff from the ASCII scanner
+    "\xF0\x9F\x98\x80"sv,     // U+1F600, two columns
+    "\xE2\x80\x98"sv,         // U+2018, whose continuation bytes fall in the C1 range
+    "\xC2\xA9\xEF\xB8\x8F"sv, // U+00A9 + VS16: a cluster that widens to two columns
+    "bc"sv,
+};
+
+/// No ASCII at all, so that the non-ASCII scanner, which stops at ASCII, sees the whole text.
+auto constexpr NonAsciiUnits = std::array {
+    "\xE4\xB8\xAD"sv, "\xC3\xA9"sv, "\xF0\x9F\x98\x80"sv, "\xE2\x80\x98"sv, "\xC2\xA9\xEF\xB8\x8F"sv, "\xCE\xB1"sv,
+};
+
+/// Valid text built from whole units, and the offset of every boundary between them.
+struct unit_text
 {
-    INFO(std::format("Testing scan segment from line {}: {} ({:02X})", lineNo, hex(expectation), stopByte));
-    auto const maxColumnCount = 80;
+    std::string text;
+    std::vector<size_t> boundaries;
+};
 
-    std::string fullText;
-    fullText.insert(fullText.end(), expectation.begin(), expectation.end());
-    fullText.push_back(static_cast<char>(stopByte));
-
-    auto graphemeClusterCollector = grapheme_cluster_collector {};
-
-    auto state = unicode::scan_state {};
-    auto const result = unicode::scan_text(state, fullText, maxColumnCount, graphemeClusterCollector);
-    auto const start = (char const*) fullText.data();
-
-    CHECK(size_t(result.start - start) == 0);
-    CHECK(size_t(result.end - start) == expectation.size());
-    CHECK(result.count == expectedColumnCount.value);
-    CHECK(result.next[0] == stopByte);
-    CHECK(result.next == fullText.data() + expectation.size());
-
-    CHECK(graphemeClusterCollector.output.size() == analyzedGraphemeClusters.size());
-    auto const iMax = std::min(analyzedGraphemeClusters.size(), graphemeClusterCollector.output.size());
-    for (size_t i = 0; i < iMax; ++i)
+/// Repeats @p units until the text is at least TestTextLength bytes long.
+unit_text build_unit_text(std::span<std::string_view const> units)
+{
+    auto result = unit_text {};
+    while (result.text.size() < TestTextLength)
     {
-        INFO(std::format("i: {}, lhs: {}, rhs: {}",
-                         i,
-                         u8(std::u32string_view(graphemeClusterCollector.output[i].data(),
-                                                graphemeClusterCollector.output[i].size())),
-                         u8(analyzedGraphemeClusters[i])));
-        CHECK(graphemeClusterCollector.output[i] == analyzedGraphemeClusters[i]);
+        for (auto const unit: units)
+        {
+            result.boundaries.push_back(result.text.size());
+            result.text += unit;
+        }
     }
+    return result;
+}
+
+using scan_function = std::function<unicode::scan_result(unicode::scan_state&, std::string_view, size_t)>;
+
+/// Inserts every ill-formed subsequence at every unit boundary of @p base up to MaxTestedLength, and checks
+/// that @p scan, at every column limit, ends no later than there -- and exactly as if the text ended there.
+void check_every_ill_formed_subsequence_ends_the_scan(scan_function const& scan, unit_text const& base)
+{
+    for (auto const illFormed: IllFormedSubsequences)
+    {
+        INFO("ill-formed: " << escape(illFormed));
+        for (auto const offset: base.boundaries | std::views::take_while([](size_t at) { return at <= MaxTestedLength; }))
+        {
+            INFO("at offset: " << offset);
+            auto text = base.text;
+            text.insert(offset, illFormed);
+            auto const valid = std::string_view(text).substr(0, offset);
+            for (auto const limit: ColumnLimits)
+            {
+                INFO("limit: " << limit);
+                auto state = unicode::scan_state {};
+                auto const result = scan(state, text, limit);
+                auto const run = std::string_view(result.start, result.end);
+
+                CHECK(result.count <= limit);
+                CHECK(result.start == text.data());
+                CHECK(result.end <= text.data() + offset);
+                // Nothing is consumed that is not handed back: no ill-formed byte, and no text behind one.
+                CHECK(state.next == result.end);
+                CHECK(state.utf8.expectedLength == 0);
+                CHECK(is_well_formed_utf8(run));
+                CHECK(result.count == unicode::grapheme_cluster_width(run));
+
+                auto validState = unicode::scan_state {};
+                auto const expected = scan(validState, valid, limit);
+                CHECK(result.count == expected.count);
+                CHECK(run.size() == static_cast<size_t>(std::distance(expected.start, expected.end)));
+            }
+        }
+    }
+}
+
+/// The bytes of a character that the end of the text cut off, which the scan keeps in its decoder state.
+unsigned pending_bytes(unicode::scan_state const& state)
+{
+    return state.utf8.expectedLength != 0 ? state.utf8.currentLength : 0;
 }
 
 } // namespace
 
-TEST_CASE("scan.invalid")
+TEST_CASE("scan.ill_formed_utf8.ends_the_run_before_it")
 {
-    auto constexpr LF = '\n';
-    auto const RC = U"\uFFFD"sv;
+    struct ill_formed_case
+    {
+        std::string_view what;
+        std::string_view text;
+        size_t limit;
+        std::string_view run; // the text returned, which starts where the input does
+        size_t count;
+        size_t next; // the offset state.next is left at
+        unsigned pending;
+    };
 
-    // 0xB1 is an invalid UTF-8 byte
-    // 0xF5 is valid beginning of a 4-byte UTF-8 sequence but incomplete if not finished and hence, invalid.
+    // "Reported" rows reproduce what Contour's bulk-scan differential harness found.
+    auto constexpr Cases = std::array {
+        ill_formed_case { "a lead byte cut off by ASCII, at the start (reported)", "\xE2hello\xBF\xFF", 7, "", 0, 0, 0 },
+        ill_formed_case { "the same text once the caller has decoded the lead byte", "hello\xBF\xFF", 7, "hello", 5, 5, 0 },
+        ill_formed_case { "two FF bytes behind ASCII, with a tight limit (reported)", "ab\xFF\xFF", 3, "ab", 2, 2, 0 },
+        ill_formed_case { "two FF bytes behind ASCII (reported)", "ab\xFF\xFF", 7, "ab", 2, 2, 0 },
+        ill_formed_case { "a stray continuation byte and FF behind ASCII (reported)", "hello\xBF\xFF", 7, "hello", 5, 5, 0 },
+        ill_formed_case { "the same with the limit inside the ASCII (reported)", "hello\xBF\xFF", 2, "he", 2, 2, 0 },
+        ill_formed_case { "an ill-formed byte right where the limit is reached", "\xE4\xB8\xAD\xFF", 2, "\xE4\xB8\xAD", 2, 3, 0 },
+        ill_formed_case { "the lead byte is ill-formed, not the ASCII that cuts it off", "ab\xE2hi", 80, "ab", 2, 2, 0 },
+        ill_formed_case { "two bytes of three, cut off by ASCII", "ab\xE2\x94hi", 80, "ab", 2, 2, 0 },
+        ill_formed_case { "cut off by a control", "ab\xE2\x1B[m", 80, "ab", 2, 2, 0 },
+        ill_formed_case {
+            "cut off by FF, which from_utf8() takes for a continuation byte", "ab\xE2\xFF\xBFxy", 80, "ab", 2, 2, 0 },
+        ill_formed_case { "cut off by another lead byte, whose character is left whole", "ab\xE2\xC3\xA9", 80, "ab", 2, 2, 0 },
+        ill_formed_case { "a stray continuation byte behind a wide character", "\xE4\xB8\xAD\xBFx", 80, "\xE4\xB8\xAD", 2, 3, 0 },
+        ill_formed_case {
+            "a lead byte cut off between two wide characters", "\xE4\xB8\xAD\xE2\xE6\x96\x87", 80, "\xE4\xB8\xAD", 2, 3, 0 },
+        ill_formed_case { "three bytes of four, cut off by ASCII", "\xF0\x9F\x98x", 80, "", 0, 0, 0 },
+        ill_formed_case { "behind a zero-width continuation of an ASCII base", "e\xCC\x81\xBF", 80, "e\xCC\x81", 1, 3, 0 },
+        ill_formed_case { "behind a cluster that widened", "\xC2\xA9\xEF\xB8\x8F\xFF", 80, "\xC2\xA9\xEF\xB8\x8F", 2, 5, 0 },
+        ill_formed_case { "behind a cluster that widened past the limit", "\xC2\xA9\xEF\xB8\x8F\xFF", 1, "", 0, 0, 0 },
+        ill_formed_case { "a stray continuation byte alone", "\xBF", 80, "", 0, 0, 0 },
+        // The next two are adapted from scan.invalid, a test long compiled out, which expected U+FFFD columns.
+        ill_formed_case { "B1 between ASCII", "A\xB1Z", 80, "A", 1, 1, 0 },
+        ill_formed_case { "an F5 lead byte cut off by ASCII", "A\xF5Z", 80, "A", 1, 1, 0 },
+        ill_formed_case {
+            "a character cut off by the end of the text is pending, not ill-formed", "a\xE2\x94", 80, "a", 1, 3, 2 },
+        ill_formed_case { "the same behind a wide character", "\xE4\xB8\xAD\xE2\x94", 80, "\xE4\xB8\xAD", 2, 5, 2 },
+        ill_formed_case { "a lone lead byte at the end of the text", "\xE2", 80, "", 0, 1, 1 },
+    };
 
-    // clang-format off
-    testScanText(__LINE__, 0_columns, {}, LF, {});
-    testScanText(__LINE__, 1_columns, { 'A' }, LF, { U"A" });
-    testScanText(__LINE__, 2_columns, { 'A', 'B' }, LF, { U"A", U"B" });
-    testScanText(__LINE__, 3_columns, { 'A', 0xB1, 'B' }, LF, { U"A", RC, U"B" });            // invalid UTF-8
-    testScanText(__LINE__, 4_columns, { 'A', 0xB1, 0xB1, 'B' }, LF, { U"A", RC, RC, U"B" });  // invalid UTF-8
-    testScanText(__LINE__, 3_columns, { 'A', 0xF5, 'B' }, LF, { U"A", RC, U"B" });            // incomplete UTF-8
-    testScanText(__LINE__, 4_columns, { 'A', 0xB1, 0xF5, 'B' }, LF, { U"A", RC, RC, U"B" });  // mixed case of the 2 above
-    testScanText(__LINE__, 6_columns, { 'A', 0xB1, 0xF5, 'H', 'e', 'y' }, LF, { U"A", RC, RC, U"H", U"e", U"y" });
-    testScanText(__LINE__, 2_columns, "\xf0\x9f\x98\200"_bvec, LF, { U"\U0001F600" });        // U+1F600
-    testScanText(__LINE__,
-                 18_columns,
-                 "\xf0\x9f\x98\2000123456789ABCDEF"_bvec,
-                 LF,
-                 { U"\U0001F600",
-                   U"0", U"1", U"2", U"3", U"4", U"5", U"6", U"7", U"8", U"9",
-                   U"A", U"B", U"C", U"D", U"E", U"F" });
-    // clang-format on
+    for (auto const& testCase: Cases)
+    {
+        INFO(testCase.what << ": \"" << escape(testCase.text) << "\", limit " << testCase.limit);
+        auto state = unicode::scan_state {};
+        auto const result = unicode::scan_text(state, testCase.text, testCase.limit);
+        CHECK(result.count <= testCase.limit);
+        CHECK(result.count == testCase.count);
+        CHECK(result.start == testCase.text.data());
+        CHECK(escape(std::string_view(result.start, result.end)) == escape(testCase.run));
+        CHECK(state.next == testCase.text.data() + testCase.next);
+        CHECK(pending_bytes(state) == testCase.pending);
+    }
 }
-#endif
+
+TEST_CASE("scan.ill_formed_utf8.every_ascii_scanner_stops_before_it")
+{
+    for (auto const& scanner: unicode::detail::ascii_scanners())
+    {
+        INFO("SIMD width: " << scanner.simd_bit_width);
+        for (auto const illFormed: IllFormedSubsequences)
+        {
+            INFO("ill-formed: " << escape(illFormed));
+            for (auto const offset: std::views::iota(size_t { 0 }, MaxTestedLength + 1))
+            {
+                INFO("at offset: " << offset);
+                auto text = std::string(TestTextLength, 'a');
+                text.insert(offset, illFormed);
+                for (auto const limit: ColumnLimits)
+                {
+                    INFO("limit: " << limit);
+                    CHECK(scanner.scan(text, limit) == std::min(offset, limit));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("scan.ill_formed_utf8.ends_the_scan_wherever_it_sits")
+{
+    auto const scanText = [](unicode::scan_state& state, std::string_view text, size_t limit) {
+        return unicode::scan_text(state, text, limit);
+    };
+
+    SECTION("in ASCII text")
+    {
+        check_every_ill_formed_subsequence_ends_the_scan(scanText, build_unit_text(AsciiUnits));
+    }
+    SECTION("in mixed text")
+    {
+        check_every_ill_formed_subsequence_ends_the_scan(scanText, build_unit_text(MixedUnits));
+    }
+}
+
+TEST_CASE("scan.ill_formed_utf8.ends_the_non_ascii_scan_wherever_it_sits")
+{
+    auto const scanNonAscii = [](unicode::scan_state& state, std::string_view text, size_t limit) {
+        return unicode::detail::scan_for_text_nonascii(state, text, limit, unicode::null_receiver::get());
+    };
+    check_every_ill_formed_subsequence_ends_the_scan(scanNonAscii, build_unit_text(NonAsciiUnits));
+}
+
+TEST_CASE("scan.ill_formed_utf8.is_not_delivered_to_the_receiver")
+{
+    // The receiver hears of exactly the text the scan returns, so receiveInvalidGraphemeCluster() is not
+    // called: the ill-formed bytes are the caller's to decode.
+    struct receiver_case
+    {
+        std::string_view text;
+        std::vector<std::u32string> received;
+    };
+    auto const cases = std::array {
+        receiver_case { "ab\xFF\xE4\xB8\xAD"sv, { U"a", U"b" } },
+        receiver_case { "\xE4\xB8\xAD\xBF"sv, { U"中" } },
+        receiver_case { "\xE4\xB8\xAD\xE2h"sv, { U"中" } },
+    };
+
+    for (auto const& testCase: cases)
+    {
+        INFO(escape(testCase.text));
+        auto collector = grapheme_cluster_collector {};
+        auto state = unicode::scan_state {};
+        unicode::scan_text(state, testCase.text, 80, collector);
+        CHECK(collector.output == testCase.received);
+    }
+}
+
+TEST_CASE("scan.ill_formed_utf8.cutting_off_a_character_an_earlier_call_began")
+{
+    // The first call ends inside a character and keeps its lead byte pending; only the second learns that
+    // the character is ill-formed. It hands the lead byte back all the same, through state.next, which
+    // therefore lies before the second call's text: in the first call's, where result.start already
+    // points when such a character completes instead.
+    auto constexpr Continuations = std::array {
+        "hi"sv,       // ASCII
+        "\x94hi"sv,   // one more byte of the character, then ASCII
+        "\xC3\xA9"sv, // another lead byte
+        "\xFF"sv,     // a byte that from_utf8() would take for a continuation byte
+    };
+
+    for (auto const continuation: Continuations)
+    {
+        auto const buffer = "ab\xE2"s + std::string(continuation);
+        INFO(escape(buffer));
+        auto state = unicode::scan_state {};
+        auto const first = unicode::scan_text(state, std::string_view(buffer).substr(0, 3), 80);
+        REQUIRE(first.count == 2);
+        REQUIRE(state.next == buffer.data() + 3);
+        REQUIRE(pending_bytes(state) == 1);
+
+        auto const second = unicode::scan_text(state, std::string_view(buffer).substr(3), 80);
+        CHECK(second.count == 0);
+        CHECK(second.start == buffer.data() + 2);
+        CHECK(second.end == buffer.data() + 2);
+        CHECK(state.next == buffer.data() + 2);
+        CHECK(pending_bytes(state) == 0);
+    }
+}
+
+// }}}

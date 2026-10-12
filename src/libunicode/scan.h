@@ -75,6 +75,10 @@ class grapheme_cluster_receiver
 
     virtual void receiveAsciiSequence(std::string_view codepoints) noexcept = 0;
     virtual void receiveGraphemeCluster(std::string_view codepoints, size_t columnCount) noexcept = 0;
+
+    /// Not called by scan_text(), which stops in front of an ill-formed UTF-8 subsequence instead of
+    /// delivering it (see LIBUNICODE_SCAN_TEXT_STOPS_AT_ILL_FORMED_UTF8). Kept so that receivers written
+    /// against earlier releases still compile.
     virtual void receiveInvalidGraphemeCluster() noexcept = 0;
 };
 
@@ -137,27 +141,42 @@ namespace detail
 ///
 /// This call will return early one of the conditions is met:
 ///
-/// - given the input sequence, the right most invalid or complete UTF-8 sequence is processed,
+/// - given the input sequence, the right most complete UTF-8 sequence is processed,
 /// - maxColumnCount is reached and the next grapheme cluster would exceed the given limit,
 /// - a control character is about to be processed. Both the C0 (0x00..0x1F) and the C1
 ///   (0x80..0x9F) control ranges count; a C1 byte only stops the scan at a UTF-8 character
 ///   boundary, so a continuation byte that happens to fall in 0x80..0x9F stays part of its codepoint.
+/// - an ill-formed UTF-8 subsequence is about to be processed: a byte that cannot begin a
+///   character (0xA0..0xBF, 0xF8..0xFF), or a character broken off by a byte that cannot continue
+///   it. As at a control, the scan stops in front of the subsequence's first byte and leaves
+///   state.next there, so the caller decodes it under its own replacement policy. Nothing
+///   ill-formed is counted or returned, so no column counted lies outside the returned text.
+///   A character that an earlier call began has its first byte in that call's text, before
+///   @p text: the same place the returned start points to when such a character completes.
 ///
 /// When this function returns, it is guaranteed to not contain an incomplete UTF-8 sequence
-/// at the end of the output sequence.
+/// at the end of the output sequence. A character cut off by the end of @p text is not
+/// ill-formed: its bytes are consumed into the passed UTF-8 decoder state, and calling this
+/// function again with more bytes will resume decoding it.
 ///
-/// Calling this function again with more bytes will resume decoding that UTF-8 sequence
-/// with the help of the passed UTF-8 decoder state.
+/// The decoder does not reject overlong forms, surrogates or codepoints past U+10FFFF; it scans
+/// them as the codepoint they encode.
 ///
-/// @return scanned textual result. This is, a sequence of
-///         either valid or invalid UTF-8 codepoints,
-///         but not incomplete codepoints at the end.
+/// @return scanned textual result. This is, a sequence of complete UTF-8 codepoints, none of
+///         them ill-formed and none incomplete at the end.
 scan_result scan_text(scan_state& state, std::string_view text, size_t maxColumnCount) noexcept;
 
 /// Feature macro: scan_text() stops at a C1 control byte (0x80..0x9F) sitting at a UTF-8 character
 /// boundary, rather than rendering it as U+FFFD. Downstream terminal parsers key off this to know
 /// whether they must guard against a mid-run 8-bit C1 control being swallowed as text.
 #define LIBUNICODE_SCAN_TEXT_STOPS_AT_C1_CONTROLS 1
+
+/// Feature macro: scan_text() stops in front of an ill-formed UTF-8 subsequence and leaves it to the
+/// caller, rather than counting it as a column -- possibly one past maxColumnCount -- and consuming it
+/// outside the returned text. Downstream terminal parsers key off this to know that every column
+/// counted belongs to the returned text, and that the only bytes consumed but not returned are those of
+/// a character cut off by the end of the input.
+#define LIBUNICODE_SCAN_TEXT_STOPS_AT_ILL_FORMED_UTF8 1
 
 scan_result scan_text(scan_state& state,
                       std::string_view text,
