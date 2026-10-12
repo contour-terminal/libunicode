@@ -62,6 +62,13 @@ namespace
     {
         return static_cast<uint8_t>(ch) & 0x80;
     }
+
+    // Tests if the given byte is a UTF-8 continuation byte (0b10xx'xxxx), the only kind of byte that may
+    // follow a lead byte inside a character.
+    constexpr bool is_continuation(char ch) noexcept
+    {
+        return (static_cast<uint8_t>(ch) & 0b1100'0000) == 0b1000'0000;
+    }
 } // namespace
 
 // The x86-64 SIMD builds also compile the 256- and 512-bit scanners, each in its own translation unit with its ISA
@@ -139,29 +146,42 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
         clusterStart = clusterEnd;
     };
 
+    // Ends the scan at @p stop, in front of a byte that is not text: a control, or the first byte of an
+    // ill-formed UTF-8 subsequence. Both are the caller's to interpret, so nothing from @p stop on is
+    // counted or consumed. Whatever cluster was open ends there, so hand it over before dropping the state.
+    auto const stopAt = [&](char const* stop) noexcept {
+        flushOpenCluster(stop);
+        state.utf8 = {};
+        state.lastCodepointHint = 0;
+        state.graphemeState = {};
+        state.clusterWidth.reset();
+        state.reportedClusterWidth = 0;
+        resultEnd = stop;
+        input = stop;
+    };
+
     while (input != end && count <= maxColumnCount)
     {
-        // Stop at a C1 control (0x80..0x9F) sitting at a character boundary: it is a control, not
-        // text, so -- like a C0 control -- it is left for the caller. The expectedLength guard keeps
-        // a continuation byte that merely falls in 0x80..0x9F (e.g. the middle byte of U+2018) as
-        // part of its multi-byte codepoint.
-        if (is_control(*input) || !is_complex(*input) || (state.utf8.expectedLength == 0 && is_c1_control(*input)))
+        if (state.utf8.expectedLength != 0)
         {
-            // A control ends whatever cluster was open, so hand it over before dropping the state.
-            flushOpenCluster(input);
-
-            // Incomplete UTF-8 sequence hit. That's invalid as well.
-            if (state.utf8.expectedLength)
+            // Inside a character, only a continuation byte may follow; one that merely falls in
+            // 0x80..0x9F (e.g. the middle byte of U+2018) is part of its codepoint, not a C1 control.
+            // Any other byte -- ASCII, a control, another lead byte, or 0xF8..0xFF -- breaks the
+            // character off and leaves it ill-formed. from_utf8() cannot be asked: it takes any byte
+            // but a lead byte for a continuation byte. The caller decodes the broken character under
+            // its own replacement policy, so stop in front of its first byte. When an earlier call
+            // began the character, that byte lies in the earlier call's text, where resultStart points.
+            if (!is_continuation(*input))
             {
-                ++count;
-                receiver.receiveInvalidGraphemeCluster();
-                state.utf8 = {};
+                stopAt(input - state.utf8.currentLength);
+                break;
             }
-            state.lastCodepointHint = 0;
-            state.graphemeState = {};
-            state.clusterWidth.reset();
-            state.reportedClusterWidth = 0;
-            resultEnd = input;
+        }
+        else if (is_control(*input) || !is_complex(*input) || is_c1_control(*input))
+        {
+            // Stop at a C1 control (0x80..0x9F) sitting at a character boundary: it is a control, not
+            // text, so -- like a C0 control -- it is left for the caller.
+            stopAt(input);
             break;
         }
 
@@ -249,17 +269,11 @@ scan_result detail::scan_for_text_nonascii(scan_state& state,
         }
         else
         {
+            // A byte that cannot begin a character (0xA0..0xBF, 0xF8..0xFF). A byte that breaks a character
+            // off was caught above, so this one is ill-formed on its own. Leave it to the caller likewise.
             assert(holds_alternative<Invalid>(result));
-            flushOpenCluster(input - byteCount);
-            count++;
-            receiver.receiveInvalidGraphemeCluster();
-            clusterWidthCountedHere = 0;
-            state.clusterWidth.reset();
-            state.reportedClusterWidth = 0;
-            state.lastCodepointHint = 0;
-            state.graphemeState = {};
-            state.utf8.expectedLength = 0;
-            byteCount = 0;
+            stopAt(input - byteCount);
+            break;
         }
     }
 

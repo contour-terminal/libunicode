@@ -2,6 +2,7 @@
 #include <libunicode/scan.h>
 #include <libunicode/utf8.h>
 
+#include <string>
 #include <string_view>
 
 #include <benchmark/benchmark.h>
@@ -62,6 +63,45 @@ BENCHMARK(benchmarkWithOffset<115>);
 BENCHMARK(benchmarkWithOffset<120>);
 BENCHMARK(benchmarkWithOffset<125>);
 BENCHMARK(benchmarkWithOffset<130>);
+
+// --- scan_text() over valid text that leaves the ASCII fast path ---
+
+template <size_t L>
+static void BM_scan_text_mixed(benchmark::State& benchmarkState)
+{
+    // Build input: 16 ASCII chars, then a CJK ideograph, an accented letter and an emoji, repeating.
+    // Whole units only, so the scan never ends inside a character.
+    std::string input;
+    while (input.size() < L)
+        input += std::string(16, 'x') + "\xE4\xB8\xAD\xC3\xA9\xF0\x9F\x98\x80";
+    for (auto _: benchmarkState)
+    {
+        auto state = unicode::scan_state {};
+        benchmark::DoNotOptimize(unicode::scan_text(state, input, input.size()));
+    }
+}
+
+template <size_t L>
+static void BM_scan_text_cjk(benchmark::State& benchmarkState)
+{
+    // Build input: one CJK ideograph, repeating, so the non-ASCII scanner sees all of it.
+    std::string input;
+    while (input.size() < L)
+        input += "\xE4\xB8\xAD";
+    for (auto _: benchmarkState)
+    {
+        auto state = unicode::scan_state {};
+        benchmark::DoNotOptimize(unicode::scan_text(state, input, input.size()));
+    }
+}
+
+BENCHMARK(BM_scan_text_mixed<256>);
+BENCHMARK(BM_scan_text_mixed<4096>);
+BENCHMARK(BM_scan_text_mixed<65536>);
+
+BENCHMARK(BM_scan_text_cjk<256>);
+BENCHMARK(BM_scan_text_cjk<4096>);
+BENCHMARK(BM_scan_text_cjk<65536>);
 
 // --- UTF-8 -> UTF-32 conversion benchmarks ---
 
