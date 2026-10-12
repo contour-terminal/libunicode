@@ -261,7 +261,18 @@ jobs:
           PREPARE_ONLY_EMBEDS=OFF SYSDEP_ASSUME_YES=ON ./scripts/install-deps.sh
           dnf install -y unicode-ucd
       - name: configure
-        run: cmake --preset gcc-release -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+        run: |
+          # libunicode implements one Unicode version, LIBUNICODE_UCD_VERSION. Fedora's unicode-ucd follows the
+          # newest release, so build against it only while the two agree; otherwise CMake fetches the pinned UCD.
+          pinned=$(sed -n 's/^set(LIBUNICODE_UCD_VERSION "\([0-9.]*\)".*/\1/p' CMakeLists.txt)
+          system=$(rpm -q --queryformat '%{VERSION}' unicode-ucd)
+          if [ "$system" = "$pinned" ]; then
+            echo "Building against Fedora's UCD $system"
+            cmake --preset gcc-release -DLIBUNICODE_UCD_DIR=/usr/share/unicode/ucd
+          else
+            echo "::notice::Fedora ships UCD $system, libunicode implements $pinned; building against the pinned UCD"
+            cmake --preset gcc-release
+          fi
       - name: build
         run: cmake --build --preset gcc-release -j$(nproc)
       - name: test
