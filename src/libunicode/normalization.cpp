@@ -91,24 +91,22 @@ namespace
     // Try to compose two codepoints
     [[nodiscard]] char32_t try_compose(char32_t first, char32_t second) noexcept
     {
-        // Check Hangul composition first (L + V or LV + T)
-        if (first >= hangul::LBase && first < hangul::LBase + hangul::LCount)
+        // Check Hangul composition first (L + V or LV + T), Unicode Standard section 3.12. The jamo
+        // predicates carry the ranges: T is U+11A8..U+11C2, so TBase (U+11A7) never composes.
+        if (is_hangul_l_jamo(first))
         {
-            if (second >= hangul::VBase && second < hangul::VBase + hangul::VCount)
+            if (is_hangul_v_jamo(second))
             {
                 // L + V -> LV
                 return hangul::SBase + ((first - hangul::LBase) * hangul::VCount + (second - hangul::VBase)) * hangul::TCount;
             }
         }
-        else if (first >= hangul::SBase && first < hangul::SBase + hangul::SCount)
+        else if (is_hangul_syllable(first))
         {
-            if ((first - hangul::SBase) % hangul::TCount == 0)
+            if ((first - hangul::SBase) % hangul::TCount == 0 && is_hangul_t_jamo(second))
             {
-                if (second >= hangul::TBase && second < hangul::TBase + hangul::TCount)
-                {
-                    // LV + T -> LVT
-                    return first + (second - hangul::TBase);
-                }
+                // LV + T -> LVT
+                return first + (second - hangul::TBase);
             }
         }
 
