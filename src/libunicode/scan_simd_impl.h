@@ -29,7 +29,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
 
 #if defined(USE_STD_SIMD)
     auto simd_text = stdx::fixed_size_simd<char, simd_size> {};
-    while (input < end - simd_size)
+    while (end - input >= simd_size)
     {
         simd_text.copy_from(input, stdx::element_aligned);
         auto const is_control_mask = simd_text < static_cast<char>(0x20);
@@ -73,7 +73,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
     auto const vec_control = intrinsics::set1_epi8(0x20); // 0..0x1F
     auto const vec_complex = intrinsics::set1_epi8(-128); // equals to 0x80 (0b1000'0000)
 
-    while (input < end - simd_size)
+    while (end - input >= simd_size)
     {
         auto const batch = intrinsics::load(input);
         auto const is_control_mask = intrinsics::less(batch, vec_control);
@@ -85,7 +85,7 @@ size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) no
             input += advance;
             break;
         }
-        input += sizeof(simd_size);
+        input += simd_size;
     }
 #endif
 

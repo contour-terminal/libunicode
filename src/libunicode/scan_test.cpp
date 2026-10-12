@@ -18,8 +18,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
 #include <array>
 #include <format>
+#include <functional>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -173,6 +176,125 @@ TEST_CASE("scan.ascii.until_complex")
                           "0123456789ABCDEF0123456789ABCDEF"
                           "0123456789ABCDEF0123456789ABCDEF"sv;
     CHECK(scan_for_text_ascii(text, 80) == 11);
+}
+
+namespace
+{
+
+// The largest offset and length the per-width scanner tests try: three whole 512-bit vectors and part of a fourth.
+auto constexpr MaxTestedLength = size_t { 200 };
+
+// One whole 512-bit vector longer than any offset or length tested, so that a stop byte at any tested offset has text
+// after it and lies inside a full vector load of every width rather than in the scalar tail.
+auto constexpr TestTextLength = MaxTestedLength + (512 / 8);
+
+} // namespace
+
+TEST_CASE("scan.ascii.every_simd_width_stops_exactly_at_a_non_text_byte")
+{
+    // Bytes that end ASCII text: C0 controls, and the lead and continuation bytes of UTF-8.
+    auto constexpr Stoppers = std::array { '\x00', '\x1B', '\x1F', '\x80', '\xC3', '\xFF' };
+
+    for (auto const& scanner: unicode::detail::ascii_scanners())
+    {
+        INFO("SIMD width: " << scanner.simd_bit_width);
+        for (auto const stopper: Stoppers)
+        {
+            INFO("stop byte: " << escape(static_cast<uint8_t>(stopper)));
+            for (auto const offset: std::views::iota(size_t { 0 }, MaxTestedLength + 1))
+            {
+                INFO("offset: " << offset);
+                auto text = std::string(TestTextLength, 'a');
+                text[offset] = stopper;
+                CHECK(scanner.scan(text, text.size()) == offset);
+            }
+        }
+    }
+}
+
+TEST_CASE("scan.ascii.every_simd_width_scans_past_the_edges_of_printable_ascii")
+{
+    // The first and last printable ASCII bytes, which must not end the text.
+    auto constexpr NonStoppers = std::array { ' ', '~' };
+
+    for (auto const& scanner: unicode::detail::ascii_scanners())
+    {
+        INFO("SIMD width: " << scanner.simd_bit_width);
+        for (auto const nonStopper: NonStoppers)
+        {
+            INFO("text byte: " << escape(static_cast<uint8_t>(nonStopper)));
+            // Every offset, the scalar tail's included: a vector stop is only a candidate that the scalar loop
+            // confirms, so an off-by-one there shows only when the byte reaches it.
+            for (auto const offset: std::views::iota(size_t { 0 }, TestTextLength))
+            {
+                INFO("offset: " << offset);
+                auto text = std::string(TestTextLength, 'a');
+                text[offset] = nonStopper;
+                CHECK(scanner.scan(text, text.size()) == text.size());
+            }
+        }
+    }
+}
+
+TEST_CASE("scan.ascii.every_simd_width_covers_text_of_every_length")
+{
+    auto const longText = std::string(TestTextLength, 'a');
+    for (auto const& scanner: unicode::detail::ascii_scanners())
+    {
+        INFO("SIMD width: " << scanner.simd_bit_width);
+        // Empty text with a null data pointer, as a default-constructed string_view has, must not be loaded from.
+        CHECK(scanner.scan(std::string_view {}, TestTextLength) == 0);
+        for (auto const length: std::views::iota(size_t { 0 }, MaxTestedLength + 1))
+        {
+            INFO("length: " << length);
+            // A heap buffer of exactly this many bytes: under ASan a load past its end is an error, which a
+            // std::string's spare capacity would hide.
+            auto const exact = std::vector<char>(length, 'a');
+            CHECK(scanner.scan(std::string_view(exact.data(), exact.size()), TestTextLength) == length);
+            // The same length reached through the column limit instead of the end of the text.
+            CHECK(scanner.scan(longText, length) == length);
+        }
+    }
+}
+
+TEST_CASE("scan.ascii.scanners_are_listed_widest_first_down_to_128_bits")
+{
+    auto const scanners = unicode::detail::ascii_scanners();
+    REQUIRE(!scanners.empty());
+    CHECK(scanners.back().simd_bit_width == 128);
+    CHECK(std::ranges::is_sorted(scanners, std::ranges::greater {}, &unicode::detail::ascii_scanner::simd_bit_width));
+}
+
+TEST_CASE("scan.ascii.runnable_scanners_start_at_the_widest_the_cpu_can_run")
+{
+    using unicode::detail::ascii_scanner;
+
+    // Only the widths matter to the filter, so every row borrows a scan function that every build has.
+    auto constexpr Table = std::array {
+        ascii_scanner { .simd_bit_width = 512, .scan = &unicode::detail::scan_for_text_ascii },
+        ascii_scanner { .simd_bit_width = 256, .scan = &unicode::detail::scan_for_text_ascii },
+        ascii_scanner { .simd_bit_width = 128, .scan = &unicode::detail::scan_for_text_ascii },
+    };
+
+    struct Expectation
+    {
+        size_t maxSimdBitWidth;
+        size_t firstWidth;
+        size_t count;
+    };
+    auto constexpr Expectations = std::array {
+        Expectation { .maxSimdBitWidth = 128, .firstWidth = 128, .count = 1 },
+        Expectation { .maxSimdBitWidth = 256, .firstWidth = 256, .count = 2 },
+        Expectation { .maxSimdBitWidth = 512, .firstWidth = 512, .count = 3 },
+    };
+
+    for (auto const& expectation: Expectations)
+    {
+        INFO("CPU's widest vector: " << expectation.maxSimdBitWidth);
+        auto const runnable = unicode::detail::runnable_ascii_scanners(Table, expectation.maxSimdBitWidth);
+        REQUIRE(runnable.size() == expectation.count);
+        CHECK(runnable.front().simd_bit_width == expectation.firstWidth);
+    }
 }
 
 TEST_CASE("scan.complex.grapheme_cluster.1")
