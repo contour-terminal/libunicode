@@ -19,8 +19,10 @@
 #include <libunicode/width.h>
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <iterator>
+#include <span>
 #include <string_view>
 
 using std::distance;
@@ -62,20 +64,47 @@ namespace
     }
 } // namespace
 
+// The x86-64 SIMD builds also compile the 256- and 512-bit scanners, each in its own translation unit with its ISA
+// flags (scan256.cpp, scan512.cpp), and pick the widest one the CPU can run.
+#if (defined(LIBUNICODE_USE_STD_SIMD) || defined(LIBUNICODE_USE_INTRINSICS)) && (defined(__x86_64__) || defined(_M_AMD64))
+    #define LIBUNICODE_SCAN_HAS_WIDE_SIMD
+#endif
+
+std::span<detail::ascii_scanner const> detail::runnable_ascii_scanners(std::span<ascii_scanner const> all,
+                                                                       size_t maxSimdBitWidth) noexcept
+{
+    auto const canRun = [maxSimdBitWidth](ascii_scanner const& scanner) {
+        return scanner.simd_bit_width <= maxSimdBitWidth;
+    };
+    return { std::ranges::find_if(all, canRun), all.end() };
+}
+
+std::span<detail::ascii_scanner const> detail::ascii_scanners() noexcept
+{
+    static constexpr auto all = std::array {
+#if defined(LIBUNICODE_SCAN_HAS_WIDE_SIMD)
+        ascii_scanner { .simd_bit_width = 512, .scan = &scan_for_text_ascii_512 },
+        ascii_scanner { .simd_bit_width = 256, .scan = &scan_for_text_ascii_256 },
+#endif
+        ascii_scanner { .simd_bit_width = 128, .scan = &scan_for_text_ascii_simd<128> },
+    };
+#if defined(LIBUNICODE_SCAN_HAS_WIDE_SIMD)
+    // The CPU's widest vector decides where the list starts; max_simd_size() is 128 at least, so the
+    // 128-bit scanner is always runnable.
+    return runnable_ascii_scanners(all, max_simd_size());
+#else
+    return all;
+#endif
+}
+
 size_t detail::scan_for_text_ascii(string_view text, size_t maxColumnCount) noexcept
 {
-#if (defined(LIBUNICODE_USE_STD_SIMD) || defined(LIBUNICODE_USE_INTRINSICS)) && (defined(__x86_64__) || defined(_M_AMD64))
-    static auto simd_size = max_simd_size();
-    if (simd_size == 512)
-    {
-        return scan_for_text_ascii_512(text, maxColumnCount);
-    }
-    else if (simd_size == 256)
-    {
-        return scan_for_text_ascii_256(text, maxColumnCount);
-    }
-#endif
+#if defined(LIBUNICODE_SCAN_HAS_WIDE_SIMD)
+    static auto const widest = ascii_scanners().front().scan;
+    return widest(text, maxColumnCount);
+#else
     return scan_for_text_ascii_simd<128>(text, maxColumnCount);
+#endif
 }
 
 scan_result detail::scan_for_text_nonascii(scan_state& state,

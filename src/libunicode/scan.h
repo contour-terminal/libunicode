@@ -17,6 +17,7 @@
 #include <libunicode/utf8.h>
 #include <libunicode/width.h>
 
+#include <span>
 #include <string_view>
 
 namespace unicode
@@ -100,6 +101,32 @@ namespace detail
     size_t scan_for_text_ascii_simd(std::string_view text, size_t maxColumnCount) noexcept;
     size_t scan_for_text_ascii_256(std::string_view text, size_t maxColumnCount) noexcept;
     size_t scan_for_text_ascii_512(std::string_view text, size_t maxColumnCount) noexcept;
+
+    /// One ASCII scanner this build provides.
+    struct ascii_scanner
+    {
+        /// The vector width it was built for, in bits; on builds without SIMD the single 128 row is the scalar loop.
+        size_t simd_bit_width;
+
+        /// Counts the ASCII text at the start of @p text, stopping at @p maxColumnCount.
+        size_t (*scan)(std::string_view text, size_t maxColumnCount) noexcept;
+    };
+
+    /// Selects the scanners a CPU can run from a table of scanners listed widest first.
+    ///
+    /// @param all Every scanner a build provides, widest first, ending with the 128-bit one.
+    /// @param maxSimdBitWidth The widest vector the CPU can run, in bits, as max_simd_size() reports it.
+    /// @return The tail of @p all that starts at its first scanner no wider than @p maxSimdBitWidth.
+    std::span<ascii_scanner const> runnable_ascii_scanners(std::span<ascii_scanner const> all, size_t maxSimdBitWidth) noexcept;
+
+    /// Lists every ASCII scanner this build provides that this CPU can run, widest first.
+    ///
+    /// scan_for_text_ascii() runs the first. Tests run them all, so that each vector width is covered
+    /// on a machine that has it, not only the widest one.
+    ///
+    /// Probes the CPU on every call; hot-path callers cache the result.
+    std::span<ascii_scanner const> ascii_scanners() noexcept;
+
     scan_result scan_for_text_nonascii(scan_state& state,
                                        std::string_view text,
                                        size_t maxColumnCount,
