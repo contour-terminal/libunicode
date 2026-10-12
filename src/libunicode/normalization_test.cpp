@@ -16,9 +16,12 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstdint>
+#include <format>
 #include <fstream>
+#include <ranges>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace unicode;
@@ -85,6 +88,48 @@ TEST_CASE("normalization.hangul_compose_tbase_boundary", "[normalization]")
 
     // U+11A8 is the first valid trailing jamo (T index 1).
     CHECK(hangul_compose(U'\u1100', U'\u1161', U'\u11A8') != 0);
+}
+
+TEST_CASE("normalization.nfc_keeps_tbase_after_an_lv_syllable", "[normalization]")
+{
+    // NormalizationTest-18.0.0.txt line 69: U+11A7 HANGUL JUNGSEONG O-YAE sits at TBase, one below the
+    // trailing consonants U+11A8..U+11C2, so it never joins the LV syllable before it (T index 0 means
+    // "no trailing consonant"). Composing it anyway added T index 0 and silently dropped the U+11A7.
+    auto const composed = std::u32string_view { U"\uAC00\u11A7" };
+    auto const decomposed = std::u32string_view { U"\u1100\u1161\u11A7" };
+
+    CHECK(to_nfc(composed) == composed);
+    CHECK(to_nfc(decomposed) == composed);
+    CHECK(to_nfkc(composed) == composed);
+    CHECK(to_nfd(composed) == decomposed);
+    CHECK(to_nfkd(composed) == decomposed);
+    CHECK(is_nfc(composed));
+}
+
+TEST_CASE("normalization.nfc_composes_an_lv_syllable_with_exactly_the_trailing_consonants", "[normalization]")
+{
+    // Unicode Standard, section 3.12, Hangul Syllable Composition: <LVPart, TPart> maps to LVPart + TIndex
+    // only where TPart is in U+11A8..U+11C2 (0 < TIndex < TCount). Every LV syllable, and the codepoints
+    // just outside that range on both sides, are checked.
+    constexpr auto SBase = char32_t { 0xAC00 };
+    constexpr auto TBase = char32_t { 0x11A7 };
+    constexpr auto TCount = char32_t { 28 };
+    constexpr auto LVCount = char32_t { 19 * 21 };
+
+    for (auto const lvIndex: std::views::iota(char32_t { 0 }, LVCount))
+    {
+        auto const lv = static_cast<char32_t>(SBase + (lvIndex * TCount));
+        for (auto const t: std::views::iota(char32_t { TBase - 1 }, char32_t { TBase + TCount + 1 }))
+        {
+            auto const input = std::u32string { lv, t };
+            auto const isTrailingConsonant = t > TBase && t < TBase + TCount;
+            auto const lvt = std::u32string(1, static_cast<char32_t>(lv + (t - TBase)));
+            auto const expected = isTrailingConsonant ? lvt : input;
+            INFO(std::format("U+{:04X} U+{:04X}", static_cast<uint32_t>(lv), static_cast<uint32_t>(t)));
+            CHECK(to_nfc(input) == expected);
+            CHECK(to_nfkc(input) == expected);
+        }
+    }
 }
 
 TEST_CASE("normalization.canonical_decomposition", "[normalization]")
