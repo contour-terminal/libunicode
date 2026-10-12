@@ -41,18 +41,14 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     state.previousCodepoint = b;
     state.previousProperties = Pb;
 
-    // Track the parity of the Regional_Indicator run ending at the current codepoint.
-    //
-    // This must happen on every call, ahead of every early return: a run restarts at 1 after
-    // any break or any non-RI codepoint (GB12/GB13 count RIs, not pairs formed so far).
-    //
-    // We keep the pre-update parity in a local to help GCC optimize this code to be branchless.
-    // Sadly only GCC succeeds in doing this and Clang fails.
+    // Track the parity of the Regional_Indicator run ending at the current codepoint. GB12/GB13 count
+    // the RIs of the whole run, not the pairs formed so far, so this happens on every call, ahead of
+    // every early return. The run is odd when this codepoint is an RI that starts a run or follows an
+    // even one.
     auto const riParityBefore = state.ri_counter;
-    state.ri_counter = (B != Grapheme_Cluster_Break::Regional_Indicator) ? 0
-                       : (A == Grapheme_Cluster_Break::Regional_Indicator)
-                           ? static_cast<uint8_t>(riParityBefore ^ 1)
-                           : 1;
+    auto const isRegionalIndicator = B == Grapheme_Cluster_Break::Regional_Indicator;
+    auto const followsRegionalIndicator = A == Grapheme_Cluster_Break::Regional_Indicator;
+    state.ri_counter = static_cast<uint8_t>(isRegionalIndicator && (!followsRegionalIndicator || riParityBefore == 0));
 
     // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
     if (A == Grapheme_Cluster_Break::CR && B == Grapheme_Cluster_Break::LF)
@@ -146,7 +142,7 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // GB12/GB13: Do not break within emoji flag sequences.
     // That is, do not break between regional indicator (RI) symbols
     // if there is an odd number of RI characters before the break point.
-    if (A == Grapheme_Cluster_Break::Regional_Indicator && A == B && riParityBefore == 1)
+    if (followsRegionalIndicator && isRegionalIndicator && riParityBefore == 1)
         return false;
 
     // GB999: Otherwise, break everywhere.
