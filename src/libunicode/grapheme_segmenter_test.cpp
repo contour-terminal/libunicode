@@ -249,6 +249,50 @@ TEST_CASE("grapheme_segmenter.iterator_3: regional flags", "[grapheme_segmenter]
     REQUIRE_FALSE(gs.codepointsAvailable());
 }
 
+namespace
+{
+/// Streams @p codepoints the way a terminal does: one init() for the first codepoint, then
+/// breakable() for each following one. Returns the indices i for which a break precedes codepoints[i].
+std::vector<size_t> streamingBreaks(std::u32string_view codepoints)
+{
+    auto state = grapheme_segmenter_state {};
+    auto breaks = std::vector<size_t> {};
+    grapheme_process_init(codepoints.front(), state);
+    for (auto i = size_t { 1 }; i < codepoints.size(); ++i)
+        if (grapheme_process_breakable(codepoints[i], state))
+            breaks.push_back(i);
+    return breaks;
+}
+} // namespace
+
+TEST_CASE("grapheme_segmenter.streaming_regional_flags_after_non_ri", "[grapheme_segmenter]")
+{
+    // GB13: [^RI] (RI RI)* RI x RI -- the RI run restarts after every break.
+    auto const input = u32string { U"a🇩🇪🇺🇸" };
+    CHECK(streamingBreaks(input) == std::vector<size_t> { 1, 3 });
+}
+
+TEST_CASE("grapheme_segmenter.streaming_three_regional_indicators", "[grapheme_segmenter]")
+{
+    auto const input = u32string { U"🇩🇪🇺" };
+    CHECK(streamingBreaks(input) == std::vector<size_t> { 2 });
+}
+
+TEST_CASE("grapheme_segmenter.streaming_four_regional_indicators_after_ascii", "[grapheme_segmenter]")
+{
+    auto const input = u32string { U"ab🇩🇪🇺🇸" };
+    CHECK(streamingBreaks(input) == std::vector<size_t> { 1, 2, 4 });
+}
+
+TEST_CASE("grapheme_segmenter.prepend_then_regional_pair", "[grapheme_segmenter]")
+{
+    // GB9b joins Prepend x RI; the RI run then still has odd length at the second RI (GB12/GB13).
+    auto const input = u32string { U"؀🇦🇧" };
+    auto gs = grapheme_segmenter { input };
+    CHECK(*gs == input);
+    CHECK_FALSE(gs.codepointsAvailable());
+}
+
 TEST_CASE("grapheme_segmenter.iterator_3: regional flags invalid 1", "[grapheme_segmenter]")
 {
     auto const ri_DE = u32string { U"\U0001F1E9\U0001F1E9" };

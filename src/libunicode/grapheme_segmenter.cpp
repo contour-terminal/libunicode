@@ -41,15 +41,14 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     state.previousCodepoint = b;
     state.previousProperties = Pb;
 
-    {
-        // Set state.ri_counter to zero if the next codepoint is not of category Regional_Indicator.
-        //
-        // We move the state.ri_counter out to help GCC optimize
-        // this code to be branchless.
-        // Sadly only GCC succeeds in doing this and Clang fails.
-        auto const ri_counter = state.ri_counter;
-        state.ri_counter = (B == Grapheme_Cluster_Break::Regional_Indicator) ? ri_counter : 0;
-    }
+    // Track the parity of the Regional_Indicator run ending at the current codepoint. GB12/GB13 count
+    // the RIs of the whole run, not the pairs formed so far, so this happens on every call, ahead of
+    // every early return. The run is odd when this codepoint is an RI that starts a run or follows an
+    // even one.
+    auto const riParityBefore = state.ri_counter;
+    auto const isRegionalIndicator = B == Grapheme_Cluster_Break::Regional_Indicator;
+    auto const followsRegionalIndicator = A == Grapheme_Cluster_Break::Regional_Indicator;
+    state.ri_counter = static_cast<uint8_t>(isRegionalIndicator && (!followsRegionalIndicator || riParityBefore == 0));
 
     // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
     if (A == Grapheme_Cluster_Break::CR && B == Grapheme_Cluster_Break::LF)
@@ -143,11 +142,8 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // GB12/GB13: Do not break within emoji flag sequences.
     // That is, do not break between regional indicator (RI) symbols
     // if there is an odd number of RI characters before the break point.
-    if (A == Grapheme_Cluster_Break::Regional_Indicator && A == B && state.ri_counter == 1)
-    {
-        state.ri_counter = static_cast<uint8_t>((state.ri_counter + 1) % 2);
+    if (followsRegionalIndicator && isRegionalIndicator && riParityBefore == 1)
         return false;
-    }
 
     // GB999: Otherwise, break everywhere.
     return true;
