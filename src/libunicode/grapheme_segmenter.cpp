@@ -42,13 +42,32 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     state.previousProperties = Pb;
 
     // Track the parity of the Regional_Indicator run ending at the current codepoint. GB12/GB13 count
-    // the RIs of the whole run, not the pairs formed so far, so this happens on every call, ahead of
-    // every early return. The run is odd when this codepoint is an RI that starts a run or follows an
-    // even one.
-    auto const riParityBefore = state.ri_counter;
-    auto const isRegionalIndicator = B == Grapheme_Cluster_Break::Regional_Indicator;
-    auto const followsRegionalIndicator = A == Grapheme_Cluster_Break::Regional_Indicator;
-    state.ri_counter = static_cast<uint8_t>(isRegionalIndicator && (!followsRegionalIndicator || riParityBefore == 0));
+    // the RIs of the whole run, not the pairs formed so far, so this happens ahead of every early return.
+    // Only a Regional_Indicator can extend a run, so every other codepoint just clears the counter.
+    if (B != Grapheme_Cluster_Break::Regional_Indicator)
+        state.ri_counter = 0;
+    else [[unlikely]]
+    {
+        auto const riParityBefore = state.ri_counter;
+        auto const followsRegionalIndicator = A == Grapheme_Cluster_Break::Regional_Indicator;
+        state.ri_counter = static_cast<uint8_t>(!followsRegionalIndicator || riParityBefore == 0);
+
+        // GB12/GB13: Do not break within emoji flag sequences.
+        // That is, do not break between regional indicator (RI) symbols
+        // if there is an odd number of RI characters before the break point.
+        //
+        // Deciding this here is equivalent to deciding it last: with both A and B being Regional_Indicator,
+        // no earlier rule can fire (GB3-GB5 need CR/LF/Control, GB6-GB8 need Hangul, GB9/GB9a need
+        // Extend/ZWJ/SpacingMark as B, GB9b needs Prepend as A, GB9c needs an InCB=Consonant B, GB11 needs
+        // ZWJ as A). The state updates below are fixed for such a pair, as Regional_Indicator is neither
+        // InCB=Consonant/Linker/Extend nor Extended_Pictographic nor Extend/ZWJ, so they are replayed here.
+        if (followsRegionalIndicator && riParityBefore == 1)
+        {
+            state.incb_state = 0;
+            state.extpic_state = 0;
+            return false;
+        }
+    }
 
     // GB3: Do not break between a CR and LF. Otherwise, break before and after controls.
     if (A == Grapheme_Cluster_Break::CR && B == Grapheme_Cluster_Break::LF)
@@ -137,12 +156,6 @@ bool grapheme_process_breakable(char32_t nextCodepoint, grapheme_segmenter_state
     // GB11: Do not break within emoji modifier sequences or emoji zwj sequences.
     // Full rule: \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
     if (A == Grapheme_Cluster_Break::ZWJ && Pb.is_extended_pictographic() && prev_extpic_state == 1)
-        return false;
-
-    // GB12/GB13: Do not break within emoji flag sequences.
-    // That is, do not break between regional indicator (RI) symbols
-    // if there is an odd number of RI characters before the break point.
-    if (followsRegionalIndicator && isRegionalIndicator && riParityBefore == 1)
         return false;
 
     // GB999: Otherwise, break everywhere.
