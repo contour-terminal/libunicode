@@ -50,7 +50,7 @@ jobs:
             artifact_name: unicode-query-linux-x86_64
             binary_path: build/src/tools/unicode-query
             cmake_extra: ""
-          - os: macos-14
+          - os: macos-15
             artifact_name: unicode-query-macos-arm64
             binary_path: build/src/tools/unicode-query
             cmake_extra: ""
