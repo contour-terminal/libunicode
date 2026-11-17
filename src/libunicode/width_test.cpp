@@ -342,6 +342,14 @@ TEST_CASE("grapheme_cluster_width.batch_matches_wcwidth_corpus", "[width]")
 
 TEST_CASE("grapheme_cluster_width.emoji_modifier", "[width]")
 {
+    // A text-default base takes two columns when a skin tone requests emoji presentation.
+    CHECK(unicode::grapheme_cluster_width(U"\u270C"sv) == 1);
+    CHECK(unicode::grapheme_cluster_width(U"\u270C\U0001F3FD"sv) == 2);
+    CHECK(unicode::grapheme_cluster_width(U"\U0001F590\U0001F3FB"sv) == 2);
+
+    // Copyright is a pictograph but cannot take a skin-tone modifier.
+    CHECK(unicode::grapheme_cluster_width(U"\u00A9\U0001F3FD"sv) == 1);
+
     // Person facepalming + medium-light skin tone
     CHECK(unicode::grapheme_cluster_width(U"\U0001F926\U0001F3FC"sv) == 2);
 

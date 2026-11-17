@@ -522,6 +522,19 @@ TEST_CASE("scan.cluster_split_across_calls_is_measured_once")
     CHECK(state.next == text.data() + text.size());
 }
 
+TEST_CASE("scan.skin_tone_widens_narrow_base_across_calls")
+{
+    auto const text = u8(U"\u270C\U0001F3FD"sv);
+    auto const baseSize = u8(U"\u270C"sv).size();
+    auto state = unicode::scan_state {};
+    auto const first = unicode::scan_text(state, string_view(text).substr(0, baseSize), 80);
+    auto const second = unicode::scan_text(state, string_view(text).substr(baseSize), 80);
+
+    CHECK(first.count == 1);
+    CHECK(second.count == 1);
+    CHECK(state.next == text.data() + text.size());
+}
+
 TEST_CASE("scan.growing_cluster_does_not_overrun_the_scan_end")
 {
     // scan_text() promises result.end <= state.next. The overflow rewind used to reset the input

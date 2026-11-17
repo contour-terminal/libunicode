@@ -72,11 +72,11 @@ class grapheme_cluster_width_accumulator
 ///   non-spacing mark, so `का` (ka + AA matra) is two columns while `कं` (ka + anusvara) is one.
 /// - A consonant joined to the previous one through a virama forms a conjunct that is two columns
 ///   wide: `क्न` is two, but a dangling `क्` with nothing behind the virama is one.
-/// - An emoji modifier (skin tone) is absorbed by the emoji before it and adds nothing, whether or
-///   not that emoji is Emoji_Modifier_Base.
+/// - An emoji modifier (skin tone) is absorbed by the emoji before it. A narrow Emoji_Modifier_Base
+///   widens to two columns for emoji presentation.
 /// - ZWJ (U+200D) does NOT widen. It consumes the codepoint that follows it, so an emoji ZWJ
 ///   sequence is measured by its first segment: U+2764 U+200D U+1F525 (heart on fire, written
-///   without VS16) is one column. RGI sequences reach two columns through VS16 or a wide base.
+///   without VS16) is one column.
 ///
 /// There is no clamp at two columns. A cluster holding several codepoints that each take room is as
 /// wide as their sum, which is what wcwidth reports: two Hangul Choseong jamo form one cluster four
@@ -84,8 +84,8 @@ class grapheme_cluster_width_accumulator
 ///
 /// This is a port of Python wcwidth 0.8's wcswidth(), which terminal applications measure against,
 /// rather than an approximation of it -- an earlier approximation agreed with it on only 99% of a
-/// 3607-grapheme corpus. The cluster algorithm agrees with wcswidth() on every cluster tested,
-/// including all of GraphemeBreakTest.txt and every emoji variation sequence.
+/// 3607-grapheme corpus. Narrow emoji modifier bases widen to two columns, which differs from
+/// wcswidth() in Python wcwidth 0.8.2.
 ///
 /// The underlying per-codepoint width() is deliberately NOT a wcwidth clone, so a cluster whose
 /// codepoints hit one of those differences inherits it: libunicode reports one column where wcwidth
