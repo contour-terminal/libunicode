@@ -110,11 +110,15 @@ void grapheme_cluster_width_accumulator::push(char32_t codepoint) noexcept
         return;
     }
 
-    // A skin tone modifier is absorbed by the emoji it modifies rather than placed beside it. The
-    // base need not be Emoji_Modifier_Base: an ill-formed but perfectly real sequence such as a
-    // heart or a copyright sign followed by a modifier still renders as one glyph.
-    if (codepoint >= 0x1F3FB && codepoint <= 0x1F3FF && joinsEmojiSequence(_lastMeasured))
+    // A skin tone modifier adds no separate columns. A valid modifier base takes two columns in
+    // emoji presentation, even if the bare base defaults to text.
+    if (properties.is_emoji_modifier() && joinsEmojiSequence(_lastMeasured))
+    {
+        auto const base = codepoint_properties::get(_lastMeasured);
+        if (_current == 1 && base.is_emoji_modifier_base())
+            _current = 2;
         return;
+    }
 
     if (auto const w = static_cast<int>(properties.char_width); w != 0)
     {
