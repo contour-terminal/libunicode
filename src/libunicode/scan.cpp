@@ -37,12 +37,6 @@ namespace unicode
 
 namespace
 {
-    template <typename T>
-    constexpr bool ascending(T low, T val, T high) noexcept
-    {
-        return low <= val && val <= high;
-    }
-
     constexpr bool is_control(char ch) noexcept
     {
         return static_cast<uint8_t>(ch) < 0x20;
